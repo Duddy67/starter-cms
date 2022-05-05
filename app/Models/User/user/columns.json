@@ -1,0 +1,39 @@
+[
+  {
+    "label": "labels.generic.id",
+    "name": "id",
+    "type": "string",
+    "extra": ["sortable"]
+  },
+  {
+    "label": "labels.generic.name",
+    "name": "name",
+    "extra": ["sortable", "linkable"],
+    "type": "string"
+  },
+  {
+    "label": "labels.user.email",
+    "name": "email",
+    "type": "string"
+  },
+  {
+    "label": "labels.user.role",
+    "name": "role",
+    "type": "string"
+  },
+  {
+    "label": "labels.user.groups",
+    "name": "groups",
+    "type": "string"
+  },
+  {
+    "label": "labels.generic.created_at",
+    "name": "created_at",
+    "type": "date"
+  },
+  {
+    "label": "labels.generic.updated_at",
+    "name": "updated_at",
+    "type": "date"
+  }
+]

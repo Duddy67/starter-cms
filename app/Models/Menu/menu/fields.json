@@ -1,0 +1,80 @@
+[
+  {
+    "label": "labels.generic.title",
+    "type": "text",
+    "name": "title",
+    "id": "title",
+    "placeholder": "labels.generic.title"
+  },
+  {
+    "label": "labels.generic.code",
+    "type": "text",
+    "name": "code",
+    "id": "code",
+    "placeholder": "labels.generic.code"
+  },
+  {
+    "label": "labels.generic.status",
+    "type": "select",
+    "name": "status",
+    "id": "status",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.access_level",
+    "type": "select",
+    "name": "access_level",
+    "id": "access_level",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.owned_by",
+    "type": "select",
+    "name": "owned_by",
+    "id": "owned_by",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.owned_by",
+    "type": "text",
+    "name": "owner_name",
+    "id": "owner_name",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.user.groups",
+    "type": "select",
+    "name": "groups",
+    "extra": ["multiple","title_as_id"],
+    "id": "groups",
+    "class": "_locked",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.created_at",
+    "type": "date",
+    "name": "created_at",
+    "dataset": {"date":"0", "time":"0"},
+    "id": "created_at",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.generic.updated_by",
+    "type": "text",
+    "name": "updated_by",
+    "id": "updated_by",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.generic.updated_at",
+    "type": "date",
+    "name": "updated_at",
+    "dataset": {"date":"0", "time":"0"},
+    "id": "updated_at",
+    "extra": ["disabled"]
+  }
+]

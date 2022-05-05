@@ -1,0 +1,40 @@
+[
+  {
+    "label": "labels.generic.id",
+    "name": "id",
+    "extra": ["sortable"],
+    "type": "string"
+  },
+  {
+    "label": "labels.generic.title",
+    "name": "title",
+    "extra": ["sortable", "linkable"],
+    "type": "string"
+  },
+  {
+    "label": "labels.generic.ordering",
+    "name": "ordering",
+    "type": "array"
+  },
+  {
+    "label": "labels.generic.status",
+    "name": "status",
+    "type": "string"
+  },
+  {
+    "label": "labels.menuitem.url",
+    "name": "url",
+    "extra": ["sortable"],
+    "type": "string"
+  },
+  {
+    "label": "labels.generic.created_at",
+    "name": "created_at",
+    "type": "date"
+  },
+  {
+    "label": "labels.generic.updated_at",
+    "name": "updated_at",
+    "type": "date"
+  }
+]

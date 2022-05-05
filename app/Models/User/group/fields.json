@@ -1,0 +1,69 @@
+[
+  {
+    "label": "labels.generic.name",
+    "type": "text",
+    "name": "name",
+    "id": "name",
+    "placeholder": "labels.generic.name"
+  },
+  {
+    "label": "labels.generic.access_level",
+    "type": "select",
+    "name": "access_level",
+    "id": "access_level",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  },
+  {
+    "label": "labels.group.permission",
+    "type": "select",
+    "name": "permission",
+    "id": "permission",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.owned_by",
+    "type": "select",
+    "name": "owned_by",
+    "id": "owned_by",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.owned_by",
+    "type": "text",
+    "name": "owner_name",
+    "id": "owner_name",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.generic.created_at",
+    "type": "date",
+    "name": "created_at",
+    "dataset": {"date":"0", "time":"0"},
+    "id": "created_at",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.generic.updated_by",
+    "type": "text",
+    "name": "updated_by",
+    "id": "updated_by",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.generic.updated_at",
+    "type": "date",
+    "name": "updated_at",
+    "dataset": {"date":"0", "time":"0"},
+    "id": "updated_at",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.generic.description",
+    "type": "textarea",
+    "name": "description",
+    "id": "description"
+  }
+]

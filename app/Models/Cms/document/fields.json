@@ -1,0 +1,10 @@
+[
+  {
+    "label": "labels.generic.owned_by",
+    "type": "select",
+    "name": "owned_by",
+    "id": "owned_by",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  }
+]

@@ -1,0 +1,54 @@
+[
+  {
+    "label": "labels.generic.title",
+    "type": "text",
+    "name": "title",
+    "id": "title",
+    "placeholder": "labels.generic.title"
+  },
+  {
+    "label": "labels.menuitem.url",
+    "type": "text",
+    "name": "url",
+    "id": "url",
+    "placeholder": "labels.menuitem.url"
+  },
+  {
+    "label": "labels.menuitem.parent_item",
+    "type": "select",
+    "name": "parent_id",
+    "id": "parent_id",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.status",
+    "type": "select",
+    "name": "status",
+    "id": "status",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.created_at",
+    "type": "date",
+    "name": "created_at",
+    "dataset": {"date":"0", "time":"0"},
+    "id": "created_at",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.generic.updated_by",
+    "type": "text",
+    "name": "updated_by",
+    "id": "updated_by",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.generic.updated_at",
+    "type": "date",
+    "name": "updated_at",
+    "dataset": {"date":"0", "time":"0"},
+    "id": "updated_at",
+    "extra": ["disabled"]
+  }
+]

@@ -1,0 +1,77 @@
+[
+  {
+    "label": "labels.generic.name",
+    "type": "text",
+    "name": "name",
+    "id": "name",
+    "readonly": false,
+    "placeholder": "labels.generic.name"
+  },
+  {
+    "label": "labels.user.email",
+    "type": "text",
+    "name": "email",
+    "id": "email",
+    "placeholder": "labels.user.email"
+  },
+  {
+    "label": "labels.user.password",
+    "type": "password",
+    "name": "password",
+    "autocomplete": "false",
+    "id": "password"
+  },
+  {
+    "label": "labels.user.confirm_password",
+    "type": "password",
+    "name": "password_confirmation",
+    "id": "password_confirmation"
+  },
+  {
+    "label": "labels.user.role",
+    "type": "select",
+    "name": "role",
+    "id": "role",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  },
+  {
+    "label": "labels.user.groups",
+    "type": "select",
+    "name": "groups",
+    "extra": ["multiple","title_as_id"],
+    "id": "groups",
+    "class": "_locked",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.created_at",
+    "type": "date",
+    "name": "created_at",
+    "dataset": {"date":"0", "time":"0"},
+    "id": "created_at",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.generic.updated_by",
+    "type": "text",
+    "name": "updated_by",
+    "id": "updated_by",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.generic.updated_at",
+    "type": "date",
+    "name": "updated_at",
+    "dataset": {"date":"0", "time":"0"},
+    "id": "updated_at",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.generic.photo",
+    "type": "file",
+    "name": "photo",
+    "id": "photo"
+  }
+]

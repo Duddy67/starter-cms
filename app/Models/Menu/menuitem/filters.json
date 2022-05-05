@@ -1,0 +1,10 @@
+[
+  {
+    "label": "labels.filter.search",
+    "type": "text",
+    "name": "search",
+    "id": "search",
+    "placeholder": "labels.filter.search_by_name"
+  }
+]
+

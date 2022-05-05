@@ -1,0 +1,87 @@
+tr.clickable-row {
+  cursor: pointer;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+  color: #4d4d4d !important;
+}
+
+.select2-container .select2-selection--single {
+  height: calc(2.25rem + 2px) !important;
+}
+
+.checked-out {
+  max-width: 100%;
+}
+
+.disable-panel {
+  position: absolute;
+  z-index: 100;
+  opacity: 0.5;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+}
+
+/** Batch modal window **/
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 10px;
+  border: 1px solid #888;
+  width: 50%;
+  height: 50%;
+}
+
+#batchIframe {
+  width: 100%;
+  height: 100%;
+}
+
+/* remove X from locked tag */
+.locked-tag .select2-selection__choice__remove {
+  display: none!important;
+}
+
+.private-tag {
+  background-color: #f6f6f6 !important;
+}
+
+.indent-0 {
+}
+
+.indent-1 {
+  padding-left: 10px;
+}
+
+.indent-2 {
+  padding-left: 20px;
+}
+
+.indent-3 {
+  padding-left: 30px;
+}
+
+.indent-4 {
+  padding-left: 40px;
+}
+
+.indent-5 {
+  padding-left: 50px;
+}
+
+#batchForm .select2-container {
+  width: 100% !important;
+}
+
+/* Fixes Select2 bug with Bootstrap tabs: https://github.com/select2/select2/issues/4220 */
+.select2-container,
+.select2-container li:only-child,
+.select2-container input:placeholder-shown {
+  width: 100% !important;
+}
+
+.post-image {
+  padding: 10px;
+}
+

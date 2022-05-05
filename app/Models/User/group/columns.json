@@ -1,0 +1,41 @@
+[
+  {
+    "label": "labels.generic.id",
+    "name": "id",
+    "extra": ["sortable"],
+    "type": "string"
+  },
+  {
+    "label": "labels.generic.name",
+    "name": "name",
+    "extra": ["sortable", "linkable"],
+    "type": "string"
+  },
+  {
+    "label": "labels.generic.access_level",
+    "name": "access_level",
+    "extra": ["sortable"],
+    "type": "string"
+  },
+  {
+    "label": "labels.group.permission",
+    "name": "permission",
+    "extra": ["sortable"],
+    "type": "string"
+  },
+  {
+    "label": "labels.generic.owned_by",
+    "name": "owned_by",
+    "type": "string"
+  },
+  {
+    "label": "labels.generic.created_at",
+    "name": "created_at",
+    "type": "date"
+  },
+  {
+    "label": "labels.generic.updated_at",
+    "name": "updated_at",
+    "type": "date"
+  }
+]

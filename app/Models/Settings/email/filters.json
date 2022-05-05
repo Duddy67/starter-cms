@@ -1,0 +1,26 @@
+[
+  {
+    "label": "labels.filter.search",
+    "type": "text",
+    "name": "search",
+    "id": "search",
+    "placeholder": "labels.filter.search_by_name"
+  },
+  {
+    "label": "labels.filter.sorted_by",
+    "type": "select",
+    "name": "sorted_by",
+    "id": "filters-sortedBy",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  },
+  {
+    "label": "labels.filter.per_page",
+    "type": "select",
+    "name": "per_page",
+    "id": "filters-perPage",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  }
+]
+

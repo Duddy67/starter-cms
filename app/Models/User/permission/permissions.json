@@ -1,0 +1,132 @@
+{
+  "users": [
+      {
+	"name": "create-user",
+	"type": "level2",
+	"roles": "admin|manager"
+      },
+      {
+	"name": "update-user",
+	"type": "level2",
+	"roles": "admin|manager"
+      },
+      {
+	"name": "delete-user",
+	"type": "level2",
+	"roles": "admin|manager",
+	"optional": "manager"
+      },
+      {
+	"name": "create-group",
+	"type": "level2",
+	"roles": "admin|manager"
+      },
+      {
+	"name": "update-group",
+	"type": "level2",
+	"roles": "admin|manager"
+      },
+      {
+	"name": "delete-group",
+	"type": "level2",
+	"roles": "admin|manager",
+	"optional": "manager"
+      },
+      {
+	"name": "create-role",
+	"type": "level1",
+	"roles": "admin"
+      },
+      {
+	"name": "update-role",
+	"type": "level1",
+	"roles": "admin"
+      },
+      {
+	"name": "delete-role",
+	"type": "level1",
+	"roles": "admin",
+	"optional": "admin"
+      }
+  ],
+  "menus": [
+      {
+	"name": "create-menu",
+	"type": "level1",
+	"roles": "admin"
+      },
+      {
+	"name": "update-menu",
+	"type": "level1",
+	"roles": "admin"
+      },
+      {
+	"name": "delete-menu",
+	"type": "level1",
+	"roles": "admin"
+      }
+  ],
+  "blog": [
+      {
+	"name": "create-post",
+	"type": "level3",
+	"roles": "admin|manager|assistant|registered"
+      },
+      {
+	"name": "update-post",
+	"type": "level3",
+	"roles": "admin|manager|assistant|registered"
+      },
+      {
+	"name": "delete-post",
+	"type": "level3",
+	"roles": "admin|manager|assistant|registered",
+	"optional": "assistant|registered"
+      },
+      {
+	"name": "create-blog-category",
+	"type": "level2",
+	"roles": "admin",
+	"optional": "manager"
+      },
+      {
+	"name": "update-blog-category",
+	"type": "level2",
+	"roles": "admin",
+	"optional": "manager"
+      },
+      {
+	"name": "delete-blog-category",
+	"type": "level2",
+	"roles": "admin",
+	"optional": "manager"
+      }
+  ],
+  "settings": [
+      {
+	"name": "global-settings",
+	"type": "level1",
+	"roles": "",
+	"optional": "admin"
+      },
+      {
+	"name": "blog-settings",
+	"type": "level1",
+	"roles": "",
+	"optional": "admin"
+      },
+      {
+	"name": "update-email",
+	"type": "level1",
+	"roles": "",
+	"optional": "admin"
+      }
+  ],
+  "cms": [
+      {
+	"name": "access-dashboard",
+	"type": "level2",
+	"roles": "admin|manager|assistant"
+      }
+  ]
+}

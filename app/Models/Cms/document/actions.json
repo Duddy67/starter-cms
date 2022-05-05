@@ -1,0 +1,48 @@
+{
+  "list": [
+      {
+	"id": "massDestroy",
+	"label": "labels.button.delete",
+	"type": "button"
+      },
+      {
+	"id": "batch",
+	"label": "labels.button.batch",
+	"type": "button"
+      }
+  ],
+  "form": [
+      {
+	"id": "saveClose",
+	"label": "labels.button.save_close",
+	"type": "button"
+      },
+      {
+	"id": "save",
+	"label": "labels.button.save",
+	"type": "button"
+      },
+      {
+	"id": "cancel",
+	"label": "labels.button.cancel",
+	"type": "button"
+      },
+      {
+	"id": "destroy",
+	"label": "labels.button.delete",
+	"type": "button"
+      }
+  ],
+  "batch": [
+      {
+	"id": "massUpdate",
+	"label": "labels.button.update",
+	"type": "button"
+      },
+      {
+	"id": "cancel",
+	"label": "labels.button.cancel",
+	"type": "button"
+      }
+  ]
+}

@@ -1,0 +1,40 @@
+[
+  {
+    "label": "labels.generic.preview",
+    "name": "preview",
+    "id": "preview",
+    "extra": ["raw"],
+    "type": "string"
+  },
+  {
+    "label": "Name",
+    "name": "file_name",
+    "id": "file_name",
+    "extra": ["sortable", "raw"],
+    "type": "string"
+  },
+  {
+    "label": "labels.generic.type",
+    "name": "content_type",
+    "id": "content_type",
+    "extra": ["sortable"],
+    "type": "string"
+  },
+  {
+    "label": "Size",
+    "name": "file_size",
+    "id": "file_size",
+    "type": "string"
+  },
+  {
+    "label": "labels.generic.owned_by",
+    "name": "owned_by",
+    "type": "string"
+  },
+  {
+    "label": "Uploaded at",
+    "name": "created_at",
+    "id": "created_at",
+    "type": "date"
+  }
+]

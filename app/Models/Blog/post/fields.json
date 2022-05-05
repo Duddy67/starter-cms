@@ -1,0 +1,163 @@
+[
+  {
+    "label": "labels.generic.title",
+    "type": "text",
+    "name": "title",
+    "id": "title",
+    "placeholder": "labels.generic.title"
+  },
+  {
+    "label": "labels.post.slug",
+    "type": "text",
+    "name": "slug",
+    "id": "slug",
+    "tab": "details",
+    "placeholder": "labels.post.slug"
+  },
+  {
+    "label": "labels.generic.status",
+    "type": "select",
+    "name": "status",
+    "id": "status",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  },
+  {
+    "label": "labels.title.categories",
+    "type": "select",
+    "name": "categories",
+    "extra": ["multiple","title_as_id"],
+    "id": "categories",
+    "class": "_locked",
+    "blank": "labels.generic.select_option",
+    "options": []
+  },
+  {
+    "type": "hidden",
+    "name": "main_cat_id",
+    "id": "main-cat-id"
+  },
+  {
+    "label": "labels.generic.access_level",
+    "type": "select",
+    "name": "access_level",
+    "id": "access_level",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.owned_by",
+    "type": "select",
+    "name": "owned_by",
+    "id": "owned_by",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.owned_by",
+    "type": "text",
+    "name": "owner_name",
+    "id": "owner_name",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.user.groups",
+    "type": "select",
+    "name": "groups",
+    "extra": ["multiple","title_as_id"],
+    "id": "groups",
+    "class": "_locked",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.created_at",
+    "type": "date",
+    "name": "created_at",
+    "dataset": {"date":"0", "time":"0"},
+    "id": "created_at",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.generic.updated_by",
+    "type": "text",
+    "name": "updated_by",
+    "id": "updated_by",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.generic.updated_at",
+    "type": "date",
+    "name": "updated_at",
+    "dataset": {"date":"0", "time":"0"},
+    "id": "updated_at",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.post.content",
+    "type": "textarea",
+    "name": "content",
+    "class": "tinymce-texteditor",
+    "id": "content"
+  },
+  {
+    "label": "labels.post.excerpt",
+    "type": "textarea",
+    "name": "excerpt",
+    "class": "tinymce-texteditor",
+    "tab": "extra",
+    "id": "excerpt"
+  },
+  {
+    "label": "labels.generic.image",
+    "type": "file",
+    "name": "image",
+    "id": "image"
+  },
+  {
+    "label": "labels.generic.show_owner",
+    "type": "select",
+    "name": "show_owner",
+    "id": "show_owner",
+    "extra": ["yes_no", "global_setting"],
+    "tab": "settings",
+    "group": "settings",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.show_created_at",
+    "type": "select",
+    "name": "show_created_at",
+    "id": "show_created_at",
+    "extra": ["yes_no", "global_setting"],
+    "group": "settings",
+    "options": [] 
+  },
+  {
+    "label": "labels.post.show_excerpt",
+    "type": "select",
+    "name": "show_excerpt",
+    "id": "show_excerpt",
+    "extra": ["yes_no", "global_setting"],
+    "group": "settings",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.show_image",
+    "type": "select",
+    "name": "show_image",
+    "id": "show_image",
+    "extra": ["yes_no", "global_setting"],
+    "group": "settings",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.show_categories",
+    "type": "select",
+    "name": "show_categories",
+    "id": "show_categories",
+    "extra": ["yes_no", "global_setting"],
+    "group": "settings",
+    "options": [] 
+  }
+]

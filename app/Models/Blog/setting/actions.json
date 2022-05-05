@@ -1,0 +1,9 @@
+{
+  "form": [
+    {
+      "id": "save",
+      "label": "labels.button.save",
+      "type": "button"
+    }
+  ]
+}

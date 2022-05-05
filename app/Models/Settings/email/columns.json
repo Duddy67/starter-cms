@@ -1,0 +1,31 @@
+[
+  {
+    "label": "labels.generic.id",
+    "name": "id",
+    "extra": ["sortable"],
+    "type": "string"
+  },
+  {
+    "label": "labels.generic.code",
+    "name": "code",
+    "extra": ["sortable", "linkable"],
+    "type": "string"
+  },
+  {
+    "label": "labels.email.subject",
+    "name": "subject",
+    "type": "string"
+  },
+  {
+    "label": "labels.generic.created_at",
+    "name": "created_at",
+    "id": "created_at",
+    "type": "date"
+  },
+  {
+    "label": "labels.generic.updated_at",
+    "name": "updated_at",
+    "id": "updated_at",
+    "type": "date"
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "label": "labels.settings.name",
+    "type": "text",
+    "name": "name",
+    "id": "name",
+    "group": "app",
+    "placeholder": "labels.generic.name"
+  },
+  {
+    "label": "labels.settings.timezone",
+    "type": "select",
+    "name": "timezone",
+    "id": "timezone",
+    "group": "app",
+    "options": [] 
+  },
+  {
+    "label": "labels.settings.date_format",
+    "type": "text",
+    "name": "date_format",
+    "id": "date_format",
+    "group": "app"
+  },
+  {
+    "label": "labels.settings.per_page",
+    "type": "select",
+    "name": "per_page",
+    "id": "per-page",
+    "group": "pagination",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  }
+]

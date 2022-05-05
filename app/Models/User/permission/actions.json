@@ -1,0 +1,18 @@
+{
+  "list": [
+      {
+	"id": "update",
+	"label": "labels.button.update",
+	"type": "button",
+	"class": "btn-primary",
+	"icon": "fa fa-sync"
+      },
+      {
+	"id": "rebuild",
+	"label": "labels.button.rebuild",
+	"type": "button",
+	"class": "btn-danger",
+	"icon": "fa fa-undo"
+      }
+  ]
+}

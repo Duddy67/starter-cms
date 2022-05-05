@@ -1,0 +1,57 @@
+[
+  {
+    "label": "labels.generic.code",
+    "type": "text",
+    "name": "code",
+    "id": "code",
+    "placeholder": "labels.generic.code"
+  },
+  {
+    "label": "labels.email.subject",
+    "type": "text",
+    "name": "subject",
+    "id": "subject"
+  },
+  {
+    "label": "labels.generic.format",
+    "type": "select",
+    "name": "format",
+    "id": "format",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.created_at",
+    "type": "date",
+    "name": "created_at",
+    "dataset": {"date":"0", "time":"0"},
+    "id": "created_at",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.generic.updated_by",
+    "type": "text",
+    "name": "updated_by",
+    "id": "updated_by",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.generic.updated_at",
+    "type": "date",
+    "name": "updated_at",
+    "dataset": {"date":"0", "time":"0"},
+    "id": "updated_at",
+    "extra": ["disabled"]
+  },
+  {
+    "type": "textarea",
+    "name": "body_html",
+    "class": "tinymce-texteditor",
+    "id": "body_html"
+  },
+  {
+    "type": "textarea",
+    "name": "body_text",
+    "id": "body_text",
+    "rows": "15"
+  }
+]
