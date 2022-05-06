@@ -55,7 +55,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   </nav>
   <!-- /.navbar -->
 
-  @inject ('general', 'App\Models\Settings\General')
+  @inject('general', 'App\Models\Settings\General')
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4" id="layout-sidebar">
     @php $appName = ($general::getValue('app', 'name')) ? $general::getValue('app', 'name') : config('app.name', 'Starter CMS'); @endphp
