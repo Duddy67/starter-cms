@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Blog\Category;
 use App\Models\User\Group;
-use App\Models\User\User;
+use App\Models\User;
 use App\Traits\Admin\ItemConfig;
 use App\Traits\Admin\CheckInCheckOut;
 use App\Http\Requests\Blog\Category\StoreRequest;

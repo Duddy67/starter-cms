@@ -4,7 +4,7 @@ namespace App\Models\User;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User\User;
+use App\Models\User;
 use App\Models\Blog\Post;
 use App\Models\Blog\Category;
 use App\Models\Menu\Menu;

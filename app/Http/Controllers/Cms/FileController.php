@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Cms\Document;
 use App\Traits\Admin\ItemConfig;
-use App\Models\User\User;
+use App\Models\User;
 
 
 class FileController extends Controller

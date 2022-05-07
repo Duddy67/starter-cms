@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Admin\User;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use App\Models\User\User;
+use App\Models\User;
 use App\Models\User\Group;
 use Illuminate\Support\Facades\Hash;
 use App\Traits\Admin\ItemConfig;
 use App\Traits\Admin\CheckInCheckOut;
 use App\Models\Settings\Email;
 use App\Models\Cms\Document;
-use App\Http\Requests\User\User\StoreRequest;
-use App\Http\Requests\User\User\UpdateRequest;
+use App\Http\Requests\User\StoreRequest;
+use App\Http\Requests\User\UpdateRequest;
 
 
 class UserController extends Controller
@@ -44,7 +44,7 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin.user.users');
+        $this->middleware('admin.users');
         $this->model = new User;
     }
 
@@ -64,7 +64,7 @@ class UserController extends Controller
         $rows = $this->getRows($columns, $items, ['roles']);
         $this->setRowValues($rows, $columns, $items);
         $query = $request->query();
-        $url = ['route' => 'admin.user.users', 'item_name' => 'user', 'query' => $query];
+        $url = ['route' => 'admin.users', 'item_name' => 'user', 'query' => $query];
 
         return view('admin.user.users.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
     }
@@ -97,11 +97,11 @@ class UserController extends Controller
         $user = User::select('users.*', 'users2.name as modifier_name')->leftJoin('users as users2', 'users.updated_by', '=', 'users2.id')->findOrFail($id);
 
         if (!auth()->user()->canUpdate($user) && auth()->user()->id != $user->id) {
-            return redirect()->route('admin.user.users.index', array_merge($request->query(), ['user' => $id]))->with('error', __('messages.user.edit_user_not_auth'));
+            return redirect()->route('admin.users.index', array_merge($request->query(), ['user' => $id]))->with('error', __('messages.user.edit_user_not_auth'));
         }
 
         if ($user->checked_out && $user->checked_out != auth()->user()->id) {
-            return redirect()->route('admin.user.users.index', array_merge($request->query(), ['user' => $id]))->with('error',  __('messages.generic.checked_out'));
+            return redirect()->route('admin.users.index', array_merge($request->query(), ['user' => $id]))->with('error',  __('messages.generic.checked_out'));
         }
 
         $user->checkOut();
@@ -125,7 +125,7 @@ class UserController extends Controller
      * Checks the record back in.
      *
      * @param  Request  $request
-     * @param  \App\Models\User\User $user (optional)
+     * @param  \App\Models\User $user (optional)
      * @return Response
      */
     public function cancel(Request $request, User $user = null)
@@ -134,20 +134,20 @@ class UserController extends Controller
             $user->checkIn();
         }
 
-        return redirect()->route('admin.user.users.index', $request->query());
+        return redirect()->route('admin.users.index', $request->query());
     }
 
     /**
      * Update the specified user.
      *
-     * @param  \App\Http\Requests\User\User\UpdateRequest  $request
-     * @param  \App\Models\User\User $user
+     * @param  \App\Http\Requests\User\UpdateRequest  $request
+     * @param  \App\Models\User $user
      * @return Response
      */
     public function update(UpdateRequest $request, User $user)
     {
         if (!auth()->user()->canUpdate($user) && auth()->user()->id != $user->id) {
-            return redirect()->route('admin.user.users.edit', $user->id)->with('error',  __('messages.user.update_user_not_auth'));
+            return redirect()->route('admin.users.edit', $user->id)->with('error',  __('messages.user.update_user_not_auth'));
         }
 
         $user->name = $request->input('name');
@@ -181,16 +181,16 @@ class UserController extends Controller
 
         if ($request->input('_close', null)) {
             $user->checkIn();
-            return redirect()->route('admin.user.users.index', $request->query())->with('success', __('messages.user.update_success'));
+            return redirect()->route('admin.users.index', $request->query())->with('success', __('messages.user.update_success'));
         }
 
-        return redirect()->route('admin.user.users.edit', array_merge($request->query(), ['user' => $user->id]))->with('success', __('messages.user.update_success'));
+        return redirect()->route('admin.users.edit', array_merge($request->query(), ['user' => $user->id]))->with('success', __('messages.user.update_success'));
     }
 
     /**
      * Store a new user.
      *
-     * @param  \App\Http\Requests\User\User\StoreRequest  $request
+     * @param  \App\Http\Requests\User\StoreRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)
@@ -214,27 +214,27 @@ class UserController extends Controller
         }
 
         if ($request->input('_close', null)) {
-            return redirect()->route('admin.user.users.index', $request->query())->with('success', __('messages.user.create_success'));
+            return redirect()->route('admin.users.index', $request->query())->with('success', __('messages.user.create_success'));
         }
 
-        return redirect()->route('admin.user.users.edit', array_merge($request->query(), ['user' => $user->id]))->with('success', __('messages.user.create_success'));
+        return redirect()->route('admin.users.edit', array_merge($request->query(), ['user' => $user->id]))->with('success', __('messages.user.create_success'));
     }
 
     /**
      * Remove the specified user from storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User\User $user
+     * @param  \App\Models\User $user
      * @return Response
      */
     public function destroy(Request $request, User $user)
     {
         if (!auth()->user()->canDelete($user)) {
-            return redirect()->route('admin.user.users.edit', array_merge($request->query(), ['user' => $user->id]))->with('error', __('messages.user.delete_user_not_auth'));
+            return redirect()->route('admin.users.edit', array_merge($request->query(), ['user' => $user->id]))->with('error', __('messages.user.delete_user_not_auth'));
         }
 
         if ($dependencies = $user->hasDependencies()) {
-            return redirect()->route('admin.user.users.edit', array_merge($request->query(), ['user' => $user->id]))
+            return redirect()->route('admin.users.edit', array_merge($request->query(), ['user' => $user->id]))
                              ->with('error', __('messages.user.alert_user_dependencies', ['name' => $user->name, 'number' => $dependencies['nbItems'],
                                     'dependencies' => __('labels.title.'.$dependencies['name'])]));
         }
@@ -243,7 +243,7 @@ class UserController extends Controller
 
         $user->delete();
 
-        return redirect()->route('admin.user.users.index', $request->query())->with('success', __('messages.user.delete_success', ['name' => $name]));
+        return redirect()->route('admin.users.index', $request->query())->with('success', __('messages.user.delete_success', ['name' => $name]));
     }
 
     /**
@@ -267,14 +267,14 @@ class UserController extends Controller
                 if (!auth()->user()->canDelete($user)) {
                     $messages['error'] = __('messages.user.delete_list_not_auth', ['name' => $user->name]);
 
-                    return redirect()->route('admin.user.users.index', $request->query())->with($messages);
+                    return redirect()->route('admin.users.index', $request->query())->with($messages);
                 }
 
                 if ($dependencies = $user->hasDependencies()) {
                     $messages['error'] = __('messages.user.alert_user_dependencies', ['name' => $user->name, 'number' => $dependencies['nbItems'],
                                                                                        'dependencies' => __('labels.title.'.$dependencies['name'])]);
 
-                    return redirect()->route('admin.user.users.index', $request->query())->with($messages);
+                    return redirect()->route('admin.users.index', $request->query())->with($messages);
                 }
 
                 $user->delete();
@@ -282,10 +282,10 @@ class UserController extends Controller
                 $deleted++;
             }
 
-            return redirect()->route('admin.user.users.index', $request->query())->with('success', __('messages.user.delete_list_success', ['number' => count($request->input('ids'))]));
+            return redirect()->route('admin.users.index', $request->query())->with('success', __('messages.user.delete_list_success', ['number' => count($request->input('ids'))]));
         }
 
-        return redirect()->route('admin.user.users.index', $request->query())->with('error', __('messages.generic.no_item_selected'));
+        return redirect()->route('admin.users.index', $request->query())->with('error', __('messages.generic.no_item_selected'));
     }
 
     /**
@@ -298,7 +298,7 @@ class UserController extends Controller
     {
         $messages = CheckInCheckOut::checkInMultiple($request->input('ids'), '\\App\\Models\\User\\User');
 
-        return redirect()->route('admin.user.users.index', $request->query())->with($messages);
+        return redirect()->route('admin.users.index', $request->query())->with($messages);
     }
 
     /**
@@ -312,7 +312,7 @@ class UserController extends Controller
         $fields = $this->getSpecificFields(['role', 'groups']);
         $actions = $this->getActions('batch');
         $query = $request->query();
-        $route = 'admin.user.users';
+        $route = 'admin.users';
 
         return view('admin.share.batch', compact('fields', 'actions', 'query', 'route'));
     }
@@ -367,7 +367,7 @@ class UserController extends Controller
             $messages['success'] = __('messages.generic.mass_update_success', ['number' => $updates]);
         }
 
-        return redirect()->route('admin.user.users.index')->with($messages);
+        return redirect()->route('admin.users.index')->with($messages);
     }
 
     /*
@@ -432,7 +432,7 @@ class UserController extends Controller
      * Sets field values specific to the User model.
      *
      * @param  Array of stdClass Objects  $fields
-     * @param  \App\Models\User\User  $user
+     * @param  \App\Models\User  $user
      * @return void
      */
     private function setFieldValues(&$fields, $user)

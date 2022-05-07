@@ -2,7 +2,7 @@
 
 namespace App\Traits\Admin;
 
-use App\Models\User\User;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 

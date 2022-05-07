@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\User;
+namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -162,7 +162,7 @@ class User extends Authenticatable
     /*
      * Builds the options for the 'role' select field.
      *
-     * @param  \App\Models\User\User $request (optional)
+     * @param  \App\Models\User $request (optional)
      * @return Array
      */
     public function getRoleOptions($user = null)
@@ -258,7 +258,7 @@ class User extends Authenticatable
     /*
      * Checks whether the current user is allowed to update a given user according to their role type.
      *
-     * @param  \App\Models\User\User $user
+     * @param  \App\Models\User $user
      * @return boolean
      */
     public function canUpdate($user)
@@ -280,7 +280,7 @@ class User extends Authenticatable
     /*
      * Checks whether the current user is allowed to delete a given user according to their role type.
      *
-     * @param  \App\Models\User\User $user
+     * @param  \App\Models\User $user
      * @return boolean
      */
     public function canDelete($user)

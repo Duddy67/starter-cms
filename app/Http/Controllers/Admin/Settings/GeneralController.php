@@ -103,7 +103,7 @@ class GeneralController extends Controller
      * Sets field values specific to the General model.
      *
      * @param  Array of stdClass Objects  $fields
-     * @param  \App\Models\User\User  $user
+     * @param  \App\Models\User  $user
      * @return void
      */
     private function setFieldValues(&$fields)

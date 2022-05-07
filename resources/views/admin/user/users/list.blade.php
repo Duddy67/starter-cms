@@ -27,18 +27,18 @@
 
     <x-pagination :items="$items" />
 
-    <input type="hidden" id="createItem" value="{{ route('admin.user.users.create', $query) }}">
-    <input type="hidden" id="destroyItems" value="{{ route('admin.user.users.index', $query) }}">
-    <input type="hidden" id="checkinItems" value="{{ route('admin.user.users.massCheckIn', $query) }}">
+    <input type="hidden" id="createItem" value="{{ route('admin.users.create', $query) }}">
+    <input type="hidden" id="destroyItems" value="{{ route('admin.users.index', $query) }}">
+    <input type="hidden" id="checkinItems" value="{{ route('admin.users.massCheckIn', $query) }}">
 
-    <form id="selectedItems" action="{{ route('admin.user.users.index', $query) }}" method="post">
+    <form id="selectedItems" action="{{ route('admin.users.index', $query) }}" method="post">
         @method('delete')
         @csrf
     </form>
 
     <div id="batch-window" class="modal">
         <div class="modal-content">
-            <iframe src="{{ route('admin.user.users.batch', $query) }}" id="batchIframe" name="batch"></iframe>
+            <iframe src="{{ route('admin.users.batch', $query) }}" id="batchIframe" name="batch"></iframe>
         </div>
     </div>
 @endsection

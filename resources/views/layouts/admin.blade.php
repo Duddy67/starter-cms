@@ -110,8 +110,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <p>@lang ('labels.title.user_management')<i class="right fas fa-angle-left"></i></p>
                   </a>
                   <ul class="nav nav-treeview">
-                        @php $active = (request()->is('admin/user/users*')) ? true : false @endphp
-                        <x-menu-item href="{{ route('admin.user.users.index') }}" :sub=true :active="$active">
+                        @php $active = (request()->is('admin/users*')) ? true : false @endphp
+                        <x-menu-item href="{{ route('admin.users.index') }}" :sub=true :active="$active">
                           @lang ('labels.title.users')
                         </x-menu-item>
                     @allowto('create-group')

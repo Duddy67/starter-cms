@@ -9,7 +9,7 @@ use App\Traits\Admin\ItemConfig;
 use App\Traits\Admin\CheckInCheckOut;
 use App\Models\User\Role;
 use App\Models\User\Permission;
-use App\Models\User\User;
+use App\Models\User;
 use App\Http\Requests\User\Role\StoreRequest;
 use App\Http\Requests\User\Role\UpdateRequest;
 
