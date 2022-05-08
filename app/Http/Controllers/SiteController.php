@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Blog\Category;
-use App\Models\Blog\Setting;
+use App\Models\Post\Category;
+use App\Models\Post\Setting;
 
 
 class SiteController extends Controller

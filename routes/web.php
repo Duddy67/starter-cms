@@ -9,8 +9,8 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Cms\FileManagerController;
 use App\Http\Controllers\Cms\FileController;
-use App\Http\Controllers\Blog\PostController;
-use App\Http\Controllers\Blog\CategoryController as BlogCategoryController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\Post\CategoryController as PostCategoryController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\TokenController;
 
@@ -27,8 +27,8 @@ use App\Http\Controllers\TokenController;
 
 Route::get('/', [SiteController::class, 'index'])->name('site.index');
 
-Route::get('/post/{id}/{slug}', [PostController::class, 'show'])->name('blog.post');
-Route::get('/category/{id}/{slug}', [BlogCategoryController::class, 'index'])->name('blog.category');
+Route::get('/post/{id}/{slug}', [PostController::class, 'show'])->name('post');
+Route::get('/post/category/{id}/{slug}', [PostCategoryController::class, 'index'])->name('post.category');
 
 Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -66,7 +66,7 @@ Route::prefix('admin')->group(function () {
         Route::put('/files/batch', [FileController::class, 'massUpdate'])->name('admin.files.massUpdate');
 
         Route::group([], __DIR__.'/admin/user.php');
-        Route::prefix('blog')->group(__DIR__.'/admin/blog.php');
+        Route::group([], __DIR__.'/admin/post.php');
         Route::prefix('menu')->group(__DIR__.'/admin/menu.php');
         Route::prefix('settings')->group(__DIR__.'/admin/settings.php');
     });

@@ -31,5 +31,5 @@
 @endif
 
 @push ('scripts')
-    <script type="text/javascript" src="{{ $public }}/js/blog/category.js"></script>
+    <script type="text/javascript" src="{{ $public }}/js/post/category.js"></script>
 @endpush

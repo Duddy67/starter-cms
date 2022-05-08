@@ -66,7 +66,7 @@ class UserController extends Controller
         $query = $request->query();
         $url = ['route' => 'admin.users', 'item_name' => 'user', 'query' => $query];
 
-        return view('admin.user.users.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
+        return view('admin.user.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
     }
 
     /**
@@ -82,7 +82,7 @@ class UserController extends Controller
         $actions = $this->getActions('form', ['destroy']);
         $query = $request->query();
 
-        return view('admin.user.users.form', compact('fields', 'actions', 'query'));
+        return view('admin.user.form', compact('fields', 'actions', 'query'));
     }
 
     /**
@@ -118,7 +118,7 @@ class UserController extends Controller
         $query = array_merge($request->query(), ['user' => $id]);
         $photo = $user->documents()->where('field', 'photo')->latest('created_at')->first();
 
-        return view('admin.user.users.form', compact('user', 'fields', 'actions', 'query', 'photo'));
+        return view('admin.user.form', compact('user', 'fields', 'actions', 'query', 'photo'));
     }
 
     /**

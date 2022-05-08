@@ -407,8 +407,8 @@ class User extends Authenticatable
     public function hasDependencies()
     {
         $dependencies = [
-            'posts' => '\\App\\Models\\Blog\\Post',
-            'categories' => '\\App\\Models\\Blog\\Category',
+            'posts' => '\\App\\Models\\Post',
+            'categories' => '\\App\\Models\\Post\\Category',
             'roles' => '\\App\\Models\\User\\Role',
             'groups' => '\\App\\Models\\User\\Group',
             'menus' => '\\App\\Models\\Menu\\Menu',

@@ -5,8 +5,8 @@ namespace App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
-use App\Models\Blog\Post;
-use App\Models\Blog\Category;
+use App\Models\Post;
+use App\Models\Post\Category;
 use App\Models\Menu\Menu;
 use App\Models\Settings\General;
 use App\Traits\Admin\AccessLevel;
@@ -61,7 +61,7 @@ class Group extends Model
      */
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'blog_category_group');
+        return $this->belongsToMany(Category::class, 'post_category_group');
     }
 
     /**

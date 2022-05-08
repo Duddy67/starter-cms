@@ -84,19 +84,19 @@
 	"optional": "assistant|registered"
       },
       {
-	"name": "create-blog-category",
+	"name": "create-post-category",
 	"type": "level2",
 	"roles": "admin",
 	"optional": "manager"
       },
       {
-	"name": "update-blog-category",
+	"name": "update-post-category",
 	"type": "level2",
 	"roles": "admin",
 	"optional": "manager"
       },
       {
-	"name": "delete-blog-category",
+	"name": "delete-post-category",
 	"type": "level2",
 	"roles": "admin",
 	"optional": "manager"
@@ -110,7 +110,7 @@
 	"optional": "admin"
       },
       {
-	"name": "blog-settings",
+	"name": "post-settings",
 	"type": "level1",
 	"roles": "",
 	"optional": "admin"
