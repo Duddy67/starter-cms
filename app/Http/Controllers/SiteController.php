@@ -11,7 +11,7 @@ class SiteController extends Controller
 {
     public function index(Request $request)
     {
-        $page = 'site.home';
+        $page = 'home';
 	$posts = null;
 	$settings = [];
 

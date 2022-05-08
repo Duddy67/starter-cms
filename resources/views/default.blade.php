@@ -20,7 +20,7 @@
 	<div class="container">
 	    <!-- Header -->
 	    <header id="layout-header">
-                @include('pages.site.header')
+                @include('partials.site.header')
 	    </header>
 
 	    <!-- Content -->
@@ -30,7 +30,7 @@
 
 	    <!-- Footer -->
 	    <footer id="layout-footer" class="page-footer pt-4">
-                @include('pages.site.footer')
+                @include('partials.site.footer')
 	    </footer>
 	</div>
 

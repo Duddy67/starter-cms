@@ -53,8 +53,6 @@ return [
 	'content' => 'Content',
 	'excerpt' => 'Excerpt',
 	'show_excerpt' => 'Show excerpt',
-    ],
-    'blog' => [
 	'blog_global_settings' => 'Blog global settings',
 	'post_ordering' => 'Post ordering',
 	'show_post_excerpt' => 'Show post excerpt',

@@ -83,7 +83,7 @@
     "options": [] 
   },
   {
-    "label": "labels.blog.show_post_excerpt",
+    "label": "labels.post.show_post_excerpt",
     "type": "select",
     "name": "show_post_excerpt",
     "id": "show_post_excerpt",
@@ -92,7 +92,7 @@
     "options": [] 
   },
   {
-    "label": "labels.blog.show_post_image",
+    "label": "labels.post.show_post_image",
     "type": "select",
     "name": "show_post_image",
     "id": "show_post_image",
@@ -101,7 +101,7 @@
     "options": [] 
   },
   {
-    "label": "labels.blog.show_post_categories",
+    "label": "labels.post.show_post_categories",
     "type": "select",
     "name": "show_post_categories",
     "id": "show_post_categories",
@@ -110,7 +110,7 @@
     "options": [] 
   },
   {
-    "label": "labels.blog.post_ordering",
+    "label": "labels.post.post_ordering",
     "type": "select",
     "name": "post_ordering",
     "id": "post_ordering",

@@ -65,7 +65,7 @@ class RoleController extends Controller
         $url = ['route' => 'admin.user.roles', 'item_name' => 'role', 'query' => $request->query()];
         $query = $request->query();
 
-        return view('admin.user.roles.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
+        return view('admin.user.role.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
     }
 
     /**
@@ -84,7 +84,7 @@ class RoleController extends Controller
         $query = $request->query();
         $permissions = file_get_contents(app_path().'/Models/User/permission/permissions.json', true);
 
-        return view('admin.user.roles.form', compact('fields', 'actions', 'board', 'query', 'permissions'));
+        return view('admin.user.role.form', compact('fields', 'actions', 'board', 'query', 'permissions'));
     }
 
     /**
@@ -136,7 +136,7 @@ class RoleController extends Controller
         // Add the id parameter to the query.
         $query = array_merge($request->query(), ['role' => $id]);
 
-        return view('admin.user.roles.form', compact('role', 'fields', 'actions', 'board', 'query'));
+        return view('admin.user.role.form', compact('role', 'fields', 'actions', 'board', 'query'));
     }
 
     /**

@@ -62,7 +62,7 @@ class GroupController extends Controller
         $query = $request->query();
         $url = ['route' => 'admin.user.groups', 'item_name' => 'group', 'query' => $query];
 
-        return view('admin.user.groups.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
+        return view('admin.user.group.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
     }
 
     /**
@@ -79,7 +79,7 @@ class GroupController extends Controller
         $actions = $this->getActions('form', ['destroy']);
         $query = $request->query();
 
-        return view('admin.user.groups.form', compact('fields', 'actions', 'query'));
+        return view('admin.user.group.form', compact('fields', 'actions', 'query'));
     }
 
     /**
@@ -121,7 +121,7 @@ class GroupController extends Controller
         // Add the id parameter to the query.
         $query = array_merge($request->query(), ['group' => $id]);
 
-        return view('admin.user.groups.form', compact('group', 'fields', 'actions', 'query'));
+        return view('admin.user.group.form', compact('group', 'fields', 'actions', 'query'));
     }
 
     /**

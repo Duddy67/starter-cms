@@ -1,7 +1,7 @@
 @extends ('layouts.admin')
 
 @section ('main')
-    <h3>@php echo __('labels.blog.blog_global_settings'); @endphp</h3>
+    <h3>@php echo __('labels.post.blog_global_settings'); @endphp</h3>
 
     <form method="post" action="{{ route('admin.post.settings.update', $query ) }}" id="itemForm">
         @csrf

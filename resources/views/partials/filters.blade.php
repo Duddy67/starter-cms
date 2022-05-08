@@ -1,4 +1,4 @@
-<form id="item-filters" action="{{ route('blog.category', $query) }}" method="get">
+<form id="item-filters" action="{{ route('post.category', $query) }}" method="get">
     <div class="row">
 	<div class="col-sm mr-4">
 	    <label for="search">@lang ('labels.button.search')</label>

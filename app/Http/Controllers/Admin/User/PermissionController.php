@@ -46,7 +46,7 @@ class PermissionController extends Controller
         $actions = $this->getActions('list');
         $list = $this->getList();
 
-        return view('admin.user.permissions.list', compact('list', 'actions'));
+        return view('admin.user.permission.list', compact('list', 'actions'));
     }
 
     /*
