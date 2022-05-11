@@ -190,7 +190,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>
           @endallowto
 
-          @allowtoany(['global-settings', 'blog-settings', 'update-email'])
+          @allowtoany(['global-settings', 'post-settings', 'update-email'])
               @php $open = (request()->is('admin/settings*')) ? 'menu-open' : '' @endphp
               <li class="nav-item {{ $open }}">
                   @php $active = (request()->is('admin/settings*')) ? 'active' : '' @endphp

@@ -26,7 +26,7 @@ class PostController extends Controller
 	    return abort('403');
 	}
 
-        $page = 'blog.post';
+        $page = 'post';
 
 	$settings = $post->getSettings();
 	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug]);

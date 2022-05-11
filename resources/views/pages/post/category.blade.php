@@ -17,7 +17,7 @@
 <ul class="post-list pt-4">
     @if (count($posts))
 	@foreach ($posts as $post)
-	    @include ('partials.blog.post')
+	    @include ('partials.post')
 	@endforeach
     @else
 	<div>No post</div>
@@ -27,7 +27,7 @@
 <x-pagination :items=$posts />
 
 @if ($settings['show_subcategories'])
-    @include ('partials.blog.subcategories')
+    @include ('partials.post.subcategories')
 @endif
 
 @push ('scripts')

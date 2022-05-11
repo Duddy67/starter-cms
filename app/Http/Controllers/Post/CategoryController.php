@@ -12,7 +12,7 @@ class CategoryController extends Controller
 {
     public function index(Request $request, $id, $slug)
     {
-        $page = 'blog.category';
+        $page = 'post.category';
 
 	if (!$category = Category::where('id', $id)->first()) {
 	    return abort('404');
