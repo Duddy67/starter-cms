@@ -4,9 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use App\Models\Menu\Menu;
+use App\Models\Menu;
 
-class AdminMenuMenuItems
+class AdminMenuItems
 {
     /**
      * Handle an incoming request.
@@ -29,20 +29,20 @@ class AdminMenuMenuItems
             return redirect()->route('admin')->with('error', __('messages.generic.access_not_auth'));
         }
 
-        $create = ['admin.menu.menuitems.index', 'admin.menu.menuitems.create', 'admin.menu.menuitems.store'];
-        $update = ['admin.menu.menuitems.update', 'admin.menu.menuitems.edit'];
-        $delete = ['admin.menu.menuitems.destroy', 'admin.menu.menuitems.massDestroy'];
+        $create = ['admin.menu.items.index', 'admin.menu.items.create', 'admin.menu.items.store'];
+        $update = ['admin.menu.items.update', 'admin.menu.items.edit'];
+        $delete = ['admin.menu.items.destroy', 'admin.menu.items.massDestroy'];
 
         if (in_array($routeName, $create) && !auth()->user()->isAllowedTo('create-menu')) {
             return redirect()->route('admin')->with('error', __('messages.generic.access_not_auth'));
         }
 
         if (in_array($routeName, $update) && !auth()->user()->isAllowedTo('update-menu')) {
-            return redirect()->route('admin.menu.menuitems.index')->with('error', __('messages.menu.edit_not_auth'));
+            return redirect()->route('admin.menu.items.index')->with('error', __('messages.menu.edit_not_auth'));
         }
 
         if (in_array($routeName, $delete) && !auth()->user()->isAllowedTo('delete-menu')) {
-            return redirect()->route('admin.menu.menuitems.index')->with('error', __('messages.menu.delete_not_auth'));
+            return redirect()->route('admin.menu.items.index')->with('error', __('messages.menu.delete_not_auth'));
         }
 
         return $next($request);

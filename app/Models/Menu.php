@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\Menu;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User\Group;
-use App\Models\Menu\MenuItem;
+use App\Models\Menu\Item;
 use App\Models\Settings\General;
 use App\Traits\Admin\AccessLevel;
 use App\Traits\Admin\CheckInCheckOut;
@@ -60,7 +60,7 @@ class Menu extends Model
         $this->groups()->detach();
 
         // Get the parent menu items linked to this menu.
-        $menuItems = MenuItem::where(['menu_code' => $this->code, 'parent_id' => 1])->get();
+        $menuItems = Item::where(['menu_code' => $this->code, 'parent_id' => 1])->get();
 
         foreach ($menuItems as $menuItem) {
             // Delete the parent menu item as well as its children (if any).
@@ -141,7 +141,7 @@ class Menu extends Model
 
     public function getMenuItems()
     {
-        $nodes = MenuItem::where('menu_code', $this->code)->defaultOrder()->get()->toTree();
+        $nodes = Item::where('menu_code', $this->code)->defaultOrder()->get()->toTree();
         $menuItems = [];
 
         $traverse = function ($nodes, $level = 0) use (&$traverse, &$menuItems) {
@@ -155,7 +155,7 @@ class Menu extends Model
                 $item->parent_id = $node->parent_id;
                 $item->children = [];
 
-                $parent = MenuItem::findOrFail($node->parent_id);
+                $parent = Item::findOrFail($node->parent_id);
 
                 if ($parent->menu_code != 'root') {
                     $menuItems = $this->getMenuItemChildren($menuItems, $item, $node);

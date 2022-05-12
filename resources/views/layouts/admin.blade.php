@@ -166,23 +166,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
           @endallowto
 
           @allowto('create-menu')
-              @php $open = (request()->is('admin/menu*')) ? 'menu-open' : '' @endphp
+              @php $open = (request()->is('admin/menu*') || request()->is('admin/*/menu*')) ? 'menu-open' : '' @endphp
               <li class="nav-item {{ $open }}">
-                  @php $active = (request()->is('admin/menu*')) ? 'active' : '' @endphp
+                  @php $active = (request()->is('admin/menu*') || request()->is('admin/*/menu*')) ? 'active' : '' @endphp
                   <a href="#" class="nav-link {{ $active }}">
                     <i class="nav-icon fas fa-bars"></i>
                     <p>@lang ('labels.title.menus')<i class="right fas fa-angle-left"></i></p>
                   </a>
                   <ul class="nav nav-treeview">
-                          @php $active = (request()->is('admin/menu/menus*')) ? true : false @endphp
-                          <x-menu-item href="{{ route('admin.menu.menus.index') }}" :sub=true :active="$active">
+                          @php $active = (request()->is('admin/menus*')) ? true : false @endphp
+                          <x-menu-item href="{{ route('admin.menus.index') }}" :sub=true :active="$active">
                             @lang ('labels.title.menus')
                           </x-menu-item>
 
-                          @inject ('menu', 'App\Models\Menu\Menu')
+                          @inject ('menu', 'App\Models\Menu')
                           @foreach ($menu::getMenus() as $menu)
-                              @php $active = (request()->is('admin/menu/'.$menu->code.'/menuitems*')) ? true : false @endphp
-                              <x-menu-item href="{{ route('admin.menu.menuitems.index', $menu->code) }}" :sub=true :active="$active">
+                              @php $active = (request()->is('admin/'.$menu->code.'/menu/items*')) ? true : false @endphp
+                              <x-menu-item href="{{ route('admin.menu.items.index', $menu->code) }}" :sub=true :active="$active">
                                  {{ $menu->title }}
                               </x-menu-item>
                           @endforeach

@@ -12,7 +12,7 @@
 
     @if (count($menuItem->children) > 0)
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-	    @foreach ($menuItem->children as $menuItem)
+	    @foreach ($item->children as $menuItem)
 	        <a class="dropdown-item" href="{{ url($menuItem->url) }}">{{ $menuItem->title }}</a>
 	    @endforeach
 	</div>

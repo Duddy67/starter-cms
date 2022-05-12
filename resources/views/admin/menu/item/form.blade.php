@@ -1,28 +1,28 @@
 @extends ('layouts.admin')
 
 @section ('main')
-    <h3>@php echo (isset($menu)) ? __('labels.menu.edit_menu') : __('labels.menu.create_menu'); @endphp</h3>
+    <h3>@php echo (isset($item)) ? __('labels.menuitems.edit_menu_item') : __('labels.menuitems.create_menu_item'); @endphp</h3>
 
-    @php $action = (isset($menu)) ? route('admin.menu.menus.update', $query) : route('admin.menu.menus.store', $query) @endphp
+    @php $action = (isset($item)) ? route('admin.menu.items.update', $query) : route('admin.menu.items.store', $query) @endphp
     <form method="post" action="{{ $action }}" id="itemForm">
         @csrf
 
-        @if (isset($menu))
+        @if (isset($item))
             @method('put')
         @endif
 
         @foreach ($fields as $field)
-            @php $value = (isset($menu)) ? old($field->name, $field->value) : old($field->name); @endphp
+            @php $value = (isset($item)) ? old($field->name, $field->value) : old($field->name); @endphp
             <x-input :field="$field" :value="$value" />
         @endforeach
 
-        <input type="hidden" id="cancelEdit" value="{{ route('admin.menu.menus.cancel', $query) }}">
+        <input type="hidden" id="cancelEdit" value="{{ route('admin.menu.items.cancel', $query) }}">
         <input type="hidden" id="close" name="_close" value="0">
     </form>
     <x-toolbar :items=$actions />
 
-    @if (isset($menu))
-        <form id="deleteItem" action="{{ route('admin.menu.menus.destroy', $query) }}" method="post">
+    @if (isset($item))
+        <form id="deleteItem" action="{{ route('admin.menu.items.destroy', $query) }}" method="post">
             @method('delete')
             @csrf
         </form>
@@ -38,6 +38,5 @@
     <script type="text/javascript" src="{{ asset('/vendor/adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/form.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/js/admin/set.private.groups.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/disable.toolbars.js') }}"></script>
 @endpush

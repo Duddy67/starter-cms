@@ -5,16 +5,23 @@ namespace App\Models\Menu;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Settings\General;
-use App\Models\Menu\Menu;
+use App\Models\Menu;
 use Kalnoy\Nestedset\NodeTrait;
 use App\Models\User\Group;
 use App\Traits\Admin\CheckInCheckOut;
 use Request;
 
 
-class MenuItem extends Model
+class Item extends Model
 {
     use HasFactory, NodeTrait, CheckInCheckOut;
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'menu_items';
 
     /**
      * The attributes that are mass assignable.
@@ -48,10 +55,10 @@ class MenuItem extends Model
         $search = $request->input('search', null);
 
         if ($search !== null) {
-            return MenuItem::where('title', 'like', '%'.$search.'%')->get();
+            return Item::where('title', 'like', '%'.$search.'%')->get();
         }
         else {
-          return MenuItem::where('menu_code', $code)->defaultOrder()->get()->toTree();
+          return Item::where('menu_code', $code)->defaultOrder()->get()->toTree();
         }
     }
 
@@ -60,7 +67,7 @@ class MenuItem extends Model
         // Get the parent menu code.
         $code = Request::route()->parameter('code');
 
-        $nodes = MenuItem::whereIn('menu_code', ['root', $code])->get()->toTree();
+        $nodes = Item::whereIn('menu_code', ['root', $code])->get()->toTree();
         // Defines the state of the current instance.
         $isNew = ($this->id) ? false : true;
         $options = [];
