@@ -4,8 +4,8 @@
   @if ($menu = $menu::getMenu('main-menu'))
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
 	    <ul class="navbar-nav mr-auto">
-		@foreach ($menu->getMenuItems() as $menuItem)
-		    @include ('partials.menuitems')
+		@foreach ($menu->getMenuItems() as $item)
+		    @include ('partials.menu.items')
 		@endforeach
 	    </ul>
       </div>
