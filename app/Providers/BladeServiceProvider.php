@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
-use App\Models\Settings\General;
+use App\Models\Setting;
 
 
 class BladeServiceProvider extends ServiceProvider
@@ -73,7 +73,7 @@ class BladeServiceProvider extends ServiceProvider
 	 */
 	/*Blade::directive('date', function ($expression) {
 	    // Set default format if not present in $expression
-	    $default = "'".General::getValue('app', 'date_format')."'";
+	    $default = "'".Setting::getValue('app', 'date_format')."'";
 
 	    $parts = str_getcsv($expression);
 	    $parts[1] = (isset($parts[1]))?$parts[1]:$default;

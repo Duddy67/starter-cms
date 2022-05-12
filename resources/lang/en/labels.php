@@ -9,7 +9,7 @@ return [
 	'groups' => 'Groups',
 	'roles' => 'Roles',
 	'permissions' => 'Permissions',
-	'general' => 'General',
+	'global' => 'Global',
 	'settings' => 'Settings',
 	'emails' => 'Emails',
 	'blog' => 'Blog',

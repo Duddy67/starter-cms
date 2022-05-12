@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Settings\General;
+use App\Models\Setting;
 use App\Models\Post\Category;
 use App\Models\User\Group;
 use App\Traits\Admin\AccessLevel;
@@ -102,7 +102,7 @@ class Post extends Model
      */
     public function getItems($request)
     {
-        $perPage = $request->input('per_page', General::getValue('pagination', 'per_page'));
+        $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);
         $sortedBy = $request->input('sorted_by', null);
         $ownedBy = $request->input('owned_by', null);

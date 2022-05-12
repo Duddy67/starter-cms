@@ -10,7 +10,7 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Models\User\Role;
 use App\Models\User\Group;
 use App\Models\Cms\Document;
-use App\Models\Settings\General;
+use App\Models\Setting;
 use App\Traits\Admin\CheckInCheckOut;
 use Illuminate\Support\Str;
 
@@ -129,7 +129,7 @@ class User extends Authenticatable
      */
     public function getItems($request)
     {
-        $perPage = $request->input('per_page', General::getValue('pagination', 'per_page'));
+        $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $sortedBy = $request->input('sorted_by', null);
         $roles = $request->input('roles', []);
         $groups = $request->input('groups', []);

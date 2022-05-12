@@ -4,10 +4,10 @@ namespace App\Models\Post;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Settings\General;
+use App\Models\Setting as GlobalSetting;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Post;
-use App\Models\Post\Setting;
+use App\Models\Post\Setting as PostSetting;
 use Kalnoy\Nestedset\NodeTrait;
 use App\Models\User\Group;
 use App\Traits\Admin\TreeAccessLevel;
@@ -99,7 +99,7 @@ class Category extends Model
 
     public function getPosts($request)
     {
-        $perPage = $request->input('per_page', General::getValue('pagination', 'per_page'));
+        $perPage = $request->input('per_page', GlobalSetting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);
         $settings = $this->getSettings();
 
@@ -220,12 +220,12 @@ class Category extends Model
 
     public function getSettings()
     {
-        return Setting::getItemSettings($this, 'category');
+        return PostSetting::getItemSettings($this, 'category');
     }
 
     public function getPostOrderingOptions()
     {
-        return Setting::getPostOrderingOptions();
+        return PostSetting::getPostOrderingOptions();
     }
 
     /*

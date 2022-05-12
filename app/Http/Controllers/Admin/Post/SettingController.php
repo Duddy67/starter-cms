@@ -96,7 +96,7 @@ class SettingController extends Controller
     }
 
     /*
-     * Sets field values specific to the General model.
+     * Sets field values specific to the Setting model.
      *
      * @param  Array of stdClass Objects  $fields
      * @param  \App\Models\User  $user

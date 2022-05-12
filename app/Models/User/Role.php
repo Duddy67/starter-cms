@@ -5,7 +5,7 @@ namespace App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Models\Role as SpatieRole;
-use App\Models\Settings\General;
+use App\Models\Setting;
 use App\Traits\Admin\AccessLevel;
 use App\Traits\Admin\CheckInCheckOut;
 use Carbon\Carbon;
@@ -98,7 +98,7 @@ class Role extends SpatieRole
      */
     public function getItems($request)
     {
-        $perPage = $request->input('per_page', General::getValue('pagination', 'per_page'));
+        $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);
 
         $query = Role::query();

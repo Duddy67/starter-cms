@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\Post;
 use App\Models\Post\Category;
 use App\Models\Menu;
-use App\Models\Settings\General;
+use App\Models\Setting;
 use App\Traits\Admin\AccessLevel;
 use App\Traits\Admin\CheckInCheckOut;
 
@@ -90,7 +90,7 @@ class Group extends Model
      */
     public function getItems($request)
     {
-        $perPage = $request->input('per_page', General::getValue('pagination', 'per_page'));
+        $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);
         $sortedBy = $request->input('sorted_by', null);
         $ownedBy = $request->input('owned_by', null);
