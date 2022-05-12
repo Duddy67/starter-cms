@@ -55,10 +55,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
   </nav>
   <!-- /.navbar -->
 
-  @inject('general', 'App\Models\Settings\General')
+  @inject('setting', 'App\Models\Setting')
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4" id="layout-sidebar">
-    @php $appName = ($general::getValue('app', 'name')) ? $general::getValue('app', 'name') : config('app.name', 'Starter CMS'); @endphp
+    @php $appName = ($setting::getValue('app', 'name')) ? $setting::getValue('app', 'name') : config('app.name', 'Starter CMS'); @endphp
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
       <img src="{{ asset('/images/starter-cms-logo.png') }}" alt="StarterCMS Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
@@ -201,13 +201,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <ul class="nav nav-treeview">
                         @allowto('global-settings')
                             @php $active = (request()->is('admin/settings/general*')) ? true : false @endphp
-                            <x-menu-item href="{{ route('admin.settings.general.index') }}" :sub=true :active="$active">
+                            <x-menu-item href="{{ route('admin.settings.index') }}" :sub=true :active="$active">
                               @lang ('labels.title.general')
                             </x-menu-item>
                         @endallowto
                         @allowto('update-email')
                             @php $active = (request()->is('admin/settings/emails*')) ? true : false @endphp
-                            <x-menu-item href="{{ route('admin.settings.emails.index') }}" :sub=true :active="$active">
+                            <x-menu-item href="{{ route('admin.emails.index') }}" :sub=true :active="$active">
                               @lang ('labels.title.emails')
                             </x-menu-item>
                         @endallowto

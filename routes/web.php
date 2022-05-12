@@ -68,6 +68,6 @@ Route::prefix('admin')->group(function () {
         Route::group([], __DIR__.'/admin/user.php');
         Route::group([], __DIR__.'/admin/post.php');
         Route::group([], __DIR__.'/admin/menu.php');
-        Route::prefix('settings')->group(__DIR__.'/admin/settings.php');
+        Route::group([], __DIR__.'/admin/settings.php');
     });
 });

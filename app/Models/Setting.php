@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Settings;
+namespace App\Models;
 use Request;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,16 +10,9 @@ use App\Models\User\Group;
 use App\Models\User;
 
 
-class General extends Model
+class Setting extends Model
 {
     use HasFactory;
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'settings_general';
 
     /**
      * The attributes that are mass assignable.
@@ -42,7 +35,7 @@ class General extends Model
 
     public static function getData()
     {
-        $results = General::all()->toArray();
+        $results = Setting::all()->toArray();
         $data = [];
 
         foreach ($results as $param) {
@@ -64,7 +57,7 @@ class General extends Model
      */
     public static function getValue($group, $key)
     {
-        return General::where(['group' => $group, 'key' => $key])->pluck('value')->first();
+        return Setting::where(['group' => $group, 'key' => $key])->pluck('value')->first();
     }
 
     public static function getPerPageOptions()
@@ -262,7 +255,7 @@ class General extends Model
 
     public static function getAppSettings()
     {
-        $data = DB::table('settings_general')->where('group', 'app')->get();
+        $data = DB::table('settings')->where('group', 'app')->get();
         $settings = [];
 
         foreach ($data as $row) {

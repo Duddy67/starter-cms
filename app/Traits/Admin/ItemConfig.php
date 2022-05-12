@@ -2,7 +2,7 @@
 
 namespace App\Traits\Admin;
 
-use App\Models\Settings\General;
+use App\Models\Setting;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -111,7 +111,7 @@ trait ItemConfig
             if (!in_array($column->name, $except)) {
 
                 if ($column->type == 'date') {
-                    $row->{$column->name} = General::getFormattedDate($item->{$column->name});  
+                    $row->{$column->name} = Setting::getFormattedDate($item->{$column->name});  
                 }
                 elseif ($column->name == 'owned_by') {
                     $row->owned_by = $item->owner_name;
@@ -183,7 +183,7 @@ trait ItemConfig
                     $fields[$key]->value = $item->getSelectedValue($field->name);
                 }
                 elseif ($field->type == 'date') {
-                    $datetime = $item->{$field->name}->tz(General::getValue('app', 'timezone'))->toDateTimeString();
+                    $datetime = $item->{$field->name}->tz(Setting::getValue('app', 'timezone'))->toDateTimeString();
 		    // For whatever reason Daterangepicker prevent the field value to be
 		    // set. So do not use it !
                     $fields[$key]->value = null;
@@ -276,20 +276,20 @@ trait ItemConfig
                 // Build the function name.
                 $function = 'get'.str_replace('_', '', ucwords($filter->name, '_')).'Options';
 
-                // General filters.
+                // Common filters.
 
                 if ($filter->name == 'per_page') {
-                    $options = General::$function();
-                    $default = General::getValue('pagination', 'per_page');
+                    $options = Setting::$function();
+                    $default = Setting::getValue('pagination', 'per_page');
                 }
                 elseif ($filter->name == 'sorted_by') {
-                    $options = General::$function($this->pluginName, $this->modelName);
+                    $options = Setting::$function($this->pluginName, $this->modelName);
                 }
                 elseif ($filter->name == 'owned_by' && $this->modelName != 'document') {
-                    $options = General::getOwnedByFilterOptions($this->model);
+                    $options = Setting::getOwnedByFilterOptions($this->model);
                 }
                 elseif ($filter->name == 'groups') {
-                    $options = General::getGroupsFilterOptions();
+                    $options = Setting::getGroupsFilterOptions();
                 }
                 // Specific to the model.
                 else {
@@ -373,15 +373,15 @@ trait ItemConfig
 
         if ($field->name == 'groups') {
             // Pass the current item object if available.
-            $options = General::$function($item);
+            $options = Setting::$function($item);
         }
         elseif (in_array($field->name, ['status', 'owned_by', 'access_level']) && !method_exists($this->model, $function)) {
-            // Call the General method when not availabe in the model.
-            $options = General::$function();
+            // Call the Setting method when not availabe in the model.
+            $options = Setting::$function();
         }
         // Sets the yes/no select lists.
         elseif (isset($field->extra) && in_array('yes_no', $field->extra)) {
-            $options = General::getYesNoOptions();
+            $options = Setting::getYesNoOptions();
         }
         else {
             // Call the model method.

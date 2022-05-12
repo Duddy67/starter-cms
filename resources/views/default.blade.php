@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    @inject ('general', 'App\Models\Settings\General')
+    @inject ('setting', 'App\Models\Setting')
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>{{ $general::getValue('app', 'name') }}</title>
+        <title>{{ $setting::getValue('app', 'name') }}</title>
 
         @php $public = url('/'); @endphp
 

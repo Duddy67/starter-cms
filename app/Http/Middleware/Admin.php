@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use App\Models\User\Role;
-use App\Models\Settings\General;
+use App\Models\Setting;
 use Cache;
 
 
@@ -24,7 +24,7 @@ class Admin
 
             $settings = Cache::rememberForever('settings', function () {
                 // Updates the config app parameters.
-                return  General::getAppSettings();
+                return  Setting::getAppSettings();
             });
 
             config($settings); // Any DB settings will overwrite app config

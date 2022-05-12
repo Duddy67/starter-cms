@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class AdminSettingsEmails
+class AdminEmails
 {
     /**
      * Handle an incoming request.
@@ -18,10 +18,10 @@ class AdminSettingsEmails
     {
 	$routeName = $request->route()->getName();
 
-        $access = ['admin.settings.emails.index'];
-        $create = ['admin.settings.emails.create', 'admin.settings.emails.store'];
-        $update = ['admin.settings.emails.update', 'admin.settings.emails.edit'];
-        $delete = ['admin.settings.emails.destroy', 'admin.settings.emails.massDestroy'];
+        $access = ['admin.emails.index'];
+        $create = ['admin.emails.create', 'admin.emails.store'];
+        $update = ['admin.emails.update', 'admin.emails.edit'];
+        $delete = ['admin.emails.destroy', 'admin.emails.massDestroy'];
 
 	// N.B: Some admin type users might be allowed to only update email subjects and bodies. 
 	//      To allow them to access the email list the update-email permission is used  
@@ -35,11 +35,11 @@ class AdminSettingsEmails
 	}
 
 	if (in_array($routeName, $update) && !auth()->user()->isAllowedTo('update-email')) {
-	    return redirect()->route('admin.settings.emails.index')->with('error', __('messages.email.edit_not_auth'));
+	    return redirect()->route('admin.emails.index')->with('error', __('messages.email.edit_not_auth'));
 	}
 
 	if (in_array($routeName, $delete) &&  !auth()->user()->isSuperAdmin()) {
-	    return redirect()->route('admin.settings.emails.index')->with('error', __('messages.email.delete_not_auth'));
+	    return redirect()->route('admin.emails.index')->with('error', __('messages.email.delete_not_auth'));
 	}
 
         return $next($request);

@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Settings;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use App\Models\Settings\Email;
+use App\Models\Email;
 use App\Models\User;
 use App\Traits\Admin\ItemConfig;
 use App\Traits\Admin\CheckInCheckOut;
-use App\Http\Requests\Settings\Email\StoreRequest;
-use App\Http\Requests\Settings\Email\UpdateRequest;
+use App\Http\Requests\Email\StoreRequest;
+use App\Http\Requests\Email\UpdateRequest;
 
 
 class EmailController extends Controller
@@ -41,7 +41,7 @@ class EmailController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin.settings.emails');
+        $this->middleware('admin.emails');
 	$this->model = new Email;
     }
 
@@ -60,9 +60,9 @@ class EmailController extends Controller
 	$items = $this->model->getItems($request);
 	$rows = $this->getRows($columns, $items);
 	$query = $request->query();
-	$url = ['route' => 'admin.settings.emails', 'item_name' => 'email', 'query' => $query];
+	$url = ['route' => 'admin.emails', 'item_name' => 'email', 'query' => $query];
 
-        return view('admin.settings.emails.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
+        return view('admin.email.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
     }
 
     /**
@@ -78,7 +78,7 @@ class EmailController extends Controller
         $actions = $this->getActions('form', ['destroy']);
 	$query = $request->query();
 
-        return view('admin.settings.emails.form', compact('fields', 'actions', 'query'));
+        return view('admin.email.form', compact('fields', 'actions', 'query'));
     }
 
     /**
@@ -96,7 +96,7 @@ class EmailController extends Controller
 			->findOrFail($id);
 
 	if ($email->checked_out && $email->checked_out != auth()->user()->id) {
-	    return redirect()->route('admin.settings.emails.index')->with('error',  __('messages.generic.checked_out'));
+	    return redirect()->route('admin.emails.index')->with('error',  __('messages.generic.checked_out'));
 	}
 
 	$email->checkOut();
@@ -112,7 +112,7 @@ class EmailController extends Controller
 	// Add the id parameter to the query.
 	$query = array_merge($request->query(), ['email' => $id]);
 
-        return view('admin.settings.emails.form', compact('email', 'fields', 'actions', 'query'));
+        return view('admin.email.form', compact('email', 'fields', 'actions', 'query'));
     }
 
     /**
@@ -128,7 +128,7 @@ class EmailController extends Controller
 	    $email->checkIn();
 	}
 
-	return redirect()->route('admin.settings.emails.index', $request->query());
+	return redirect()->route('admin.emails.index', $request->query());
     }
 
     /**
@@ -139,9 +139,9 @@ class EmailController extends Controller
      */
     public function massCheckIn(Request $request)
     {
-        $messages = CheckInCheckOut::checkInMultiple($request->input('ids'), '\\App\\Models\\Settings\\Email');
+        $messages = CheckInCheckOut::checkInMultiple($request->input('ids'), '\\App\\Models\\Email');
 
-	return redirect()->route('admin.settings.emails.index', $request->query())->with($messages);
+	return redirect()->route('admin.emails.index', $request->query())->with($messages);
     }
 
     /**
@@ -167,10 +167,10 @@ class EmailController extends Controller
 
         if ($request->input('_close', null)) {
 	    $email->checkIn();
-	    return redirect()->route('admin.settings.emails.index', $request->query())->with('success', __('messages.email.update_success'));
+	    return redirect()->route('admin.emails.index', $request->query())->with('success', __('messages.email.update_success'));
 	}
 
-	return redirect()->route('admin.settings.emails.edit', array_merge($request->query(), ['email' => $email->id]))->with('success', __('messages.email.update_success'));
+	return redirect()->route('admin.emails.edit', array_merge($request->query(), ['email' => $email->id]))->with('success', __('messages.email.update_success'));
     }
 
     /**
@@ -191,10 +191,10 @@ class EmailController extends Controller
 	]);
 
         if ($request->input('_close', null)) {
-	    return redirect()->route('admin.settings.emails.index', $request->query())->with('success', __('messages.email.create_success'));
+	    return redirect()->route('admin.emails.index', $request->query())->with('success', __('messages.email.create_success'));
 	}
 
-	return redirect()->route('admin.settings.emails.edit', array_merge($request->query(), ['email' => $email->id]))->with('success', __('messages.email.create_success'));
+	return redirect()->route('admin.emails.edit', array_merge($request->query(), ['email' => $email->id]))->with('success', __('messages.email.create_success'));
     }
 
     /**
@@ -209,7 +209,7 @@ class EmailController extends Controller
 	$code = $email->code;
 	$email->delete();
 
-	return redirect()->route('admin.settings.emails.index', $request->query())->with('success', __('messages.email.delete_success', ['name' => $code]));
+	return redirect()->route('admin.emails.index', $request->query())->with('success', __('messages.email.delete_success', ['name' => $code]));
     }
 
     /**
@@ -233,7 +233,7 @@ class EmailController extends Controller
 	    $messages['success'] = __('messages.generic.mass_delete_success', ['number' => $deleted]);
 	}
 
-	return redirect()->route('admin.settings.emails.index', $request->query())->with($messages);
+	return redirect()->route('admin.emails.index', $request->query())->with($messages);
     }
 
     /*

@@ -1,7 +1,7 @@
 @extends ('layouts.admin')
 
 @section ('main')
-    <form method="post" action="{{ route('admin.settings.general.update', $query ) }}" id="itemForm">
+    <form method="post" action="{{ route('admin.settings.update', $query ) }}" id="itemForm">
         @csrf
 	@method('patch')
 

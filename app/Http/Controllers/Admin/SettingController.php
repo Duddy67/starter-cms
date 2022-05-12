@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Settings;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Settings\General;
+use App\Models\Setting;
 use App\Traits\Admin\ItemConfig;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Artisan;
 use Cache;
 
-class GeneralController extends Controller
+class SettingController extends Controller
 {
     use ItemConfig;
 
@@ -23,12 +23,12 @@ class GeneralController extends Controller
     /*
      * Name of the model.
      */
-    protected $modelName = 'general';
+    protected $modelName = 'setting';
 
     /*
      * Name of the plugin.
      */
-    protected $pluginName = 'Settings';
+    protected $pluginName = 'settings';
 
     protected $app = ['name', 'timezone', 'env', 'debug', 'local', 'fallback_locale'];
 
@@ -40,8 +40,8 @@ class GeneralController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin.settings.general');
-        $this->model = new General;
+        $this->middleware('admin.settings');
+        $this->model = new Setting;
     }
 
     /**
@@ -57,7 +57,7 @@ class GeneralController extends Controller
         $query = $request->query();
         $data = $this->model->getData();
 
-        return view('admin.settings.general.form', compact('fields', 'actions', 'data', 'query'));
+        return view('admin.setting.form', compact('fields', 'actions', 'data', 'query'));
     }
 
     /**
@@ -73,7 +73,7 @@ class GeneralController extends Controller
 
         foreach ($post as $group => $params) {
           foreach ($params as $key => $value) {
-              General::create(['group' => $group, 'key' => $key, 'value' => $value]);
+              Setting::create(['group' => $group, 'key' => $key, 'value' => $value]);
           }
         }
 
@@ -82,7 +82,7 @@ class GeneralController extends Controller
             Cache::forget('settings');
         }
 
-        return redirect()->route('admin.settings.general.index', $request->query())->with('success', __('messages.general.update_success'));
+        return redirect()->route('admin.settings.index', $request->query())->with('success', __('messages.general.update_success'));
     }
 
     /**
@@ -93,14 +93,14 @@ class GeneralController extends Controller
     private function truncateSettings()
     {
         Schema::disableForeignKeyConstraints();
-        DB::table('settings_general')->truncate();
+        DB::table('settings')->truncate();
         Schema::enableForeignKeyConstraints();
 
         Artisan::call('cache:clear');
     }
 
     /*
-     * Sets field values specific to the General model.
+     * Sets field values specific to the Setting model.
      *
      * @param  Array of stdClass Objects  $fields
      * @param  \App\Models\User  $user

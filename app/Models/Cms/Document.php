@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
-use App\Models\Settings\General;
+use App\Models\Setting;
 
 
 class Document extends Model
@@ -62,7 +62,7 @@ class Document extends Model
      */
     public function getFileManagerItems($request)
     {
-        $perPage = $request->input('per_page', General::getValue('pagination', 'per_page'));
+        $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);
         $sortedBy = $request->input('sorted_by', null);
         $types = $request->input('types', []);
@@ -105,7 +105,7 @@ class Document extends Model
      */
     public function getAllFileManagerItems($request)
     {
-        $perPage = $request->input('per_page', General::getValue('pagination', 'per_page'));
+        $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);
         $sortedBy = $request->input('sorted_by', null);
         $types = $request->input('types', []);
