@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\User\Group;
-use App\Traits\Admin\ItemConfig;
+use App\Traits\Admin\Form;
 use App\Traits\Admin\CheckInCheckOut;
 use App\Http\Requests\User\Group\StoreRequest;
 use App\Http\Requests\User\Group\UpdateRequest;
@@ -14,22 +14,12 @@ use App\Http\Requests\User\Group\UpdateRequest;
 
 class GroupController extends Controller
 {
-    use ItemConfig;
+    use Form;
 
     /*
      * Instance of the model.
      */
     protected $model;
-
-    /*
-     * Name of the model.
-     */
-    protected $modelName = 'group';
-
-    /*
-     * Name of the plugin.
-     */
-    protected $pluginName = 'user';
 
 
     /**

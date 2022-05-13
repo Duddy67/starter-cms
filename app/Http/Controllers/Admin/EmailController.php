@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\Email;
 use App\Models\User;
-use App\Traits\Admin\ItemConfig;
+use App\Traits\Admin\Form;
 use App\Traits\Admin\CheckInCheckOut;
 use App\Http\Requests\Email\StoreRequest;
 use App\Http\Requests\Email\UpdateRequest;
@@ -15,22 +15,12 @@ use App\Http\Requests\Email\UpdateRequest;
 
 class EmailController extends Controller
 {
-    use ItemConfig;
+    use Form;
 
     /*
      * Instance of the model.
      */
     protected $model;
-
-    /*
-     * Name of the model.
-     */
-    protected $modelName = 'email';
-
-    /*
-     * Name of the plugin.
-     */
-    protected $pluginName = 'settings';
 
 
     /**

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\Post;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post\Setting;
-use App\Traits\Admin\ItemConfig;
+use App\Traits\Admin\Form;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Artisan;
@@ -14,22 +14,12 @@ use Cache;
 
 class SettingController extends Controller
 {
-    use ItemConfig;
+    use Form;
 
     /*
      * Instance of the model.
      */
     protected $model;
-
-    /*
-     * Name of the model.
-     */
-    protected $modelName = 'setting';
-
-    /*
-     * Name of the plugin.
-     */
-    protected $pluginName = 'Post';
 
     /**
      * Create a new controller instance.

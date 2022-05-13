@@ -41,7 +41,7 @@ class Permission extends SpatiePermission
      */
     public static function getPermissionList($except = [])
     {
-        $json = file_get_contents(app_path().'/Models/User/permission/permissions.json', true);
+        $json = file_get_contents(app_path().'/Forms/User/Permission/permissions.json', true);
 
         if ($json === false) {
            throw new Exception('Load Failed');    

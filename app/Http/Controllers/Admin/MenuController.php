@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Menu;
 use App\Models\User\Group;
-use App\Traits\Admin\ItemConfig;
+use App\Traits\Admin\Form;
 use App\Traits\Admin\CheckInCheckOut;
 use App\Http\Requests\Menu\StoreRequest;
 use App\Http\Requests\Menu\UpdateRequest;
@@ -16,22 +16,12 @@ use App\Models\Menu\MenuItem;
 
 class MenuController extends Controller
 {
-    use ItemConfig;
+    use Form;
 
     /*
      * Instance of the model.
      */
     protected $model;
-
-    /*
-     * Name of the model.
-     */
-    protected $modelName = 'menu';
-
-    /*
-     * Name of the plugin.
-     */
-    protected $pluginName = 'menu';
 
 
     /**

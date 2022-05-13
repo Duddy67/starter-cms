@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Setting;
-use App\Traits\Admin\ItemConfig;
+use App\Traits\Admin\Form;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Artisan;
@@ -13,24 +13,15 @@ use Cache;
 
 class SettingController extends Controller
 {
-    use ItemConfig;
+    use Form;
 
     /*
      * Instance of the model.
      */
     protected $model;
 
-    /*
-     * Name of the model.
-     */
-    protected $modelName = 'setting';
-
-    /*
-     * Name of the plugin.
-     */
-    protected $pluginName = 'settings';
-
     protected $app = ['name', 'timezone', 'env', 'debug', 'local', 'fallback_locale'];
+
 
     /**
      * Create a new controller instance.

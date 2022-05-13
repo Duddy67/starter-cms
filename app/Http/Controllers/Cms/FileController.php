@@ -5,28 +5,18 @@ namespace App\Http\Controllers\Cms;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Cms\Document;
-use App\Traits\Admin\ItemConfig;
+use App\Traits\Admin\Form;
 use App\Models\User;
 
 
 class FileController extends Controller
 {
-    use ItemConfig;
+    use Form;
 
     /*
      * Instance of the model.
      */
     protected $model;
-
-    /*
-     * Name of the model.
-     */
-    protected $modelName = 'document';
-
-    /*
-     * Name of the plugin.
-     */
-    protected $pluginName = 'cms';
 
 
     /**

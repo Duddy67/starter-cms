@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\User\Group;
-use App\Traits\Admin\ItemConfig;
+use App\Traits\Admin\Form;
 use App\Traits\Admin\CheckInCheckOut;
 use App\Http\Requests\Post\StoreRequest;
 use App\Http\Requests\Post\UpdateRequest;
@@ -19,22 +19,12 @@ use Carbon\Carbon;
 
 class PostController extends Controller
 {
-    use ItemConfig;
+    use Form;
 
     /*
      * Instance of the model.
      */
     protected $model;
-
-    /*
-     * Name of the model.
-     */
-    protected $modelName = 'post';
-
-    /*
-     * Name of the plugin.
-     */
-    protected $pluginName = 'post';
 
 
     /**

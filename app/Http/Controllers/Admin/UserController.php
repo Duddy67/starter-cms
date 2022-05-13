@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 use App\Models\User;
 use App\Models\User\Group;
 use Illuminate\Support\Facades\Hash;
-use App\Traits\Admin\ItemConfig;
+use App\Traits\Admin\Form;
 use App\Traits\Admin\CheckInCheckOut;
 use App\Models\Settings\Email;
 use App\Models\Cms\Document;
@@ -18,22 +18,12 @@ use App\Http\Requests\User\UpdateRequest;
 
 class UserController extends Controller
 {
-    use ItemConfig;
+    use Form;
 
     /*
      * Instance of the model.
      */
     protected $model;
-
-    /*
-     * Name of the model.
-     */
-    protected $modelName = 'user';
-
-    /*
-     * Name of the plugin.
-     */
-    protected $pluginName = 'user';
 
 
     /**

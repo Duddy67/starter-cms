@@ -97,9 +97,9 @@ class Setting extends Model
         ];
     }
 
-    public static function getSortedByOptions($pluginName, $modelName)
+    public static function getSortedByOptions($pathToForm)
     {
-        $json = file_get_contents(app_path().'/Models/'.ucfirst($pluginName).'/'.$modelName.'/columns.json', true);
+        $json = file_get_contents($pathToForm.'/columns.json', true);
         $columns = json_decode($json);
         $options = [];
 

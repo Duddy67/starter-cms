@@ -5,23 +5,18 @@ namespace App\Http\Controllers\Admin\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use App\Traits\Admin\ItemConfig;
+use App\Traits\Admin\Form;
 use App\Models\User\Permission;
 
 
 class PermissionController extends Controller
 {
-    use ItemConfig;
+    use Form;
 
     /*
-     * Name of the model.
+     * Instance of the model.
      */
-    protected $modelName = 'permission';
-
-    /*
-     * Name of the plugin.
-     */
-    protected $pluginName = 'user';
+    protected $model;
 
 
     /**
@@ -33,6 +28,7 @@ class PermissionController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('admin.user.permissions');
+        $this->model = new Permission;
     }
 
     /**

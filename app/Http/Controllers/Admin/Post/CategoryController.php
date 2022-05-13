@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Post\Category;
 use App\Models\User\Group;
 use App\Models\User;
-use App\Traits\Admin\ItemConfig;
+use App\Traits\Admin\Form;
 use App\Traits\Admin\CheckInCheckOut;
 use App\Http\Requests\Post\Category\StoreRequest;
 use App\Http\Requests\Post\Category\UpdateRequest;
@@ -16,22 +16,12 @@ use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    use ItemConfig;
+    use Form;
 
     /*
      * Instance of the model.
      */
     protected $model;
-
-    /*
-     * Name of the model.
-     */
-    protected $modelName = 'category';
-
-    /*
-     * Name of the plugin.
-     */
-    protected $pluginName = 'post';
 
 
     /**

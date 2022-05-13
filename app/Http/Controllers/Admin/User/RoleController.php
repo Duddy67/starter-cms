@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use App\Traits\Admin\ItemConfig;
+use App\Traits\Admin\Form;
 use App\Traits\Admin\CheckInCheckOut;
 use App\Models\User\Role;
 use App\Models\User\Permission;
@@ -16,22 +16,12 @@ use App\Http\Requests\User\Role\UpdateRequest;
 
 class RoleController extends Controller
 {
-    use ItemConfig;
+    use Form;
 
     /*
      * Instance of the model.
      */
     protected $model;
-
-    /*
-     * Name of the model.
-     */
-    protected $modelName = 'role';
-
-    /*
-     * Name of the plugin.
-     */
-    protected $pluginName = 'user';
 
 
     /**
@@ -82,7 +72,7 @@ class RoleController extends Controller
         $actions = $this->getActions('form', ['destroy']);
         $board = $this->getPermissionBoard();
         $query = $request->query();
-        $permissions = file_get_contents(app_path().'/Models/User/permission/permissions.json', true);
+        $permissions = file_get_contents(app_path().'/Forms/User/Permission/permissions.json', true);
 
         return view('admin.user.role.form', compact('fields', 'actions', 'board', 'query', 'permissions'));
     }

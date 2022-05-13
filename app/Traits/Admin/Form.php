@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 
 
-trait ItemConfig
+trait Form
 {
     /*
      * Returns the column data for an item list.
@@ -130,14 +130,16 @@ trait ItemConfig
                 elseif ($column->name == 'ordering') {
                     $ordering = [];
                     // A menu code variable is required for the menu item routes.
-                    $query = ($this->modelName == 'menuitem') ? ['code' => $item->menu_code, 'menuItem' => $item->id] : [$this->modelName => $item->id];
+                    $query = ($this->getClassName() == 'Item') ? ['code' => $item->menu_code, 'item' => $item->id] : [strtolower($this->getClassName()) => $item->id];
+
+                    $upperLevelClassName = ($this->getUpperLevelClassName()) ?  '.'.strtolower($this->getUpperLevelClassName()) : '';
 
                     if ($item->getPrevSibling()) { 
-                        $ordering['up'] = route('admin.'.$this->pluginName.'.'.Str::plural($this->modelName).'.up', $query);
+                        $ordering['up'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.up', $query);
                     }
 
                     if ($item->getNextSibling()) { 
-                        $ordering['down'] = route('admin.'.$this->pluginName.'.'.Str::plural($this->modelName).'.down', $query);
+                        $ordering['down'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.down', $query);
                     }
 
                     $row->ordering = $ordering;
@@ -283,9 +285,9 @@ trait ItemConfig
                     $default = Setting::getValue('pagination', 'per_page');
                 }
                 elseif ($filter->name == 'sorted_by') {
-                    $options = Setting::$function($this->pluginName, $this->modelName);
+                    $options = Setting::$function($this->getPathToForm());
                 }
-                elseif ($filter->name == 'owned_by' && $this->modelName != 'document') {
+                elseif ($filter->name == 'owned_by' && $this->getClassName() != 'Document') {
                     $options = Setting::getOwnedByFilterOptions($this->model);
                 }
                 elseif ($filter->name == 'groups') {
@@ -416,6 +418,32 @@ trait ItemConfig
         return $field;
     }
 
+    public function getClassName()
+    {
+        return class_basename(get_class($this->model));
+    }
+
+    /*
+     * Gets a possible upper level class name in a namespace (eg: App\Models\->Post<-\Category)
+     *
+     * @return mixed string|boolean
+     */  
+    public function getUpperLevelClassName()
+    {
+        if (preg_match('#Models\\\\([A-Z][a-z0-9]*)\\\\#', get_class($this->model), $matches)) {
+            return $matches[1];
+        }
+
+        return false;
+    }
+
+    public function getPathToForm()
+    {
+        $path = ($this->getUpperLevelClassName()) ? $this->getUpperLevelClassName().'/'.$this->getClassName() : $this->getClassName();
+
+        return app_path().'/Forms/'.$path;
+    }
+
     /*
      * Gets a json file related to a given item then returns the decoded data.
      *
@@ -423,7 +451,7 @@ trait ItemConfig
      */  
     private function getData($type)
     {
-        $json = file_get_contents(app_path().'/Models/'.ucfirst($this->pluginName).'/'.$this->modelName.'/'.$type.'.json', true);
+        $json = file_get_contents($this->getPathToForm().'/'.$type.'.json', true);
 
         if ($json === false) {
            throw new Exception('Load Failed');    
