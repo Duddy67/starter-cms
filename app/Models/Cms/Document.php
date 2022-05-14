@@ -50,7 +50,7 @@ class Document extends Model
 	Storage::disk('local')->putFileAs($path, $file, $this->disk_name);
 
 	if (preg_match('#^image\/#', $this->content_type)) {
-	    $imagePath = Storage::disk('local')->path(null).$path;
+	    $imagePath = Storage::disk('local')->path($path);
 	    $this->createThumbnail($imagePath);
 	}
 
