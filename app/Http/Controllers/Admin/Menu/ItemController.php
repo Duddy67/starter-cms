@@ -23,6 +23,11 @@ class ItemController extends Controller
     protected $model;
 
     /*
+     * The item to edit in the form.
+     */
+    protected $item = null;
+
+    /*
      * The parent menu.
      */
     protected $menu;
@@ -82,7 +87,7 @@ class ItemController extends Controller
     {
         // Gather the needed data to build the form.
 
-        $fields = $this->getFields(null, ['updated_by', 'created_at', 'updated_at', 'owner_name']);
+        $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
         $actions = $this->getActions('form', ['destroy']);
         $query = array_merge($request->query(), ['code' => $code]);
 
@@ -98,10 +103,10 @@ class ItemController extends Controller
      */
     public function edit(Request $request, $code, $id)
     {
-        $item = Item::select('menu_items.*')
-                              ->selectRaw('IFNULL(users.name, ?) as modifier_name', [__('labels.generic.unknown_user')])
-                              ->leftJoin('users as users', 'menu_items.updated_by', '=', 'users.id')
-                              ->findOrFail($id);
+        $item = $this->item = Item::select('menu_items.*')
+                                    ->selectRaw('IFNULL(users.name, ?) as modifier_name', [__('labels.generic.unknown_user')])
+                                    ->leftJoin('users as users', 'menu_items.updated_by', '=', 'users.id')
+                                    ->findOrFail($id);
 
         if ($item->checked_out && $item->checked_out != auth()->user()->id) {
             return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.checked_out'));
@@ -117,7 +122,7 @@ class ItemController extends Controller
             array_push($except, 'updated_by', 'updated_at');
         }
 
-        $fields = $this->getFields($item, $except);
+        $fields = $this->getFields($except);
         $this->setFieldValues($fields, $item);
         $except = (!$this->menu->canEdit()) ? ['destroy', 'save', 'saveClose'] : [];
 

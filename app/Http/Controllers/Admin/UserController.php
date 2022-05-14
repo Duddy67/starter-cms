@@ -25,6 +25,11 @@ class UserController extends Controller
      */
     protected $model;
 
+    /*
+     * The item to edit in the form.
+     */
+    protected $item = null;
+
 
     /**
      * Create a new controller instance.
@@ -68,7 +73,7 @@ class UserController extends Controller
     public function create(Request $request)
     {
         // Gather the needed data to build the form.
-        $fields = $this->getFields(null, ['updated_by']);
+        $fields = $this->getFields(['updated_by']);
         $actions = $this->getActions('form', ['destroy']);
         $query = $request->query();
 
@@ -84,7 +89,7 @@ class UserController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $user = User::select('users.*', 'users2.name as modifier_name')->leftJoin('users as users2', 'users.updated_by', '=', 'users2.id')->findOrFail($id);
+        $user = $this->item = User::select('users.*', 'users2.name as modifier_name')->leftJoin('users as users2', 'users.updated_by', '=', 'users2.id')->findOrFail($id);
 
         if (!auth()->user()->canUpdate($user) && auth()->user()->id != $user->id) {
             return redirect()->route('admin.users.index', array_merge($request->query(), ['user' => $id]))->with('error', __('messages.user.edit_user_not_auth'));
@@ -99,7 +104,7 @@ class UserController extends Controller
         // Gather the needed data to build the form.
         
         $except = ($user->updated_by === null) ? ['updated_by', 'updated_at'] : [];
-        $fields = $this->getFields($user, $except);
+        $fields = $this->getFields($except);
         $this->setFieldValues($fields, $user);
         // Users cannot delete their own account.
         $except = (auth()->user()->id == $user->id) ? ['destroy'] : [];

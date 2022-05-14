@@ -22,6 +22,11 @@ class EmailController extends Controller
      */
     protected $model;
 
+    /*
+     * The item to edit in the form.
+     */
+    protected $item = null;
+
 
     /**
      * Create a new controller instance.
@@ -64,7 +69,7 @@ class EmailController extends Controller
     public function create(Request $request)
     {
         // Gather the needed data to build the form.
-        $fields = $this->getFields(null, ['updated_by', 'owner_name']);
+        $fields = $this->getFields(['updated_by', 'owner_name']);
         $actions = $this->getActions('form', ['destroy']);
 	$query = $request->query();
 
@@ -81,9 +86,9 @@ class EmailController extends Controller
     public function edit(Request $request, $id)
     {
         // Gather the needed data to build the form.
-        $email = Email::select('emails.*', 'users.name as modifier_name')
-			->leftJoin('users', 'emails.updated_by', '=', 'users.id')
-			->findOrFail($id);
+        $email = $this->item = Email::select('emails.*', 'users.name as modifier_name')
+                                      ->leftJoin('users', 'emails.updated_by', '=', 'users.id')
+                                      ->findOrFail($id);
 
 	if ($email->checked_out && $email->checked_out != auth()->user()->id) {
 	    return redirect()->route('admin.emails.index')->with('error',  __('messages.generic.checked_out'));
@@ -95,7 +100,7 @@ class EmailController extends Controller
 	
 	$except = ($email->updated_by === null) ? ['updated_by', 'updated_at'] : [];
 
-        $fields = $this->getFields($email, $except);
+        $fields = $this->getFields($except);
 	$this->setFieldValues($fields, $email);
 	$except = (!auth()->user()->isSuperAdmin()) ? ['destroy'] : [];
         $actions = $this->getActions('form', $except);

@@ -26,6 +26,11 @@ class PostController extends Controller
      */
     protected $model;
 
+    /*
+     * The item to edit in the form.
+     */
+    protected $item = null;
+
 
     /**
      * Create a new controller instance.
@@ -69,7 +74,7 @@ class PostController extends Controller
     {
         // Gather the needed data to build the form.
 
-        $fields = $this->getFields(null, ['updated_by', 'created_at', 'updated_at', 'owner_name']);
+        $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
         $actions = $this->getActions('form', ['destroy']);
         $query = $request->query();
         $tab = 'details';
@@ -86,11 +91,11 @@ class PostController extends Controller
      */
     public function edit(Request $request, $id, $tab = null)
     {
-        $post = Post::select('posts.*', 'users.name as owner_name')
-                        ->selectRaw('IFNULL(users2.name, ?) as modifier_name', [__('labels.generic.unknown_user')])
-                        ->leftJoin('users', 'posts.owned_by', '=', 'users.id')
-                        ->leftJoin('users as users2', 'posts.updated_by', '=', 'users2.id')
-                        ->findOrFail($id);
+        $post = $this->item = Post::select('posts.*', 'users.name as owner_name')
+                                    ->selectRaw('IFNULL(users2.name, ?) as modifier_name', [__('labels.generic.unknown_user')])
+                                    ->leftJoin('users', 'posts.owned_by', '=', 'users.id')
+                                    ->leftJoin('users as users2', 'posts.updated_by', '=', 'users2.id')
+                                    ->findOrFail($id);
                         
         if (!$post->canAccess()) {
             return redirect()->route('admin.posts.index')->with('error',  __('messages.generic.access_not_auth'));
@@ -110,7 +115,7 @@ class PostController extends Controller
             array_push($except, 'updated_by', 'updated_at');
         }
 
-        $fields = $this->getFields($post, $except);
+        $fields = $this->getFields($except);
         $this->setFieldValues($fields, $post);
         $except = (!$post->canEdit()) ? ['destroy', 'save', 'saveClose'] : [];
         $actions = $this->getActions('form', $except);

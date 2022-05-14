@@ -23,6 +23,11 @@ class RoleController extends Controller
      */
     protected $model;
 
+    /*
+     * The item to edit in the form.
+     */
+    protected $item = null;
+
 
     /**
      * Create a new controller instance.
@@ -68,7 +73,7 @@ class RoleController extends Controller
     {
         // Gather the needed data to build the form.
 
-        $fields = $this->getFields(null, ['updated_by', 'created_at', 'updated_at', 'owner_name']);
+        $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
         $actions = $this->getActions('form', ['destroy']);
         $board = $this->getPermissionBoard();
         $query = $request->query();
@@ -86,11 +91,11 @@ class RoleController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $role = Role::select('roles.*', 'users.name as owner_name')
-                      ->selectRaw('IFNULL(users2.name, ?) as modifier_name', [__('labels.generic.unknown_user')])
-                      ->leftJoin('users', 'roles.owned_by', '=', 'users.id')
-                      ->leftJoin('users as users2', 'roles.updated_by', '=', 'users2.id')
-                      ->findOrFail($id);
+        $role = $this->item = Role::select('roles.*', 'users.name as owner_name')
+                                    ->selectRaw('IFNULL(users2.name, ?) as modifier_name', [__('labels.generic.unknown_user')])
+                                    ->leftJoin('users', 'roles.owned_by', '=', 'users.id')
+                                    ->leftJoin('users as users2', 'roles.updated_by', '=', 'users2.id')
+                                    ->findOrFail($id);
 
         if (!$role->canAccess()) {
             return redirect()->route('admin.user.roles.index', $request->query())->with('error',  __('messages.generic.access_not_auth'));
@@ -118,7 +123,7 @@ class RoleController extends Controller
             }
         }
 
-        $fields = $this->getFields($role, $except);
+        $fields = $this->getFields($except);
         $this->setFieldValues($fields, $role);
         $board = $this->getPermissionBoard($role);
         $except = (in_array($role->name, Role::getDefaultRoles()) || !$role->canEdit()) ? ['save', 'saveClose', 'destroy'] : [];

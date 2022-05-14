@@ -23,6 +23,11 @@ class CategoryController extends Controller
      */
     protected $model;
 
+    /*
+     * The item to edit in the form.
+     */
+    protected $item = null;
+
 
     /**
      * Create a new controller instance.
@@ -66,7 +71,7 @@ class CategoryController extends Controller
     {
         // Gather the needed data to build the form.
 
-        $fields = $this->getFields(null, ['updated_by', 'created_at', 'updated_at', 'owner_name']);
+        $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
         $actions = $this->getActions('form', ['destroy']);
         $query = $request->query();
         $tab = 'details';
@@ -83,11 +88,11 @@ class CategoryController extends Controller
      */
     public function edit(Request $request, $id, $tab = null)
     {
-        $category = Category::select('post_categories.*', 'users.name as owner_name')
-                              ->selectRaw('IFNULL(users2.name, ?) as modifier_name', [__('labels.generic.unknown_user')])
-                              ->leftJoin('users', 'post_categories.owned_by', '=', 'users.id')
-                              ->leftJoin('users as users2', 'post_categories.updated_by', '=', 'users2.id')
-                              ->findOrFail($id);
+        $category = $this->item = Category::select('post_categories.*', 'users.name as owner_name')
+                                            ->selectRaw('IFNULL(users2.name, ?) as modifier_name', [__('labels.generic.unknown_user')])
+                                            ->leftJoin('users', 'post_categories.owned_by', '=', 'users.id')
+                                            ->leftJoin('users as users2', 'post_categories.updated_by', '=', 'users2.id')
+                                            ->findOrFail($id);
 
         if (!$category->canAccess()) {
             return redirect()->route('admin.post.categories.index')->with('error',  __('messages.generic.access_not_auth'));
@@ -107,7 +112,7 @@ class CategoryController extends Controller
             array_push($except, 'updated_by', 'updated_at');
         }
 
-        $fields = $this->getFields($category, $except);
+        $fields = $this->getFields($except);
         $this->setFieldValues($fields, $category);
         $except = (!$category->canEdit()) ? ['destroy', 'save', 'saveClose'] : [];
         $actions = $this->getActions('form', $except);

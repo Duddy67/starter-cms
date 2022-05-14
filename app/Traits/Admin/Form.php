@@ -163,7 +163,7 @@ trait Form
      * @param Array  $except 
      * @return Array of stdClass Objects
      */  
-    public function getFields($item = null, $except = [])
+    public function getFields($except = [])
     {
         $fields = $this->getData('fields');
 
@@ -173,6 +173,8 @@ trait Form
                 unset($fields[$key]);
                 continue;
             }
+
+            $item = (isset($this->item) && $this->item) ? $this->item : null;
 
             // Set the select field types.
             if ($field->type == 'select') {
@@ -212,13 +214,16 @@ trait Form
                     $field = $this->setExtraAttributes($field, ['disabled']);
                 }
 
-                if (isset($item->access_level) && in_array($field->name, ['access_level', 'owned_by', 'groups', 'categories', 'parent_id']) && !$item->canChangeAccessLevel()) {
+                if (isset($item->access_level) && in_array($field->name, ['access_level', 'owned_by', 'groups', 'categories', 'parent_id'])
+                    && !$item->canChangeAccessLevel()) {
                     $field = $this->setExtraAttributes($field, ['disabled']);
                 }
 
                 if (method_exists($item, 'isParentPrivate') && $item->access_level == 'private') { 
                     // Check for parent or children private items then disable field(s) accordingly.
-                    if ((in_array($field->name, ['access_level', 'owned_by']) && $item->isParentPrivate()) || ($field->name == 'owned_by' && !$item->isParentPrivate())) {
+                    if ((in_array($field->name, ['access_level', 'owned_by']) &&
+                          $item->isParentPrivate()) || ($field->name == 'owned_by'
+                          && !$item->isParentPrivate())) {
                         $field = $this->setExtraAttributes($field, ['disabled']);
                     }
 
@@ -228,7 +233,8 @@ trait Form
                     }
                 }
 
-                if (method_exists($item, 'canDescendantsBePrivate') && $field->name == 'access_level' && $item->access_level != 'private' && !$item->canDescendantsBePrivate()) { 
+                if (method_exists($item, 'canDescendantsBePrivate') && $field->name == 'access_level'
+                    && $item->access_level != 'private' && !$item->canDescendantsBePrivate()) { 
                     // Prevent the private option to be selected.
                     foreach ($field->options as $key => $option) {
                         if ($option['value'] == 'private') {

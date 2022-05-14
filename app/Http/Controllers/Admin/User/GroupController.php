@@ -21,6 +21,11 @@ class GroupController extends Controller
      */
     protected $model;
 
+    /*
+     * The item to edit in the form.
+     */
+    protected $item = null;
+
 
     /**
      * Create a new controller instance.
@@ -65,7 +70,7 @@ class GroupController extends Controller
     {
         // Gather the needed data to build the form.
 
-        $fields = $this->getFields(null, ['updated_by', 'created_at', 'updated_at', 'owner_name']);
+        $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
         $actions = $this->getActions('form', ['destroy']);
         $query = $request->query();
 
@@ -81,11 +86,11 @@ class GroupController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $group = Group::select('groups.*', 'users.name as owner_name')
-                        ->selectRaw('IFNULL(users2.name, ?) as modifier_name', [__('labels.generic.unknown_user')])
-                        ->leftJoin('users', 'groups.owned_by', '=', 'users.id')
-                        ->leftJoin('users as users2', 'groups.updated_by', '=', 'users2.id')
-                        ->findOrFail($id);
+        $group = $this->item = Group::select('groups.*', 'users.name as owner_name')
+                                      ->selectRaw('IFNULL(users2.name, ?) as modifier_name', [__('labels.generic.unknown_user')])
+                                      ->leftJoin('users', 'groups.owned_by', '=', 'users.id')
+                                      ->leftJoin('users as users2', 'groups.updated_by', '=', 'users2.id')
+                                      ->findOrFail($id);
 
         if (!$group->canAccess()) {
             return redirect()->route('admin.user.groups.index')->with('error',  __('messages.generic.access_not_auth'));
@@ -105,7 +110,7 @@ class GroupController extends Controller
             array_push($except, 'updated_by', 'updated_at');
         }
 
-        $fields = $this->getFields($group, $except);
+        $fields = $this->getFields($except);
         $except = (!$group->canEdit()) ? ['destroy', 'save', 'saveClose'] : [];
         $actions = $this->getActions('form', $except);
         // Add the id parameter to the query.
