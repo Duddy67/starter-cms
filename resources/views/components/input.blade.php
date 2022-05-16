@@ -44,7 +44,7 @@
 	autocomplete="{{ $field->autocomplete }}"
     @endif
 
-    @if ($value)
+    @if ($value && $field->type != 'password')
 	value="{{ $value }}"
     @endif
 

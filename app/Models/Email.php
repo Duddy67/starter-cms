@@ -142,7 +142,19 @@ class Email extends Model
 	// Use the email attribute as recipient in case the recipient attribute doesn't exist.
 	$recipient = (!isset($data->recipient) && isset($data->email)) ? $data->email : $data->recipient;
 	$data->view = 'emails.'.$code;
-	Mail::to($recipient)->send(new AppMailer($data));
+
+        try {
+            Mail::to($recipient)->send(new AppMailer($data));
+        } catch (\Throwable $e) {
+            report($e);
+
+            return false;
+        }
+
+        // Alternative possibility
+        /*dispatch(function() use($recipient, $data) {
+            Mail::to($recipient)->send(new AppMailer($data));
+        })->afterResponse();*/
     }
 
     /*

@@ -10,7 +10,7 @@ use App\Models\User\Group;
 use Illuminate\Support\Facades\Hash;
 use App\Traits\Form;
 use App\Traits\CheckInCheckOut;
-use App\Models\Settings\Email;
+use App\Models\Email;
 use App\Models\Cms\Document;
 use App\Http\Requests\User\StoreRequest;
 use App\Http\Requests\User\UpdateRequest;
