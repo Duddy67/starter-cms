@@ -11,10 +11,9 @@ trait CheckInCheckOut
     /**
      * Checks a given record out for the current user.
      *
-     * @param model instance  $record
      * @return void
      */
-    public function checkOut()
+    public function checkOut(): void
     {
         $this->checked_out = auth()->user()->id;
         $this->checked_out_time = Carbon::now();
@@ -26,10 +25,9 @@ trait CheckInCheckOut
     /**
      * Checks a given record back in for the current user.
      *
-     * @param model instance  $record
      * @return void
      */
-    public function checkIn()
+    public function checkIn(): void
     {
         $this->checked_out = null;
         $this->checked_out_time = null;
@@ -41,10 +39,9 @@ trait CheckInCheckOut
     /**
      * Checks if a given record can be checked back in. 
      *
-     * @param model instance  $record
-     * @return boolean
+     * @return bool
      */
-    public function canCheckIn()
+    public function canCheckIn(): bool
     {
         // Get the user for whom the record is checked out .
         $user = User::findOrFail($this->checked_out);
@@ -60,11 +57,11 @@ trait CheckInCheckOut
     /**
      * Checks multiple records back in for the current user.
      *
-     * @param Array  $recordIds
-     * @param model instance  $model
-     * @return Array
+     * @param array  $recordIds
+     * @param mixed $model
+     * @return array
      */
-    public static function checkInMultiple($recordIds, $model)
+    public static function checkInMultiple(array $recordIds, mixed $model): array
     {
         $checkedIn = 0;
         $messages = [];

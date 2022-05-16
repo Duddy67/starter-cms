@@ -6,6 +6,9 @@ use App\Models\Setting;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Kalnoy\Nestedset\Collection;
+use Illuminate\Http\Request;
 
 
 trait Form
@@ -13,10 +16,10 @@ trait Form
     /*
      * Returns the column data for an item list.
      *
-     * @param Array  $except 
-     * @return Array of stdClass Objects
+     * @param array  $except 
+     * @return array of stdClass Objects
      */  
-    public function getColumns($except = [])
+    public function getColumns(array $except = []): array
     {
         $columns = $this->getData('columns');
 
@@ -34,12 +37,12 @@ trait Form
     /*
      * Returns a row list.
      *
-     * @param Array of stdClass Objects  $columns
+     * @param array of stdClass Objects  $columns
      * @param \Illuminate\Pagination\LengthAwarePaginator  $items
-     * @param Array  $except 
-     * @return Array of stdClass Objects
+     * @param array  $except 
+     * @return array of stdClass Objects
      */  
-    public function getRows($columns, $items, $except = [])
+    public function getRows(array $columns, LengthAwarePaginator $items, array $except = []): array
     {
         $rows = [];
 
@@ -59,12 +62,12 @@ trait Form
     /*
      * Returns a row tree list.
      *
-     * @param Array of stdClass Objects  $columns
-     * @param \Illuminate\Pagination\LengthAwarePaginator  $nodes
-     * @param Array  $except 
-     * @return Array of stdClass Objects
+     * @param array of stdClass Objects  $columns
+     * @param \Kalnoy\Nestedset\Collection  $nodes
+     * @param array  $except 
+     * @return array of stdClass Objects
      */  
-    public function getRowTree($columns, $nodes, $except = [])
+    public function getRowTree(array $columns, Collection $nodes, array $except = []): array
     {
         $rows = [];
 
@@ -85,13 +88,13 @@ trait Form
     /*
      * Sets the values for a given item row.
      *
-     * @param Array of stdClass Objects  $columns
-     * @param Object  $item
-     * @param Array   $except 
+     * @param array of stdClass Objects  $columns
+     * @param mixed   $item
+     * @param array   $except 
      * @param string  $prefix
      * @return stdClass Object
      */  
-    private function getRow($columns, $item, $except = [], $prefix = '')
+    private function getRow(array $columns, mixed $item, array $except = [], string $prefix = ''): \stdClass
     {
         $row = new \stdClass();
         $row->item_id = $item->id;
@@ -159,11 +162,10 @@ trait Form
     /*
      * Returns the field data for an item form.
      *
-     * @param A model instance  $item
-     * @param Array  $except 
-     * @return Array of stdClass Objects
+     * @param array  $except 
+     * @return array of stdClass Objects
      */  
-    public function getFields($except = [])
+    public function getFields(array $except = []): array
     {
         $fields = $this->getData('fields');
 
@@ -259,10 +261,10 @@ trait Form
      * Returns the filter data for an item list.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param Array  $except 
-     * @return Array of stdClass Objects
+     * @param array  $except 
+     * @return array of stdClass Objects
      */  
-    public function getFilters($request, $except = [])
+    public function getFilters(Request $request, array $except = []): array
     {
         $filters = $this->getData('filters');
 
@@ -317,10 +319,10 @@ trait Form
      * Returns the action data for an item list or form.
      *
      * @param  string  $section
-     * @param  Array  $except
-     * @return Array of stdClass Objects
+     * @param  array  $except
+     * @return array of stdClass Objects
      */  
-    public function getActions($section, $except = [])
+    public function getActions(string $section, array $except = []): array
     {
         $actions = $this->getData('actions');
 
@@ -342,10 +344,10 @@ trait Form
     /*
      * Returns only the fields passed in parameters.
      *
-     * @param  Array  $fieldNames
-     * @return stdClass Object
+     * @param  array  $fieldNames
+     * @return array of stdClass Objects
      */  
-    public function getSpecificFields($fieldNames)
+    public function getSpecificFields(array $fieldNames): array
     {
         $fields = $this->getData('fields');
 
@@ -368,11 +370,11 @@ trait Form
     /*
      * Returns the options for a given select field.
      *
-     * @param  Array  $field
-     * @param A model instance  $item
-     * @return Array
+     * @param stdClass $field
+     * @param mixed  $item
+     * @return array
      */  
-    private function getSelectOptions($field, $item = null)
+    private function getSelectOptions(\stdClass $field, mixed $item = null): array
     {
         // Build the function name.
         $function = 'get'.str_replace('_', '', ucwords($field->name, '_')).'Options';
@@ -407,10 +409,10 @@ trait Form
      * Adds one or more extra attributes to a given field.
      *
      * @param  stdClass $field
-     * @param  Array  $attributes
+     * @param  array  $attributes
      * @return stdClass Object
      */  
-    public function setExtraAttributes($field, $attributes)
+    public function setExtraAttributes(\stdClass $field, array $attributes): \stdClass
     {
         if (!isset($field->extra)) {
             $field->extra = $attributes;
@@ -424,7 +426,7 @@ trait Form
         return $field;
     }
 
-    public function getClassName()
+    public function getClassName(): string
     {
         return class_basename(get_class($this->model));
     }
@@ -432,9 +434,9 @@ trait Form
     /*
      * Gets a possible upper level class name in a namespace (eg: App\Models\->Post<-\Category)
      *
-     * @return mixed string|boolean
+     * @return string|false
      */  
-    public function getUpperLevelClassName()
+    public function getUpperLevelClassName(): string|false
     {
         if (preg_match('#Models\\\\([A-Z][a-z0-9]*)\\\\#', get_class($this->model), $matches)) {
             return $matches[1];
@@ -443,7 +445,7 @@ trait Form
         return false;
     }
 
-    public function getPathToForm()
+    public function getPathToForm(): string
     {
         $path = ($this->getUpperLevelClassName()) ? $this->getUpperLevelClassName().'/'.$this->getClassName() : $this->getClassName();
 
@@ -453,9 +455,10 @@ trait Form
     /*
      * Gets a json file related to a given item then returns the decoded data.
      *
-     * @return Array of stdClass Objects / stdClass Object
+     * @param  string $type
+     * @return mixed
      */  
-    private function getData($type)
+    private function getData(string $type): mixed
     {
         $json = file_get_contents($this->getPathToForm().'/'.$type.'.json', true);
 

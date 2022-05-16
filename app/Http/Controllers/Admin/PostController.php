@@ -89,7 +89,7 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function edit(Request $request, $id, $tab = null)
+    public function edit(Request $request, int $id, string $tab = null)
     {
         $post = $this->item = Post::select('posts.*', 'users.name as owner_name')
                                     ->selectRaw('IFNULL(users2.name, ?) as modifier_name', [__('labels.generic.unknown_user')])
@@ -465,7 +465,7 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \App\Models\Cms\Document
      */
-    private function uploadImage($request)
+    private function uploadImage(Request $request)
     {
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $image = new Document;
@@ -484,7 +484,7 @@ class PostController extends Controller
      * @param  \App\Models\Post $post
      * @return void
      */
-    private function setFieldValues(&$fields, $post)
+    private function setFieldValues(array &$fields, Post $post)
     {
         foreach ($fields as $field) {
             if (isset($field->group) && $field->group == 'settings') {
