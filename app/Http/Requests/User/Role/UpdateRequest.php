@@ -5,7 +5,7 @@ namespace App\Http\Requests\User\Role;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use App\Models\User\Role;
-use App\Traits\Admin\AccessLevel;
+use App\Traits\AccessLevel;
 
 
 class UpdateRequest extends FormRequest

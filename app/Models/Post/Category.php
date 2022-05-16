@@ -10,8 +10,8 @@ use App\Models\Post;
 use App\Models\Post\Setting as PostSetting;
 use Kalnoy\Nestedset\NodeTrait;
 use App\Models\User\Group;
-use App\Traits\Admin\TreeAccessLevel;
-use App\Traits\Admin\CheckInCheckOut;
+use App\Traits\TreeAccessLevel;
+use App\Traits\CheckInCheckOut;
 
 
 class Category extends Model

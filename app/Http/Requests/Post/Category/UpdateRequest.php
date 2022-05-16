@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Post\Category;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Traits\Admin\AccessLevel;
+use App\Traits\AccessLevel;
 
 
 class UpdateRequest extends FormRequest

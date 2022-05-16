@@ -9,8 +9,8 @@ use App\Models\Post;
 use App\Models\Post\Category;
 use App\Models\Menu;
 use App\Models\Setting;
-use App\Traits\Admin\AccessLevel;
-use App\Traits\Admin\CheckInCheckOut;
+use App\Traits\AccessLevel;
+use App\Traits\CheckInCheckOut;
 
 
 class Group extends Model

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\Post;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post\Setting;
-use App\Traits\Admin\Form;
+use App\Traits\Form;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Artisan;

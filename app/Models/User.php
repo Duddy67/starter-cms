@@ -11,7 +11,7 @@ use App\Models\User\Role;
 use App\Models\User\Group;
 use App\Models\Cms\Document;
 use App\Models\Setting;
-use App\Traits\Admin\CheckInCheckOut;
+use App\Traits\CheckInCheckOut;
 use Illuminate\Support\Str;
 
 

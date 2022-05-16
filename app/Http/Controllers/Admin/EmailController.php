@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\Email;
 use App\Models\User;
-use App\Traits\Admin\Form;
-use App\Traits\Admin\CheckInCheckOut;
+use App\Traits\Form;
+use App\Traits\CheckInCheckOut;
 use App\Http\Requests\Email\StoreRequest;
 use App\Http\Requests\Email\UpdateRequest;
 

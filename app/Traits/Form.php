@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Traits\Admin;
+namespace App\Traits;
 
 use App\Models\Setting;
 use Illuminate\Support\Facades\DB;

@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User\Group;
 use App\Models\Menu\Item;
 use App\Models\Setting;
-use App\Traits\Admin\AccessLevel;
-use App\Traits\Admin\CheckInCheckOut;
+use App\Traits\AccessLevel;
+use App\Traits\CheckInCheckOut;
 
 
 class Menu extends Model

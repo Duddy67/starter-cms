@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Traits\Admin;
+namespace App\Traits;
 
 use Carbon\Carbon;
 use App\Models\User;

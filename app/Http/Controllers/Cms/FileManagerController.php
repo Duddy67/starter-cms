@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Cms;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Cms\Document;
-use App\Traits\Admin\Form;
+use App\Traits\Form;
 
 class FileManagerController extends Controller
 {

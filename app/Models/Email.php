@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Mail\AppMailer;
 use Illuminate\Support\Facades\Mail;
-use App\Traits\Admin\CheckInCheckOut;
+use App\Traits\CheckInCheckOut;
 
 
 class Email extends Model

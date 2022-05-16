@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Traits\Admin;
+namespace App\Traits;
 
-use App\Traits\Admin\AccessLevel;
+use App\Traits\AccessLevel;
 
 
 trait TreeAccessLevel
