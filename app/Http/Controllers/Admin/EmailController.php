@@ -56,8 +56,9 @@ class EmailController extends Controller
 	$rows = $this->getRows($columns, $items);
 	$query = $request->query();
 	$url = ['route' => 'admin.emails', 'item_name' => 'email', 'query' => $query];
+        $message = __('messages.email.test_email_sending', ['email' => auth()->user()->email]);
 
-        return view('admin.email.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
+        return view('admin.email.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'message', 'query'));
     }
 
     /**
@@ -229,6 +230,15 @@ class EmailController extends Controller
 	}
 
 	return redirect()->route('admin.emails.index', $request->query())->with($messages);
+    }
+
+    public function test()
+    {
+        if (Email::sendTestEmail()) {
+            return redirect()->route('admin.emails.index')->with('success', __('messages.email.test_email_sending_ok'));
+        }
+
+        return redirect()->route('admin.emails.index')->with('error', __('messages.email.test_email_sending_error'));
     }
 
     /*

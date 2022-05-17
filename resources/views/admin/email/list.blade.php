@@ -32,13 +32,20 @@
     <input type="hidden" id="createItem" value="{{ route('admin.emails.create', $query) }}">
     <input type="hidden" id="destroyItems" value="{{ route('admin.emails.index', $query) }}">
     <input type="hidden" id="checkinItems" value="{{ route('admin.emails.massCheckIn', $query) }}">
+    <input type="hidden" id="testEmailMessage" value="{{ $message }}">
 
     <form id="selectedItems" action="{{ route('admin.emails.index', $query) }}" method="post">
         @method('delete')
+        @csrf
+    </form>
+
+    <form id="sendTestEmail" action="{{ route('admin.emails.test') }}" method="post">
+        @method('get')
         @csrf
     </form>
 @endsection
 
 @push ('scripts')
     <script src="{{ asset('/js/admin/list.js') }}"></script>
+    <script src="{{ asset('/js/admin/email/send.test.email.js') }}"></script>
 @endpush

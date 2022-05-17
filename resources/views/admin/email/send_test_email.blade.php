@@ -1,0 +1,1 @@
+<p>Hello {{ $data->name }}</p><p>This is an email configuration test for Starter CMS !<br />A user account has been created for you.</p><p>login: {{ $data->email }}<br />Please use the password you chose during your registration.</p><p>Best regard,<br />The Starter CMS team.</p>

@@ -128,13 +128,29 @@ class Email extends Model
 	}
     }
 
+    public static function sendTestEmail()
+    {
+        $data = auth()->user();
+        $data->subject = 'Starter CMS - Test email';
+	$data->view = 'admin.email.send_test_email';
+
+        try {
+            Mail::to($data->email)->send(new AppMailer($data));
+            return true;
+        }
+        catch (\Throwable $e) {
+            report($e);
+            return false;
+        }
+    }
+
     /*
      * Send an email through a given email template.
      * @param  string  $code
-     * @param  Item Instance  data$
+     * @param  mixed  data$
      * @return void
      */
-    public static function sendEmail($code, $data)
+    public static function sendEmail(string $code, mixed $data): bool
     {
 	$email = Email::where('code', $code)->first();
 	$data->subject = self::parseSubject($email->subject, $data);
@@ -145,9 +161,10 @@ class Email extends Model
 
         try {
             Mail::to($recipient)->send(new AppMailer($data));
-        } catch (\Throwable $e) {
+            return true;
+        }
+        catch (\Throwable $e) {
             report($e);
-
             return false;
         }
 
@@ -160,10 +177,10 @@ class Email extends Model
     /*
      * Replaces the possibles variable set in the email subject with their values.
      * @param  string  $subject
-     * @param  Item Instance  data$
+     * @param  mixed  data$
      * @return string
      */
-    public static function parseSubject($subject, $data)
+    public static function parseSubject(string $subject, mixed $data): string
     {
         // Looks for Blade variables (eg: {{ $data->email }}).
         if (preg_match_all('#{{\s?[\$a-zA-Z0-9\-\>]+\s?}}#U', $subject, $matches)) {

@@ -73,6 +73,9 @@ return [
         'delete_list_success' => ':number emails have been successfully deleted.',
         'edit_not_auth' => 'You are not authorised to edit emails.',
         'delete_not_auth' => 'You are not authorised to delete emails.',
+        'test_email_sending' => 'A test email is about to be sent to :email.',
+        'test_email_sending_ok' => 'The email has been successfully sent.',
+        'test_email_sending_error' => 'The email could not be sent. Please check the logs and the email settings then try again.',
     ],
     'document' => [
         'create_success' => 'Document successfully created.',

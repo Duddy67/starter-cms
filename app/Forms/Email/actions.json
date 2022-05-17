@@ -14,6 +14,12 @@
 	"id": "checkin",
 	"label": "labels.button.checkin",
 	"type": "button"
+      },
+      {
+	"id": "test",
+	"label": "labels.button.send_test_email",
+	"type": "button",
+	"icon": "fa fa-envelope"
       }
   ],
   "form": [

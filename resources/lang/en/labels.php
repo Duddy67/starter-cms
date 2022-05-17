@@ -169,6 +169,7 @@ return [
 	'checkin' => 'Check-in',
 	'publish' => 'Publish',
 	'unpublish' => 'Unpublish',
+	'send_test_email' => 'Send test email',
     ],
     'pagination' => [
 	'results' => 'Showing :first to :last of :total results',
