@@ -29,7 +29,7 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $query = Post::query();
-        $query->select('id', 'title', 'content')->where('access_level', 'public_ro')->orWhere('access_level', 'public_ro');
+        $query->select('id', 'title', 'content')->whereIn('access_level', ['public_ro', 'public_rw']);
 
         if (auth('api')->user()) {
             $query->orWhere('owned_by', auth('api')->user()->id);
