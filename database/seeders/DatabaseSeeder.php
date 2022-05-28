@@ -4,13 +4,13 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Menu\Menu;
-use App\Models\Menu\MenuItem;
-use App\Models\Settings\Email;
+use App\Models\Menu;
+use App\Models\Menu\Item;
+use App\Models\Email;
 use App\Models\User\Role;
 use App\Models\User\Permission;
 use Carbon\Carbon;
-use App\Models\Settings\General;
+use App\Models\Setting;
 
 class DatabaseSeeder extends Seeder
 {
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Creates the root item which is the parent of all of the menu items.
-        $node = new MenuItem;
+        $node = new Item;
         $node->title = 'Root';
         $node->menu_code = 'root';
         $node->url = 'root';
@@ -38,14 +38,14 @@ class DatabaseSeeder extends Seeder
         // Saved as root
         $node->save();
 
-        $menuItem = MenuItem::create([
+        $menuItem = Item::create([
             'title' => 'Home',
             'url' => '/',
             'status' => 'published',
             'parent_id' => 1,
         ]);
 
-        $parent = MenuItem::findOrFail($menuItem->parent_id);
+        $parent = Item::findOrFail($menuItem->parent_id);
         $parent->appendNode($menuItem);
 
         $menuItem->menu_code = 'main-menu';
@@ -99,7 +99,7 @@ class DatabaseSeeder extends Seeder
 	    }
 	}
 
-        General::insert([
+        Setting::insert([
             ['group' => 'app', 'key' => 'name', 'value' => 'Starter CMS'],
             ['group' => 'app', 'key' => 'timezone', 'value' => 'Europe/Paris'],
             ['group' => 'app', 'key' => 'date_format', 'value' => 'd/m/Y H:i'],
