@@ -27,6 +27,7 @@ class Group extends Model
         'owned_by',
         'description',
         'access_level',
+        'permission',
     ];
 
     /**
