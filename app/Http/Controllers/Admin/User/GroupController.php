@@ -169,7 +169,8 @@ class GroupController extends Controller
             return redirect()->route('admin.user.groups.index', $request->query())->with('success', __('messages.group.update_success'));
         }
 
-        return redirect()->route('admin.user.groups.edit', array_merge($request->query(), ['group' => $group->id]))->with('success', __('messages.group.update_success'));
+        return response()->json(['success' => __('messages.group.update_success')]);
+        //return redirect()->route('admin.user.groups.edit', array_merge($request->query(), ['group' => $group->id]))->with('success', __('messages.group.update_success'));
     }
 
     /**

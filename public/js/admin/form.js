@@ -16,7 +16,8 @@
   });
 
   $.fn.save = function() {
-      $('#itemForm').submit();
+      //$('#itemForm').submit();
+      $.fn.runAjax();
   }
 
   $.fn.saveClose = function() {
@@ -32,13 +33,6 @@
       if (window.confirm('Are you sure ?')) {
 	  $('#deleteItem').submit();
       }
-
-      /*alert($('#itemListUrl').val()+'/2');
-      $.ajax({
-	  type: 'DELETE',
-	  url: $('#itemListUrl').val()+'/2',
-	  headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-	});*/
   }
 
   $.fn.setActiveTab = function(tab) {
@@ -54,6 +48,46 @@
 
   if (jQuery.fn.select2) {
       $('.select2').select2();
+  }
+
+  $.fn.runAjax = function() {
+      let url = $('#itemForm').attr('action');
+      let method = $('input[name="_method"]').val();
+      let data = {};
+
+      $('._ajax').each( function() {
+          data[$(this).attr('name')] = $(this).val();
+      });
+
+      $.ajax({
+        url: url,
+        method: method,
+        data: data, 
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        success: function(result) {
+           for (const [type, message] of Object.entries(result)) {
+               $.fn.displayMessage(type, message);
+           }
+        },
+        error: function(result) {
+           $.fn.displayMessage('danger', 'Please check the form below for errors');
+           // Loop through the returned errors and set the messages accordingly.
+           for (const [name, message] of Object.entries(result.responseJSON.errors)) {
+               $('#'+name+'Error').text(message);
+           }
+        }
+      });
+  }
+
+  $.fn.displayMessage = function(type, message) {
+     // Empty some possible error messages.
+     $('div[id$="Error"]').each( function() {
+         $(this).text('');
+     });
+
+     $('#ajax-message-alert').removeClass('d-none alert-success alert-danger alert-warning alert-info');
+     $('#ajax-message-alert').addClass('alert-'+type);
+     $('#ajax-message').text(message);
   }
 
 })(jQuery);

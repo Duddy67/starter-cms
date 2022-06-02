@@ -11,45 +11,50 @@
      $titleAsId = (isset($field->extra) && in_array('title_as_id', $field->extra)) ? true : false;
      $multi = ($multiple) ? '[]' : '';
 
-      $dataset = ''; 
-      if (isset($field->dataset)) {
-          foreach($field->dataset as $key => $val) {
-              $dataset .= 'data-'.$key.'='.$val.' ';
-          }
-      }
+     // Check first that the input can be used with ajax.
+     if (!$disabled && (!isset($field->extra) || !in_array('no_ajax', $field->extra))) {
+         $class = $class.' _ajax'; 
+     }
+
+     $dataset = '';
+     if (isset($field->dataset)) {
+         foreach($field->dataset as $key => $val) {
+             $dataset .= 'data-'.$key.'='.$val.' ';
+         }
+     }
 @endphp
 
 @if ($field->type == 'text' || $field->type == 'password' || $field->type == 'date' || $field->type == 'file')
     <input  id="{{ $field->id }}" {{ $disabled }} 
 
     @if ($field->type == 'date')
-        type="text" class="form-control date {{ $class }}"
+	type="text" class="form-control date {{ $class }}"
     @else 
-        type="{{ $field->type }}" class="form-control {{ $class }}" 
+	type="{{ $field->type }}" class="form-control {{ $class }}" 
     @endif
 
     @if ($name)
-        name="{{ $name }}"
+	name="{{ $name }}"
     @endif
 
     @if (isset($field->placeholder))
-        placeholder="@lang ($field->placeholder)"
+	placeholder="@lang ($field->placeholder)"
     @endif
 
     @if ($disabled)
-        readonly
+	readonly
     @endif
 
     @if (isset($field->autocomplete))
-        autocomplete="{{ $field->autocomplete }}"
+	autocomplete="{{ $field->autocomplete }}"
     @endif
 
     @if ($value && $field->type != 'password')
-        value="{{ $value }}"
+	value="{{ $value }}"
     @endif
 
     @if ($dataset)
-        {{ $dataset }}
+	{{ $dataset }}
     @endif
 
     >
@@ -57,64 +62,64 @@
 
     <select id="{{ $field->id }}" class="form-control select2 {{ $class }}" {{ $multiple }} {{ $disabled }} name="{{ $name.$multi }}"
     @if (isset($field->onchange))
-        onchange="{{ $field->onchange }}"
+	onchange="{{ $field->onchange }}"
     @endif
     >
-        @if (isset($field->blank))
-            <option value="">@lang ($field->blank)</option>
-        @endif
+	@if (isset($field->blank))
+	    <option value="">@lang ($field->blank)</option>
+	@endif
 
         @foreach ($field->options as $option)
-            @if ($multiple)
-                @php $selected = ($value !== null && in_array($option['value'], $value)) ? 'selected=selected' : '' @endphp
-            @else
-                @php $selected = ($value !== null && $option['value'] == $value) ? 'selected=selected' : '' @endphp
-            @endif
+	    @if ($multiple)
+		@php $selected = ($value !== null && in_array($option['value'], $value)) ? 'selected=selected' : '' @endphp
+	    @else
+		@php $selected = ($value !== null && $option['value'] == $value) ? 'selected=selected' : '' @endphp
+	    @endif
 
-            @php $disabled = (isset($option['extra']) && in_array('disabled', $option['extra'])) ? 'disabled=disabled locked=locked' : '' @endphp
+	    @php $disabled = (isset($option['extra']) && in_array('disabled', $option['extra'])) ? 'disabled=disabled locked=locked' : '' @endphp
 
-            <option
-            @if ($titleAsId)
-                title="{{ $field->id }}-{{ $option['value'] }}"
-            @endif
+	    <option
+	    @if ($titleAsId)
+		title="{{ $field->id }}-{{ $option['value'] }}"
+	    @endif
 
-            value="{{ $option['value'] }}" {{ $disabled }} {{ $selected }}>{{ $option['text'] }}</option>
+	    value="{{ $option['value'] }}" {{ $disabled }} {{ $selected }}>{{ $option['text'] }}</option>
 
         @endforeach
     </select> 
 @elseif ($field->type == 'checkbox')
     @if (!isset($field->position) || $field->position == 'left')
-        <label class="form-check-label" for="{{ $field->id }}">{{ $field->label }}</label>
+	<label class="form-check-label" for="{{ $field->id }}">{{ $field->label }}</label>
     @endif
 
     <input type="checkbox" id="{{ $field->id }}" class="form-check-input" {{ $dataset }}
 
     @if ($name)
-        name="{{ $name }}"
+	name="{{ $name }}"
     @endif
 
     @if (isset($field->disabled) && $field->disabled)
-        disabled="disabled"
+	disabled="disabled"
     @endif
 
     @if ($value)
-        value="{{ $value }}"
+	value="{{ $value }}"
     @endif
 
     @if ($field->checked)
-        checked
+	checked
     @endif
 
     >
 
     @if (isset($field->position) && $field->position == 'right')
-        <label class="form-check-label" for="{{ $field->id }}">{{ $field->label }}</label>
+	<label class="form-check-label" for="{{ $field->id }}">{{ $field->label }}</label>
     @endif
 @elseif ($field->type == 'textarea')
     <textarea id="{{ $field->id }}" class="form-control {{ $class }}"
 
     @if ($name)
-        name="{{ $name }}"
+	name="{{ $name }}"
     @endif
 
     @if (isset($field->rows))
@@ -134,8 +139,6 @@
     <input type="hidden" id="_{{ $field->name }}" name="_{{ $field->name }}" value="" />
 @endif
 
-@if ($name)
-    @error($name)
-        <div class="text-danger">{{ $message }}</div>
-    @enderror
+@if ($name && isset($field->id) && str_contains($class, '_ajax'))
+    <div class="text-danger" id="{{ $field->id }}Error"></div>
 @endif

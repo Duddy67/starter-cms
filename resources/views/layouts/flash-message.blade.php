@@ -32,3 +32,8 @@
 	Please check the form below for errors
     </div>
 @endif
+
+<div class="alert alert-success alert-block d-none" id="ajax-message-alert">
+    <button type="button" class="close" data-dismiss="alert">×</button>	
+    <strong id="ajax-message"></strong>
+</div>
