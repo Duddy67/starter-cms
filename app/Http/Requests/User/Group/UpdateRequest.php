@@ -33,7 +33,7 @@ class UpdateRequest extends FormRequest
 		'required',
 		'regex:/^[a-z0-9-]{3,}$/',
 		Rule::unique('groups')->ignore($this->group->id)
-	    ],
+	    ]
         ];
 
 	if (auth()->user()->getRoleLevel() > $this->group->getOwnerRoleLevel() || $this->group->owned_by == auth()->user()->id) {

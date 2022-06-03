@@ -11,11 +11,6 @@
      $titleAsId = (isset($field->extra) && in_array('title_as_id', $field->extra)) ? true : false;
      $multi = ($multiple) ? '[]' : '';
 
-     // Check first that the input can be used with ajax.
-     if (!$disabled && (!isset($field->extra) || !in_array('no_ajax', $field->extra))) {
-         $class = $class.' _ajax'; 
-     }
-
      $dataset = '';
      if (isset($field->dataset)) {
          foreach($field->dataset as $key => $val) {
@@ -139,6 +134,6 @@
     <input type="hidden" id="_{{ $field->name }}" name="_{{ $field->name }}" value="" />
 @endif
 
-@if ($name && isset($field->id) && str_contains($class, '_ajax'))
+@if ($name && isset($field->id) && !$disabled)
     <div class="text-danger" id="{{ $field->id }}Error"></div>
 @endif
