@@ -17,7 +17,8 @@
         @endforeach
 
         <input type="hidden" id="cancelEdit" value="{{ route('admin.user.groups.cancel', $query) }}">
-        <input type="hidden" id="close" name="_close" value="0">
+        <input type="hidden" id="close" class="_ajax" name="_close" value="0">
+        <input type="hidden" id="listUrl" value="{{ route('admin.user.groups.index', $query) }}">
     </form>
     <x-toolbar :items=$actions />
 

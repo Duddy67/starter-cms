@@ -22,7 +22,8 @@
 
   $.fn.saveClose = function() {
       $('input[name="_close"]').val(1);
-      $('#itemForm').submit();
+      //$('#itemForm').submit();
+      $.fn.runAjax();
   }
 
   $.fn.cancel = function() {
@@ -65,8 +66,17 @@
         data: data, 
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
         success: function(result) {
-           for (const [type, message] of Object.entries(result)) {
-               $.fn.displayMessage(type, message);
+           // The item has been successfuly saved.
+           if ($('input[name="_close"]').val()) {
+               // Redirect to the list view.
+               window.location.href = $('#listUrl').val();
+           }
+           else {
+
+             // Loop through the returned messages (ie: success, warning or info).
+             for (const [type, message] of Object.entries(result)) {
+                 $.fn.displayMessage(type, message);
+             }
            }
         },
         error: function(result) {
@@ -84,6 +94,9 @@
      $('div[id$="Error"]').each( function() {
          $(this).text('');
      });
+
+     // Adapt to Bootstrab alert class names.
+     type = (type == 'error') ? 'danger' : type;
 
      $('#ajax-message-alert').removeClass('d-none alert-success alert-danger alert-warning alert-info');
      $('#ajax-message-alert').addClass('alert-'+type);

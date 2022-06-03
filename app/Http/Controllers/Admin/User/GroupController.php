@@ -145,7 +145,7 @@ class GroupController extends Controller
     public function update(UpdateRequest $request, Group $group)
     {
         if (!$group->canEdit()) {
-            return redirect()->route('admin.user.groups.edit', array_merge($request->query(), ['group' => $group->id]))->with('error',  __('messages.generic.edit_not_auth'));
+            return response()->json(['error' => __('messages.generic.edit_not_auth')]);
         }
 
         $group->name = $request->input('name');
@@ -165,12 +165,11 @@ class GroupController extends Controller
 
         if ($request->input('_close', null)) {
             $group->checkIn();
-            // Redirect to the list.
-            return redirect()->route('admin.user.groups.index', $request->query())->with('success', __('messages.group.update_success'));
+            // Store the message to be displayed on the list view after the redirect.
+            $request->session()->flash('success', __('messages.group.update_success'));
         }
 
         return response()->json(['success' => __('messages.group.update_success')]);
-        //return redirect()->route('admin.user.groups.edit', array_merge($request->query(), ['group' => $group->id]))->with('success', __('messages.group.update_success'));
     }
 
     /**
