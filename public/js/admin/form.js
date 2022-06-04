@@ -63,15 +63,17 @@
         processData: false,
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
         success: function(result) {
-            // The item has been successfuly saved.
-            if ($('input[name="_close"]').val() == 1) {
-                // Redirect to the list view.
-                window.location.href = $('#listUrl').val();
-            }
-            else {
-                // Loop through the returned messages (ie: success, warning or info).
-                for (const [type, message] of Object.entries(result)) {
-                    $.fn.displayMessage(type, message);
+            // Loop through the returned result.
+            for (const [key, value] of Object.entries(result)) {
+                if (key == 'redirect') {
+                    window.location.href = result.redirect;
+                }
+                else if (key == 'refresh') {
+                    $.fn.refreshFieldValues(result.refresh);
+                }
+                // messages
+                else if (['success', 'warning', 'info'].includes(key)) {
+                    $.fn.displayMessage(key, value);
                 }
             }
         },
@@ -85,13 +87,26 @@
       });
   }
 
+  $.fn.refreshFieldValues = function(values) {
+      for (const [index, value] of Object.entries(values)) {
+          $('#'+index).val(value);
+      }
+  }
+
   $.fn.displayMessage = function(type, message) {
       // Empty some possible error messages.
       $('div[id$="Error"]').each( function() {
           $(this).text('');
       });
 
-      // Adapt to Bootstrab alert class names.
+      // Hide the possible displayed flash messages.
+      $('.flash-message').each( function() {
+          if (!$(this).hasClass('d-none')) {
+              $(this).addClass('d-none');
+          }
+      });
+
+      // Adapt to Bootstrap alert class names.
       type = (type == 'error') ? 'danger' : type;
 
       $('#ajax-message-alert').removeClass('d-none alert-success alert-danger alert-warning alert-info');

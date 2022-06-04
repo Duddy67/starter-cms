@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\User\Group;
+use App\Models\Setting;
 use App\Traits\Form;
 use App\Traits\CheckInCheckOut;
 use App\Http\Requests\User\Group\StoreRequest;
@@ -86,8 +87,7 @@ class GroupController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $group = $this->item = Group::select('groups.*', 'users.name as owner_name')
-                                      ->selectRaw('IFNULL(users2.name, ?) as modifier_name', [__('labels.generic.unknown_user')])
+        $group = $this->item = Group::select('groups.*', 'users.name as owner_name', 'users2.name as modifier_name')
                                       ->leftJoin('users', 'groups.owned_by', '=', 'users.id')
                                       ->leftJoin('users as users2', 'groups.updated_by', '=', 'users2.id')
                                       ->findOrFail($id);
@@ -105,10 +105,6 @@ class GroupController extends Controller
         // Gather the needed data to build the form.
         
         $except = (auth()->user()->getRoleLevel() > $group->getOwnerRoleLevel() || $group->owned_by == auth()->user()->id) ? ['owner_name'] : ['owned_by'];
-
-        if ($group->updated_by === null) {
-            array_push($except, 'updated_by', 'updated_at');
-        }
 
         $fields = $this->getFields($except);
         $except = (!$group->canEdit()) ? ['destroy', 'save', 'saveClose'] : [];
@@ -136,7 +132,7 @@ class GroupController extends Controller
     }
 
     /**
-     * Update the specified group.
+     * Update the specified group. (AJAX)
      *
      * @param  \App\Http\Requests\User\Group\UpdateRequest  $request
      * @param  \App\Models\User\Group $group
@@ -167,13 +163,17 @@ class GroupController extends Controller
             $group->checkIn();
             // Store the message to be displayed on the list view after the redirect.
             $request->session()->flash('success', __('messages.group.update_success'));
+
+            return response()->json(['redirect' => route('admin.user.groups.index', $request->query())]);
         }
 
-        return response()->json(['success' => __('messages.group.update_success')]);
+        $refresh = ['updated_at' => Setting::getFormattedDate($group->updated_at), 'updated_by' => auth()->user()->name];
+
+        return response()->json(['success' => __('messages.group.update_success'), 'refresh' => $refresh]);
     }
 
     /**
-     * Store a new group.
+     * Store a new group. (AJAX)
      *
      * @param  \App\Http\Requests\User\Group\StoreRequest  $request
      * @return \Illuminate\Http\Response
@@ -188,13 +188,17 @@ class GroupController extends Controller
           'owned_by' => $request->input('owned_by'),
         ]);
 
+        $group->updated_by = auth()->user()->id;
         $group->save();
 
+        $request->session()->flash('success', __('messages.group.create_success'));
+
         if ($request->input('_close', null)) {
-            return redirect()->route('admin.user.groups.index', $request->query())->with('success', __('messages.group.create_success'));
+            return response()->json(['redirect' => route('admin.user.groups.index', $request->query())]);
         }
 
-        return redirect()->route('admin.user.groups.edit', array_merge($request->query(), ['group' => $group->id]))->with('success', __('messages.group.create_success'));
+        // Reload the page.
+        return response()->json(['redirect' => route('admin.user.groups.edit', array_merge($request->query(), ['group' => $group->id]))]);
     }
 
     /**
