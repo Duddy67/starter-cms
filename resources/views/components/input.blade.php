@@ -59,6 +59,10 @@
     @if (isset($field->onchange))
 	onchange="{{ $field->onchange }}"
     @endif
+
+    @if ($dataset)
+	{{ $dataset }}
+    @endif
     >
 	@if (isset($field->blank))
 	    <option value="">@lang ($field->blank)</option>
@@ -105,6 +109,9 @@
 	checked
     @endif
 
+    @if ($dataset)
+	{{ $dataset }}
+    @endif
     >
 
     @if (isset($field->position) && $field->position == 'right')
@@ -123,6 +130,10 @@
 
     @if (isset($field->cols))
         cols="{{ $field->cols}}"
+    @endif
+
+    @if ($dataset)
+	{{ $dataset }}
     @endif
     >{{ $value }}</textarea>
     

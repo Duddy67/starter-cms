@@ -27,6 +27,10 @@ tinymce.init({
 	    }
 	});
 
+        editor.on('change', function () {
+            editor.save();
+        });
+
 	editor.addCommand("iframeCommand", function(ui, value) {
 	    if (value.content_type.startsWith('image')) {
 		editor.insertContent(

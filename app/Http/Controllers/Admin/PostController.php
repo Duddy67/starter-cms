@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Setting;
 use App\Models\User\Group;
 use App\Traits\Form;
 use App\Traits\CheckInCheckOut;
@@ -89,10 +90,9 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function edit(Request $request, int $id, string $tab = null)
+    public function edit(Request $request, int $id)
     {
-        $post = $this->item = Post::select('posts.*', 'users.name as owner_name')
-                                    ->selectRaw('IFNULL(users2.name, ?) as modifier_name', [__('labels.generic.unknown_user')])
+        $post = $this->item = Post::select('posts.*', 'users.name as owner_name', 'users2.name as modifier_name')
                                     ->leftJoin('users', 'posts.owned_by', '=', 'users.id')
                                     ->leftJoin('users as users2', 'posts.updated_by', '=', 'users2.id')
                                     ->findOrFail($id);
@@ -111,19 +111,14 @@ class PostController extends Controller
         
         $except = (auth()->user()->getRoleLevel() > $post->getOwnerRoleLevel() || $post->owned_by == auth()->user()->id) ? ['owner_name'] : ['owned_by'];
 
-        if ($post->updated_by === null) {
-            array_push($except, 'updated_by', 'updated_at');
-        }
-
         $fields = $this->getFields($except);
         $this->setFieldValues($fields, $post);
         $except = (!$post->canEdit()) ? ['destroy', 'save', 'saveClose'] : [];
         $actions = $this->getActions('form', $except);
         // Add the id parameter to the query.
         $query = array_merge($request->query(), ['post' => $id]);
-        $tab = ($tab) ? $tab : 'details';
 
-        return view('admin.post.form', compact('post', 'fields', 'actions', 'tab', 'query'));
+        return view('admin.post.form', compact('post', 'fields', 'actions', 'query'));
     }
 
     /**
@@ -143,7 +138,7 @@ class PostController extends Controller
     }
 
     /**
-     * Update the specified post.
+     * Update the specified post. (AJAX)
      *
      * @param  \App\Http\Requests\Post\UpdateRequest  $request
      * @param  \App\Models\Post $post
@@ -152,11 +147,13 @@ class PostController extends Controller
     public function update(UpdateRequest $request, Post $post)
     {
         if ($post->checked_out != auth()->user()->id) {
-            return redirect()->route('admin.posts.index', $request->query())->with('error',  __('messages.generic.user_id_does_not_match'));
+            $request->session()->flash('error', __('messages.generic.user_id_does_not_match'));
+            return response()->json(['redirect' => route('admin.posts.index', $request->query())]);
         }
 
         if (!$post->canEdit()) {
-            return redirect()->route('admin.posts.edit', array_merge($request->query(), ['post' => $post->id]))->with('error',  __('messages.generic.edit_not_auth'));
+            $request->session()->flash('error', __('messages.generic.edit_not_auth'));
+            return response()->json(['redirect' => route('admin.posts.index', $request->query())]);
         }
 
         $post->title = $request->input('title');
@@ -205,6 +202,8 @@ class PostController extends Controller
 
         $post->save();
 
+        $refresh = ['updated_at' => Setting::getFormattedDate($post->updated_at), 'updated_by' => auth()->user()->name];
+
         if ($image = $this->uploadImage($request)) {
             // Delete the previous post image if any.
             if ($post->image) {
@@ -212,19 +211,23 @@ class PostController extends Controller
             }
 
             $post->image()->save($image);
+
+            $diskName = Document::where(['item_type' => 'post', 'owned_by' => $post->id])->pluck('disk_name')->first();
+            $refresh['post-image'] = url('/').'/storage/thumbnails/'.$diskName;
         }
 
         if ($request->input('_close', null)) {
             $post->checkIn();
-            // Redirect to the list.
-            return redirect()->route('admin.posts.index', $request->query())->with('success', __('messages.post.update_success'));
+            // Store the message to be displayed on the list view after the redirect.
+            $request->session()->flash('success', __('messages.post.update_success'));
+            return response()->json(['redirect' => route('admin.posts.index', $request->query())]);
         }
 
-        return redirect()->route('admin.posts.edit', array_merge($request->query(), ['post' => $post->id, 'tab' => $request->input('_tab')]))->with('success', __('messages.post.update_success'));
+        return response()->json(['success' => __('messages.post.update_success'), 'refresh' => $refresh]);
     }
 
     /**
-     * Store a new post.
+     * Store a new post. (AJAX)
      *
      * @param  \App\Http\Requests\Post\StoreRequest  $request
      * @return \Illuminate\Http\Response
@@ -243,6 +246,8 @@ class PostController extends Controller
           'excerpt' => $request->input('excerpt'),
         ]);
 
+        $post->updated_by = auth()->user()->id;
+
         if ($request->input('groups') !== null) {
             $post->groups()->attach($request->input('groups'));
         }
@@ -255,11 +260,14 @@ class PostController extends Controller
             $post->image()->save($image);
         }
 
+        $request->session()->flash('success', __('messages.post.create_success'));
+
         if ($request->input('_close', null)) {
-            return redirect()->route('admin.posts.index', $request->query())->with('success', __('messages.post.create_success'));
+            return response()->json(['redirect' => route('admin.posts.index', $request->query())]);
         }
 
-        return redirect()->route('admin.posts.edit', array_merge($request->query(), ['post' => $post->id]))->with('success', __('messages.post.create_success'));
+        // Reload the page.
+        return response()->json(['redirect' => route('admin.posts.edit', array_merge($request->query(), ['post' => $post->id]))]);
     }
 
     /**

@@ -140,8 +140,14 @@ class GroupController extends Controller
      */
     public function update(UpdateRequest $request, Group $group)
     {
+        if ($group->checked_out != auth()->user()->id) {
+            $request->session()->flash('error', __('messages.generic.user_id_does_not_match'));
+            return response()->json(['redirect' => route('admin.user.groups.index', $request->query())]);
+        }
+
         if (!$group->canEdit()) {
-            return response()->json(['error' => __('messages.generic.edit_not_auth')]);
+            $request->session()->flash('error', __('messages.generic.edit_not_auth'));
+            return response()->json(['redirect' => route('admin.user.groups.index', $request->query())]);
         }
 
         $group->name = $request->input('name');
@@ -163,7 +169,6 @@ class GroupController extends Controller
             $group->checkIn();
             // Store the message to be displayed on the list view after the redirect.
             $request->session()->flash('success', __('messages.group.update_success'));
-
             return response()->json(['redirect' => route('admin.user.groups.index', $request->query())]);
         }
 

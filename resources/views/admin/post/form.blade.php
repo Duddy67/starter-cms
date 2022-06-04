@@ -16,16 +16,25 @@
          @php array_shift($fields); // Remove the very first field (ie: title) from the array. @endphp
 
         <nav class="nav nav-tabs">
-            <a class="nav-item nav-link" href="#details" data-toggle="tab">@php echo __('labels.generic.details'); @endphp</a>
+            <a class="nav-item nav-link active" href="#details" data-toggle="tab">@php echo __('labels.generic.details'); @endphp</a>
             <a class="nav-item nav-link" href="#extra" data-toggle="tab">@php echo __('labels.generic.extra'); @endphp</a>
             <a class="nav-item nav-link" href="#settings" data-toggle="tab">@php echo __('labels.title.settings'); @endphp</a>
         </nav>
 
         <div class="tab-content">
+            @php $dataTab = null; @endphp
             @foreach ($fields as $key => $field)
                 @if (isset($field->tab))
-                    @php $active = ($field->tab == $tab) ? ' active' : ''; @endphp
+                    @php $active = ($field->tab == 'details') ? ' active' : '';
+                         $dataTab = $field->tab; @endphp
                     <div class="tab-pane{{ $active }}" id="{{ $field->tab }}">
+                @endif
+
+                @if (isset($field->dataset))
+                    @php $field->dataset->tab = $dataTab; @endphp
+                @else
+                    @php $dataset = (object) ['tab' => $dataTab];
+                         $field->dataset = $dataset; @endphp
                 @endif
 
                 @php $value = (isset($post)) ? old($field->name, $field->value) : old($field->name); @endphp
@@ -34,7 +43,7 @@
                 @if ($field->name == 'image')
                     <div class="col post-image">
                     @if (isset($post) && $post->image) 
-                        <img src="{{ url('/').$post->image->getThumbnailUrl() }}" >
+                        <img src="{{ url('/').$post->image->getThumbnailUrl() }}" id="post-image" >
                     @else
                         <img src="{{ asset('/images/camera.png') }}" height="100" width="100" alt="post-photo">
                     @endif
@@ -49,12 +58,6 @@
 
         <input type="hidden" id="cancelEdit" value="{{ route('admin.posts.cancel', $query) }}">
         <input type="hidden" id="close" name="_close" value="0">
-        <input type="hidden" id="siteUrl" name="_siteUrl" value="{{ url('/') }}">
-        <input type="hidden" id="activeTab" name="_tab" value="{{ $tab }}">
-
-        @if (isset($post))
-            <input type="hidden" id="canEdit" value="{{ $post->canEdit() }}">
-        @endif
     </form>
     <x-toolbar :items=$actions />
 

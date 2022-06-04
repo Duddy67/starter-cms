@@ -7,12 +7,6 @@
       actions.forEach(function (action) {
 	  $('#'+action).click( function() { $.fn[action](); });
       });
-
-      if ($('#activeTab').length) {
-	  $.fn.setActiveTab($('#activeTab').val());
-      }
-
-      $('.nav-tabs a').click( function() { $.fn.setLastActiveTab($(this).attr('href')); });
   });
 
   $.fn.save = function() {
@@ -34,17 +28,6 @@
       }
   }
 
-  $.fn.setActiveTab = function(tab) {
-    let link = $('a[href="#'+tab+'"]');
-    link.addClass('active');
-  }
-
-  $.fn.setLastActiveTab = function(tab) {
-    // Remove the # character at the start of the string.
-    tab = tab.substring(1);
-    $('#activeTab').val(tab);
-  }
-
   if (jQuery.fn.select2) {
       $('.select2').select2();
   }
@@ -53,6 +36,9 @@
       let url = $('#itemForm').attr('action');
       let formData = new FormData($('#itemForm')[0]);
 
+                 for(var pair of formData.entries()) {
+                     //console.log(pair[0]+ ', '+ pair[1]);
+                  }
       $.ajax({
         url: url,
         // Always use the post method when sending data as FormData doesn't work with the put method.
@@ -82,6 +68,11 @@
             // Loop through the returned errors and set the messages accordingly.
             for (const [name, message] of Object.entries(result.responseJSON.errors)) {
                 $('#'+name+'Error').text(message);
+
+                // Show the tab (if any) the field is part of.
+                if ($("#"+name).data('tab')) {
+                    $('.nav-tabs a[href="#'+$("#"+name).data('tab')+'"]').tab('show');
+                }
             }
         }
       });
@@ -89,7 +80,12 @@
 
   $.fn.refreshFieldValues = function(values) {
       for (const [index, value] of Object.entries(values)) {
-          $('#'+index).val(value);
+          if ($('#'+index).get(0).tagName == 'IMG') {
+              $('#'+index).attr('src', value);
+          }
+          else {
+              $('#'+index).val(value);
+          }
       }
   }
 

@@ -12,7 +12,7 @@ Route::get('/posts/cancel/{post?}', [AdminPostController::class, 'cancel'])->nam
 Route::put('/posts/checkin', [AdminPostController::class, 'massCheckIn'])->name('admin.posts.massCheckIn');
 Route::put('/posts/publish', [AdminPostController::class, 'massPublish'])->name('admin.posts.massPublish');
 Route::put('/posts/unpublish', [AdminPostController::class, 'massUnpublish'])->name('admin.posts.massUnpublish');
-Route::get('/posts/{post}/edit/{tab?}', [AdminPostController::class, 'edit'])->name('admin.posts.edit');
+Route::get('/posts/{post}/edit', [AdminPostController::class, 'edit'])->name('admin.posts.edit');
 Route::resource('posts', AdminPostController::class, ['as' => 'admin'])->except(['show', 'edit']);
 // Categories
 Route::delete('/post/categories', [AdminPostCategoryController::class, 'massDestroy'])->name('admin.post.categories.massDestroy');
@@ -22,8 +22,8 @@ Route::put('/post/categories/publish', [AdminPostCategoryController::class, 'mas
 Route::put('/post/categories/unpublish', [AdminPostCategoryController::class, 'massUnpublish'])->name('admin.post.categories.massUnpublish');
 Route::get('/post/categories/{category}/up', [AdminPostCategoryController::class, 'up'])->name('admin.post.categories.up');
 Route::get('/post/categories/{category}/down', [AdminPostCategoryController::class, 'down'])->name('admin.post.categories.down');
-Route::get('/post/categories/{category}/edit/{tab?}', [AdminPostCategoryController::class, 'edit'])->name('admin.post.categories.edit');
+Route::get('/post/categories/{category}/edit', [AdminPostCategoryController::class, 'edit'])->name('admin.post.categories.edit');
 Route::resource('post/categories', AdminPostCategoryController::class, ['as' => 'admin.post'])->except(['show', 'edit']);
 // Settings
-Route::get('/post/settings/{tab?}', [AdminPostSettingController::class, 'index'])->name('admin.post.settings.index');
+Route::get('/post/settings', [AdminPostSettingController::class, 'index'])->name('admin.post.settings.index');
 Route::patch('/post/settings', [AdminPostSettingController::class, 'update'])->name('admin.post.settings.update');
