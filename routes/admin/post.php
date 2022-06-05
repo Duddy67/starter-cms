@@ -13,6 +13,7 @@ Route::put('/posts/checkin', [AdminPostController::class, 'massCheckIn'])->name(
 Route::put('/posts/publish', [AdminPostController::class, 'massPublish'])->name('admin.posts.massPublish');
 Route::put('/posts/unpublish', [AdminPostController::class, 'massUnpublish'])->name('admin.posts.massUnpublish');
 Route::get('/posts/{post}/edit', [AdminPostController::class, 'edit'])->name('admin.posts.edit');
+Route::delete('/posts/{post}/delete-image', [AdminPostController::class, 'deleteImage'])->name('admin.posts.deleteImage');
 Route::resource('posts', AdminPostController::class, ['as' => 'admin'])->except(['show', 'edit']);
 // Categories
 Route::delete('/post/categories', [AdminPostCategoryController::class, 'massDestroy'])->name('admin.post.categories.massDestroy');

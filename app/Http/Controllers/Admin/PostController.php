@@ -212,8 +212,10 @@ class PostController extends Controller
 
             $post->image()->save($image);
 
-            $diskName = Document::where(['item_type' => 'post', 'owned_by' => $post->id])->pluck('disk_name')->first();
-            $refresh['post-image'] = url('/').'/storage/thumbnails/'.$diskName;
+            $refresh['post-image'] = url('/').'/storage/thumbnails/'.$image->disk_name;
+            $refresh['image'] = '';
+            // Make the image deletable.
+            $refresh['deleteImageUrl'] = route('admin.posts.deleteImage', array_merge($request->query(), ['post' => $post->id]));
         }
 
         if ($request->input('_close', null)) {
@@ -465,6 +467,14 @@ class PostController extends Controller
         }
 
         return redirect()->route('admin.posts.index', $request->query())->with('success', __('messages.post.unpublish_list_success', ['number' => $unpublished]));
+    }
+
+    public function deleteImage(Request $request, Post $post)
+    {
+        $post->image->delete();
+        $refresh = ['post-image' => asset('/images/camera.png'), 'image' => '', 'deleteImageUrl' => ''];
+
+        return response()->json(['success' => __('messages.generic.image_deleted'), 'refresh' => $refresh]);
     }
 
     /*

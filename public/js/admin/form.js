@@ -110,5 +110,8 @@
       $('#ajax-message').text(message);
   }
 
+  $.fn.testFunc = function() {
+      alert('testFunc');
+  }
 })(jQuery);
 

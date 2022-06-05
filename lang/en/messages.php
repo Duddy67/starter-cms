@@ -108,6 +108,7 @@ return [
         'mass_unpublish_not_auth' => 'You are not authorised to unpublish some of the selected items.',
         'must_not_be_descendant' => 'Node must not be a descendant.',
         'item_is_private' => ':name item is private.',
+        'image_deleted' => 'image successfully deleted.',
         'no_item_found' => 'No item has been found.',
         'can_no_longer_create_item' => 'Warning: The user ":name" is currently the owner of this item. However, he or she is no longer allowed to create this item type. Please assign this item to a different user.',
     ]
