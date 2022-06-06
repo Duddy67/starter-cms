@@ -43,10 +43,10 @@
                 @if ($field->name == 'image')
                     <div class="col post-image">
                         @php $path = (isset($post) && $post->image) ? url('/').$post->image->getThumbnailUrl() : asset('/images/camera.png'); @endphp
-                        <img src="{{ $path }}" id="post-image">
-                        @php $deleteImageUrl = (isset($post) && $post->image) ? route('admin.posts.deleteImage', $query) : ''; @endphpp
-                        <button type="button" id="deleteImageBtn" class="btn btn-danger float-right">Delete image</button>
-                        <input type="hidden" id="deleteImageUrl" value="{{ $deleteImageUrl }}">
+                        @php $deleteImageUrl = (isset($post) && $post->image) ? route('admin.posts.deleteImage', $query) : ''; @endphp
+                        <img src="{{ $path }}" id="post-image" />
+                        <button type="button" id="deleteDocumentBtn" class="btn btn-danger float-right">Delete image</button>
+                        <input type="hidden" id="deleteDocumentUrl" value="{{ $deleteImageUrl }}">
                     </div>
                 @endif
 
@@ -79,7 +79,7 @@
     <script type="text/javascript" src="{{ asset('/vendor/tinymce/tinymce.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/form.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/js/admin/post/delete.image.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/js/admin/delete.document.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/post/set.main.category.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/set.private.groups.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/disable.toolbars.js') }}"></script>

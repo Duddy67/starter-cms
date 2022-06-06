@@ -102,6 +102,11 @@ class User extends Authenticatable
         return $this->HasMany(Document::class, 'owned_by')->where('item_type', 'user');
     }
 
+    public function photo()
+    {
+        return $this->HasOne(Document::class, 'owned_by')->where(['item_type' => 'user', 'field' => 'photo']);
+    }
+
     /**
      * Delete the model from the database (override).
      *
@@ -412,7 +417,6 @@ class User extends Authenticatable
             'roles' => '\\App\\Models\\User\\Role',
             'groups' => '\\App\\Models\\User\\Group',
             'menus' => '\\App\\Models\\Menu',
-            'items' => '\\App\\Models\\Menu\\Item',
             'documents' => '\\App\\Models\\Cms\\Document',
         ];
 

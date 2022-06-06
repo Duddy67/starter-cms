@@ -142,7 +142,7 @@ class PostController extends Controller
      *
      * @param  \App\Http\Requests\Post\UpdateRequest  $request
      * @param  \App\Models\Post $post
-     * @return Response
+     * @return JSON 
      */
     public function update(UpdateRequest $request, Post $post)
     {
@@ -215,7 +215,7 @@ class PostController extends Controller
             $refresh['post-image'] = url('/').'/storage/thumbnails/'.$image->disk_name;
             $refresh['image'] = '';
             // Make the image deletable.
-            $refresh['deleteImageUrl'] = route('admin.posts.deleteImage', array_merge($request->query(), ['post' => $post->id]));
+            $refresh['deleteDocumentUrl'] = route('admin.posts.deleteImage', array_merge($request->query(), ['post' => $post->id]));
         }
 
         if ($request->input('_close', null)) {
@@ -232,7 +232,7 @@ class PostController extends Controller
      * Store a new post. (AJAX)
      *
      * @param  \App\Http\Requests\Post\StoreRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return JSON 
      */
     public function store(StoreRequest $request)
     {
@@ -469,10 +469,17 @@ class PostController extends Controller
         return redirect()->route('admin.posts.index', $request->query())->with('success', __('messages.post.unpublish_list_success', ['number' => $unpublished]));
     }
 
+    /*
+     * Delete the image Document linked to the item.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Post $post
+     * @return JSON 
+     */
     public function deleteImage(Request $request, Post $post)
     {
         $post->image->delete();
-        $refresh = ['post-image' => asset('/images/camera.png'), 'image' => '', 'deleteImageUrl' => ''];
+        $refresh = ['post-image' => asset('/images/camera.png'), 'image' => '', 'deleteDocumentUrl' => ''];
 
         return response()->json(['success' => __('messages.generic.image_deleted'), 'refresh' => $refresh]);
     }

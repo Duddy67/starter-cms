@@ -11,6 +11,7 @@ Route::get('/users/batch', [UserController::class, 'batch'])->name('admin.users.
 Route::put('/users/batch', [UserController::class, 'massUpdate'])->name('admin.users.massUpdate');
 Route::get('/users/cancel/{user?}', [UserController::class, 'cancel'])->name('admin.users.cancel');
 Route::put('/users/checkin', [UserController::class, 'massCheckIn'])->name('admin.users.massCheckIn');
+Route::delete('/users/{user}/delete-photo', [UserController::class, 'deletePhoto'])->name('admin.users.deletePhoto');
 Route::resource('users', UserController::class, ['as' => 'admin'])->except(['show']);
 // Groups
 Route::delete('/user/groups', [GroupController::class, 'massDestroy'])->name('admin.user.groups.massDestroy');

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\User;
 use App\Models\User\Group;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Hash;
 use App\Traits\Form;
 use App\Traits\CheckInCheckOut;
@@ -102,18 +103,16 @@ class UserController extends Controller
         $user->checkOut();
 
         // Gather the needed data to build the form.
-        
-        $except = ($user->updated_by === null) ? ['updated_by', 'updated_at'] : [];
-        $fields = $this->getFields($except);
+
+        $fields = $this->getFields();
         $this->setFieldValues($fields, $user);
         // Users cannot delete their own account.
         $except = (auth()->user()->id == $user->id) ? ['destroy'] : [];
         $actions = $this->getActions('form', $except);
         // Add the id parameter to the query.
         $query = array_merge($request->query(), ['user' => $id]);
-        $photo = $user->documents()->where('field', 'photo')->latest('created_at')->first();
 
-        return view('admin.user.form', compact('user', 'fields', 'actions', 'query', 'photo'));
+        return view('admin.user.form', compact('user', 'fields', 'actions', 'query'));
     }
 
     /**
@@ -133,16 +132,17 @@ class UserController extends Controller
     }
 
     /**
-     * Update the specified user.
+     * Update the specified user. (AJAX)
      *
      * @param  \App\Http\Requests\User\UpdateRequest  $request
      * @param  \App\Models\User $user
-     * @return Response
+     * @return JSON
      */
     public function update(UpdateRequest $request, User $user)
     {
         if (!auth()->user()->canUpdate($user) && auth()->user()->id != $user->id) {
-            return redirect()->route('admin.users.edit', $user->id)->with('error',  __('messages.user.update_user_not_auth'));
+            $request->session()->flash('error', __('messages.user.update_user_not_auth'));
+            return response()->json(['redirect' => route('admin.users.index', $request->query())]);
         }
 
         $user->name = $request->input('name');
@@ -170,23 +170,37 @@ class UserController extends Controller
 
         $user->save();
 
-        if ($document = $this->uploadPhoto($request)) {
-            $user->documents()->save($document);
+        $refresh = ['updated_at' => Setting::getFormattedDate($user->updated_at), 'updated_by' => auth()->user()->name];
+
+        if ($photo = $this->uploadPhoto($request)) {
+            // Delete the previous photo if any.
+            if ($user->photo) {
+                $user->photo->delete();
+            }
+
+            $user->photo()->save($photo);
+
+            $refresh['user-photo'] = url('/').'/storage/thumbnails/'.$photo->disk_name;
+            $refresh['photo'] = '';
+            // Make the photo deletable.
+            $refresh['deleteDocumentUrl'] = route('admin.users.deletePhoto', array_merge($request->query(), ['user' => $user->id]));
         }
 
         if ($request->input('_close', null)) {
             $user->checkIn();
-            return redirect()->route('admin.users.index', $request->query())->with('success', __('messages.user.update_success'));
+            // Store the message to be displayed on the list view after the redirect.
+            $request->session()->flash('success', __('messages.user.update_success'));
+            return response()->json(['redirect' => route('admin.users.index', $request->query())]);
         }
 
-        return redirect()->route('admin.users.edit', array_merge($request->query(), ['user' => $user->id]))->with('success', __('messages.user.update_success'));
+        return response()->json(['success' => __('messages.user.update_success'), 'refresh' => $refresh]);
     }
 
     /**
-     * Store a new user.
+     * Store a new user. (AJAX)
      *
      * @param  \App\Http\Requests\User\StoreRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return JSON
      */
     public function store(StoreRequest $request)
     {
@@ -196,6 +210,9 @@ class UserController extends Controller
             'password' => Hash::make($request->input('password')),
         ]);
 
+        $user->updated_by = auth()->user()->id;
+        $user->save();
+
         $user->assignRole($request->input('role'));
 
         if ($request->input('groups') !== null) {
@@ -204,15 +221,18 @@ class UserController extends Controller
 
         Email::sendEmail('user_registration', $user);
 
-        if ($document = $this->uploadPhoto($request)) {
-            $user->documents()->save($document);
+        if ($photo = $this->uploadPhoto($request)) {
+            $user->photo()->save($photo);
         }
+
+        $request->session()->flash('success', __('messages.user.create_success'));
 
         if ($request->input('_close', null)) {
-            return redirect()->route('admin.users.index', $request->query())->with('success', __('messages.user.create_success'));
+            return response()->json(['redirect' => route('admin.users.index', $request->query())]);
         }
 
-        return redirect()->route('admin.users.edit', array_merge($request->query(), ['user' => $user->id]))->with('success', __('messages.user.create_success'));
+        // Reload the page.
+        return response()->json(['redirect' => route('admin.users.edit', array_merge($request->query(), ['user' => $user->id]))]);
     }
 
     /**
@@ -291,7 +311,7 @@ class UserController extends Controller
      */
     public function massCheckIn(Request $request)
     {
-        $messages = CheckInCheckOut::checkInMultiple($request->input('ids'), '\\App\\Models\\User\\User');
+        $messages = CheckInCheckOut::checkInMultiple($request->input('ids'), '\\App\\Models\\User');
 
         return redirect()->route('admin.users.index', $request->query())->with($messages);
     }
@@ -363,6 +383,22 @@ class UserController extends Controller
         }
 
         return redirect()->route('admin.users.index')->with($messages);
+    }
+
+    /*
+     * Delete the photo Document linked to the user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\User $user
+     * @return JSON 
+     */
+    public function deletePhoto(Request $request, User $user)
+    {
+        $photo = $user->documents()->where('field', 'photo')->latest('created_at')->first();
+        $photo->delete();
+        $refresh = ['user-photo' => asset('/images/user.png'), 'photo' => '', 'deleteDocumentUrl' => ''];
+
+        return response()->json(['success' => __('messages.generic.photo_deleted'), 'refresh' => $refresh]);
     }
 
     /*

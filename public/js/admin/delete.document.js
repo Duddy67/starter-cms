@@ -2,14 +2,14 @@
 
   // Run a function when the page is fully loaded including graphics.
   $(window).on('load', function() {
-      $('#deleteImageBtn').click( function() { $.fn.deleteImage(); });
+      $('#deleteDocumentBtn').click( function() { $.fn.deleteImage(); });
   });
 
   $.fn.deleteImage = function() {
-      let url = $('#deleteImageUrl').val();
+      let url = $('#deleteDocumentUrl').val();
 
       if (!url) {
-          alert('There is no image to delete.');
+          alert('There is no document to delete.');
           return;
       }
 
@@ -31,7 +31,7 @@
                 }
             },
             error: function(result) {
-                $.fn.displayMessage('danger', 'The image could not be deleted.');
+                $.fn.displayMessage('danger', 'The document could not be deleted.');
             }
           });
       }

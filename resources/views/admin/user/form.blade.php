@@ -6,10 +6,6 @@
 
     @php $action = (isset($user)) ? route('admin.users.update', $query) : route('admin.users.store', $query) @endphp
 
-    @if (isset($user) && $photo) 
-        <img src="{{ url('/').$photo->getThumbnailUrl() }}" >
-    @endif
-
     <form method="post" action="{{ $action }}" id="itemForm" enctype="multipart/form-data">
         @csrf
 
@@ -37,6 +33,16 @@
             <div class="form-group">
                 <x-input :field="$field" :value="$value" />
             </div>
+
+            @if ($field->name == 'photo')
+                <div class="col post-image">
+                    @php $path = (isset($user) && $user->photo) ?  url('/').$user->photo->getThumbnailUrl() : asset('/images/user.png'); @endphp
+                    @php $deletePhotoUrl = (isset($user) && $user->photo) ?  route('admin.users.deletePhoto', $query) : ''; @endphp
+                    <img src="{{ $path }}" id="user-photo" />
+                    <button type="button" id="deleteDocumentBtn" class="btn btn-danger float-right">Delete photo</button>
+                    <input type="hidden" id="deleteDocumentUrl" value="{{ $deletePhotoUrl }}">
+                </div>
+            @endif
         @endforeach
 
         <input type="hidden" id="cancelEdit" value="{{ route('admin.users.cancel', $query) }}">
@@ -64,6 +70,7 @@
     <script type="text/javascript" src="{{ asset('/vendor/adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/form.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/js/admin/delete.document.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/set.private.groups.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/disable.toolbars.js') }}"></script>
 @endpush
