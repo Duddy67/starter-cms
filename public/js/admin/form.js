@@ -36,9 +36,8 @@
       let url = $('#itemForm').attr('action');
       let formData = new FormData($('#itemForm')[0]);
 
-                 for(var pair of formData.entries()) {
-                     //console.log(pair[0]+ ', '+ pair[1]);
-                  }
+      $('#ajax-progress').removeClass('d-none');
+
       $.ajax({
         url: url,
         // Always use the post method when sending data as FormData doesn't work with the put method.
@@ -49,6 +48,7 @@
         processData: false,
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
         success: function(result) {
+            $('#ajax-progress').addClass('d-none');
             // Loop through the returned result.
             for (const [key, value] of Object.entries(result)) {
                 if (key == 'redirect') {
@@ -64,6 +64,7 @@
             }
         },
         error: function(result) {
+            $('#ajax-progress').addClass('d-none');
             $.fn.displayMessage('danger', 'Please check the form below for errors');
             // Loop through the returned errors and set the messages accordingly.
             for (const [name, message] of Object.entries(result.responseJSON.errors)) {

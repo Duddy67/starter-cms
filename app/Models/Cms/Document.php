@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\Setting;
+use App\Models\User;
+use App\Models\Post;
 
 
 class Document extends Model

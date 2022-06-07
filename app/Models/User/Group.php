@@ -42,6 +42,13 @@ class Group extends Model
     ];
 
     /**
+     * All of the relationships to be touched.
+     *
+     * @var array
+     */
+    protected $touches = ['posts', 'users', 'categories', 'menus'];
+
+    /**
      * The users that belong to the group.
      */
     public function users()

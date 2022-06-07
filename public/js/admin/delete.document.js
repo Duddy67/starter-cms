@@ -13,12 +13,15 @@
           return;
       }
 
+      $('#ajax-progress').removeClass('d-none');
+
       if (window.confirm('Are you sure ?')) {
           $.ajax({
             url: url,
             method: 'delete',
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             success: function(result) {
+                $('#ajax-progress').addClass('d-none');
                 // Loop through the returned result.
                 for (const [key, value] of Object.entries(result)) {
                     if (key == 'refresh') {
@@ -31,6 +34,7 @@
                 }
             },
             error: function(result) {
+                $('#ajax-progress').addClass('d-none');
                 $.fn.displayMessage('danger', 'The document could not be deleted.');
             }
           });

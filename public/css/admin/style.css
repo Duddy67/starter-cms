@@ -85,3 +85,20 @@ tr.clickable-row {
   padding: 10px;
 }
 
+.ajax-progress {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.33;
+  background-color: #f6f6f6;
+}
+
+.progress-icon {
+  position: absolute;
+  top: 40%;
+  left: 40%;
+}
+
+
+

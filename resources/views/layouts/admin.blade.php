@@ -252,8 +252,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-      @include('layouts.flash-message')
-      @yield('main')
+        @include('layouts.flash-message')
+        @yield('main')
+
+        <div class="ajax-progress d-none" id="ajax-progress">
+          <img src="{{ asset('/images/progress-icon.gif') }}" class="progress-icon" />
+        </div>
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
