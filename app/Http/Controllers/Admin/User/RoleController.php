@@ -10,6 +10,7 @@ use App\Traits\CheckInCheckOut;
 use App\Models\User\Role;
 use App\Models\User\Permission;
 use App\Models\User;
+use App\Models\Setting;
 use App\Http\Requests\User\Role\StoreRequest;
 use App\Http\Requests\User\Role\UpdateRequest;
 
@@ -91,8 +92,7 @@ class RoleController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $role = $this->item = Role::select('roles.*', 'users.name as owner_name')
-                                    ->selectRaw('IFNULL(users2.name, ?) as modifier_name', [__('labels.generic.unknown_user')])
+        $role = $this->item = Role::select('roles.*', 'users.name as owner_name', 'users2.name as modifier_name')
                                     ->leftJoin('users', 'roles.owned_by', '=', 'users.id')
                                     ->leftJoin('users as users2', 'roles.updated_by', '=', 'users2.id')
                                     ->findOrFail($id);
@@ -117,10 +117,6 @@ class RoleController extends Controller
             // Gather the needed data to build the form.
 
             $except = (auth()->user()->getRoleLevel() > $role->getOwnerRoleLevel() || $role->owned_by == auth()->user()->id) ? ['owner_name'] : ['owned_by'];
-
-            if ($role->updated_by === null) {
-                array_push($except, 'updated_by', 'updated_at');
-            }
         }
 
         $fields = $this->getFields($except);
@@ -151,7 +147,7 @@ class RoleController extends Controller
     }
 
     /**
-     * Update the specified role.
+     * Update the specified role. (AJAX)
      *
      * @param  \App\Http\Requests\User\Role\UpdateRequest  $request
      * @param  \App\Models\User\Role $role
@@ -160,11 +156,13 @@ class RoleController extends Controller
     public function update(UpdateRequest $request, Role $role)
     {
         if (in_array($role->id, Role::getDefaultRoleIds())) {
-            return redirect()->route('admin.user.roles.edit', $role->id)->with('error', __('messages.role.cannot_update_default_roles'));
+            $request->session()->flash('error', __('messages.role.cannot_update_default_roles'));
+            return response()->json(['redirect' => route('admin.user.roles.index', $request->query())]);
         }
 
         if (!$role->canEdit()) {
-            return redirect()->route('admin.user.roles.edit', array_merge($request->query(), ['role' => $role->id]))->with('error',  __('messages.generic.edit_not_auth'));
+            $request->session()->flash('error', __('messages.generic.edit_not_auth'));
+            return response()->json(['redirect' => route('admin.user.roles.index', $request->query())]);
         }
 
         $role->name = $request->input('name');
@@ -190,24 +188,27 @@ class RoleController extends Controller
             // Note: No need to check the default role permissions since they have been set during the storing process and cannot be modified anymore.
 
             if ($optional && in_array($permission->name, $request->input('permissions', [])) && !$role->hasPermissionTo($permission->name)) {
-                  $role->givePermissionTo($permission->name);
+                $role->givePermissionTo($permission->name);
             }
             elseif ($optional && !in_array($permission->name, $request->input('permissions', [])) && $role->hasPermissionTo($permission->name)) {
-                 $role->revokePermissionTo($permission->name);
+               $role->revokePermissionTo($permission->name);
             }
         }
 
         if ($request->input('_close', null)) {
             $role->checkIn();
-            return redirect()->route('admin.user.roles.index', $request->query())->with('success', __('messages.role.update_success'));
+            // Store the message to be displayed on the list view after the redirect.
+            $request->session()->flash('success', __('messages.role.update_success'));
+            return response()->json(['redirect' => route('admin.user.roles.index', $request->query())]);
         }
 
-        return redirect()->route('admin.user.roles.edit', array_merge($request->query(), ['role' => $role->id]))->with('success', __('messages.role.update_success'));
-     
+        $refresh = ['updated_at' => Setting::getFormattedDate($role->updated_at), 'updated_by' => auth()->user()->name];
+
+        return response()->json(['success' => __('messages.role.update_success'), 'refresh' => $refresh]);
     }
 
     /**
-     * Store a new role.
+     * Store a new role. (AJAX)
      *
      * @param  \App\Http\Requests\User\Role\StoreRequest  $request
      * @return \Illuminate\Http\Response
@@ -219,7 +220,8 @@ class RoleController extends Controller
         $count = array_intersect($request->input('permissions', []), $level1Perms);
 
         if (auth()->user()->getRoleType() == 'admin' && $count) {
-            return redirect()->route('admin.user.roles.edit', $role->id)->with('error', __('messages.role.permission_not_auth'));
+            $request->session()->flash('error', __('messages.role.permission_not_auth'));
+            return response()->json(['redirect' => route('admin.user.roles.index', $request->query())]);
         }
 
         $permissions = Permission::getPermissionsWithoutSections();
@@ -251,14 +253,18 @@ class RoleController extends Controller
         // Set the role attributes.
         $role->role_type = $request->input('role_type');
         $role->role_level = Role::getRoleHierarchy()[$role->role_type];
+        $role->updated_by = auth()->user()->id;
 
         $role->save();
 
+        $request->session()->flash('success', __('messages.role.create_success'));
+
         if ($request->input('_close', null)) {
-            return redirect()->route('admin.user.roles.index', $request->query())->with('success', __('messages.role.create_success'));
+            return response()->json(['redirect' => route('admin.user.roles.index', $request->query())]);
         }
 
-        return redirect()->route('admin.user.roles.edit', array_merge($request->query(), ['role' => $role->id]))->with('success', __('messages.role.create_success'));
+        // Reload the page.
+        return response()->json(['redirect' => route('admin.user.roles.edit', array_merge($request->query(), ['role' => $role->id]))]);
     }
 
     /**
@@ -278,7 +284,7 @@ class RoleController extends Controller
             return redirect()->route('admin.user.roles.edit', array_merge($request->query(), ['role' => $role->id]))->with('error', __('messages.role.cannot_delete_default_roles'));
         }
 
-        if ($role->user->count()) {
+        if (User::role($role->name)->count()) {
             return redirect()->route('admin.user.roles.edit', array_merge($request->query(), ['role' => $role->id]))->with('error', __('messages.role.user_assigned_to_roles', ['name' => $role->name]));
         }
 
@@ -403,7 +409,11 @@ class RoleController extends Controller
                         $role->role_type = 'super-admin';
                     }
 
-                    if (($role->getOwnerRoleLevel() >= $userRoleLevel && $role->access_level != 'public_rw') || in_array($role->name, Role::getDefaultRoles())) {
+                    if (in_array($role->name, Role::getDefaultRoles())) {
+                        $checkbox->disabled = true;
+                    }
+
+                    if ($role->getOwnerRoleLevel() > $userRoleLevel && ($role->access_level != 'public_rw' || $role->owned_by == auth()->user()->id)) {
                         $checkbox->disabled = true;
                     }
                 }
