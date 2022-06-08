@@ -23,17 +23,25 @@
          @php array_shift($fields); // Remove the very first field (ie: name) from the array. @endphp
 
         <nav class="nav nav-tabs">
-            <a class="nav-item nav-link" href="#details" data-toggle="tab">@php echo __('labels.generic.details'); @endphp</a>
+            <a class="nav-item nav-link active" href="#details" data-toggle="tab">@php echo __('labels.generic.details'); @endphp</a>
             <a class="nav-item nav-link" href="#settings" data-toggle="tab">@php echo __('labels.title.settings'); @endphp</a>
         </nav>
 
         <div class="tab-content">
+            @php $dataTab = null; @endphp
             @foreach ($fields as $key => $field)
                 @if (isset($field->tab))
-                    @php $active = ($field->tab == $tab) ? ' active' : ''; @endphp
+                    @php $active = ($field->tab == 'details') ? ' active' : '';
+                         $dataTab = $field->tab; @endphp
                     <div class="tab-pane{{ $active }}" id="{{ $field->tab }}">
                 @endif
 
+                @if (isset($field->dataset))
+                    @php $field->dataset->tab = $dataTab; @endphp
+                @else
+                    @php $dataset = (object) ['tab' => $dataTab];
+                         $field->dataset = $dataset; @endphp
+                @endif
 
                 @php $value = (isset($category)) ? old($field->name, $field->value) : old($field->name); @endphp
                 <x-input :field="$field" :value="$value" />
@@ -46,7 +54,6 @@
 
         <input type="hidden" id="cancelEdit" value="{{ route('admin.post.categories.cancel', $query) }}">
         <input type="hidden" id="close" name="_close" value="0">
-        <input type="hidden" id="activeTab" name="_tab" value="{{ $tab }}">
 
         @if (isset($category))
             <input type="hidden" id="canEdit" value="{{ $category->canEdit() }}">

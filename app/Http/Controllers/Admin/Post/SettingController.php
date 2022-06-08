@@ -40,19 +40,18 @@ class SettingController extends Controller
      * @param  Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index(Request $request, $tab = null)
+    public function index(Request $request)
     {
         $fields = $this->getFields();
         $actions = $this->getActions('form');
         $query = $request->query();
         $data = Setting::getData();
-        $tab = ($tab) ? $tab : 'posts';
 
-        return view('admin.post.setting.form', compact('fields', 'actions', 'data', 'tab', 'query'));
+        return view('admin.post.setting.form', compact('fields', 'actions', 'data', 'query'));
     }
 
     /**
-     * Update the post parameters.
+     * Update the post parameters. (AJAX)
      *
      * @param  Request  $request
      * @return Response
@@ -68,7 +67,7 @@ class SettingController extends Controller
           }
         }
 
-        return redirect()->route('admin.post.settings.index', array_merge($request->query(), ['tab' => $request->input('_tab')]))->with('success', __('messages.general.update_success'));
+        return response()->json(['success' => __('messages.general.update_success')]);
     }
 
     /**

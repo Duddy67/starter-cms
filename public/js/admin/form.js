@@ -65,7 +65,7 @@
         },
         error: function(result) {
             $('#ajax-progress').addClass('d-none');
-            $.fn.displayMessage('danger', 'Please check the form below for errors');
+            $.fn.displayMessage('danger', 'Please check the form below for errors.');
             // Loop through the returned errors and set the messages accordingly.
             for (const [name, message] of Object.entries(result.responseJSON.errors)) {
                 $('#'+name+'Error').text(message);
@@ -109,6 +109,8 @@
       $('#ajax-message-alert').removeClass('d-none alert-success alert-danger alert-warning alert-info');
       $('#ajax-message-alert').addClass('alert-'+type);
       $('#ajax-message').text(message);
+
+      $(window).scrollTop(0);
   }
 
 })(jQuery);

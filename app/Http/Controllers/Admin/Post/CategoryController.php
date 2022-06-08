@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Post\Category;
 use App\Models\User\Group;
 use App\Models\User;
+use App\Models\Setting;
 use App\Traits\Form;
 use App\Traits\CheckInCheckOut;
 use App\Http\Requests\Post\Category\StoreRequest;
@@ -74,9 +75,8 @@ class CategoryController extends Controller
         $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
         $actions = $this->getActions('form', ['destroy']);
         $query = $request->query();
-        $tab = 'details';
 
-        return view('admin.post.category.form', compact('fields', 'actions', 'tab', 'query'));
+        return view('admin.post.category.form', compact('fields', 'actions', 'query'));
     }
 
     /**
@@ -86,10 +86,9 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function edit(Request $request, $id, $tab = null)
+    public function edit(Request $request, $id)
     {
-        $category = $this->item = Category::select('post_categories.*', 'users.name as owner_name')
-                                            ->selectRaw('IFNULL(users2.name, ?) as modifier_name', [__('labels.generic.unknown_user')])
+        $category = $this->item = Category::select('post_categories.*', 'users.name as owner_name', 'users2.name as modifier_name')
                                             ->leftJoin('users', 'post_categories.owned_by', '=', 'users.id')
                                             ->leftJoin('users as users2', 'post_categories.updated_by', '=', 'users2.id')
                                             ->findOrFail($id);
@@ -108,21 +107,16 @@ class CategoryController extends Controller
 
         $except = (auth()->user()->getRoleLevel() > $category->getOwnerRoleLevel() || $category->owned_by == auth()->user()->id) ? ['owner_name'] : ['owned_by'];
 
-        if ($category->updated_by === null) {
-            array_push($except, 'updated_by', 'updated_at');
-        }
-
         $fields = $this->getFields($except);
         $this->setFieldValues($fields, $category);
         $except = (!$category->canEdit()) ? ['destroy', 'save', 'saveClose'] : [];
         $actions = $this->getActions('form', $except);
         // Add the id parameter to the query.
         $query = array_merge($request->query(), ['category' => $id]);
-        $tab = ($tab) ? $tab : 'details';
         // Get the owner of the category in order to check (in the template) if they're still allowed to create categories.
         $owner = User::find($category->owned_by);
 
-        return view('admin.post.category.form', compact('category', 'owner', 'fields', 'actions', 'tab', 'query'));
+        return view('admin.post.category.form', compact('category', 'owner', 'fields', 'actions', 'query'));
     }
 
     /**
@@ -142,7 +136,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * Update the specified category.
+     * Update the specified category. (AJAX)
      *
      * @param  \App\Http\Requests\Post\Category\UpdateRequest  $request
      * @param  \App\Models\Post\Category $category
@@ -151,11 +145,13 @@ class CategoryController extends Controller
     public function update(UpdateRequest $request, Category $category)
     {
         if ($category->checked_out != auth()->user()->id) {
-            return redirect()->route('admin.post.categories.index', $request->query())->with('error',  __('messages.generic.user_id_does_not_match'));
+            $request->session()->flash('error', __('messages.generic.user_id_does_not_match'));
+            return response()->json(['redirect' => route('admin.post.categories.index', $request->query())]);
         }
 
         if (!$category->canEdit()) {
-            return redirect()->route('admin.post.categories.index', $request->query())->with('error',  __('messages.generic.edit_not_auth'));
+            $request->session()->flash('error', __('messages.generic.edit_not_auth'));
+            return response()->json(['redirect' => route('admin.post.categories.index', $request->query())]);
         }
 
         if ($request->input('parent_id')) {
@@ -163,11 +159,12 @@ class CategoryController extends Controller
 
             // Check the selected parent is not the category itself or a descendant.
             if ($category->id == $request->input('parent_id') || $parent->isDescendantOf($category)) {
-                return redirect()->route('admin.post.categories.edit', array_merge($request->query(), ['category' => $category->id]))->with('error',  __('messages.generic.must_not_be_descendant'));
+                return response()->json(['error' => __('messages.generic.must_not_be_descendant')]);
             }
 
             if ($parent->access_level == 'private' && $parent->owned_by != auth()->user()->id) {
-                return redirect()->route('admin.post.categories.create', $request->query())->with('error',  __('messages.generic.item_is_private', ['name' => $parent->name]));
+                $request->session()->flash('error', __('messages.generic.item_is_private', ['name' => $parent->name]));
+                return response()->json(['redirect' => route('admin.post.categories.index', $request->query())]);
             }
         }
 
@@ -199,11 +196,11 @@ class CategoryController extends Controller
             if ($category->access_level != 'private') {
                 // The access level has just been set to private. Check first for descendants.
                 if ($request->input('access_level') == 'private' && !$category->canDescendantsBePrivate()) {
-                    return redirect()->route('admin.post.categories.edit', array_merge($request->query(), ['category' => $category->id]))->with('error',  __('messages.generic.descendants_cannot_be_private'));
+                    return response()->json(['error' => __('messages.generic.descendants_cannot_be_private')]);
                 }
 
                 if ($request->input('access_level') == 'private' && $category->anyDescendantCheckedOut()) {
-                    return redirect()->route('admin.post.categories.edit', array_merge($request->query(), ['category' => $category->id]))->with('error',  __('messages.generic.descendants_checked_out'));
+                    return response()->json(['error' => __('messages.generic.descendants_checked_out')]);
                 }
 
                 if ($request->input('access_level') == 'private') {
@@ -236,13 +233,16 @@ class CategoryController extends Controller
 
         $category->save();
 
+        $refresh = ['updated_at' => Setting::getFormattedDate($category->updated_at), 'updated_by' => auth()->user()->name];
+
         if ($request->input('_close', null)) {
             $category->checkIn();
-            // Redirect to the list.
-            return redirect()->route('admin.post.categories.index', $request->query())->with('success', __('messages.category.update_success'));
+            // Store the message to be displayed on the list view after the redirect.
+            $request->session()->flash('success', __('messages.category.update_success'));
+            return response()->json(['redirect' => route('admin.post.categories.index', $request->query())]);
         }
 
-        return redirect()->route('admin.post.categories.edit', array_merge($request->query(), ['category' => $category->id, 'tab' => $request->input('_tab')]))->with('success', __('messages.category.update_success'));
+        return response()->json(['success' => __('messages.category.update_success'), 'refresh' => $refresh]);
     }
 
     /**
@@ -258,15 +258,15 @@ class CategoryController extends Controller
             $parent = Category::findOrFail($request->input('parent_id'));
 
             if ($parent->access_level == 'private' && $parent->owned_by != auth()->user()->id) {
-                return redirect()->route('admin.post.categories.create', $request->query())->with('error',  __('messages.generic.item_is_private', ['name' => $parent->name]));
+                return response()->json(['error' => __('messages.generic.item_is_private'), ['name' => $parent->name]]);
             }
 
             if ($parent->access_level == 'private' && $request->input('access_level') != 'private') {
-                return redirect()->route('admin.post.categories.create', $request->query())->with('error',  __('messages.generic.access_level_must_be_private'));
+                return response()->json(['error' => __('messages.generic.access_level_must_be_private')]);
             }
 
             if ($parent->access_level == 'private' && $request->input('owned_by') != $parent->owned_by) {
-                return redirect()->route('admin.post.categories.create', $request->query())->with('error',  __('messages.generic.owner_must_match_parent_category'));
+                return response()->json(['error' => __('messages.generic.owner_must_match_parent_category')]);
             }
         }
 
@@ -286,11 +286,17 @@ class CategoryController extends Controller
             $parent->appendNode($category);
         }
 
+        $category->updated_by = auth()->user()->id;
+        $category->save();
+
+        $request->session()->flash('success', __('messages.category.create_success'));
+
         if ($request->input('_close', null)) {
-            return redirect()->route('admin.post.categories.index', $request->query())->with('success', __('messages.category.create_success'));
+            return response()->json(['redirect' => route('admin.post.categories.index', $request->query())]);
         }
 
-        return redirect()->route('admin.post.categories.edit', array_merge($request->query(), ['category' => $category->id]))->with('success', __('messages.category.create_success'));
+        // Redirect to the edit form.
+        return response()->json(['redirect' => route('admin.post.categories.edit', array_merge($request->query(), ['category' => $category->id]))]);
     }
 
     /**

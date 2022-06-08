@@ -78,9 +78,8 @@ class PostController extends Controller
         $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
         $actions = $this->getActions('form', ['destroy']);
         $query = $request->query();
-        $tab = 'details';
 
-        return view('admin.post.form', compact('fields', 'actions', 'tab',  'query'));
+        return view('admin.post.form', compact('fields', 'actions', 'query'));
     }
 
     /**
@@ -268,7 +267,7 @@ class PostController extends Controller
             return response()->json(['redirect' => route('admin.posts.index', $request->query())]);
         }
 
-        // Reload the page.
+        // Redirect to the edit form.
         return response()->json(['redirect' => route('admin.posts.edit', array_merge($request->query(), ['post' => $post->id]))]);
     }
 

@@ -39,6 +39,10 @@ class UpdateRequest extends FormRequest
 	    $rules['access_level'] = 'required';
 	}
 
+        if ($this->category->canChangeStatus()) {
+            $rules['status'] = 'required';
+        }
+
 	if ($this->category->access_level != 'private' && $this->category->canChangeAccessLevel()) {
 	    $rules['access_level'] = 'required';
 	    $rules['owned_by'] = 'required';
