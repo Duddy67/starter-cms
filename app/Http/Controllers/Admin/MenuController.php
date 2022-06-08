@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Menu;
 use App\Models\User\Group;
+use App\Models\Setting;
 use App\Traits\Form;
 use App\Traits\CheckInCheckOut;
 use App\Http\Requests\Menu\StoreRequest;
@@ -87,8 +88,7 @@ class MenuController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $menu = $this->item = Menu::select('menus.*', 'users.name as owner_name')
-                                    ->selectRaw('IFNULL(users2.name, ?) as modifier_name', [__('labels.generic.unknown_user')])
+        $menu = $this->item = Menu::select('menus.*', 'users.name as owner_name', 'users2.name as modifier_name')
                                     ->leftJoin('users', 'menus.owned_by', '=', 'users.id')
                                     ->leftJoin('users as users2', 'menus.updated_by', '=', 'users2.id')
                                     ->findOrFail($id);
@@ -106,10 +106,6 @@ class MenuController extends Controller
         // Gather the needed data to build the form.
         
         $except = (auth()->user()->getRoleLevel() > $menu->getOwnerRoleLevel() || $menu->owned_by == auth()->user()->id) ? ['owner_name'] : ['owned_by'];
-
-        if ($menu->updated_by === null) {
-            array_push($except, 'updated_by', 'updated_at');
-        }
 
         $fields = $this->getFields($except);
         $this->setFieldValues($fields, $menu);
@@ -138,20 +134,22 @@ class MenuController extends Controller
     }
 
     /**
-     * Update the specified menu.
+     * Update the specified menu. (AJAX)
      *
      * @param  \App\Http\Requests\Menu\UpdateRequest  $request
      * @param  \App\Models\Menu  $menu
-     * @return Response
+     * @return JSON
      */
     public function update(UpdateRequest $request, Menu $menu)
     {
         if ($menu->checked_out != auth()->user()->id) {
-            return redirect()->route('admin.menus.index', $request->query())->with('error',  __('messages.generic.user_id_does_not_match'));
+            $request->session()->flash('error', __('messages.generic.user_id_does_not_match'));
+            return response()->json(['redirect' => route('admin.menus.index', $request->query())]);
         }
 
         if (!$menu->canEdit()) {
-            return redirect()->route('admin.menus.edit', array_merge($request->query(), ['menu' => $menu->id]))->with('error',  __('messages.generic.edit_not_auth'));
+            $request->session()->flash('error', __('messages.generic.edit_not_auth'));
+            return response()->json(['redirect' => route('admin.menus.index', $request->query())]);
         }
 
         $menu->title = $request->input('title');
@@ -184,18 +182,21 @@ class MenuController extends Controller
 
         if ($request->input('_close', null)) {
             $menu->checkIn();
-            // Redirect to the list.
-            return redirect()->route('admin.menus.index', $request->query())->with('success', __('messages.menu.update_success'));
+            // Store the message to be displayed on the list view after the redirect.
+            $request->session()->flash('success', __('messages.menu.update_success'));
+            return response()->json(['redirect' => route('admin.menus.index', $request->query())]);
         }
 
-        return redirect()->route('admin.menus.edit', array_merge($request->query(), ['menu' => $menu->id]))->with('success', __('messages.menu.update_success'));
+        $refresh = ['updated_at' => Setting::getFormattedDate($menu->updated_at), 'updated_by' => auth()->user()->name];
+
+        return response()->json(['success' => __('messages.menu.update_success'), 'refresh' => $refresh]);
     }
 
     /**
-     * Store a new menu.
+     * Store a new menu. (AJAX)
      *
      * @param  \App\Http\Requests\Menu\StoreRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return JSON
      */
     public function store(StoreRequest $request)
     {
@@ -211,11 +212,17 @@ class MenuController extends Controller
             $menu->groups()->attach($request->input('groups'));
         }
 
+        $menu->updated_by = auth()->user()->id;
+        $menu->save();
+
+        $request->session()->flash('success', __('messages.menu.create_success'));
+
         if ($request->input('_close', null)) {
-            return redirect()->route('admin.menus.index', $request->query())->with('success', __('messages.menu.create_success'));
+            return response()->json(['redirect' => route('admin.menus.index', $request->query())]);
         }
 
-        return redirect()->route('admin.menus.edit', array_merge($request->query(), ['menu' => $menu->id]))->with('success', __('messages.menu.create_success'));
+        // Redirect to the edit form.
+        return response()->json(['redirect' => route('admin.menus.edit', array_merge($request->query(), ['menu' => $menu->id]))]);
     }
 
     /**

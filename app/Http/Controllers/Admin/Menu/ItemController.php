@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Menu\Item;
 use App\Models\Menu;
 use App\Models\User\Group;
+use App\Models\Setting;
 use App\Traits\Form;
 use App\Traits\CheckInCheckOut;
 use App\Http\Requests\Menu\Item\StoreRequest;
@@ -103,8 +104,7 @@ class ItemController extends Controller
      */
     public function edit(Request $request, $code, $id)
     {
-        $item = $this->item = Item::select('menu_items.*')
-                                    ->selectRaw('IFNULL(users.name, ?) as modifier_name', [__('labels.generic.unknown_user')])
+        $item = $this->item = Item::select('menu_items.*','users.name as modifier_name')
                                     ->leftJoin('users as users', 'menu_items.updated_by', '=', 'users.id')
                                     ->findOrFail($id);
 
@@ -117,10 +117,6 @@ class ItemController extends Controller
         // Gather the needed data to build the form.
         
         $except = [];
-
-        if ($item->updated_by === null) {
-            array_push($except, 'updated_by', 'updated_at');
-        }
 
         $fields = $this->getFields($except);
         $this->setFieldValues($fields, $item);
@@ -154,21 +150,23 @@ class ItemController extends Controller
     }
 
     /**
-     * Update the specified menu item.
+     * Update the specified menu item. (AJAX)
      *
      * @param  \App\Http\Requests\Menu\Item\UpdateRequest  $request
      * @param  string  $code
      * @param  \App\Models\Menu\Item  $item
-     * @return Response
+     * @return JSON
      */
     public function update(UpdateRequest $request, $code, Item $item)
     {
         if ($item->checked_out != auth()->user()->id) {
-            return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.user_id_does_not_match'));
+            $request->session()->flash('error', __('messages.generic.user_id_does_not_match'));
+            return response()->json(['redirect' => route('admin.menu.items.index', $request->query(), ['code' => $code])]);
         }
 
         if (!$this->menu->canEdit()) {
-            return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.edit_not_auth'));
+            $request->session()->flash('error', __('messages.generic.edit_not_auth'));
+            return response()->json(['redirect' => route('admin.menu.items.index', $request->query(), ['code' => $code])]);
         }
 
         $query = array_merge($request->query(), ['code' => $code, 'item' => $item->id]);
@@ -177,7 +175,7 @@ class ItemController extends Controller
 
         // Check the selected parent is not the menu item itself or a descendant.
         if ($item->id == $request->input('parent_id') || $parent->isDescendantOf($item)) {
-            return redirect()->route('admin.menu.items.edit', $query)->with('error',  __('messages.generic.must_not_be_descendant'));
+            return response()->json(['error' => __('messages.generic.must_not_be_descendant')]);
         }
 
         $item->title = $request->input('title');
@@ -188,25 +186,29 @@ class ItemController extends Controller
 
         if ($request->input('_close', null)) {
             $item->checkIn();
-            // Redirect to the list.
-            return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitems.update_success'));
+            // Store the message to be displayed on the list view after the redirect.
+            $request->session()->flash('success', __('messages.menuitems.update_success'));
+            return response()->json(['redirect' => route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))]);
         }
 
-        return redirect()->route('admin.menu.items.edit', $query)->with('success', __('messages.menuitems.update_success'));
+        $refresh = ['updated_at' => Setting::getFormattedDate($item->updated_at), 'updated_by' => auth()->user()->name];
+
+        return response()->json(['success' => __('messages.menuitems.update_success'), 'refresh' => $refresh]);
     }
 
     /**
-     * Store a new menu item.
+     * Store a new menu item. (AJAX)
      *
      * @param  \App\Http\Requests\Menu\Item\StoreRequest  $request
      * @param  string  $code
-     * @return \Illuminate\Http\Response
+     * @return JSON
      */
     public function store(StoreRequest $request, $code)
     {
         // The user cannot create an item if he cannot edit it.
         if (!$this->menu->canEdit()) {
-            return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.create_not_auth'));
+            $request->session()->flash('error', __('messages.generic.edit_not_auth'));
+            return response()->json(['redirect' => route('admin.menu.items.index', $request->query(), ['code' => $code])]);
         }
 
         // Check first for parent id. (N.B: menu items cannot be null as they have a root parent id by default).
@@ -221,14 +223,18 @@ class ItemController extends Controller
 
         $parent->appendNode($item);
         $item->menu_code = $code;
+        $item->updated_by = auth()->user()->id;
 
         $item->save();
 
+        $request->session()->flash('success', __('messages.menuitems.create_success'));
+
         if ($request->input('_close', null)) {
-            return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitems.create_success'));
+            return response()->json(['redirect' => route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))]);
         }
 
-        return redirect()->route('admin.menu.items.edit', array_merge($request->query(), ['code' => $code, 'item' => $item->id]))->with('success', __('messages.menuitems.create_success'));
+        // Redirect to the edit form.
+        return response()->json(['redirect' => route('admin.menu.items.edit', array_merge($request->query(), ['code' => $code, 'item' => $item->id]))]);
     }
 
     /**

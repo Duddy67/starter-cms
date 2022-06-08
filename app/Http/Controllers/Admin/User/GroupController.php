@@ -136,7 +136,7 @@ class GroupController extends Controller
      *
      * @param  \App\Http\Requests\User\Group\UpdateRequest  $request
      * @param  \App\Models\User\Group $group
-     * @return Response
+     * @return JSON
      */
     public function update(UpdateRequest $request, Group $group)
     {
@@ -181,7 +181,7 @@ class GroupController extends Controller
      * Store a new group. (AJAX)
      *
      * @param  \App\Http\Requests\User\Group\StoreRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return JSON
      */
     public function store(StoreRequest $request)
     {
@@ -202,7 +202,7 @@ class GroupController extends Controller
             return response()->json(['redirect' => route('admin.user.groups.index', $request->query())]);
         }
 
-        // Reload the page.
+        // Redirect to the edit form.
         return response()->json(['redirect' => route('admin.user.groups.edit', array_merge($request->query(), ['group' => $group->id]))]);
     }
 
