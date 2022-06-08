@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\Email;
 use App\Models\User;
+use App\Models\Setting;
 use App\Traits\Form;
 use App\Traits\CheckInCheckOut;
 use App\Http\Requests\Email\StoreRequest;
@@ -99,9 +100,7 @@ class EmailController extends Controller
 
         // Gather the needed data to build the form.
 	
-	$except = ($email->updated_by === null) ? ['updated_by', 'updated_at'] : [];
-
-        $fields = $this->getFields($except);
+        $fields = $this->getFields();
 	$this->setFieldValues($fields, $email);
 	$except = (!auth()->user()->isSuperAdmin()) ? ['destroy'] : [];
         $actions = $this->getActions('form', $except);
@@ -141,11 +140,11 @@ class EmailController extends Controller
     }
 
     /**
-     * Update the specified email.
+     * Update the specified email. (AJAX)
      *
      * @param  \App\Http\Requests\Settings\Email\UpdateRequest  $request
      * @param  \App\Models\Settings\Email  $email
-     * @return Response
+     * @return JSON
      */
     public function update(UpdateRequest $request, Email $email)
     {
@@ -162,18 +161,22 @@ class EmailController extends Controller
 	$email->save();
 
         if ($request->input('_close', null)) {
-	    $email->checkIn();
-	    return redirect()->route('admin.emails.index', $request->query())->with('success', __('messages.email.update_success'));
-	}
+            $email->checkIn();
+            // Store the message to be displayed on the list view after the redirect.
+            $request->session()->flash('success', __('messages.email.update_success'));
+            return response()->json(['redirect' => route('admin.emails.index', $request->query())]);
+        }
 
-	return redirect()->route('admin.emails.edit', array_merge($request->query(), ['email' => $email->id]))->with('success', __('messages.email.update_success'));
+        $refresh = ['updated_at' => Setting::getFormattedDate($email->updated_at), 'updated_by' => auth()->user()->name];
+
+        return response()->json(['success' => __('messages.email.update_success'), 'refresh' => $refresh]);
     }
 
     /**
      * Store a new email.
      *
      * @param  \App\Http\Requests\Settings\Email\StoreRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return JSON
      */
     public function store(StoreRequest $request)
     {
@@ -186,11 +189,17 @@ class EmailController extends Controller
 				'plain_text' => $plainText,
 	]);
 
+	$email->updated_by = auth()->user()->id;
+        $email->save();
+
+        $request->session()->flash('success', __('messages.email.create_success'));
+
         if ($request->input('_close', null)) {
-	    return redirect()->route('admin.emails.index', $request->query())->with('success', __('messages.email.create_success'));
+            return response()->json(['redirect' => route('admin.emails.index', $request->query())]);
 	}
 
-	return redirect()->route('admin.emails.edit', array_merge($request->query(), ['email' => $email->id]))->with('success', __('messages.email.create_success'));
+        // Redirect to the edit form.
+        return response()->json(['redirect' => route('admin.emails.edit', array_merge($request->query(), ['email' => $email->id]))]);
     }
 
     /**

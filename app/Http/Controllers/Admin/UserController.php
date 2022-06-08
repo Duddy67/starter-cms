@@ -231,7 +231,7 @@ class UserController extends Controller
             return response()->json(['redirect' => route('admin.users.index', $request->query())]);
         }
 
-        // Reload the page.
+        // Redirect to the edit form.
         return response()->json(['redirect' => route('admin.users.edit', array_merge($request->query(), ['user' => $user->id]))]);
     }
 

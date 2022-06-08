@@ -52,10 +52,10 @@ class SettingController extends Controller
     }
 
     /**
-     * Update the general parameters.
+     * Update the general parameters. (AJAX)
      *
      * @param  Request  $request
-     * @return Response
+     * @return JSON
      */
     public function update(Request $request)
     {
@@ -73,7 +73,7 @@ class SettingController extends Controller
             Cache::forget('settings');
         }
 
-        return redirect()->route('admin.settings.index', $request->query())->with('success', __('messages.general.update_success'));
+        return response()->json(['success' => __('messages.general.update_success')]);
     }
 
     /**

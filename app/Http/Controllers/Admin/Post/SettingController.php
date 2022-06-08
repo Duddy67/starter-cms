@@ -54,7 +54,7 @@ class SettingController extends Controller
      * Update the post parameters. (AJAX)
      *
      * @param  Request  $request
-     * @return Response
+     * @return JSON
      */
     public function update(Request $request)
     {
