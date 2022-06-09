@@ -58,6 +58,7 @@
 
         <input type="hidden" id="cancelEdit" value="{{ route('admin.posts.cancel', $query) }}">
         <input type="hidden" id="close" name="_close" value="0">
+        <input type="hidden" id="siteUrl" value="{{ url('/') }}">
     </form>
     <x-toolbar :items=$actions />
 

@@ -477,7 +477,13 @@ class PostController extends Controller
      */
     public function deleteImage(Request $request, Post $post)
     {
-        $post->image->delete();
+        if ($post->image) {
+            $post->image->delete();
+        }
+        else {
+            return response()->json(['error' => __('messages.generic.no_document_to_delete')]);
+        }
+
         $refresh = ['post-image' => asset('/images/camera.png'), 'image' => '', 'deleteDocumentUrl' => ''];
 
         return response()->json(['success' => __('messages.generic.image_deleted'), 'refresh' => $refresh]);
@@ -493,7 +499,7 @@ class PostController extends Controller
     {
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $image = new Document;
-            $image->upload($request->file('image'), 'post', 'image');
+            $image->upload($request->file('image'), 'image');
 
             return $image;
         }

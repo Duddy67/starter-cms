@@ -75,7 +75,7 @@ class Post extends Model
      */
     public function image()
     {
-        return $this->HasOne(Document::class, 'owned_by')->where('item_type', 'post');
+        return $this->morphOne(Document::class, 'documentable')->where('field', 'image');
     }
 
     /**

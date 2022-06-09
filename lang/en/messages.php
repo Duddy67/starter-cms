@@ -80,6 +80,7 @@ return [
     'document' => [
         'create_success' => 'Document successfully created.',
         'delete_success' => 'The document ":name" has been successfully deleted.',
+        'no_document_to_delete' => 'No document to delete.',
     ],
     'menu' => [
         'menu_not_found' => 'The menu with the code: :code cannot be found.',

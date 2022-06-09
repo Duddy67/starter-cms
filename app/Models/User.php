@@ -99,12 +99,15 @@ class User extends Authenticatable
      */
     public function documents()
     {
-        return $this->HasMany(Document::class, 'owned_by')->where('item_type', 'user');
+        return $this->morphMany(Document::class, 'documentable')->where('field', 'file_manager');
     }
 
+    /**
+     * The users's photo.
+     */
     public function photo()
     {
-        return $this->HasOne(Document::class, 'owned_by')->where(['item_type' => 'user', 'field' => 'photo']);
+        return $this->morphOne(Document::class, 'documentable')->where('field', 'photo');
     }
 
     /**
@@ -119,6 +122,10 @@ class User extends Authenticatable
         foreach ($this->documents as $document) {
             // Ensure the linked file is removed from the server, (see the Document delete() function).
             $document->delete();
+        }
+
+        if ($this->photo) {
+            $this->photo->delete();
         }
 
         $this->groups()->detach();
@@ -250,10 +257,10 @@ class User extends Authenticatable
      */
     public function getThumbnail()
     {
-        $document = Document::where(['item_type' => 'user', 'field' => 'photo', 'owned_by' => $this->id])->orderBy('created_at', 'desc')->first();
+        $photo = $this->photo;
 
-        if ($document) {
-            return $document->getThumbnailUrl();
+        if ($photo) {
+            return $photo->getThumbnailUrl();
         }
 
         // Returns a default user image.
@@ -423,7 +430,7 @@ class User extends Authenticatable
         foreach ($dependencies as $name => $model) {
             if ($name == 'documents') {
                 // Search for the documents uploaded by this user from the file manager.
-                if ($nbItems = $model::where(['owned_by' => $this->id, 'item_type' => 'user', 'field' => 'file_manager'])->count()) {
+                if ($nbItems = $model::where(['documentable_id' => $this->id, 'documentable_type' => 'App\\Models\\User', 'field' => 'file_manager'])->count()) {
                     return ['name' => 'files', 'nbItems' => $nbItems];
                 }
                 else {

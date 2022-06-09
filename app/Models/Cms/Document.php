@@ -22,7 +22,6 @@ class Document extends Model
      * @var array
      */
     protected $fillable = [
-        'item_type',
         'field',
         'disk_name',
         'file_name',
@@ -30,6 +29,13 @@ class Document extends Model
         'content_type',
     ];
 
+    /**
+     * Get all of the owning documentable models.
+     */
+    public function documentable()
+    {
+        return $this->morphTo();
+    }
 
     /*
      * Stores the file linked to a document model.
@@ -38,9 +44,8 @@ class Document extends Model
      * @param  string  $fieldName
      * @return void
      */
-    public function upload($file, $itemType, $fieldName, $public = true)
+    public function upload($file, $fieldName, $public = true)
     {
-        $this->item_type = $itemType;
         $this->field = $fieldName;
         $this->disk_name = md5($file->getClientOriginalName().microtime()).'.'.$file->getClientOriginalExtension();
         $this->file_name = $file->getClientOriginalName();
@@ -70,7 +75,7 @@ class Document extends Model
         $types = $request->input('types', []);
 
 	$query = Document::query();
-	$query->where(['item_type' => 'user', 'owned_by' => auth()->user()->id, 'field' => 'file_manager', 'is_public' => 1]);
+	$query->where(['documentable_type' => 'App\\Models\\User', 'documentable_id' => auth()->user()->id, 'field' => 'file_manager', 'is_public' => 1]);
 
 	if ($search !== null) {
 	    $query->where('file_name', 'like', '%'.$search.'%');
@@ -115,16 +120,16 @@ class Document extends Model
 
 	$query = Document::query();
 	$query->select('documents.*', 'users.name as owner_name')
-	      ->leftJoin('users', 'documents.owned_by', '=', 'users.id')
-	      ->join('model_has_roles', 'documents.owned_by', '=', 'model_id')
+	      ->leftJoin('users', 'documents.documentable_id', '=', 'users.id')
+	      ->join('model_has_roles', 'documents.documentable_id', '=', 'model_id')
 	      ->join('roles', 'roles.id', '=', 'role_id');
 
-	$query->where(['item_type' => 'user', 'field' => 'file_manager', 'is_public' => 1]);
+	$query->where(['documentable_type' => 'App\\Models\\User', 'field' => 'file_manager', 'is_public' => 1]);
 
 	// Check for role levels.
 	$query->where(function($query) {
 	    $query->where('roles.role_level', '<', auth()->user()->getRoleLevel())
-		  ->orWhere('documents.owned_by', auth()->user()->id);
+		  ->orWhere('documents.documentable_id', auth()->user()->id);
 	});
 
 	if ($search !== null) {
@@ -136,7 +141,7 @@ class Document extends Model
 	}
 
 	if (!empty($owners)) {
-	    $query->whereIn('owned_by', $owners);
+	    $query->whereIn('documentable_id', $owners);
 	}
 
 	if ($sortedBy !== null) {
@@ -180,16 +185,14 @@ class Document extends Model
     {
 	$query = Document::query();
 	$query->select(['users.id', 'users.name'])
-	      ->leftJoin('users', 'documents.owned_by', '=', 'users.id')
-	      ->join('model_has_roles', 'documents.owned_by', '=', 'model_id')
+	      ->leftJoin('users', 'documents.documentable_id', '=', 'users.id')
+	      ->join('model_has_roles', 'documents.documentable_id', '=', 'model_id')
 	      ->join('roles', 'roles.id', '=', 'role_id');
-
-	//$query->where(['item_type' => 'user', 'field' => 'file_manager', 'is_public' => 1]);
 
 	// Check for access levels.
 	$query->where(function($query) {
 	    $query->where('roles.role_level', '<', auth()->user()->getRoleLevel())
-		  ->orWhere('documents.owned_by', auth()->user()->id);
+		  ->orWhere('documents.documentable_id', auth()->user()->id);
 	});
 
 	$owners = $query->distinct()->get();

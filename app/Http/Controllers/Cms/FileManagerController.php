@@ -51,7 +51,7 @@ class FileManagerController extends Controller
     {
         if ($request->hasFile('upload') && $request->file('upload')->isValid()) {
 	    $document = new Document;
-	    $document->upload($request->file('upload'), 'user', 'file_manager');
+	    $document->upload($request->file('upload'), 'file_manager');
 	    auth()->user()->documents()->save($document);
 	}
 
@@ -60,7 +60,7 @@ class FileManagerController extends Controller
 
     public function destroy(Request $request)
     {
-	$document = Document::findOrFail($request->input('document_id', null));
+	$document = Document::findOrFail($request->input('documentable_id', null));
 
 	$name = $document->file_name;
 	$document->delete();

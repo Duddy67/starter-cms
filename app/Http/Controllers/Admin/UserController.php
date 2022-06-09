@@ -394,8 +394,13 @@ class UserController extends Controller
      */
     public function deletePhoto(Request $request, User $user)
     {
-        $photo = $user->documents()->where('field', 'photo')->latest('created_at')->first();
-        $photo->delete();
+        if ($user->photo) {
+            $user->photo->delete();
+        }
+        else {
+            return response()->json(['error' => __('messages.generic.no_document_to_delete')]);
+        }
+
         $refresh = ['user-photo' => asset('/images/user.png'), 'photo' => '', 'deleteDocumentUrl' => ''];
 
         return response()->json(['success' => __('messages.generic.photo_deleted'), 'refresh' => $refresh]);
@@ -411,7 +416,7 @@ class UserController extends Controller
     {
         if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
             $document = new Document;
-            $document->upload($request->file('photo'), 'user', 'photo');
+            $document->upload($request->file('photo'), 'photo');
 
             return $document;
         }
