@@ -201,7 +201,7 @@ class PostController extends Controller
 
         $post->save();
 
-        $refresh = ['updated_at' => Setting::getFormattedDate($post->updated_at), 'updated_by' => auth()->user()->name];
+        $refresh = ['updated_at' => Setting::getFormattedDate($post->updated_at), 'updated_by' => auth()->user()->name, 'slug' => $post->slug];
 
         if ($image = $this->uploadImage($request)) {
             // Delete the previous post image if any.
@@ -248,6 +248,7 @@ class PostController extends Controller
         ]);
 
         $post->updated_by = auth()->user()->id;
+        $post->save();
 
         if ($request->input('groups') !== null) {
             $post->groups()->attach($request->input('groups'));
