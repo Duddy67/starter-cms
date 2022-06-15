@@ -71,7 +71,7 @@ class BladeServiceProvider extends ServiceProvider
 	 * use as @date($object->datefield)
 	 * or with a format @date($object->datefield,'m/d/Y')
 	 */
-	/*Blade::directive('date', function ($expression) {
+	Blade::directive('date', function ($expression) {
 	    // Set default format if not present in $expression
 	    $default = "'".Setting::getValue('app', 'date_format')."'";
 
@@ -79,6 +79,6 @@ class BladeServiceProvider extends ServiceProvider
 	    $parts[1] = (isset($parts[1]))?$parts[1]:$default;
 
 	    return '<?php if(' . $parts[0] . '){ echo e(' . $parts[0] . '->format(' . $parts[1] . ')); } ?>';
-	});*/
+	});
     }
 }

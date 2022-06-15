@@ -1,7 +1,5 @@
 <h3><a href="{{ url($post->getUrl()) }}">{{ $post->title }}</a></h3>
 
-@php $timezone = $general::getValue('app', 'timezone'); @endphp
-
 @if ($settings['show_created_at'])
     <div>@date ($post->created_at->tz($timezone))</div>
 @endif

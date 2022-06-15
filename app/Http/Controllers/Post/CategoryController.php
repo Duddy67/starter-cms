@@ -26,6 +26,6 @@ class CategoryController extends Controller
 	$posts = $category->getPosts($request);
 	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug]);
 
-        return view('default', compact('page', 'category', 'settings', 'posts', 'query'));
+        return view('index', compact('page', 'category', 'settings', 'posts', 'query'));
     }
 }

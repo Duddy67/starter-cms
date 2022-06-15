@@ -254,6 +254,34 @@ trait Form
             }
         }
 
+        $fields = $this->getExtraFields($fields);
+
+        return $fields;
+    }
+
+    /*
+     * Checks for extra fields.
+     *
+     * @param array  $fields
+     * @return array of stdClass Objects
+     */  
+    public function getExtraFields(array $fields): array
+    {
+        // Check first if the model has a Setting children model.
+        if (class_exists('App\Models\\'.$this->getClassName().'\Setting')) {
+            $model = '\\App\Models\\'.$this->getClassName().'\\Setting';
+            // Next, check the extra_fields value.
+            if ($model::where('key', 'extra_fields')->value('value')) {
+              $extraFields = $this->getData('extra_fields');
+
+              foreach ($extraFields as $extraField) {
+                  // NB: The value is set in the item controller.
+                  $extraField->value = null;
+                  $fields[] = $extraField;
+              }
+            }
+        }
+
         return $fields;
     }
 

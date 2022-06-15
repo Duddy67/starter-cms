@@ -46,6 +46,15 @@
     "options": [] 
   },
   {
+    "label": "labels.generic.extra_fields",
+    "type": "select",
+    "name": "extra_fields",
+    "id": "extra_fields",
+    "extra": ["yes_no"],
+    "group": "posts",
+    "options": [] 
+  },
+  {
     "label": "labels.generic.show_name",
     "type": "select",
     "name": "show_name",

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Setting;
 use App\Models\Post\Category;
+use App\Models\Post\Setting as PostSetting;
 use App\Models\User\Group;
 use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
@@ -30,6 +31,7 @@ class Post extends Model
         'content',
         'excerpt',
         'access_level',
+        'extra_fields',
         'settings',
     ];
 
@@ -50,6 +52,7 @@ class Post extends Model
      * @var array
      */
     protected $casts = [
+        'extra_fields' => 'array',
         'settings' => 'array'
     ];
 
@@ -196,7 +199,7 @@ class Post extends Model
 
     public function getSettings()
     {
-        return Setting::getItemSettings($this, 'posts');
+        return PostSetting::getItemSettings($this, 'posts');
     }
 
     /*

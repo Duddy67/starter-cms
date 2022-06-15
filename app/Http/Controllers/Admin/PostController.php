@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\Post;
+use App\Models\Post\Setting as PostSetting; 
 use App\Models\User;
 use App\Models\Setting;
 use App\Models\User\Group;
@@ -77,9 +78,10 @@ class PostController extends Controller
 
         $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
         $actions = $this->getActions('form', ['destroy']);
+        $extraFields = PostSetting::where('key', 'extra_fields')->value('value');
         $query = $request->query();
 
-        return view('admin.post.form', compact('fields', 'actions', 'query'));
+        return view('admin.post.form', compact('fields', 'actions', 'extraFields', 'query'));
     }
 
     /**
@@ -114,10 +116,11 @@ class PostController extends Controller
         $this->setFieldValues($fields, $post);
         $except = (!$post->canEdit()) ? ['destroy', 'save', 'saveClose'] : [];
         $actions = $this->getActions('form', $except);
+        $extraFields = PostSetting::where('key', 'extra_fields')->value('value');
         // Add the id parameter to the query.
         $query = array_merge($request->query(), ['post' => $id]);
 
-        return view('admin.post.form', compact('post', 'fields', 'actions', 'query'));
+        return view('admin.post.form', compact('post', 'fields', 'actions', 'extraFields', 'query'));
     }
 
     /**
@@ -159,6 +162,7 @@ class PostController extends Controller
         $post->slug = ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('title'), '-');
         $post->content = $request->input('content');
         $post->excerpt = $request->input('excerpt');
+        $post->extra_fields = $request->input('extra_fields', null);
         $post->settings = $request->input('settings');
         $post->updated_by = auth()->user()->id;
 
@@ -243,6 +247,7 @@ class PostController extends Controller
           'access_level' => $request->input('access_level'), 
           'owned_by' => $request->input('owned_by'),
           'main_cat_id' => $request->input('main_cat_id'),
+          'extra_fields' => $request->input('extra_fields', null),
           'settings' => $request->input('settings'),
           'excerpt' => $request->input('excerpt'),
         ]);
@@ -520,6 +525,10 @@ class PostController extends Controller
         foreach ($fields as $field) {
             if (isset($field->group) && $field->group == 'settings') {
                 $field->value = (isset($post->settings[$field->name])) ? $post->settings[$field->name] : null;
+            }
+
+            if (isset($field->group) && $field->group == 'extra_fields') {
+                $field->value = (isset($post->extra_fields[$field->name])) ? $post->extra_fields[$field->name] : null;
             }
         }
     }

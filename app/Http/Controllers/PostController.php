@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -12,8 +13,7 @@ class PostController extends Controller
 {
     public function show(Request $request, $id, $slug)
     {
-        $post = Post::select('posts.*', 'users.name as owner_name')
-			->selectRaw('IFNULL(users2.name, ?) as modifier_name', [__('labels.generic.unknown_user')])
+        $post = Post::select('posts.*', 'users.name as owner_name', 'users2.name as modifier_name')
 			->leftJoin('users', 'posts.owned_by', '=', 'users.id')
 			->leftJoin('users as users2', 'posts.updated_by', '=', 'users2.id')
 			->where('posts.id', $id)->first();
@@ -29,8 +29,9 @@ class PostController extends Controller
         $page = 'post';
 
 	$settings = $post->getSettings();
+        $timezone = Setting::getValue('app', 'timezone');
 	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug]);
 
-        return view('default', compact('page', 'id', 'slug', 'post', 'settings', 'query'));
+        return view('index', compact('page', 'id', 'slug', 'post', 'settings', 'timezone', 'query'));
     }
 }

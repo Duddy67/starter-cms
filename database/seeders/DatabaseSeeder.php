@@ -11,6 +11,7 @@ use App\Models\User\Role;
 use App\Models\User\Permission;
 use Carbon\Carbon;
 use App\Models\Setting;
+use App\Models\Post\Setting as PostSetting;
 
 class DatabaseSeeder extends Seeder
 {
@@ -104,6 +105,23 @@ class DatabaseSeeder extends Seeder
             ['group' => 'app', 'key' => 'timezone', 'value' => 'Europe/Paris'],
             ['group' => 'app', 'key' => 'date_format', 'value' => 'd/m/Y H:i'],
             ['group' => 'pagination', 'key' => 'per_page', 'value' => '5']
+        ]);
+
+        PostSetting::insert([
+            ['group' => 'posts', 'key' => 'show_owner', 'value' => 1],
+            ['group' => 'posts', 'key' => 'show_created_at', 'value' => 1],
+            ['group' => 'posts', 'key' => 'show_excerpt', 'value' => 1],
+            ['group' => 'posts', 'key' => 'show_image', 'value' => 1],
+            ['group' => 'posts', 'key' => 'show_categories', 'value' => 1],
+            ['group' => 'posts', 'key' => 'extra_fields', 'value' => 0],
+            ['group' => 'category', 'key' => 'show_name', 'value' => 1],
+            ['group' => 'category', 'key' => 'show_search', 'value' => 1],
+            ['group' => 'category', 'key' => 'show_description', 'value' => 1],
+            ['group' => 'category', 'key' => 'show_subcategories', 'value' => 1],
+            ['group' => 'category', 'key' => 'show_post_excerpt', 'value' => 1],
+            ['group' => 'category', 'key' => 'show_post_image', 'value' => 1],
+            ['group' => 'category', 'key' => 'show_post_categories', 'value' => 1],
+            ['group' => 'category', 'key' => 'post_ordering', 'value' => 'no_ordering']
         ]);
     }
 }

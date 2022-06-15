@@ -146,6 +146,12 @@ return [
 	'show_owner' => 'Show owner',
 	'show_created_at' => 'Show created at',
 	'show_image' => 'Show image',
+	'extra_fields' => 'Extra fields',
+	'extra_field_1' => 'Extra field 1',
+	'extra_field_2' => 'Extra field 2',
+	'extra_field_3' => 'Extra field 3',
+	'extra_field_4' => 'Extra field 4',
+	'extra_field_5' => 'Extra field 5',
     ],
     'filter' => [
 	'search' => 'Search',
