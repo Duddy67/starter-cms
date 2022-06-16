@@ -9,9 +9,9 @@ use App\Models\Post\Setting;
 
 class SiteController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, $page = null)
     {
-        $page = 'home';
+        $page = ($page) ? $page : 'home';
 	$posts = null;
 	$settings = [];
 

@@ -25,8 +25,6 @@ use App\Http\Controllers\TokenController;
 |
 */
 
-Route::get('/', [SiteController::class, 'index'])->name('site.index');
-
 Route::get('/post/{id}/{slug}', [PostController::class, 'show'])->name('post');
 Route::get('/post/category/{id}/{slug}', [PostCategoryController::class, 'index'])->name('post.category');
 
@@ -71,3 +69,6 @@ Route::prefix('admin')->group(function () {
         Route::group([], __DIR__.'/admin/settings.php');
     });
 });
+
+Route::get('/{page?}', [SiteController::class, 'index'])->name('site.index');
+
