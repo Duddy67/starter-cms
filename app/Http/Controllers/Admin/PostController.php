@@ -78,10 +78,9 @@ class PostController extends Controller
 
         $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
         $actions = $this->getActions('form', ['destroy']);
-        $extraFields = PostSetting::where('key', 'extra_fields')->value('value');
         $query = $request->query();
 
-        return view('admin.post.form', compact('fields', 'actions', 'extraFields', 'query'));
+        return view('admin.post.form', compact('fields', 'actions', 'query'));
     }
 
     /**
@@ -113,7 +112,6 @@ class PostController extends Controller
         $except = (auth()->user()->getRoleLevel() > $post->getOwnerRoleLevel() || $post->owned_by == auth()->user()->id) ? ['owner_name'] : ['owned_by'];
 
         $fields = $this->getFields($except);
-        $this->setFieldValues($fields, $post);
         $except = (!$post->canEdit()) ? ['destroy', 'save', 'saveClose'] : [];
         $actions = $this->getActions('form', $except);
         $extraFields = PostSetting::where('key', 'extra_fields')->value('value');
@@ -162,7 +160,9 @@ class PostController extends Controller
         $post->slug = ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('title'), '-');
         $post->content = $request->input('content');
         $post->excerpt = $request->input('excerpt');
-        $post->extra_fields = $request->input('extra_fields', null);
+        $post->alt_img = $request->input('alt_img');
+        $post->meta_data = $request->input('meta_data');
+        $post->extra_fields = $request->input('extra_fields');
         $post->settings = $request->input('settings');
         $post->updated_by = auth()->user()->id;
 
@@ -247,7 +247,9 @@ class PostController extends Controller
           'access_level' => $request->input('access_level'), 
           'owned_by' => $request->input('owned_by'),
           'main_cat_id' => $request->input('main_cat_id'),
-          'extra_fields' => $request->input('extra_fields', null),
+          'alt_img' => $request->input('alt_img'),
+          'meta_data' => $request->input('meta_data'),
+          'extra_fields' => $request->input('extra_fields'),
           'settings' => $request->input('settings'),
           'excerpt' => $request->input('excerpt'),
         ]);
@@ -522,14 +524,5 @@ class PostController extends Controller
      */
     private function setFieldValues(array &$fields, Post $post)
     {
-        foreach ($fields as $field) {
-            if (isset($field->group) && $field->group == 'settings') {
-                $field->value = (isset($post->settings[$field->name])) ? $post->settings[$field->name] : null;
-            }
-
-            if (isset($field->group) && $field->group == 'extra_fields') {
-                $field->value = (isset($post->extra_fields[$field->name])) ? $post->extra_fields[$field->name] : null;
-            }
-        }
     }
 }

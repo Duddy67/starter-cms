@@ -12,25 +12,25 @@ class SiteController extends Controller
     public function index(Request $request, $page = null)
     {
         $page = ($page) ? $page : 'home';
-	$posts = null;
-	$settings = [];
+        $posts = null;
+        $settings = [];
 
-	if ($category = Category::where('slug', 'foo-bar')->first()) {
-	    $posts = $category->getPosts($request);
+        if ($category = Category::where('slug', $page)->first()) {
+            $posts = $category->getPosts($request);
 
-	    $globalSettings = Setting::getDataByGroup('category');
+            $globalSettings = Setting::getDataByGroup('category');
 
-	    foreach ($category->settings as $key => $value) {
-		if ($value == 'global_setting') {
-		    $settings[$key] = $globalSettings[$key];
-		}
-		else {
-		    $settings[$key] = $category->settings[$key];
-		}
-	    }
-	}
+            foreach ($category->settings as $key => $value) {
+                if ($value == 'global_setting') {
+                    $settings[$key] = $globalSettings[$key];
+                }
+                else {
+                    $settings[$key] = $category->settings[$key];
+                }
+            }
+        }
 
-	$query = $request->query();
+        $query = $request->query();
 
         return view('index', compact('page', 'category', 'settings', 'posts', 'query'));
     }

@@ -30,8 +30,10 @@ class Post extends Model
         'main_cat_id',
         'content',
         'excerpt',
+        'alt_img',
         'access_level',
         'extra_fields',
+        'meta_data',
         'settings',
     ];
 
@@ -53,6 +55,7 @@ class Post extends Model
      */
     protected $casts = [
         'extra_fields' => 'array',
+        'meta_data' => 'array',
         'settings' => 'array'
     ];
 
