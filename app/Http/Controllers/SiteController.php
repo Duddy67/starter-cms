@@ -13,7 +13,7 @@ class SiteController extends Controller
     {
         $page = ($page) ? $page : 'home';
         $posts = null;
-        $settings = [];
+        $settings = $metaData = [];
 
         if ($category = Category::where('slug', $page)->first()) {
             $posts = $category->getPosts($request);
@@ -28,10 +28,12 @@ class SiteController extends Controller
                     $settings[$key] = $category->settings[$key];
                 }
             }
+
+            $metaData = $category->meta_data;
         }
 
         $query = $request->query();
 
-        return view('index', compact('page', 'category', 'settings', 'posts', 'query'));
+        return view('index', compact('page', 'category', 'settings', 'posts', 'metaData', 'query'));
     }
 }

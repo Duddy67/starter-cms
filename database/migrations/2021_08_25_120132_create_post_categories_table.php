@@ -21,6 +21,7 @@ class CreatePostCategoriesTable extends Migration
             $table->tinyText('description')->nullable();
             $table->char('status', 12);
             $table->char('access_level', 10);
+            $table->json('meta_data');
             $table->json('settings');
 	    $table->nestedSet();
             $table->unsignedBigInteger('checked_out')->nullable();

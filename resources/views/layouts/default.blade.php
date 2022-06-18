@@ -4,11 +4,12 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <title>{{ $setting::getValue('app', 'name') }}</title>
+        <title>{{ (isset($metaData) && !empty($metaData['meta_page_title'])) ? $metaData['meta_page_title'] : $setting::getValue('app', 'name') }}</title>
+        @if (isset($metaData))
+            @include('partials.site.metadata')
+        @endif
 
         @php $public = url('/'); @endphp
-
 	<!-- Bootstrap CSS file -->
 	<link rel="stylesheet" href="{{ asset('/vendor/adminlte/dist/css/adminlte.min.css') }}">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">

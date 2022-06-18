@@ -38,6 +38,7 @@ class Category extends Model
         'description',
         'access_level',
         'parent_id',
+        'meta_data',
         'settings',
     ];
 
@@ -58,6 +59,7 @@ class Category extends Model
      * @var array
      */
     protected $casts = [
+        'meta_data' => 'array',
         'settings' => 'array'
     ];
 

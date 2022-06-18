@@ -171,6 +171,7 @@ class CategoryController extends Controller
         $category->name = $request->input('name');
         $category->slug = ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('name'), '-');
         $category->description = $request->input('description');
+        $category->meta_data = $request->input('meta_data');
         $category->settings = $request->input('settings');
         $category->updated_by = auth()->user()->id;
 
@@ -278,6 +279,7 @@ class CategoryController extends Controller
             'access_level' => $request->input('access_level'), 
             'owned_by' => $request->input('owned_by'),
             'parent_id' => (empty($request->input('parent_id'))) ? null : $request->input('parent_id'),
+            'meta_data' => $request->input('meta_data'),
             'settings' => $request->input('settings'),
         ]);
 
