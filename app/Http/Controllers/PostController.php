@@ -30,8 +30,9 @@ class PostController extends Controller
 
 	$settings = $post->getSettings();
         $timezone = Setting::getValue('app', 'timezone');
+        $metaData = $post->meta_data;
 	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug]);
 
-        return view('index', compact('page', 'id', 'slug', 'post', 'settings', 'timezone', 'query'));
+        return view('index', compact('page', 'id', 'slug', 'post', 'settings', 'timezone', 'metaData', 'query'));
     }
 }
