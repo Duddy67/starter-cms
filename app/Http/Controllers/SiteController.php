@@ -34,6 +34,6 @@ class SiteController extends Controller
 
         $query = $request->query();
 
-        return view('index', compact('page', 'category', 'settings', 'posts', 'metaData', 'query'));
+        return view('themes.starter.index', compact('page', 'category', 'settings', 'posts', 'metaData', 'query'));
     }
 }

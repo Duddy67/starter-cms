@@ -1,4 +1,4 @@
-@extends ('layouts.admin')
+@extends ('admin.layouts.default')
 
 @section ('main')
     <h3>@php echo (isset($menu)) ? __('labels.menu.edit_menu') : __('labels.menu.create_menu'); @endphp</h3>

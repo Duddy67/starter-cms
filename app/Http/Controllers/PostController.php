@@ -33,6 +33,6 @@ class PostController extends Controller
         $metaData = $post->meta_data;
 	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug]);
 
-        return view('index', compact('page', 'id', 'slug', 'post', 'settings', 'timezone', 'metaData', 'query'));
+        return view('themes.starter.index', compact('page', 'id', 'slug', 'post', 'settings', 'timezone', 'metaData', 'query'));
     }
 }

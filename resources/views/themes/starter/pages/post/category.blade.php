@@ -9,7 +9,7 @@
 @if ($settings['show_search'])
     <div class="card">
 	<div class="card-body">
-	    @include('partials.filters')
+	    @include('themes.starter.partials.filters')
 	</div>
     </div>
 @endif
@@ -17,7 +17,7 @@
 <ul class="post-list pt-4">
     @if (count($posts))
 	@foreach ($posts as $post)
-	    @include ('partials.post')
+	    @include ('themes.starter.partials.post')
 	@endforeach
     @else
 	<div>No post</div>
@@ -27,7 +27,7 @@
 <x-pagination :items=$posts />
 
 @if ($settings['show_subcategories'])
-    @include ('partials.post.subcategories')
+    @include ('themes.starter.partials.post.subcategories')
 @endif
 
 @push ('scripts')

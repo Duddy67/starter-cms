@@ -1,4 +1,4 @@
-@extends ('layouts.admin')
+@extends ('admin.layouts.default')
 
 @section ('main')
     <h3>@php echo (isset($email)) ? __('labels.email.edit_email') : __('labels.email.create_email'); @endphp</h3>

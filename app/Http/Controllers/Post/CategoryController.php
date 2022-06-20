@@ -27,6 +27,6 @@ class CategoryController extends Controller
         $metaData = $category->meta_data;
 	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug]);
 
-        return view('index', compact('page', 'category', 'settings', 'posts', 'metaData', 'query'));
+        return view('themes.starter.index', compact('page', 'category', 'settings', 'posts', 'metaData', 'query'));
     }
 }

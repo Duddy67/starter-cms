@@ -1,4 +1,4 @@
-@extends ('layouts.admin')
+@extends ('admin.layouts.default')
 
 @section ('main')
     <form method="post" action="{{ route('admin.settings.update', $query ) }}" id="itemForm">

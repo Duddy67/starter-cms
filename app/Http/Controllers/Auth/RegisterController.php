@@ -44,6 +44,17 @@ class RegisterController extends Controller
     }
 
     /**
+     * Show the application registration form.
+     * Info: Overwrites RegistersUsers trait method.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showRegistrationForm()
+    {
+        return view('themes.starter.auth.register');
+    }
+
+    /**
      * Get a validator for an incoming registration request.
      *
      * @param  array  $data
@@ -75,7 +86,7 @@ class RegisterController extends Controller
 
     /**
      * The user has been registered.
-     * N.B: Overwrites the RegistersUsers trait method.
+     * Info: Overwrites RegistersUsers trait method.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  mixed  $user

@@ -1,4 +1,4 @@
-@extends ('layouts.admin')
+@extends ('admin.layouts.default')
 
 @section ('main')
     <h3>@php echo __('labels.post.blog_global_settings'); @endphp</h3>

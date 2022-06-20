@@ -1,4 +1,4 @@
-@extends ('layouts.admin')
+@extends ('admin.layouts.default')
 
 @section ('main')
     <h3>@php echo (isset($group)) ? __('labels.group.edit_group') : __('labels.group.create_group'); @endphp</h3>

@@ -5,7 +5,7 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
 	    <ul class="navbar-nav mr-auto">
 		@foreach ($menu->getMenuItems() as $item)
-		    @include ('partials.menu.items')
+		    @include ('themes.starter.partials.menu.items')
 		@endforeach
 	    </ul>
       </div>

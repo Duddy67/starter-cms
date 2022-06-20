@@ -27,6 +27,6 @@ class TokenController extends Controller
     {
         $token = $request->user()->updateApiToken();
 
-        return view('profile', compact('token'));
+        return view('themes.starter.profile', compact('token'));
     }
 }

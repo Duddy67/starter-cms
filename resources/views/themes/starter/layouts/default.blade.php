@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{{ (isset($metaData) && !empty($metaData['meta_page_title'])) ? $metaData['meta_page_title'] : $setting::getValue('app', 'name') }}</title>
         @if (isset($metaData))
-            @include('partials.site.metadata')
+            @include('themes.starter.partials.site.metadata')
         @endif
 
         @php $public = url('/'); @endphp
@@ -21,17 +21,17 @@
 	<div class="container">
 	    <!-- Header -->
 	    <header id="layout-header">
-                @include('partials.site.header')
+                @include('themes.starter.partials.site.header')
 	    </header>
 
 	    <!-- Content -->
 	    <section id="layout-content" class="pt-4">
-                @include('pages.'.$page)
+                @include('themes.starter.pages.'.$page)
 	    </section>
 
 	    <!-- Footer -->
 	    <footer id="layout-footer" class="page-footer pt-4">
-                @include('partials.site.footer')
+                @include('themes.starter.partials.site.footer')
 	    </footer>
 	</div>
 

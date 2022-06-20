@@ -1,4 +1,4 @@
-@extends ('layouts.admin')
+@extends ('admin.layouts.default')
 
 @section ('header')
     <h3>@php echo __('labels.title.menus'); @endphp</h3>

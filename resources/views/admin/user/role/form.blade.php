@@ -1,4 +1,4 @@
-@extends ('layouts.admin')
+@extends ('admin.layouts.default')
 
 @section ('main')
     <h3>@php echo (isset($role)) ? __('labels.role.edit_role') : __('labels.role.create_role'); @endphp</h3>
