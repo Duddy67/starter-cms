@@ -71,4 +71,5 @@ Route::prefix('admin')->group(function () {
 });
 
 Route::get('/{page?}', [SiteController::class, 'index'])->name('site.index');
+Route::get('/{page}/{id}/{slug}', [SiteController::class, 'show'])->name('site.show');
 

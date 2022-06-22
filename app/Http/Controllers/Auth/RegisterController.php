@@ -10,6 +10,8 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use App\Models\Setting;
+
 
 class RegisterController extends Controller
 {
@@ -51,7 +53,9 @@ class RegisterController extends Controller
      */
     public function showRegistrationForm()
     {
-        return view('themes.starter.auth.register');
+        $theme = Setting::getValue('website', 'theme', 'starter');
+
+        return view('themes.'.$theme.'.auth.register');
     }
 
     /**

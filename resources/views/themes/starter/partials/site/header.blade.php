@@ -1,5 +1,3 @@
-@inject ('menu', 'App\Models\Menu')
-
 <nav class="navbar navbar-expand-md navbar-light bg-light">
   @if ($menu = $menu::getMenu('main-menu'))
       <div class="collapse navbar-collapse" id="navbarSupportedContent">

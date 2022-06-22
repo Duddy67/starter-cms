@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Setting;
+
 
 class TokenController extends Controller
 {
@@ -26,7 +28,8 @@ class TokenController extends Controller
     public function update(Request $request)
     {
         $token = $request->user()->updateApiToken();
+        $theme = Setting::getValue('website', 'theme', 'starter');
 
-        return view('themes.starter.profile', compact('token'));
+        return view('themes.'.$theme.'.profile', compact('token'));
     }
 }

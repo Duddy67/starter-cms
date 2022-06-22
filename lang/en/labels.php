@@ -86,6 +86,7 @@ return [
 	'timezone' => 'Timezone',
 	'date_format' => 'Date format',
 	'per_page' => 'Number of items per page',
+	'theme' => 'The theme to use for the website',
     ],
     'generic' => [
 	'title' => 'Title',

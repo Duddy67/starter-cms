@@ -55,9 +55,10 @@ class Setting extends Model
      * @param  string  $key
      * @return string
      */
-    public static function getValue($group, $key)
+    public static function getValue(string $group, string $key, ?string $default = null): ?string
     {
-        return Setting::where(['group' => $group, 'key' => $key])->pluck('value')->first();
+        $value = Setting::where(['group' => $group, 'key' => $key])->pluck('value')->first();
+        return ($value) ? $value : $default;
     }
 
     public static function getPerPageOptions()

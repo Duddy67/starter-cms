@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Setting;
+
 
 class ProfileController extends Controller
 {
@@ -23,6 +25,8 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        return view('themes.starter.profile');
+        $theme = Setting::getValue('website', 'theme', 'starter');
+
+        return view('themes.'.$theme.'.profile');
     }
 }

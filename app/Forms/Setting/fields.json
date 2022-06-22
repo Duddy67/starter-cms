@@ -30,5 +30,12 @@
     "group": "pagination",
     "blank": "labels.generic.select_option",
     "options": [] 
+  },
+  {
+    "label": "labels.settings.theme",
+    "type": "text",
+    "name": "theme",
+    "id": "theme",
+    "group": "website"
   }
 ]

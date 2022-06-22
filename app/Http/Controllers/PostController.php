@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\Menu;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,12 +19,17 @@ class PostController extends Controller
 			->leftJoin('users as users2', 'posts.updated_by', '=', 'users2.id')
 			->where('posts.id', $id)->first();
 
+        $menu = Menu::getMenu('main-menu');
+        $theme = Setting::getValue('website', 'theme', 'starter');
+
 	if (!$post) {
-	    return abort('404');
+            $page = '404';
+            return view('themes.'.$theme.'.index', compact('page', 'menu'));
 	}
 
 	if (!$post->canAccess()) {
-	    return abort('403');
+            $page = '403';
+            return view('themes.'.$theme.'.index', compact('page', 'menu'));
 	}
 
         $page = 'post';
@@ -33,6 +39,6 @@ class PostController extends Controller
         $metaData = $post->meta_data;
 	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug]);
 
-        return view('themes.starter.index', compact('page', 'id', 'slug', 'post', 'settings', 'timezone', 'metaData', 'query'));
+        return view('themes.'.$theme.'.index', compact('page', 'menu', 'id', 'slug', 'post', 'settings', 'timezone', 'metaData', 'query'));
     }
 }
