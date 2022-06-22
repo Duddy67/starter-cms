@@ -17,6 +17,7 @@ class SiteController extends Controller
         $posts = null;
         $settings = $metaData = [];
         $menu = Menu::getMenu('main-menu');
+        $theme = Setting::getValue('website', 'theme', 'starter');
 
         if ($category = Category::where('slug', $page)->first()) {
             $posts = $category->getPosts($request);
@@ -39,7 +40,6 @@ class SiteController extends Controller
             return view('themes.'.$theme.'.index', compact('page', 'menu'));
         }
 
-        $theme = Setting::getValue('website', 'theme', 'starter');
         $query = $request->query();
 
         return view('themes.'.$theme.'.index', compact('page', 'menu', 'category', 'settings', 'posts', 'metaData', 'query'));

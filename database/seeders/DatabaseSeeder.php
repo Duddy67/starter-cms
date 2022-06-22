@@ -104,7 +104,7 @@ class DatabaseSeeder extends Seeder
             ['group' => 'app', 'key' => 'name', 'value' => 'Starter CMS'],
             ['group' => 'app', 'key' => 'timezone', 'value' => 'Europe/Paris'],
             ['group' => 'app', 'key' => 'date_format', 'value' => 'd/m/Y H:i'],
-            ['group' => 'pagination', 'key' => 'per_page', 'value' => '5']
+            ['group' => 'pagination', 'key' => 'per_page', 'value' => '5'],
             ['group' => 'website', 'key' => 'theme', 'value' => 'starter']
         ]);
     }
