@@ -87,7 +87,7 @@ class Setting extends Model
         $results = Setting::whereIn('key', ['post_segment', 'category_segment', 'plugin_segment'])->select('key', 'value')->get();
         $defaults = ['post' => 'post', 'category' => 'category', 'plugin' => 'blog'];
 
-        if (!$results) {
+        if ($results->isEmpty()) {
             return $defaults;
         }
 
