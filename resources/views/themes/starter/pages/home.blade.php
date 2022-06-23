@@ -1,9 +1,9 @@
 
-@if ($category)
+@if (isset($category) && $category)
     <ul class="post-list">
 	@if (count($posts))
 	    @foreach ($posts as $post)
-		@include ('partials.post')
+		@include ('themes.starter.partials.post')
 	    @endforeach
 	@else
 	    <div>No post</div>

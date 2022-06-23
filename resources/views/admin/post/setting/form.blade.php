@@ -10,6 +10,7 @@
         <nav class="nav nav-tabs">
             <a class="nav-item nav-link active" href="#posts" data-toggle="tab">@php echo __('labels.title.posts'); @endphp</a>
             <a class="nav-item nav-link" href="#category" data-toggle="tab">@php echo __('labels.generic.category'); @endphp</a>
+            <a class="nav-item nav-link" href="#global" data-toggle="tab">@php echo __('labels.title.global'); @endphp</a>
         </nav>
 
         <div class="tab-content">

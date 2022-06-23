@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\Post\Setting as PostSetting;
 use App\Models\Menu;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
@@ -37,8 +38,9 @@ class PostController extends Controller
 	$settings = $post->getSettings();
         $timezone = Setting::getValue('app', 'timezone');
         $metaData = $post->meta_data;
+        $segments = PostSetting::getSegments();
 	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug]);
 
-        return view('themes.'.$theme.'.index', compact('page', 'menu', 'id', 'slug', 'post', 'settings', 'timezone', 'metaData', 'query'));
+        return view('themes.'.$theme.'.index', compact('page', 'menu', 'id', 'slug', 'post', 'segments', 'settings', 'timezone', 'metaData', 'query'));
     }
 }

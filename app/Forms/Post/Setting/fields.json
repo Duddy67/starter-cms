@@ -46,6 +46,13 @@
     "options": [] 
   },
   {
+    "label": "labels.generic.segment",
+    "type": "text",
+    "name": "post_segment",
+    "id": "post_segment",
+    "group": "posts"
+  },
+  {
     "label": "labels.generic.show_name",
     "type": "select",
     "name": "show_name",
@@ -116,5 +123,20 @@
     "id": "post_ordering",
     "group": "category",
     "options": [] 
+  },
+  {
+    "label": "labels.generic.segment",
+    "type": "text",
+    "name": "category_segment",
+    "id": "category_segment",
+    "group": "category"
+  },
+  {
+    "label": "labels.generic.segment",
+    "type": "text",
+    "name": "plugin_segment",
+    "id": "plugin_segment",
+    "tab": "global",
+    "group": "global"
   }
 ]

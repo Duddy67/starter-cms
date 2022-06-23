@@ -13,6 +13,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\Post\CategoryController as PostCategoryController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\TokenController;
+use App\Models\Post\Setting as PostSetting;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,8 +26,9 @@ use App\Http\Controllers\TokenController;
 |
 */
 
-Route::get('/post/{id}/{slug}', [PostController::class, 'show'])->name('post');
-Route::get('/post/category/{id}/{slug}', [PostCategoryController::class, 'index'])->name('post.category');
+$segments = PostSetting::getSegments();
+Route::get('/'.$segments['post'].'/{id}/{slug}', [PostController::class, 'show'])->name('post');
+Route::get('/'.$segments['plugin'].'/'.$segments['category'].'/{id}/{slug}', [PostCategoryController::class, 'index'])->name('post.category');
 
 Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');

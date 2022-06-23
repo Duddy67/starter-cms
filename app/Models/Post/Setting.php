@@ -82,7 +82,22 @@ class Setting extends Model
 	return $settings;
     }
 
-    public static function getPostOrderingOptions()
+    public static function getSegments(): array
+    {
+        $results = Setting::whereIn('key', ['post_segment', 'category_segment', 'plugin_segment'])->select('key', 'value')->get();
+        $defaults = ['post_segment' => 'post', 'category_segment' => 'category', 'plugin_segment' => 'blog'];
+        $segments = [];
+
+        foreach ($results as $result) {
+            // Remove the '_segment' part from the key.
+            $key = substr($result->key, 0, strpos($result->key, '_'));
+            $segments[$key] = ($result->value) ? $result->value : $defaults[$result->key];
+        }
+
+        return $segments;
+    }
+
+    public static function getPostOrderingOptions(): array
     {
       return [
 	  ['value' => 'no_ordering', 'text' => __('labels.generic.no_ordering')],

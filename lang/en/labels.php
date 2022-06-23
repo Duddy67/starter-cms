@@ -123,6 +123,7 @@ return [
 	'image' => 'Image',
 	'photo' => 'Photo',
 	'extra' => 'Extra',
+	'segment' => 'Segment',
 	'alt_img' => 'alt image attribute',
 	'select_option' => '- Select -',
 	'batch_title' => 'Fields to update for the selection of items',

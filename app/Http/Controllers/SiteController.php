@@ -18,6 +18,7 @@ class SiteController extends Controller
         $settings = $metaData = [];
         $menu = Menu::getMenu('main-menu');
         $theme = Setting::getValue('website', 'theme', 'starter');
+        $query = $request->query();
 
         if ($category = Category::where('slug', $page)->first()) {
             $posts = $category->getPosts($request);
@@ -35,14 +36,17 @@ class SiteController extends Controller
 
             $metaData = $category->meta_data;
         }
+        elseif ($page == 'home') {
+            return view('themes.'.$theme.'.index', compact('page', 'menu', 'query'));
+        }
         else {
             $page = '404';
             return view('themes.'.$theme.'.index', compact('page', 'menu'));
         }
 
-        $query = $request->query();
+        $segments = PostSetting::getSegments();
 
-        return view('themes.'.$theme.'.index', compact('page', 'menu', 'category', 'settings', 'posts', 'metaData', 'query'));
+        return view('themes.'.$theme.'.index', compact('page', 'menu', 'category', 'settings', 'posts', 'segments', 'metaData', 'query'));
     }
 
 
@@ -65,8 +69,9 @@ class SiteController extends Controller
         }
 
         $page = $page.'-details';
+        $segments = PostSetting::getSegments();
 	$query = $request->query();
 
-        return view('themes.'.$theme.'.index', compact('page', 'menu', 'category', 'post', 'query'));
+        return view('themes.'.$theme.'.index', compact('page', 'menu', 'category', 'post', 'segments', 'query'));
     }
 }

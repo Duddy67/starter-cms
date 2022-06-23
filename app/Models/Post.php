@@ -174,7 +174,8 @@ class Post extends Model
 
     public function getUrl()
     {
-        return '/post/'.$this->id.'/'.$this->slug;
+        $segments = PostSetting::getSegments();
+        return '/'.$segments['post'].'/'.$this->id.'/'.$this->slug;
     }
 
     public function getCategoriesOptions()
