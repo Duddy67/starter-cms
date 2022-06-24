@@ -11,6 +11,8 @@ use App\Models\User\Group;
 use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
 use App\Models\Cms\Document;
+use App\Support\PostCollection;
+use Illuminate\Http\Request;
 
 
 class Post extends Model
@@ -103,10 +105,21 @@ class Post extends Model
         parent::delete();
     }
 
+    /**
+     * Create a new Eloquent Collection instance.
+     *
+     * @param  array  $models
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function newCollection(array $models = [])
+    {
+        return new PostCollection($models);
+    }
+
     /*
      * Gets the post items according to the filter, sort and pagination settings.
      */
-    public function getItems($request)
+    public function getItems(Request $request)
     {
         $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);

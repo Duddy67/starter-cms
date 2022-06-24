@@ -12,6 +12,7 @@ use Kalnoy\Nestedset\NodeTrait;
 use App\Models\User\Group;
 use App\Traits\TreeAccessLevel;
 use App\Traits\CheckInCheckOut;
+use Illuminate\Http\Request;
 
 
 class Category extends Model
@@ -82,7 +83,7 @@ class Category extends Model
     /*
      * Gets the category items as a tree.
      */
-    public function getItems($request)
+    public function getItems(Request $request)
     {
         $search = $request->input('search', null);
 
@@ -100,9 +101,9 @@ class Category extends Model
         return '/'.$segments['category'].'/'.$this->id.'/'.$this->slug;
     }
 
-    public function getPosts($request)
+    public function getPosts(Request $request)
     {
-        $perPage = $request->input('per_page', GlobalSetting::getValue('pagination', 'per_page'));
+        $perPage = $request->input('per_page', null);
         $search = $request->input('search', null);
         $settings = $this->getSettings();
 
@@ -155,7 +156,7 @@ class Category extends Model
             $query->orderBy($ordering[1], $ordering[2]);
         }
 
-        return $query->paginate($perPage);
+        return ($perPage) ? $query->paginate($perPage) : $query->get();
     }
 
     public function getParentIdOptions()
