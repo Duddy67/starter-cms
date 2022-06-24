@@ -101,12 +101,53 @@ class Category extends Model
         return '/'.$segments['category'].'/'.$this->id.'/'.$this->slug;
     }
 
+    /*
+     * Returns unfiltered posts without pagination.
+     */
+    public function getAllPosts(Request $request)
+    {
+        $settings = $this->getSettings();
+        $query = $this->getQuery($request);
+
+        if ($settings['post_ordering'] != 'no_ordering') {
+            // Extract the ordering name and direction from the setting value.
+            preg_match('#^([a-z-0-9_]+)_(asc|desc)$#', $settings['post_ordering'], $ordering);
+
+            $query->orderBy($ordering[1], $ordering[2]);
+        }
+
+        return $query->get();
+    }
+
+    /*
+     * Returns filtered and paginated posts.
+     */
     public function getPosts(Request $request)
     {
-        $perPage = $request->input('per_page', null);
+        $perPage = $request->input('per_page', GlobalSetting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);
         $settings = $this->getSettings();
+        $query = $this->getQuery($request);
 
+        if ($search !== null) {
+            $query->where('posts.title', 'like', '%'.$search.'%');
+        }
+
+        if ($settings['post_ordering'] != 'no_ordering') {
+            // Extract the ordering name and direction from the setting value.
+            preg_match('#^([a-z-0-9_]+)_(asc|desc)$#', $settings['post_ordering'], $ordering);
+
+            $query->orderBy($ordering[1], $ordering[2]);
+        }
+
+        return $query->paginate($perPage);
+    }
+
+    /*
+     * Builds the Post query.
+     */
+    private function getQuery(Request $request)
+    {
         $query = Post::query();
         $query->select('posts.*', 'users.name as owner_name')->leftJoin('users', 'posts.owned_by', '=', 'users.id');
         // Join the role tables to get the owner's role level.
@@ -116,10 +157,6 @@ class Category extends Model
         $query->whereHas('categories', function ($query) {
             $query->where('id', $this->id);
         });
-
-        if ($search !== null) {
-            $query->where('posts.title', 'like', '%'.$search.'%');
-        }
 
         if (Auth::check()) {
 
@@ -146,17 +183,11 @@ class Category extends Model
         else {
             $query->whereIn('posts.access_level', ['public_ro', 'public_rw']);
         }
-
+ 
+        // Do not show unpublished posts on front-end.
         $query->where('posts.status', 'published');
 
-        if ($settings['post_ordering'] != 'no_ordering') {
-            // Extract the ordering name and direction from the setting value.
-            preg_match('#^([a-z-0-9_]+)_(asc|desc)$#', $settings['post_ordering'], $ordering);
-
-            $query->orderBy($ordering[1], $ordering[2]);
-        }
-
-        return ($perPage) ? $query->paginate($perPage) : $query->get();
+        return $query;
     }
 
     public function getParentIdOptions()

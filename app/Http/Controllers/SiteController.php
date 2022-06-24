@@ -21,7 +21,7 @@ class SiteController extends Controller
         $query = $request->query();
 
         if ($category = Category::where('slug', $page)->first()) {
-            $posts = $category->getPosts($request);
+            $posts = $category->getAllPosts($request);
 
             $globalSettings = PostSetting::getDataByGroup('category');
 
