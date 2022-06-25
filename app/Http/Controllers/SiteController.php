@@ -7,6 +7,9 @@ use App\Models\Post\Category;
 use App\Models\Post\Setting as PostSetting;
 use App\Models\Menu;
 use App\Models\Setting;
+use App\Models\Message;
+use App\Models\Email;
+use App\Http\Requests\Message\StoreRequest;
 
 
 class SiteController extends Controller
@@ -73,5 +76,31 @@ class SiteController extends Controller
 	$query = $request->query();
 
         return view('themes.'.$theme.'.index', compact('page', 'menu', 'category', 'post', 'segments', 'query'));
+    }
+
+    /**
+     * Store a newly sent message.
+     *
+     * @param  \App\Http\Requests\Message\StoreRequest $request
+     * @return JSON
+     */
+    public function store(StoreRequest $request)
+    {
+        $message = Message::create([
+          'name' => $request->input('name'), 
+          'email' => $request->input('email'), 
+          'subject' => $request->input('subject'), 
+          'message' => $request->input('message'), 
+        ]);
+
+        $message->status = 'unread';
+        $message->save();
+
+        //file_put_contents('debog_file.txt', print_r('Ajax', true));
+        $request->session()->flash('success', __('messages.message.send_success'));
+        // Set the redirect url.
+        $redirect = ($request->input('_page', null)) ? url('/').'/'.$request->input('_page', null) : url('/');
+
+        return response()->json(['redirect' => $redirect]);
     }
 }

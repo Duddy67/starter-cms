@@ -85,6 +85,9 @@ return [
     'menu' => [
         'menu_not_found' => 'The menu with the code: :code cannot be found.',
     ],
+    'message' => [
+        'send_success' => 'Your message has been sent successfully.',
+    ],
     'general' => [
         'update_success' => 'Parameters successfully saved.',
     ],
