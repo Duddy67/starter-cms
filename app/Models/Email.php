@@ -43,7 +43,7 @@ class Email extends Model
     public function save(array $options = [])
     {
         // Replace the HTML entities set by the editor in the code placeholders (eg: {{ $data-&gt;name }}).
-	$this->body_html = preg_replace('#({{.+)-&gt;(.+}})#', '$1->$2', $this->body_html);
+	$this->body_html = preg_replace('#({{[\s\$a-zA-Z0-9_]+)-&gt;([a-zA-Z0-9_\s]+}})#', '$1->$2', $this->body_html);
 
         parent::save($options);
 

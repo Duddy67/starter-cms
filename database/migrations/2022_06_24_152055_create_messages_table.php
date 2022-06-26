@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email');
-            $table->tinyText('subject');
+            $table->tinyText('object');
             $table->text('message');
             $table->char('status', 12)->nullable();
             $table->timestamps();

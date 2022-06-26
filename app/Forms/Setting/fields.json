@@ -32,6 +32,13 @@
     "options": [] 
   },
   {
+    "label": "labels.settings.admin_email",
+    "type": "text",
+    "name": "admin_email",
+    "id": "admin_email",
+    "group": "website"
+  },
+  {
     "label": "labels.settings.theme",
     "type": "text",
     "name": "theme",

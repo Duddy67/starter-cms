@@ -39,7 +39,7 @@ class SiteController extends Controller
 
             $metaData = $category->meta_data;
         }
-        elseif ($page == 'home') {
+        elseif ($page == 'home' || file_exists(resource_path().'/views/themes/'.$theme.'/pages/'.$page.'.blade.php')) {
             return view('themes.'.$theme.'.index', compact('page', 'menu', 'query'));
         }
         else {
@@ -79,7 +79,7 @@ class SiteController extends Controller
     }
 
     /**
-     * Store a newly sent message.
+     * Store a newly sent message. (AJAX)
      *
      * @param  \App\Http\Requests\Message\StoreRequest $request
      * @return JSON
@@ -89,14 +89,21 @@ class SiteController extends Controller
         $message = Message::create([
           'name' => $request->input('name'), 
           'email' => $request->input('email'), 
-          'subject' => $request->input('subject'), 
+          'object' => $request->input('object'), 
           'message' => $request->input('message'), 
         ]);
 
         $message->status = 'unread';
         $message->save();
 
-        //file_put_contents('debog_file.txt', print_r('Ajax', true));
+        // Set a recipient attribute to prevent the sendEmail function to use the email
+        // attribute as recipient.
+        $message->recipient = Setting::getValue('website', 'admin_email');
+
+        if (!empty($message->recipient)) {
+            Email::sendEmail('new_message', $message);
+        }
+
         $request->session()->flash('success', __('messages.message.send_success'));
         // Set the redirect url.
         $redirect = ($request->input('_page', null)) ? url('/').'/'.$request->input('_page', null) : url('/');
