@@ -180,6 +180,7 @@ class ItemController extends Controller
 
         $item->title = $request->input('title');
         $item->url = $request->input('url');
+        $item->model = $request->input('model');
         $item->updated_by = auth()->user()->id;
 
         $item->save();
@@ -217,6 +218,7 @@ class ItemController extends Controller
         $item = Item::create([
             'title' => $request->input('title'), 
             'url' => $request->input('url'), 
+            'model' => $request->input('model'), 
             'status' => ($parent->status == 'unpublished') ? 'unpublished' : $request->input('status'), 
             'parent_id' => $request->input('parent_id'),
         ]);

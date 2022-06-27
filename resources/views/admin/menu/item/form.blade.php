@@ -1,7 +1,7 @@
 @extends ('admin.layouts.default')
 
 @section ('main')
-    <h3>@php echo (isset($item)) ? __('labels.menuitems.edit_menu_item') : __('labels.menuitems.create_menu_item'); @endphp</h3>
+    <h3>@php echo (isset($item)) ? __('labels.menuitem.edit_menu_item') : __('labels.menuitem.create_menu_item'); @endphp</h3>
 
     @php $action = (isset($item)) ? route('admin.menu.items.update', $query) : route('admin.menu.items.store', $query) @endphp
     <form method="post" action="{{ $action }}" id="itemForm">

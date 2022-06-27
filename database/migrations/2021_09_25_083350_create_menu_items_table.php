@@ -18,6 +18,7 @@ class CreateMenuItemsTable extends Migration
             $table->string('title', 80);
             $table->string('menu_code', 30)->nullable();
             $table->string('url');
+            $table->string('model', 100)->nullable();
             $table->char('status', 12);
 	    $table->nestedSet();
             $table->unsignedBigInteger('checked_out')->nullable();

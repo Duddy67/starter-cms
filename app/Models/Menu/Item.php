@@ -30,6 +30,7 @@ class Item extends Model
     protected $fillable = [
         'title',
         'url',
+        'model',
         'status',
         'parent_id',
     ];
@@ -59,6 +60,45 @@ class Item extends Model
         else {
           return Item::where('menu_code', $code)->defaultOrder()->get()->toTree();
         }
+    }
+
+    /*
+     * Parses the segment variables (if any) then returns the corresponding url.
+     */
+    public function getUrl(): string
+    {
+        // First check for segment variables in the item url.
+        if (strpos($this->url, '{') === false) {
+            return $this->url;
+        }
+
+        $parts = explode('/', $this->url);
+
+        if ($parts[0] == '') {
+            unset($parts[0]);
+        }
+
+        $url = '';
+
+        foreach ($parts as $part) {
+            if (substr($part, 0, 1) == '{') {
+                $segment = str_replace(str_split('{}'), '', $part);
+                $segments = $this->model::getSegments();
+
+                if (isset($segments->{$segment})) {
+                    $url .= '/'.$segments->{$segment};
+                }
+                // If the segment variable doesn't exist, return the url as it is.
+                else {
+                    return $this->url;
+                }
+            }
+            else {
+                $url .= '/'.$part;
+            }
+        }
+
+        return $url;
     }
 
     public function getParentIdOptions()

@@ -14,6 +14,13 @@
     "placeholder": "labels.menuitem.url"
   },
   {
+    "label": "labels.menuitem.model",
+    "type": "text",
+    "name": "model",
+    "id": "model",
+    "placeholder": "labels.menuitem.model_example"
+  },
+  {
     "label": "labels.menuitem.parent_item",
     "type": "select",
     "name": "parent_id",

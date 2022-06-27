@@ -73,6 +73,8 @@ return [
 	'edit_menu_item' => 'Edit a menu item',
 	'parent_item' => 'Parent item',
 	'url' => 'URL',
+	'model' => 'Model',
+	'model_example' => '\App\Models\Post',
     ],
     'email' => [
 	'subject' => 'Subject',

@@ -150,7 +150,7 @@ class Menu extends Model
                 $item = new \stdClass();
                 $item->id = $node->id;
                 $item->title = $node->title;
-                $item->url = $node->url;
+                $item->url = $node->getUrl();
                 $item->level = $level;
                 $item->parent_id = $node->parent_id;
                 $item->children = [];
