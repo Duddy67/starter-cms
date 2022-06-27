@@ -82,24 +82,12 @@ class Setting extends Model
 	return $settings;
     }
 
-    public static function getSegments(): array
+    public static function getSegments(): object
     {
-        $results = Setting::whereIn('key', ['post_segment', 'category_segment', 'plugin_segment'])->select('key', 'value')->get();
-        $defaults = ['post' => 'post', 'category' => 'category', 'plugin' => 'blog'];
+        $json = file_get_contents(base_path().'/routes/segments/post.json', true);
+        $segments = json_decode($json);
 
-        if ($results->isEmpty()) {
-            return $defaults;
-        }
-
-        $segments = [];
-
-        foreach ($results as $result) {
-            // Remove the '_segment' part from the key.
-            $key = substr($result->key, 0, strpos($result->key, '_'));
-            $segments[$key] = ($result->value) ? $result->value : $defaults[$key];
-        }
-
-        return $segments;
+        return $segments->{app()->getLocale()};
     }
 
     public static function getPostOrderingOptions(): array

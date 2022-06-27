@@ -25,7 +25,7 @@
     <p class="categories">
 	<h6>Categories</h6>
 	@foreach ($post->categories as $category)
-	    <a href="{{ url('/'.$segments['plugin'].$category->getUrl()) }}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">{{ $category->name }}</a>
+	    <a href="{{ url('/'.$segments->plugin.$category->getUrl()) }}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">{{ $category->name }}</a>
 	@endforeach
     </p>
 @endif

@@ -98,7 +98,7 @@ class Category extends Model
     public function getUrl()
     {
         $segments = PostSetting::getSegments();
-        return '/'.$segments['category'].'/'.$this->id.'/'.$this->slug;
+        return '/'.$segments->category.'/'.$this->id.'/'.$this->slug;
     }
 
     /*
