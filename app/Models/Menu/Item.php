@@ -32,6 +32,7 @@ class Item extends Model
         'url',
         'model',
         'class',
+        'anchor',
         'status',
         'parent_id',
     ];

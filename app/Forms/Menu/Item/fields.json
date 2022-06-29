@@ -34,6 +34,12 @@
     "id": "class"
   },
   {
+    "label": "labels.menuitem.anchor",
+    "type": "text",
+    "name": "anchor",
+    "id": "anchor"
+  },
+  {
     "label": "labels.generic.status",
     "type": "select",
     "name": "status",

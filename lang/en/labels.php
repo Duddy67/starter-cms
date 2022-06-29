@@ -76,6 +76,7 @@ return [
 	'model' => 'Model',
 	'model_example' => '\App\Models\Post',
 	'class' => 'Class',
+	'anchor' => 'Anchor',
     ],
     'email' => [
 	'subject' => 'Subject',

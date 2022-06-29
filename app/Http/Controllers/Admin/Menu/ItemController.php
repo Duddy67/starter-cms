@@ -182,6 +182,7 @@ class ItemController extends Controller
         $item->url = $request->input('url');
         $item->model = $request->input('model');
         $item->class = $request->input('class');
+        $item->anchor = $request->input('anchor');
         $item->updated_by = auth()->user()->id;
 
         $item->save();
@@ -221,6 +222,7 @@ class ItemController extends Controller
             'url' => $request->input('url'), 
             'model' => $request->input('model'), 
             'class' => $request->input('class'), 
+            'anchor' => $request->input('anchor'), 
             'status' => ($parent->status == 'unpublished') ? 'unpublished' : $request->input('status'), 
             'parent_id' => $request->input('parent_id'),
         ]);

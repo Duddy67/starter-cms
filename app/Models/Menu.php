@@ -152,6 +152,7 @@ class Menu extends Model
                 $item->title = $node->title;
                 $item->url = $node->getUrl();
                 $item->class = $node->class;
+                $item->anchor = $node->anchor;
                 $item->level = $level;
                 $item->parent_id = $node->parent_id;
                 $item->children = [];
