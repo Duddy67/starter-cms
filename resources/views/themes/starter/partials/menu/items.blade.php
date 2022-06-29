@@ -3,7 +3,7 @@
     $dropdownLink = (count($item->children) > 0) ? 'dropdown-toggle' : ''; 
 @endphp
 
-<li class="nav-item {{ $dropdown }}">
+<li class="nav-item {{ $item->class }} {{ $dropdown }}">
     <a class="nav-link {{ $dropdownLink }}" href="{{ url($item->url) }}"
     @if ($dropdown)
         id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"

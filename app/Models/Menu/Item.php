@@ -31,6 +31,7 @@ class Item extends Model
         'title',
         'url',
         'model',
+        'class',
         'status',
         'parent_id',
     ];

@@ -28,6 +28,12 @@
     "options": [] 
   },
   {
+    "label": "labels.menuitem.class",
+    "type": "text",
+    "name": "class",
+    "id": "class"
+  },
+  {
     "label": "labels.generic.status",
     "type": "select",
     "name": "status",

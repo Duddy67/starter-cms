@@ -181,6 +181,7 @@ class ItemController extends Controller
         $item->title = $request->input('title');
         $item->url = $request->input('url');
         $item->model = $request->input('model');
+        $item->class = $request->input('class');
         $item->updated_by = auth()->user()->id;
 
         $item->save();
@@ -188,13 +189,13 @@ class ItemController extends Controller
         if ($request->input('_close', null)) {
             $item->checkIn();
             // Store the message to be displayed on the list view after the redirect.
-            $request->session()->flash('success', __('messages.menuitems.update_success'));
+            $request->session()->flash('success', __('messages.menuitem.update_success'));
             return response()->json(['redirect' => route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))]);
         }
 
         $refresh = ['updated_at' => Setting::getFormattedDate($item->updated_at), 'updated_by' => auth()->user()->name];
 
-        return response()->json(['success' => __('messages.menuitems.update_success'), 'refresh' => $refresh]);
+        return response()->json(['success' => __('messages.menuitem.update_success'), 'refresh' => $refresh]);
     }
 
     /**
@@ -219,6 +220,7 @@ class ItemController extends Controller
             'title' => $request->input('title'), 
             'url' => $request->input('url'), 
             'model' => $request->input('model'), 
+            'class' => $request->input('class'), 
             'status' => ($parent->status == 'unpublished') ? 'unpublished' : $request->input('status'), 
             'parent_id' => $request->input('parent_id'),
         ]);
@@ -229,7 +231,7 @@ class ItemController extends Controller
 
         $item->save();
 
-        $request->session()->flash('success', __('messages.menuitems.create_success'));
+        $request->session()->flash('success', __('messages.menuitem.create_success'));
 
         if ($request->input('_close', null)) {
             return response()->json(['redirect' => route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))]);
@@ -257,7 +259,7 @@ class ItemController extends Controller
 
         $item->delete();
 
-        return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitems.delete_success', ['name' => $name]));
+        return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitem.delete_success', ['name' => $name]));
     }
 
     /**
@@ -282,7 +284,7 @@ class ItemController extends Controller
             $deleted++;
         }
 
-        return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitems.delete_list_success', ['number' => $deleted]));
+        return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitem.delete_list_success', ['number' => $deleted]));
     }
 
     /**
@@ -320,7 +322,7 @@ class ItemController extends Controller
             $changed++;
         }
 
-        return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitems.change_status_list_success', ['number' => $changed]));
+        return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitem.change_status_list_success', ['number' => $changed]));
     }
 
     public function massUnpublish(Request $request, $code)
@@ -354,7 +356,7 @@ class ItemController extends Controller
             }
         }
 
-        return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitems.change_status_list_success', ['number' => $changed]));
+        return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitem.change_status_list_success', ['number' => $changed]));
     }
 
     /**

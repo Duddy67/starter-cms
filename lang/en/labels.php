@@ -75,6 +75,7 @@ return [
 	'url' => 'URL',
 	'model' => 'Model',
 	'model_example' => '\App\Models\Post',
+	'class' => 'Class',
     ],
     'email' => [
 	'subject' => 'Subject',

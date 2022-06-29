@@ -151,6 +151,7 @@ class Menu extends Model
                 $item->id = $node->id;
                 $item->title = $node->title;
                 $item->url = $node->getUrl();
+                $item->class = $node->class;
                 $item->level = $level;
                 $item->parent_id = $node->parent_id;
                 $item->children = [];

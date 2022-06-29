@@ -61,9 +61,9 @@ return [
         'unpublish_list_success' => ':number posts have been successfully unpublished.',
     ],
     'category' => [
-        'create_success' => 'category successfully created.',
-        'update_success' => 'category successfully updated.',
-        'change_status_list_success' => 'category statuses successfully changed.',
+        'create_success' => 'Category successfully created.',
+        'update_success' => 'Category successfully updated.',
+        'change_status_list_success' => 'Category statuses successfully changed.',
         'no_subcategories' => 'No sub-categories',
     ],
     'email' => [
@@ -84,6 +84,13 @@ return [
     ],
     'menu' => [
         'menu_not_found' => 'The menu with the code: :code cannot be found.',
+    ],
+    'menuitem' => [
+        'create_success' => 'Menu item successfully created.',
+        'update_success' => 'Menu item successfully updated.',
+        'delete_success' => 'Menu item successfully deleted.',
+        'delete_list_success' => ':number menu items have been successfully deleted.',
+        'change_status_list_success' => 'Menu item statuses successfully changed.',
     ],
     'message' => [
         'send_success' => 'Your message has been sent successfully.',
