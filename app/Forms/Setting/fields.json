@@ -48,6 +48,15 @@
     "options": [] 
   },
   {
+    "label": "labels.settings.redirect_to_admin",
+    "type": "select",
+    "name": "redirect_to_admin",
+    "extra": ["yes_no"],
+    "id": "redirect_to_admin",
+    "group": "website",
+    "options": [] 
+  },
+  {
     "label": "labels.settings.theme",
     "type": "text",
     "name": "theme",

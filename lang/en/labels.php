@@ -93,6 +93,7 @@ return [
 	'admin_email' => 'The email of the website administrator',
 	'theme' => 'The theme to use for the website',
 	'allow_registering' => 'Allow guests registering on the front-end',
+	'redirect_to_admin' => 'Redirect authorized users to admin after logged in.',
     ],
     'generic' => [
 	'title' => 'Title',

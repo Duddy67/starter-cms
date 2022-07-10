@@ -37,6 +37,7 @@ class LoginController extends Controller
      */
     public function __construct()
     {
+        $this->redirectTo = (Setting::getValue('website', 'redirect_to_admin', 0)) ? RouteServiceProvider::ADMIN : $this->redirectTo;
         $this->middleware('guest')->except('logout');
     }
 
