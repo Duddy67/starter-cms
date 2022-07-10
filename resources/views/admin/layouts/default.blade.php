@@ -5,10 +5,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
 -->
 <html lang="en">
 <head>
+  @inject('setting', 'App\Models\Setting')
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>AdminLTE 3 | Starter</title>
+  <title>Admin | {{ $setting::getValue('app', 'name', 'Starter CMS') }}</title>
   <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
 
   <!-- Google Font: Source Sans Pro -->
@@ -55,7 +56,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
   </nav>
   <!-- /.navbar -->
 
-  @inject('setting', 'App\Models\Setting')
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4" id="layout-sidebar">
     @php $appName = ($setting::getValue('app', 'name')) ? $setting::getValue('app', 'name') : config('app.name', 'Starter CMS'); @endphp
