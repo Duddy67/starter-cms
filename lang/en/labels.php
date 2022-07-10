@@ -92,6 +92,7 @@ return [
 	'per_page' => 'Number of items per page',
 	'admin_email' => 'The email of the website administrator',
 	'theme' => 'The theme to use for the website',
+	'allow_registering' => 'Allow guests registering on the front-end',
     ],
     'generic' => [
 	'title' => 'Title',

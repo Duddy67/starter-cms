@@ -49,7 +49,8 @@ class LoginController extends Controller
     public function showLoginForm()
     {
         $theme = Setting::getValue('website', 'theme', 'starter');
+        $allowRegistering = Setting::getValue('website', 'allow_registering', 0);
 
-        return view('themes.'.$theme.'.auth.login');
+        return view('themes.'.$theme.'.auth.login', compact('allowRegistering'));
     }
 }

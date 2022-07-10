@@ -39,6 +39,15 @@
     "group": "website"
   },
   {
+    "label": "labels.settings.allow_registering",
+    "type": "select",
+    "name": "allow_registering",
+    "extra": ["yes_no"],
+    "id": "allow_registering",
+    "group": "website",
+    "options": [] 
+  },
+  {
     "label": "labels.settings.theme",
     "type": "text",
     "name": "theme",

@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-md navbar-light bg-light">
-  @if ($menu = $menu::getMenu('main-menu'))
+  @if ($menu)
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
 	    <ul class="navbar-nav mr-auto">
 		@foreach ($menu->getMenuItems() as $item)
@@ -16,7 +16,7 @@
 	  @else
 	      <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Log in</a>
 
-	      @if (Route::has('register'))
+	      @if (Route::has('register') && $menu->allow_registering)
 		  <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 underline">Register</a>
 	      @endif
 	  @endauth

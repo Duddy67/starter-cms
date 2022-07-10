@@ -6,6 +6,7 @@ use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Setting;
 
 class RedirectIfAuthenticated
 {
@@ -25,6 +26,11 @@ class RedirectIfAuthenticated
             if (Auth::guard($guard)->check()) {
                 return redirect(RouteServiceProvider::HOME);
             }
+        }
+
+        // Check whether guests are allowed to register.
+        if ($request->segment(1) == 'register' && !Setting::getValue('website', 'allow_registering', 0)) {
+            return redirect(RouteServiceProvider::HOME);
         }
 
         return $next($request);

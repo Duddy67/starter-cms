@@ -20,6 +20,7 @@ class SiteController extends Controller
         $posts = null;
         $settings = $metaData = [];
         $menu = Menu::getMenu('main-menu');
+        $menu->allow_registering = Setting::getValue('website', 'allow_registering', 0);
         $theme = Setting::getValue('website', 'theme', 'starter');
         $query = $request->query();
 
@@ -57,6 +58,7 @@ class SiteController extends Controller
     {
         $page = $request->segment(1);
         $menu = Menu::getMenu('main-menu');
+        $menu->allow_registering = Setting::getValue('website', 'allow_registering', 0);
         $theme = Setting::getValue('website', 'theme', 'starter');
 
         // First make sure the category exists.

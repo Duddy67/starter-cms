@@ -21,6 +21,7 @@ class PostController extends Controller
 			->where('posts.id', $id)->first();
 
         $menu = Menu::getMenu('main-menu');
+        $menu->allow_registering = Setting::getValue('website', 'allow_registering', 0);
         $theme = Setting::getValue('website', 'theme', 'starter');
 
 	if (!$post) {
