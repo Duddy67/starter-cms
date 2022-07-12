@@ -45,6 +45,7 @@ trait Form
     public function getRows(array $columns, LengthAwarePaginator $items, array $except = []): array
     {
         $rows = [];
+        //$total = count($items);
 
         foreach ($items as $item) {
             // Check for extra attributes.
@@ -137,11 +138,20 @@ trait Form
 
                     $upperLevelClassName = ($this->getUpperLevelClassName()) ?  '.'.strtolower($this->getUpperLevelClassName()) : '';
 
-                    if ($item->getPrevSibling()) { 
-                        $ordering['up'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.up', $query);
-                    }
+                    // Tree type orderings.  
+                    if (in_array($this->getClassName(), ['Item', 'Category'])) {
+                        if ($item->getPrevSibling()) { 
+                            $ordering['up'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.up', $query);
+                        }
 
-                    if ($item->getNextSibling()) { 
+                        if ($item->getNextSibling()) { 
+                            $ordering['down'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.down', $query);
+                        }
+                    }
+                    // Normal orderings
+                    else {
+                        $query = array_merge(\Request::query(), [strtolower($this->getClassName()) => $item->id]); 
+                        $ordering['up'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.up', $query);
                         $ordering['down'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.down', $query);
                     }
 
@@ -323,7 +333,8 @@ trait Form
                     $default = Setting::getValue('pagination', 'per_page');
                 }
                 elseif ($filter->name == 'sorted_by') {
-                    $options = Setting::$function($this->getPathToForm());
+                    $extra = (isset($filter->extra)) ? $filter->extra : [];
+                    $options = Setting::$function($this->getPathToForm(), $extra);
                 }
                 elseif ($filter->name == 'owned_by' && $this->getClassName() != 'Document') {
                     $options = Setting::getOwnedByFilterOptions($this->model);

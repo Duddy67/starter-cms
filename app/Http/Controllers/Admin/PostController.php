@@ -17,6 +17,7 @@ use App\Http\Requests\Post\UpdateRequest;
 use Illuminate\Support\Str;
 use App\Models\Cms\Document;
 use Carbon\Carbon;
+use App\Models\Post\Ordering;
 
 
 class PostController extends Controller
@@ -55,7 +56,10 @@ class PostController extends Controller
     public function index(Request $request)
     {
         // Gather the needed data to build the item list.
-        $columns = $this->getColumns();
+
+        // Check if posts can be numerically ordered by category.
+        $except = (Setting::canOrderBy($request, 'categories', ['owned_by', 'groups', 'search'])) ? [] : ['ordering'];
+        $columns = $this->getColumns($except);
         $actions = $this->getActions('list');
         $filters = $this->getFilters($request);
         $items = $this->model->getItems($request);
@@ -189,10 +193,12 @@ class PostController extends Controller
             $categories = array_merge($request->input('categories', []), $post->getPrivateCategories());
 
             if (!empty($categories)) {
+                Ordering::sync($post, $categories);
                 $post->categories()->sync($categories);
             }
             else {
-                // Remove all categories for this post.
+                // Remove all orderings and categories for this post.
+                Ordering::sync($post, []);
                 $post->categories()->sync([]);
             }
 
@@ -263,6 +269,7 @@ class PostController extends Controller
 
         if ($request->input('categories') !== null) {
             $post->categories()->attach($request->input('categories'));
+            Ordering::sync($post, $request->input('categories'));
         }
 
         if ($image = $this->uploadImage($request)) {
@@ -495,6 +502,28 @@ class PostController extends Controller
         $refresh = ['post-image' => asset('/images/camera.png'), 'image' => '', 'deleteDocumentUrl' => ''];
 
         return response()->json(['success' => __('messages.generic.image_deleted'), 'refresh' => $refresh]);
+    }
+
+    public function up(Request $request, Post $post)
+    {
+        $ordering = $post->orderings->first(function($ordering) use($request) {
+            return $ordering->category_id == $request->input('categories')[0];
+        });
+
+        $ordering->moveOrderUp();
+
+        return redirect()->route('admin.posts.index', $request->query());
+    }
+
+    public function down(Request $request, Post $post)
+    {
+        $ordering = $post->orderings->first(function($ordering) use($request) {
+            return $ordering->category_id == $request->input('categories')[0];
+        });
+
+        $ordering->moveOrderDown();
+
+        return redirect()->route('admin.posts.index', $request->query());
     }
 
     /*

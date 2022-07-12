@@ -12,6 +12,8 @@ Route::get('/posts/cancel/{post?}', [AdminPostController::class, 'cancel'])->nam
 Route::put('/posts/checkin', [AdminPostController::class, 'massCheckIn'])->name('admin.posts.massCheckIn');
 Route::put('/posts/publish', [AdminPostController::class, 'massPublish'])->name('admin.posts.massPublish');
 Route::put('/posts/unpublish', [AdminPostController::class, 'massUnpublish'])->name('admin.posts.massUnpublish');
+Route::get('/post/{post}/up', [AdminPostController::class, 'up'])->name('admin.posts.up');
+Route::get('/post/{post}/down', [AdminPostController::class, 'down'])->name('admin.posts.down');
 Route::get('/posts/{post}/edit', [AdminPostController::class, 'edit'])->name('admin.posts.edit');
 Route::delete('/posts/{post}/delete-image', [AdminPostController::class, 'deleteImage'])->name('admin.posts.deleteImage');
 Route::resource('posts', AdminPostController::class, ['as' => 'admin'])->except(['show', 'edit']);

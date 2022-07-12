@@ -8,6 +8,7 @@ use App\Models\Setting as GlobalSetting;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Post;
 use App\Models\Post\Setting as PostSetting;
+use App\Models\Post\Ordering as PostOrdering;
 use Kalnoy\Nestedset\NodeTrait;
 use App\Models\User\Group;
 use App\Traits\TreeAccessLevel;
@@ -80,6 +81,27 @@ class Category extends Model
         return $this->belongsToMany(Group::class, 'post_category_group');
     }
 
+    /**
+     * The post orderings that belong to the category.
+     */
+    public function postOrderings()
+    {
+        return $this->hasMany(Ordering::class)->orderBy('post_order');
+    }
+
+    /**
+     * Delete the model from the database (override).
+     *
+     * @return bool|null
+     *
+     * @throws \LogicException
+     */
+    public function delete()
+    {
+        PostOrdering::where('category_id', $this->id)->delete();
+
+        parent::delete();
+    }
     /*
      * Gets the category items as a tree.
      */

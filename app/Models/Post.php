@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Setting;
 use App\Models\Post\Category;
+use App\Models\Post\Ordering;
 use App\Models\Post\Setting as PostSetting;
 use App\Models\User\Group;
 use App\Traits\AccessLevel;
@@ -87,6 +88,14 @@ class Post extends Model
     }
 
     /**
+     * The orderings that belong to the post.
+     */
+    public function orderings()
+    {
+        return $this->hasMany(Ordering::class);
+    }
+
+    /**
      * Delete the model from the database (override).
      *
      * @return bool|null
@@ -101,6 +110,8 @@ class Post extends Model
         if ($this->image) {
             $this->image->delete();
         }
+
+        Ordering::where('post_id', $this->id)->delete();
 
         parent::delete();
     }
@@ -137,7 +148,7 @@ class Post extends Model
             $query->where('posts.title', 'like', '%'.$search.'%');
         }
 
-        if ($sortedBy !== null) {
+        if ($sortedBy !== null && !str_starts_with($sortedBy, 'order')) {
             preg_match('#^([a-z0-9_]+)_(asc|desc)$#', $sortedBy, $matches);
             $query->orderBy($matches[1], $matches[2]);
         }
@@ -212,6 +223,16 @@ class Post extends Model
         $traverse($nodes);
 
         return $options;
+    }
+
+    public function getPrevSibling()
+    {
+        return true;
+    }
+
+    public function getNextSibling()
+    {
+        return true;
     }
 
     public function getSettings()

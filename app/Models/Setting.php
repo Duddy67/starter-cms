@@ -98,7 +98,7 @@ class Setting extends Model
         ];
     }
 
-    public static function getSortedByOptions($pathToForm)
+    public static function getSortedByOptions($pathToForm, $extra = [])
     {
         $json = file_get_contents($pathToForm.'/columns.json', true);
         $columns = json_decode($json);
@@ -109,6 +109,12 @@ class Setting extends Model
                 $options[] = ['value' => $column->name.'_asc', 'text' => $column->name.' asc'];
                 $options[] = ['value' => $column->name.'_desc', 'text' => $column->name.' desc'];
             }
+        }
+
+        // Add the numerical order.
+        if (in_array('ordering', $extra)) {
+            $options[] = ['value' => 'order_asc', 'text' => 'Order asc'];
+            $options[] = ['value' => 'order_desc', 'text' => 'Order desc'];
         }
 
         return $options;
@@ -252,6 +258,27 @@ class Setting extends Model
         if ($fieldName == 'per_page') {
             return $this->where(['group' => 'pagination', 'key' => 'per_page'])->pluck('value')->first();
         }
+    }
+
+    /*
+     * Checks a user can order items numerically by a given filter.
+     */
+    public static function canOrderBy($request, $filter, $excluded = [])
+    {
+        // Cannot order if one of the excluded filter is part of the current request.
+        foreach ($request->all() as $key => $value) {
+            if (in_array($key, $excluded)) {
+                return false;
+            }
+        }
+
+        // Cannot order if the sorted_by filter is not set to order_asc or order_desc.
+        if (!$request->input('sorted_by', null) || ($request->input('sorted_by') != 'order_asc' && $request->input('sorted_by') != 'order_desc')) {
+            return false;
+        }
+
+        // Can order if only one item is selected in the filter.
+        return ($request->input($filter, null) && count($request->input($filter)) == 1) ? true : false;
     }
 
     public static function getAppSettings()

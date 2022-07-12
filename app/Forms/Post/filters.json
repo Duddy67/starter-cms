@@ -10,6 +10,7 @@
     "label": "labels.filter.sorted_by",
     "type": "select",
     "name": "sorted_by",
+    "extra": ["ordering"],
     "id": "filters-sortedBy",
     "blank": "labels.generic.select_option",
     "options": [] 
