@@ -148,9 +148,21 @@ class Post extends Model
             $query->where('posts.title', 'like', '%'.$search.'%');
         }
 
-        if ($sortedBy !== null && !str_starts_with($sortedBy, 'order')) {
+        if ($sortedBy !== null) {
+            // Separate name and direction.
             preg_match('#^([a-z0-9_]+)_(asc|desc)$#', $sortedBy, $matches);
-            $query->orderBy($matches[1], $matches[2]);
+
+            // Check for numerical sorting.
+            if (Setting::canOrderBy('categories', ['owned_by', 'groups', 'search']) && Setting::isSortedByOrder()) {
+                $query->join('ordering_category_post', function ($join) use($categories) { 
+                    $join->on('posts.id', '=', 'post_id')
+                         ->where('category_id', '=', $categories[0]);
+                })->orderBy('post_order', $matches[2]);
+            }
+            // Regular sorting.
+            elseif ($matches[1] != 'order') {
+                $query->orderBy($matches[1], $matches[2]);
+            }
         }
 
         // Filter by owners
@@ -223,16 +235,6 @@ class Post extends Model
         $traverse($nodes);
 
         return $options;
-    }
-
-    public function getPrevSibling()
-    {
-        return true;
-    }
-
-    public function getNextSibling()
-    {
-        return true;
     }
 
     public function getSettings()

@@ -68,7 +68,6 @@ class Ordering extends Model implements Sortable
         }
 
         $olds = $post->orderings->pluck('category_id')->toArray();
-//file_put_contents('debog_file_2.txt', print_r($categories, true));
 
         foreach ($categories as $category) {
             if (!in_array($category, $olds)) {

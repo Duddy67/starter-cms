@@ -32,6 +32,7 @@
     <input type="hidden" id="checkinItems" value="{{ route('admin.posts.massCheckIn', $query) }}">
     <input type="hidden" id="publishItems" value="{{ route('admin.posts.massPublish', $query) }}">
     <input type="hidden" id="unpublishItems" value="{{ route('admin.posts.massUnpublish', $query) }}">
+    <input type="hidden" id="canOrderBy" value="{{ $canOrderBy }}">
 
     <form id="selectedItems" action="{{ route('admin.posts.index', $query) }}" method="post">
         @method('delete')

@@ -261,24 +261,31 @@ class Setting extends Model
     }
 
     /*
+     * Checks the sorted_by filter is set to order_asc or order_desc.
+     */
+    public static function isSortedByOrder()
+    {
+        if (request()->input('sorted_by', null) && (request()->input('sorted_by') == 'order_asc' || request()->input('sorted_by') == 'order_desc')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /*
      * Checks a user can order items numerically by a given filter.
      */
-    public static function canOrderBy($request, $filter, $excluded = [])
+    public static function canOrderBy($filter, $excluded = [])
     {
         // Cannot order if one of the excluded filter is part of the current request.
-        foreach ($request->all() as $key => $value) {
+        foreach (request()->all() as $key => $value) {
             if (in_array($key, $excluded)) {
                 return false;
             }
         }
 
-        // Cannot order if the sorted_by filter is not set to order_asc or order_desc.
-        if (!$request->input('sorted_by', null) || ($request->input('sorted_by') != 'order_asc' && $request->input('sorted_by') != 'order_desc')) {
-            return false;
-        }
-
         // Can order if only one item is selected in the filter.
-        return ($request->input($filter, null) && count($request->input($filter)) == 1) ? true : false;
+        return (request()->input($filter, null) && count(request()->input($filter)) == 1) ? true : false;
     }
 
     public static function getAppSettings()

@@ -51,6 +51,26 @@
 
 	    $('#item-filters').submit();
 	});
+
+        /* Numerical order (if any) */
+        if ($('#canOrderBy').length) {
+            // Enable or disable the order options accordingly.
+            $('#filters-sortedBy option').each(function(index) {
+                if ($(this).val() == 'order_asc' || $(this).val() == 'order_desc') {
+                    if ($('#canOrderBy').val()) {
+                        $(this).prop('disabled', false);
+                    }
+                    else {
+                        $(this).prop('disabled', true);
+                        if ($('#filters-sortedBy option:selected').val() == 'order_asc' || $('#filters-sortedBy option:selected').val() == 'order_desc') {
+                            $('option:selected').removeAttr('selected');
+                            $('#filters-sortedBy').trigger('change.select2');
+                        }
+                    }
+                }
+            });
+
+        }
     });
 
     /*

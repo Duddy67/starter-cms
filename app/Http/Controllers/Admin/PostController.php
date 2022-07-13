@@ -58,7 +58,9 @@ class PostController extends Controller
         // Gather the needed data to build the item list.
 
         // Check if posts can be numerically ordered by category.
-        $except = (Setting::canOrderBy($request, 'categories', ['owned_by', 'groups', 'search'])) ? [] : ['ordering'];
+        $canOrderBy = Setting::canOrderBy('categories', ['owned_by', 'groups', 'search']);
+        // Make sure the sorting filter is set to order before showing the order column.
+        $except = ($canOrderBy && Setting::isSortedByOrder()) ? [] : ['ordering'];
         $columns = $this->getColumns($except);
         $actions = $this->getActions('list');
         $filters = $this->getFilters($request);
@@ -67,7 +69,7 @@ class PostController extends Controller
         $query = $request->query();
         $url = ['route' => 'admin.posts', 'item_name' => 'post', 'query' => $query];
 
-        return view('admin.post.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
+        return view('admin.post.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'canOrderBy', 'query'));
     }
 
     /**

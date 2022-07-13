@@ -45,13 +45,23 @@ trait Form
     public function getRows(array $columns, LengthAwarePaginator $items, array $except = []): array
     {
         $rows = [];
-        //$total = count($items);
+        // Get pagination data for ordering.
+        $pagination = [
+            'currentPage' => $items->currentPage(),
+            'count' => $items->count(),
+            'hasMorePages' => $items->hasMorePages(),
+            'perPage' => $items->perPage(),
+            'rowPosition' => 0,
+        ];
 
-        foreach ($items as $item) {
+        foreach ($items as $i => $item) {
             // Check for extra attributes.
             if (method_exists($item, 'setExtraAttributes')) {
                 $item->setExtraAttributes();
             }
+
+            $pagination['rowPosition'] = $i + 1;
+            $item->_row_pagination = $pagination;
 
             $row = $this->getRow($columns, $item, $except);
             $rows[] = $row;
@@ -133,13 +143,14 @@ trait Form
                 // Sets the ordering links according to the position of the item/node.
                 elseif ($column->name == 'ordering') {
                     $ordering = [];
-                    // A menu code variable is required for the menu item routes.
-                    $query = ($this->getClassName() == 'Item') ? ['code' => $item->menu_code, 'item' => $item->id] : [strtolower($this->getClassName()) => $item->id];
 
                     $upperLevelClassName = ($this->getUpperLevelClassName()) ?  '.'.strtolower($this->getUpperLevelClassName()) : '';
 
-                    // Tree type orderings.  
+                    // Tree list type orderings.  
                     if (in_array($this->getClassName(), ['Item', 'Category'])) {
+                        // A menu code variable is required for the menu item routes.
+                        $query = ($this->getClassName() == 'Item') ? ['code' => $item->menu_code, 'item' => $item->id] : [strtolower($this->getClassName()) => $item->id];
+
                         if ($item->getPrevSibling()) { 
                             $ordering['up'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.up', $query);
                         }
@@ -150,9 +161,17 @@ trait Form
                     }
                     // Normal orderings
                     else {
+                        // Get the current query from the Request facade and merge it with the item id.
                         $query = array_merge(\Request::query(), [strtolower($this->getClassName()) => $item->id]); 
-                        $ordering['up'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.up', $query);
-                        $ordering['down'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.down', $query);
+                        $pagination = $item->_row_pagination;
+
+                        if ($pagination['rowPosition'] != 1 || $pagination['currentPage'] != 1) {
+                            $ordering['up'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.up', $query);
+                        }
+
+                        if ($pagination['hasMorePages'] || $pagination['count'] != $pagination['rowPosition']) {
+                            $ordering['down'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.down', $query);
+                        }
                     }
 
                     $row->ordering = $ordering;
