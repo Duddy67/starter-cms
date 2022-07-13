@@ -153,7 +153,7 @@ class Post extends Model
             preg_match('#^([a-z0-9_]+)_(asc|desc)$#', $sortedBy, $matches);
 
             // Check for numerical sorting.
-            if (Setting::canOrderBy('categories', ['owned_by', 'groups', 'search']) && Setting::isSortedByOrder()) {
+            if (Setting::canOrderBy('categories', Post::getOrderByExcludedFilters()) && Setting::isSortedByOrder()) {
                 $query->join('ordering_category_post', function ($join) use($categories) { 
                     $join->on('posts.id', '=', 'post_id')
                          ->where('category_id', '=', $categories[0]);
@@ -240,6 +240,14 @@ class Post extends Model
     public function getSettings()
     {
         return PostSetting::getItemSettings($this, 'posts');
+    }
+
+    /*
+     * Returns the filters that cannot be used with numerical order.
+     */
+    public static function getOrderByExcludedFilters()
+    {
+        return ['owned_by', 'groups', 'search'];
     }
 
     /*

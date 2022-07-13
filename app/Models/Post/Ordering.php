@@ -83,6 +83,7 @@ class Ordering extends Model implements Sortable
 
             $category = Category::find($old);
 
+            // Reorder the posts in the category.
             foreach ($category->postOrderings as $i => $ordering) {
                 $ordering->post_order = $i + 1;
                 $ordering->save();

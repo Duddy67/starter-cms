@@ -58,7 +58,7 @@ class PostController extends Controller
         // Gather the needed data to build the item list.
 
         // Check if posts can be numerically ordered by category.
-        $canOrderBy = Setting::canOrderBy('categories', ['owned_by', 'groups', 'search']);
+        $canOrderBy = Setting::canOrderBy('categories', Post::getOrderByExcludedFilters());
         // Make sure the sorting filter is set to order before showing the order column.
         $except = ($canOrderBy && Setting::isSortedByOrder()) ? [] : ['ordering'];
         $columns = $this->getColumns($except);
