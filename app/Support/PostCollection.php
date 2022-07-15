@@ -18,5 +18,14 @@ class PostCollection extends Collection
             }
         });
     }
+
+    public function filterPostsBySlug(array $slugs)
+    {
+        return $this->filter(function ($post) use($slugs) {
+            if (in_array($post->slug, $slugs)) {
+                return $post;
+            }
+        });
+    }
 }
 
