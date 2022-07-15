@@ -17,7 +17,7 @@ class CreateSettingsTable extends Migration
             $table->id();
             $table->string('group', 50);
             $table->string('key', 50);
-            $table->text('value');
+            $table->text('value')->nullable();
         });
     }
 
