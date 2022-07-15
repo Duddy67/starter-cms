@@ -191,8 +191,13 @@ class PostController extends Controller
 
             $post->owned_by = $request->input('owned_by');
 
+            // Empty categories when the post has no main category. 
+            // INFO: An erratic behaviour (JS ?) adds a category in the array even after
+	    // being emptied. 
+	    $categories = ($request->input('main_cat_id', null)) ? $request->input('categories', []) : [];
+
             // N.B: Get also the private categories (if any) that are not returned by the form as they're disabled.
-            $categories = array_merge($request->input('categories', []), $post->getPrivateCategories());
+            $categories = array_merge($categories, $post->getPrivateCategories());
 
             if (!empty($categories)) {
                 Ordering::sync($post, $categories);

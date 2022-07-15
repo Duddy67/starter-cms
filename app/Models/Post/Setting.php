@@ -100,8 +100,8 @@ class Setting extends Model
 	  ['value' => 'created_at_desc', 'text' => __('labels.generic.created_at_desc')],
 	  ['value' => 'updated_at_asc', 'text' => __('labels.generic.updated_at_asc')],
 	  ['value' => 'updated_at_desc', 'text' => __('labels.generic.updated_at_desc')],
-	  //['value' => 'ordering_asc', 'text' => __('labels.generic.ordering_asc')],
-	  //['value' => 'ordering_desc', 'text' => __('labels.generic.ordering_desc')],
+	  ['value' => 'order_asc', 'text' => __('labels.generic.order_asc')],
+	  ['value' => 'order_desc', 'text' => __('labels.generic.order_desc')],
       ];
     }
 }

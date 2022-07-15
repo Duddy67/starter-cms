@@ -124,20 +124,11 @@ class Category extends Model
     }
 
     /*
-     * Returns unfiltered posts without pagination.
+     * Returns posts without pagination.
      */
     public function getAllPosts(Request $request)
     {
-        $settings = $this->getSettings();
         $query = $this->getQuery($request);
-
-        if ($settings['post_ordering'] != 'no_ordering') {
-            // Extract the ordering name and direction from the setting value.
-            preg_match('#^([a-z-0-9_]+)_(asc|desc)$#', $settings['post_ordering'], $ordering);
-
-            $query->orderBy($ordering[1], $ordering[2]);
-        }
-
         return $query->get();
     }
 
@@ -148,18 +139,10 @@ class Category extends Model
     {
         $perPage = $request->input('per_page', GlobalSetting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);
-        $settings = $this->getSettings();
         $query = $this->getQuery($request);
 
         if ($search !== null) {
             $query->where('posts.title', 'like', '%'.$search.'%');
-        }
-
-        if ($settings['post_ordering'] != 'no_ordering') {
-            // Extract the ordering name and direction from the setting value.
-            preg_match('#^([a-z-0-9_]+)_(asc|desc)$#', $settings['post_ordering'], $ordering);
-
-            $query->orderBy($ordering[1], $ordering[2]);
         }
 
         return $query->paginate($perPage);
@@ -208,6 +191,26 @@ class Category extends Model
  
         // Do not show unpublished posts on front-end.
         $query->where('posts.status', 'published');
+
+        // Set post ordering.
+        $settings = $this->getSettings();
+
+        if ($settings['post_ordering'] != 'no_ordering') {
+            // Extract the ordering name and direction from the setting value.
+            preg_match('#^([a-z-0-9_]+)_(asc|desc)$#', $settings['post_ordering'], $ordering);
+
+            // Check for numerical sorting.
+            if ($ordering[1] == 'order') {
+                $query->join('ordering_category_post', function ($join) use ($ordering) { 
+                    $join->on('posts.id', '=', 'post_id')
+                         ->where('category_id', '=', $this->id);
+                })->orderBy('post_order', $ordering[2]);
+            }
+            // Regular sorting.
+            else {
+                $query->orderBy($ordering[1], $ordering[2]);
+            }
+        }
 
         return $query;
     }

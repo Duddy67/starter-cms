@@ -59,14 +59,12 @@ class Ordering extends Model implements Sortable
         return $this->belongsTo(Category::class);
     }
 
+    /**
+     * Synchronizes the post orderings according to the linked categories.
+     */
     public static function sync($post, $categories)
     {
-        if (empty($categories)) {
-            Ordering::where('post_id', $post->id)->delete();
-
-            return;
-        }
-
+        // Get the previous categories linked to the post.
         $olds = $post->orderings->pluck('category_id')->toArray();
 
         foreach ($categories as $category) {
@@ -76,6 +74,7 @@ class Ordering extends Model implements Sortable
             }
         }
 
+	// Delete the previous categories that are no longer linked to the post.
         $olds = array_diff($olds, $categories);
 
         foreach ($olds as $old) {
@@ -83,7 +82,7 @@ class Ordering extends Model implements Sortable
 
             $category = Category::find($old);
 
-            // Reorder the posts in the category.
+            // Reorder the other posts in the category.
             foreach ($category->postOrderings as $i => $ordering) {
                 $ordering->post_order = $i + 1;
                 $ordering->save();
@@ -91,6 +90,9 @@ class Ordering extends Model implements Sortable
         }
     }
 
+    /**
+     * Filters by the category_id field so that Spatie methods take it into account.
+     */
     public function buildSortQuery()
     {
         return static::query()->where('category_id', $this->category_id);
