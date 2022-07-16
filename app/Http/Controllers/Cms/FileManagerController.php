@@ -91,7 +91,7 @@ class FileManagerController extends Controller
 	          }*/
 
 	        if ($column->name == 'preview') {
-		    $rows[$key]->preview = view('partials.documents.preview', compact('documents', 'key'));
+		    $rows[$key]->preview = view('cms.filemanager.partials.preview', compact('documents', 'key'));
 		}
 	    }
 	}
