@@ -8,6 +8,7 @@
      $name = (isset($field->name)) ? $field->name : null;
      $name = ($name && isset($field->group)) ? $field->group.'['.$name.']' : $name;
      $multiple = (isset($field->extra) && in_array('multiple', $field->extra)) ? 'multiple' : '';
+     $divider = (isset($field->extra) && in_array('divider', $field->extra)) ? true : false;
      $titleAsId = (isset($field->extra) && in_array('title_as_id', $field->extra)) ? true : false;
      $multi = ($multiple) ? '[]' : '';
 
@@ -147,4 +148,8 @@
 
 @if ($name && isset($field->id) && !$disabled)
     <div class="text-danger" id="{{ $field->id }}Error"></div>
+@endif
+
+@if ($divider)
+    <hr class="mt-4 mb-3"/>
 @endif

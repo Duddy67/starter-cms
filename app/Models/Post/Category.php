@@ -4,7 +4,7 @@ namespace App\Models\Post;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Setting as GlobalSetting;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Post;
 use App\Models\Post\Setting as PostSetting;
@@ -139,7 +139,7 @@ class Category extends Model
      */
     public function getPosts(Request $request)
     {
-        $perPage = $request->input('per_page', GlobalSetting::getValue('pagination', 'per_page'));
+        $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);
         $query = $this->getQuery($request);
 
@@ -300,5 +300,10 @@ class Category extends Model
         }
 
         return $this->{$fieldName};
+    }
+
+    public function getExtraFieldByAlias($alias)
+    {
+        return Setting::getExtraFieldByAlias($this, $alias);
     }
 }

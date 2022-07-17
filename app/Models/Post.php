@@ -273,4 +273,9 @@ class Post extends Model
             ['post_categories.owned_by', '!=', auth()->user()->id]
         ])->pluck('post_categories.id')->toArray();
     }
+
+    public function getExtraFieldByAlias($alias)
+    {
+        return Setting::getExtraFieldByAlias($this, $alias);
+    }
 }

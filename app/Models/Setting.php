@@ -231,6 +231,23 @@ class Setting extends Model
         return $options;
     }
 
+    public static function getExtraFieldByAlias($item, $alias)
+    {
+        if (!isset($item->extra_fields)) {
+            return null;
+        }
+
+        $extraField = null;
+
+        foreach ($item->extra_fields as $key => $value) {
+            if ($value == $alias && str_starts_with($key, 'alias')) {
+                $extraField = str_replace('alias_', '', $key);
+            }
+        }
+
+        return ($extraField) ? $item->extra_fields[$extraField] : null;
+    }
+
     public static function getTimezoneOptions()
     {
         $timezoneIdentifiers = \DateTimeZone::listIdentifiers();
