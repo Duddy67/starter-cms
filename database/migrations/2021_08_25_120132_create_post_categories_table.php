@@ -18,9 +18,10 @@ class CreatePostCategoriesTable extends Migration
             $table->string('name', 80);
             $table->string('slug', 80);
             $table->string('code', 30)->nullable();
-            $table->tinyText('description')->nullable();
+            $table->text('description')->nullable();
             $table->char('status', 12);
             $table->char('access_level', 10);
+            $table->json('extra_fields')->nullable();
             $table->json('meta_data');
             $table->json('settings');
 	    $table->nestedSet();

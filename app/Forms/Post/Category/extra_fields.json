@@ -1,0 +1,38 @@
+[
+  {
+    "label": "labels.generic.extra_field_1",
+    "type": "text",
+    "name": "extra_field_1",
+    "id": "extra_field_1",
+    "tab": "extra_fields",
+    "group": "extra_fields"
+  },
+  {
+    "label": "labels.generic.extra_field_2",
+    "type": "text",
+    "name": "extra_field_2",
+    "id": "extra_field_2",
+    "group": "extra_fields"
+  },
+  {
+    "label": "labels.generic.extra_field_3",
+    "type": "text",
+    "name": "extra_field_3",
+    "id": "extra_field_3",
+    "group": "extra_fields"
+  },
+  {
+    "label": "labels.generic.extra_field_4",
+    "type": "text",
+    "name": "extra_field_4",
+    "id": "extra_field_4",
+    "group": "extra_fields"
+  },
+  {
+    "label": "labels.generic.extra_field_5",
+    "type": "text",
+    "name": "extra_field_5",
+    "id": "extra_field_5",
+    "group": "extra_fields"
+  }
+]

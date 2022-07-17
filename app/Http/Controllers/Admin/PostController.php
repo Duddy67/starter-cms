@@ -120,11 +120,10 @@ class PostController extends Controller
         $fields = $this->getFields($except);
         $except = (!$post->canEdit()) ? ['destroy', 'save', 'saveClose'] : [];
         $actions = $this->getActions('form', $except);
-        $extraFields = PostSetting::where('key', 'extra_fields')->value('value');
         // Add the id parameter to the query.
         $query = array_merge($request->query(), ['post' => $id]);
 
-        return view('admin.post.form', compact('post', 'fields', 'actions', 'extraFields', 'query'));
+        return view('admin.post.form', compact('post', 'fields', 'actions', 'query'));
     }
 
     /**
