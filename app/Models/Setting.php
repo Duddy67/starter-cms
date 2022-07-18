@@ -233,14 +233,14 @@ class Setting extends Model
 
     public static function getExtraFieldByAlias($item, $alias)
     {
-        if (!isset($item->extra_fields)) {
+        if (!isset($item->extra_fields) || !isset($item->global_settings)) {
             return null;
         }
 
         $extraField = null;
 
-        foreach ($item->extra_fields as $key => $value) {
-            if ($value == $alias && str_starts_with($key, 'alias')) {
+        foreach ($item->global_settings as $key => $value) {
+            if ($value == $alias && str_starts_with($key, 'alias_extra_field_')) {
                 $extraField = str_replace('alias_', '', $key);
             }
         }

@@ -51,8 +51,8 @@
     "name": "show_name",
     "id": "show_name",
     "extra": ["yes_no"],
-    "tab": "category",
-    "group": "category",
+    "tab": "categories",
+    "group": "categories",
     "options": [] 
   },
   {
@@ -61,7 +61,7 @@
     "name": "show_search",
     "id": "show_search",
     "extra": ["yes_no"],
-    "group": "category",
+    "group": "categories",
     "options": [] 
   },
   {
@@ -70,7 +70,7 @@
     "name": "show_description",
     "id": "show_description",
     "extra": ["yes_no"],
-    "group": "category",
+    "group": "categories",
     "options": [] 
   },
   {
@@ -79,7 +79,7 @@
     "name": "show_subcategories",
     "id": "show_subcategories",
     "extra": ["yes_no"],
-    "group": "category",
+    "group": "categories",
     "options": [] 
   },
   {
@@ -88,7 +88,7 @@
     "name": "show_post_excerpt",
     "id": "show_post_excerpt",
     "extra": ["yes_no"],
-    "group": "category",
+    "group": "categories",
     "options": [] 
   },
   {
@@ -97,7 +97,7 @@
     "name": "show_post_image",
     "id": "show_post_image",
     "extra": ["yes_no"],
-    "group": "category",
+    "group": "categories",
     "options": [] 
   },
   {
@@ -106,7 +106,7 @@
     "name": "show_post_categories",
     "id": "show_post_categories",
     "extra": ["yes_no"],
-    "group": "category",
+    "group": "categories",
     "options": [] 
   },
   {
@@ -114,7 +114,169 @@
     "type": "select",
     "name": "post_ordering",
     "id": "post_ordering",
-    "group": "category",
+    "group": "categories",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_1",
+    "type": "text",
+    "name": "alias_extra_field_1",
+    "id": "alias_extra_field_1",
+    "tab": "extra_field_aliases",
+    "group": "posts",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_2",
+    "type": "text",
+    "name": "alias_extra_field_2",
+    "id": "alias_extra_field_2",
+    "group": "posts",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_3",
+    "type": "text",
+    "name": "alias_extra_field_3",
+    "id": "alias_extra_field_3",
+    "group": "posts",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_4",
+    "type": "text",
+    "name": "alias_extra_field_4",
+    "id": "alias_extra_field_4",
+    "group": "posts",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_5",
+    "type": "text",
+    "name": "alias_extra_field_5",
+    "id": "alias_extra_field_5",
+    "group": "posts",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_6",
+    "type": "text",
+    "name": "alias_extra_field_6",
+    "id": "alias_extra_field_6",
+    "group": "posts",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_7",
+    "type": "text",
+    "name": "alias_extra_field_7",
+    "id": "alias_extra_field_7",
+    "group": "posts",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_8",
+    "type": "text",
+    "name": "alias_extra_field_8",
+    "id": "alias_extra_field_8",
+    "group": "posts",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_9",
+    "type": "text",
+    "name": "alias_extra_field_9",
+    "id": "alias_extra_field_9",
+    "group": "posts",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_10",
+    "type": "text",
+    "name": "alias_extra_field_10",
+    "id": "alias_extra_field_10",
+    "extra": ["divider"],
+    "group": "posts",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_1",
+    "type": "text",
+    "name": "alias_extra_field_1",
+    "id": "alias_extra_field_1",
+    "group": "categories",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_2",
+    "type": "text",
+    "name": "alias_extra_field_2",
+    "id": "alias_extra_field_2",
+    "group": "categories",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_3",
+    "type": "text",
+    "name": "alias_extra_field_3",
+    "id": "alias_extra_field_3",
+    "group": "categories",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_4",
+    "type": "text",
+    "name": "alias_extra_field_4",
+    "id": "alias_extra_field_4",
+    "group": "categories",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_5",
+    "type": "text",
+    "name": "alias_extra_field_5",
+    "id": "alias_extra_field_5",
+    "group": "categories",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_6",
+    "type": "text",
+    "name": "alias_extra_field_6",
+    "id": "alias_extra_field_6",
+    "group": "categories",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_7",
+    "type": "text",
+    "name": "alias_extra_field_7",
+    "id": "alias_extra_field_7",
+    "group": "categories",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_8",
+    "type": "text",
+    "name": "alias_extra_field_8",
+    "id": "alias_extra_field_8",
+    "group": "categories",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_9",
+    "type": "text",
+    "name": "alias_extra_field_9",
+    "id": "alias_extra_field_9",
+    "group": "categories",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.alias_extra_field_10",
+    "type": "text",
+    "name": "alias_extra_field_10",
+    "id": "alias_extra_field_10",
+    "group": "categories",
     "options": [] 
   }
 ]

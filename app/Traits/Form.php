@@ -207,6 +207,12 @@ trait Form
                 continue;
             }
 
+            if (isset($field->extra) && in_array('disabled', $field->extra)) {
+                // Disabled field values are treated in the controller.
+                $fields[$key]->value = null;
+                continue;
+            }
+
             $item = (isset($this->item) && $this->item) ? $this->item : null;
 
             // Set the select field types.

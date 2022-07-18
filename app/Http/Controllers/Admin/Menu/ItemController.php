@@ -184,6 +184,8 @@ class ItemController extends Controller
         $item->class = $request->input('class');
         $item->anchor = $request->input('anchor');
         $item->updated_by = auth()->user()->id;
+        // N.B: The nested set model is updated automatically.
+        $item->parent_id = $request->input('parent_id');
 
         $item->save();
 

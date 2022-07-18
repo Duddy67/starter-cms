@@ -27,7 +27,7 @@ class SiteController extends Controller
         if ($category = Category::where('slug', $page)->first()) {
             $posts = $category->getAllPosts($request);
 
-            $globalSettings = PostSetting::getDataByGroup('category');
+            $globalSettings = PostSetting::getDataByGroup('categories');
 
             foreach ($category->settings as $key => $value) {
                 if ($value == 'global_setting') {
@@ -38,7 +38,14 @@ class SiteController extends Controller
                 }
             }
 
+            $category->global_settings = $globalSettings;
             $metaData = $category->meta_data;
+
+            $globalSettings = PostSetting::getDataByGroup('posts');
+
+            foreach ($posts as $post) {
+                $post->global_settings = $globalSettings;
+            }
         }
         elseif ($page == 'home' || file_exists(resource_path().'/views/themes/'.$theme.'/pages/'.$page.'.blade.php')) {
             return view('themes.'.$theme.'.index', compact('page', 'menu', 'query'));
@@ -73,6 +80,7 @@ class SiteController extends Controller
             return view('themes.'.$theme.'.index', compact('page', 'menu'));
         }
 
+        $post->global_settings = PostSetting::getDataByGroup('posts');
         $page = $page.'-details';
         $segments = PostSetting::getSegments();
 	$query = $request->query();

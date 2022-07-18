@@ -83,6 +83,7 @@ class PostController extends Controller
         // Gather the needed data to build the form.
 
         $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
+        $this->setFieldValues($fields);
         $actions = $this->getActions('form', ['destroy']);
         $query = $request->query();
 
@@ -118,6 +119,7 @@ class PostController extends Controller
         $except = (auth()->user()->getRoleLevel() > $post->getOwnerRoleLevel() || $post->owned_by == auth()->user()->id) ? ['owner_name'] : ['owned_by'];
 
         $fields = $this->getFields($except);
+        $this->setFieldValues($fields, $post);
         $except = (!$post->canEdit()) ? ['destroy', 'save', 'saveClose'] : [];
         $actions = $this->getActions('form', $except);
         // Add the id parameter to the query.
@@ -557,7 +559,17 @@ class PostController extends Controller
      * @param  \App\Models\Post $post
      * @return void
      */
-    private function setFieldValues(array &$fields, Post $post)
+    private function setFieldValues(array &$fields, Post $post = null)
     {
+        $globalSettings = PostSetting::getDataByGroup('posts');
+        foreach ($globalSettings as $key => $value) {
+            if (str_starts_with($key, 'alias_extra_field_')) {
+                foreach ($fields as $field) {
+                    if ($field->name == $key) {
+                        $field->value = ($value) ? $value : __('labels.generic.none');
+                    }
+                }
+            }
+        }
     }
 }

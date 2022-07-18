@@ -9,7 +9,8 @@
 
         <nav class="nav nav-tabs">
             <a class="nav-item nav-link active" href="#posts" data-toggle="tab">@php echo __('labels.title.posts'); @endphp</a>
-            <a class="nav-item nav-link" href="#category" data-toggle="tab">@php echo __('labels.generic.category'); @endphp</a>
+            <a class="nav-item nav-link" href="#categories" data-toggle="tab">@php echo __('labels.title.categories'); @endphp</a>
+            <a class="nav-item nav-link" href="#extra_field_aliases" data-toggle="tab">@php echo __('labels.generic.extra_field_aliases'); @endphp</a>
         </nav>
 
         <div class="tab-content">
@@ -34,6 +35,10 @@
                 @else
                     @php $dataset = (object) ['tab' => $dataTab];
                          $field->dataset = $dataset; @endphp
+                @endif
+
+                @if ($field->name == 'alias_extra_field_1')
+                    <h2>{{ __('labels.title.'.$field->group) }}</h2>
                 @endif
 
                 <x-input :field="$field" :value="$value" />

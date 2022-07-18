@@ -39,7 +39,7 @@
                          $field->dataset = $dataset; @endphp
                 @endif
 
-                @php $value = (isset($post)) ? old($field->name, $field->value) : old($field->name); @endphp
+                @php $value = (isset($post) || str_starts_with($field->name, 'alias_extra_field_')) ? old($field->name, $field->value) : old($field->name); @endphp
                 <x-input :field="$field" :value="$value" />
 
                 @if ($field->name == 'image')

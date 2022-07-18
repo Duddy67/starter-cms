@@ -28,6 +28,7 @@ class CategoryController extends Controller
             return view('themes.'.$theme.'.index', compact('page', 'menu'));
 	}
 
+        $category->global_settings = PostSetting::getDataByGroup('categories');
 	$settings = $category->getSettings();
         $menu = Menu::getMenu('main-menu');
 	$posts = $category->getPosts($request);

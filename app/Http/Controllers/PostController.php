@@ -36,6 +36,7 @@ class PostController extends Controller
 
         $page = 'post';
 
+        $post->global_settings = PostSetting::getDataByGroup('posts');
 	$settings = $post->getSettings();
         $timezone = Setting::getValue('app', 'timezone');
         $metaData = $post->meta_data;

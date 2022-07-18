@@ -8,6 +8,7 @@ use App\Models\Post\Category;
 use App\Models\User\Group;
 use App\Models\User;
 use App\Models\Setting;
+use App\Models\Post\Setting as PostSetting;
 use App\Traits\Form;
 use App\Traits\CheckInCheckOut;
 use App\Http\Requests\Post\Category\StoreRequest;
@@ -73,6 +74,7 @@ class CategoryController extends Controller
         // Gather the needed data to build the form.
 
         $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
+        $this->setFieldValues($fields);
         $actions = $this->getActions('form', ['destroy']);
         $query = $request->query();
 
@@ -470,8 +472,24 @@ class CategoryController extends Controller
      * @param  \App\Models\Post\Category $category
      * @return void
      */
-    private function setFieldValues(&$fields, $category)
+    private function setFieldValues(&$fields, Category $category = null)
     {
+        $globalSettings = PostSetting::getDataByGroup('categories');
+
+        foreach ($globalSettings as $key => $value) {
+            if (str_starts_with($key, 'alias_extra_field_')) {
+                foreach ($fields as $field) {
+                    if ($field->name == $key) {
+                        $field->value = ($value) ? $value : __('labels.generic.none');
+                    }
+                }
+            }
+        }
+
+        if ($category === null) {
+            return;
+        }
+
         foreach ($fields as $field) {
             if ($field->name == 'parent_id') {
                 foreach ($field->options as $key => $option) {
