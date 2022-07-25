@@ -14,6 +14,7 @@ use App\Traits\CheckInCheckOut;
 use App\Models\Cms\Document;
 use App\Support\PostCollection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 
 class Post extends Model
@@ -277,5 +278,47 @@ class Post extends Model
     public function getExtraFieldByAlias($alias)
     {
         return Setting::getExtraFieldByAlias($this, $alias);
+    }
+
+    public static function searchInPosts($keyword)
+    {
+        $query = Post::query();
+        $query->select('posts.*', 'users.name as owner_name')->leftJoin('users', 'posts.owned_by', '=', 'users.id');
+        // Join the role tables to get the owner's role level.
+        $query->join('model_has_roles', 'posts.owned_by', '=', 'model_id')->join('roles', 'roles.id', '=', 'role_id');
+
+        if (Auth::check()) {
+
+            // N.B: Put the following part of the query into brackets.
+            $query->where(function($query) {
+
+                // Check for access levels.
+                $query->where(function($query) {
+                    $query->where('roles.role_level', '<', auth()->user()->getRoleLevel())
+                          ->orWhereIn('posts.access_level', ['public_ro', 'public_rw'])
+                          ->orWhere('posts.owned_by', auth()->user()->id);
+                });
+
+                $groupIds = auth()->user()->getGroupIds();
+
+                if (!empty($groupIds)) {
+                    // Check for access through groups.
+                    $query->orWhereHas('groups', function ($query)  use ($groupIds) {
+                        $query->whereIn('id', $groupIds);
+                    });
+                }
+            });
+        }
+        else {
+            $query->whereIn('posts.access_level', ['public_ro', 'public_rw']);
+        }
+ 
+        // Do not search unpublished posts.
+        $query->where('posts.status', 'published');
+
+        $query->where('posts.title', 'like', '%'.$keyword.'%');
+        $query->orWhere('posts.raw_content', 'like', '%'.$keyword.'%');
+
+        return $query;
     }
 }

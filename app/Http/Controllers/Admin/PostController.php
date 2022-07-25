@@ -166,6 +166,7 @@ class PostController extends Controller
         $post->title = $request->input('title');
         $post->slug = ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('title'), '-');
         $post->content = $request->input('content');
+        $post->raw_content = strip_tags($request->input('content'));
         $post->excerpt = $request->input('excerpt');
         $post->alt_img = $request->input('alt_img');
         $post->meta_data = $request->input('meta_data');
@@ -268,6 +269,7 @@ class PostController extends Controller
           'excerpt' => $request->input('excerpt'),
         ]);
 
+        $post->raw_content = strip_tags($request->input('content'));
         $post->updated_by = auth()->user()->id;
         $post->save();
 

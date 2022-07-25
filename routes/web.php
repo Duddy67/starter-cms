@@ -13,6 +13,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\Post\CategoryController as PostCategoryController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\TokenController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\MessageController;
 use App\Models\Post\Setting as PostSetting;
 
@@ -73,6 +74,7 @@ Route::prefix('admin')->group(function () {
     });
 });
 
+Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::post('/message', [SiteController::class, 'store'])->name('message');
 Route::get('/{page?}', [SiteController::class, 'index'])->name('site.index');
 Route::get('/{page}/{id}/{slug}', [SiteController::class, 'show'])->name('site.show');
