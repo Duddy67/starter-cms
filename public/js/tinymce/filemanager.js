@@ -2,6 +2,7 @@
 tinymce.init({
     selector: '.tinymce-texteditor',
     plugins: 'code',
+    entity_encoding: 'raw',
     toolbar: 'urldialog|code',
     height: 500,
     convert_urls: false,
