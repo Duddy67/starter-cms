@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Menu;
 use App\Models\Setting;
+use App\Models\Post\Setting as PostSetting;
 
 class SearchController extends Controller
 {
@@ -28,6 +29,12 @@ class SearchController extends Controller
             if (strlen($request->input('keyword')) > 3) {
                 $posts = Post::searchInPosts($request->input('keyword'))->paginate($perPage);
                 $posts = $this->formatResults($posts, $request->input('keyword'));
+
+                $globalSettings = PostSetting::getDataByGroup('posts');
+
+                foreach ($posts as $post) {
+                    $post->global_settings = $globalSettings;
+                }
             }
             else {
                 $message = __('messages.search.invalid_keyword_length', ['length' => 3]);
