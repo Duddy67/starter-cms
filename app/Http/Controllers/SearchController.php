@@ -19,20 +19,22 @@ class SearchController extends Controller
         $page = $request->segment(1);
         $menu = Menu::getMenu('main-menu');
         $menu->allow_registering = Setting::getValue('website', 'allow_registering', 0);
+        $theme = Setting::getValue('website', 'theme', 'starter');
+        $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
+        $posts = collect(new Post);
+        $message = __('messages.search.no_matches_found');
 
         if ($request->filled('keyword')) {
-            //$posts = Post::searchInPosts($request->search)->query( function($query) {
-                     //})->get();
-            $posts = Post::searchInPosts($request->input('keyword'))->get();
-
-            $posts = $this->formatResults($posts, $request->input('keyword'));
+            if (strlen($request->input('keyword')) > 3) {
+                $posts = Post::searchInPosts($request->input('keyword'))->paginate($perPage);
+                $posts = $this->formatResults($posts, $request->input('keyword'));
+            }
+            else {
+                $message = __('messages.search.invalid_keyword_length', ['length' => 3]);
+            }
         }
-        else {
-            $posts = null;
-        }
-
           
-        return view('themes.starter.index', compact('page', 'posts', 'menu'));
+        return view('themes.'.$theme.'.index', compact('page', 'posts', 'menu', 'message'));
     }
 
     /**

@@ -92,6 +92,10 @@ return [
         'delete_list_success' => ':number menu items have been successfully deleted.',
         'change_status_list_success' => 'Menu item statuses successfully changed.',
     ],
+    'search' => [
+        'invalid_keyword_length' => 'Keyword must be at least :length characters.',
+        'no_matches_found' => 'No matches found.',
+    ],
     'message' => [
         'send_success' => 'Your message has been sent successfully.',
     ],
