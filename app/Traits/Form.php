@@ -243,7 +243,7 @@ trait Form
                 }
                 // Checks for values set in array as meta_data, extra_fields etc..
                 elseif (isset($field->group) && isset($item->{$field->group})) {
-                    $field->value = $item->{$field->group}[$field->name];
+                    $field->value = (isset($item->{$field->group}[$field->name])) ? $item->{$field->group}[$field->name] : null;
                 }
                 // Regular value field.
                 else {

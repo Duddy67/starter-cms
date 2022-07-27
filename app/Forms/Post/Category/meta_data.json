@@ -15,6 +15,13 @@
     "group": "meta_data"
   },
   {
+    "label": "labels.generic.meta_name_robots",
+    "type": "text",
+    "name": "meta_name_robots",
+    "id": "meta_name_robots",
+    "group": "meta_data"
+  },
+  {
     "label": "labels.generic.meta_og_title",
     "type": "text",
     "name": "meta_og_title",

@@ -181,6 +181,7 @@ return [
 	'meta_data' => 'Meta data',
 	'meta_page_title' => 'Page title',
 	'meta_name_description' => 'Description',
+	'meta_name_robots' => 'Robots',
 	'meta_og_title' => 'Open Graph - title',
 	'meta_og_type' => 'Open Graph - type',
 	'meta_og_image' => 'Open Graph - image',
