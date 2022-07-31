@@ -83,9 +83,10 @@ class SiteController extends Controller
         $post->global_settings = PostSetting::getDataByGroup('posts');
         $page = $page.'-details';
         $segments = PostSetting::getSegments();
+        $metaData = $post->meta_data;
 	$query = $request->query();
 
-        return view('themes.'.$theme.'.index', compact('page', 'menu', 'category', 'post', 'segments', 'query'));
+        return view('themes.'.$theme.'.index', compact('page', 'menu', 'category', 'post', 'segments', 'metaData', 'query'));
     }
 
     /**
