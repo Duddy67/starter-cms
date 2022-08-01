@@ -286,7 +286,7 @@ class Document extends Model
     {
         // Set the name of the PHP functions to use according to the image extension (ie: imagecreatefromjpeg(), imagegif()... ).
         $extension = strtolower(pathinfo($imagePath.'/'.$this->disk_name, PATHINFO_EXTENSION));
-        $suffixes = ['jpg' => 'jpeg', 'jpeg' => 'jpeg', 'png' => 'png', 'gif' => 'gif', 'bmp' => 'wbmp'];
+        $suffixes = ['jpg' => 'jpeg', 'jpeg' => 'jpeg', 'png' => 'png', 'gif' => 'gif', 'bmp' => 'wbmp', 'webp' => 'webp'];
 	$imagecreatefrom = 'imagecreatefrom'.$suffixes[$extension];
 	$image = 'image'.$suffixes[$extension];
 

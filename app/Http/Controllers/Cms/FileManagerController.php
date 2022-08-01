@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Cms\Document;
 use App\Traits\Form;
+use App\Http\Requests\Document\StoreRequest;
 
 class FileManagerController extends Controller
 {
@@ -47,7 +48,7 @@ class FileManagerController extends Controller
         return view('cms.filemanager.list', compact('items', 'columns', 'rows', 'query', 'url', 'filters'));
     }
 
-    public function upload(Request $request)
+    public function upload(StoreRequest $request)
     {
         if ($request->hasFile('upload') && $request->file('upload')->isValid()) {
 	    $document = new Document;

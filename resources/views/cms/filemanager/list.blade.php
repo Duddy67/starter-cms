@@ -30,8 +30,12 @@
 	<form method="post" action="{{ route('cms.filemanager.index') }}" id="itemForm" enctype="multipart/form-data">
 	    @csrf
 	    @method('post')
-	    <input type="file" name="upload">
+	    <input type="file" id="upload" name="upload">
 	    <input type="submit" value="Upload file">
+
+            @foreach ($errors->all() as $error)
+                <div class="text-danger" id="uploadError">{{ $error }}</div>
+            @endforeach
 	</form>
 
 	@if (!empty($rows)) 
