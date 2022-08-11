@@ -29,6 +29,13 @@
     "group": "meta_data"
   },
   {
+    "label": "labels.generic.meta_og_description",
+    "type": "textarea",
+    "name": "meta_og_description",
+    "id": "meta_og_description",
+    "group": "meta_data"
+  },
+  {
     "label": "labels.generic.meta_og_type",
     "type": "text",
     "name": "meta_og_type",
@@ -47,6 +54,13 @@
     "type": "text",
     "name": "meta_og_url",
     "id": "meta_og_url",
+    "group": "meta_data"
+  },
+  {
+    "label": "labels.generic.meta_og_local",
+    "type": "text",
+    "name": "meta_og_local",
+    "id": "meta_og_local",
     "group": "meta_data"
   }
 ]
