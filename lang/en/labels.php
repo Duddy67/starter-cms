@@ -183,9 +183,11 @@ return [
 	'meta_name_description' => 'Description',
 	'meta_name_robots' => 'Robots',
 	'meta_og_title' => 'Open Graph - title',
+	'meta_og_description' => 'Open Graph - description',
 	'meta_og_type' => 'Open Graph - type',
 	'meta_og_image' => 'Open Graph - image',
 	'meta_og_url' => 'Open Graph - url',
+	'meta_og_local' => 'Open Graph - local',
     ],
     'filter' => [
 	'search' => 'Search',
