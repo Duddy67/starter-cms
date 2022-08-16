@@ -237,7 +237,7 @@ class CategoryController extends Controller
 
         $category->save();
 
-        $refresh = ['updated_at' => Setting::getFormattedDate($category->updated_at), 'updated_by' => auth()->user()->name];
+        $refresh = ['updated_at' => Setting::getFormattedDate($category->updated_at), 'updated_by' => auth()->user()->name, 'slug' => $category->slug];
 
         if ($request->input('_close', null)) {
             $category->checkIn();
