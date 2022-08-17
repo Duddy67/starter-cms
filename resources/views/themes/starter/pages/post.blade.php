@@ -16,7 +16,7 @@
 
 <div class="content">
     @if ($settings['show_image'] && $post->image)
-	<img class="post-image" src="{{ url('/').$post->image->getThumbnailUrl() }}" >
+	<img class="post-image img-fluid" src="{{ url('/').$post->image->getThumbnailUrl() }}" >
     @endif
     {!! $post->content !!}
 </div>

@@ -1,3 +1,17 @@
+body {
+    font-family: 'Work Sans', serif;
+    font-weight: 300;
+}
+
+p {
+    font-size: 1.1rem;
+    line-height: 1.3rem;
+}
+
+a {
+    text-decoration: none;
+}
+
 .page-footer {
   color: #6c757d;
 }
@@ -40,3 +54,37 @@
   top: 40%;
   left: 40%;
 }
+
+/* -- Bootstrap Breakpoints -- */
+
+/* The screen size is smaller than 576px wide.*/
+@media (min-width: 0px) {
+    :root {
+        font-size: 14px;
+    }
+}
+
+/* The screen size is 576px wide or more. Small - sm */
+@media (min-width: 576px) {
+    :root {
+        font-size: 16px;
+    }
+}
+
+/* The screen size is 768px wide or more. Medium - md */
+@media (min-width: 768px) {
+}
+
+/* The screen size is 992px wide or more. Large - lg */
+@media (min-width: 992px) {
+}
+
+/* The screen size is 1200px wide or more. Extra large - xl */
+@media (min-width: 1200px) {
+}
+
+/* The screen size is 1400px wide or more. Extra extra large - xxl */
+@media (min-width: 1400px) {
+}
+
+/**  End breakpoints **/
