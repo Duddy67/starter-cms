@@ -30,7 +30,6 @@
 
 	    <!-- Content -->
 	    <section id="layout-content" class="pt-4">
-                @include('themes.starter.layouts.flash-message')
                 @include('themes.starter.pages.'.$page)
 	    </section>
 

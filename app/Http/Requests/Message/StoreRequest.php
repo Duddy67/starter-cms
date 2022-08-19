@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Message;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\GoogleRecaptcha;
 
 class StoreRequest extends FormRequest
 {
@@ -28,6 +29,7 @@ class StoreRequest extends FormRequest
 	    'email' => 'bail|required|email',
 	    'object' => 'bail|required',
             'message' => 'required',
+            'g-recaptcha-response' => ['required', new GoogleRecaptcha]
         ];
     }
 }
