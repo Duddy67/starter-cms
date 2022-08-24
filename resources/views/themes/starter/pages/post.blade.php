@@ -21,7 +21,7 @@
     {!! $post->content !!}
 </div>
 
-@if ($settings['show_categories'])
+@if ($settings['show_categories'] && count($post->categories))
     <p class="categories">
 	<h6>Categories</h6>
 	@foreach ($post->categories as $category)

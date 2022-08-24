@@ -280,6 +280,11 @@ class Post extends Model
         return Setting::getExtraFieldByAlias($this, $alias);
     }
 
+    public function getMainCategory()
+    {
+        return $this->categories()->where('id', $this->main_cat_id)->first();
+    }
+
     public static function searchInPosts($keyword)
     {
         $query = Post::query();
