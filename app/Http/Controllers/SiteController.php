@@ -7,10 +7,6 @@ use App\Models\Post\Category;
 use App\Models\Post\Setting as PostSetting;
 use App\Models\Menu;
 use App\Models\Setting;
-use App\Models\Message;
-use App\Models\Email;
-use App\Http\Requests\Message\StoreRequest;
-
 
 class SiteController extends Controller
 {
@@ -87,38 +83,5 @@ class SiteController extends Controller
 	$query = $request->query();
 
         return view('themes.'.$theme.'.index', compact('page', 'menu', 'category', 'post', 'segments', 'metaData', 'query'));
-    }
-
-    /**
-     * Store a newly sent message. (AJAX)
-     *
-     * @param  \App\Http\Requests\Message\StoreRequest $request
-     * @return JSON
-     */
-    public function store(StoreRequest $request)
-    {
-        $message = Message::create([
-          'name' => $request->input('name'), 
-          'email' => $request->input('email'), 
-          'object' => $request->input('object'), 
-          'message' => $request->input('message'), 
-        ]);
-
-        $message->status = 'unread';
-        $message->save();
-
-        // Set a recipient attribute to prevent the sendEmail function to use the email
-        // attribute as recipient.
-        $message->recipient = Setting::getValue('website', 'admin_email');
-
-        if (!empty($message->recipient)) {
-            Email::sendEmail('new_message', $message);
-        }
-
-        $request->session()->flash('success', __('messages.message.send_success'));
-        // Set the redirect url.
-        $redirect = ($request->input('_page', null)) ? url('/').'/'.$request->input('_page', null) : url('/');
-
-        return response()->json(['redirect' => $redirect]);
     }
 }
