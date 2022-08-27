@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email');
+            $table->string('phone', 20)->nullable();
             $table->tinyText('object');
             $table->text('message');
             $table->char('status', 12)->nullable();
