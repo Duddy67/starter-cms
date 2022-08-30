@@ -73,8 +73,6 @@
       $('#ajax-message-alert').removeClass('d-none alert-success alert-danger alert-warning alert-info');
       $('#ajax-message-alert').addClass('alert-'+type);
       $('#ajax-message').text(message);
-
-      $(window).scrollTop(0);
   }
 
 })(jQuery);
