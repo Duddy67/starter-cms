@@ -1,6 +1,6 @@
 (function($) {
 
-  $.fn.runAjax = function() {
+  $.fn.runAjax = function(callback) {
       let url = $('#form').attr('action');
       let formData = new FormData($('#form')[0]);
 
@@ -15,7 +15,7 @@
         contentType: false,
         processData: false,
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-        success: function(result) {
+        success: function(result, textStatus) {
             $('#ajax-progress').addClass('d-none');
             // Loop through the returned result.
             for (const [key, value] of Object.entries(result)) {
@@ -31,13 +31,18 @@
                 }
             }
         },
-        error: function(result) {
+        error: function(result, textStatus) {
             $('#ajax-progress').addClass('d-none');
             console.log(result);
             $.fn.displayMessage('danger', 'Please check the form below for errors.');
             // Loop through the returned errors and set the messages accordingly.
             for (const [name, message] of Object.entries(result.responseJSON.errors)) {
                 $('#'+name+'Error').text(message);
+            }
+        },
+        complete: function(jqXHR, textStatus) {
+            if (callback !== undefined) {
+                callback(jqXHR, textStatus);
             }
         }
       });

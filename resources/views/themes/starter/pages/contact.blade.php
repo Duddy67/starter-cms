@@ -43,9 +43,15 @@
           // Run a function when the page is fully loaded including graphics.
           $(window).on('load', function() {
               $('#submit').click( function() {
-                  $.fn.runAjax();
-                  $(window).scrollTop(0);
+                  $.fn.runAjax(afterAjax);
               });
+
+              /* Callback function */
+              function afterAjax(result, textStatus) {
+                  if (textStatus == 'success') {
+                      window.location.reload();
+                  }
+              }
           });
         })(jQuery);
     </script>

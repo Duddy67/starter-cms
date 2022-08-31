@@ -40,9 +40,7 @@ class ContactController extends Controller
         }
 
         $request->session()->flash('success', __('messages.message.send_success'));
-        // Set the redirect url.
-        $redirect = ($request->input('_page', null)) ? url('/').'/'.$request->input('_page', null) : url('/');
 
-        return response()->json(['redirect' => $redirect]);
+        return response()->json();
     }
 }
