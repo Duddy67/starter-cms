@@ -37,22 +37,6 @@
 
 @push ('scripts')
     <script src='https://www.google.com/recaptcha/api.js'></script>
-    <script src="{{ asset('/js/ajax.js') }}"></script>
-    <script>
-        (function($) {
-          // Run a function when the page is fully loaded including graphics.
-          $(window).on('load', function() {
-              $('#submit').click( function() {
-                  $.fn.runAjax(afterAjax);
-              });
-
-              /* Callback function */
-              function afterAjax(result, textStatus) {
-                  if (textStatus == 'success') {
-                      window.location.reload();
-                  }
-              }
-          });
-        })(jQuery);
-    </script>
+    <script src="{{ asset('/vendor/codalia/c.ajax.js') }}"></script>
+    <script src="{{ asset('/js/contact.js') }}"></script>
 @endpush
