@@ -28,9 +28,8 @@ class StoreRequest extends FormRequest
             'access_level' => 'required',
             'content' => 'required',
             'image' => ['nullable', 'image', 'mimes:jpg,png,jpeg,gif,svg', 'max:2048', 'dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000'],
-            // Some rules don't apply whith the API.
-            'status' => $this->wantsJson() ? '' : 'required',
-            'owned_by' => $this->wantsJson() ? '' : 'required',
+            'status' => 'required',
+            'owned_by' => 'required',
         ];
     }
 }

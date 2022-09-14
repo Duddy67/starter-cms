@@ -37,10 +37,8 @@
             @if ($field->name == 'photo')
                 <div class="col post-image">
                     @php $path = (isset($user) && $user->photo) ?  url('/').$user->photo->getThumbnailUrl() : asset('/images/user.png'); @endphp
-                    @php $deletePhotoUrl = (isset($user) && $user->photo) ?  route('admin.users.deletePhoto', $query) : ''; @endphp
                     <img src="{{ $path }}" id="user-photo" />
-                    <button type="button" id="deleteDocumentBtn" class="btn btn-danger float-right">Delete photo</button>
-                    <input type="hidden" id="deleteDocumentUrl" value="{{ $deletePhotoUrl }}">
+                    <button type="button" id="deleteDocumentBtn" data-form-id="deletePhoto" class="btn btn-danger float-right">Delete photo</button>
                 </div>
             @endif
         @endforeach
@@ -58,6 +56,11 @@
             @method('delete')
             @csrf
         </form>
+
+        <form id="deletePhoto" action="{{ route('admin.users.deletePhoto', $query) }}" method="post">
+            @method('delete')
+            @csrf
+        </form>
     @endif
 @endsection
 
@@ -68,9 +71,9 @@
 @push ('scripts')
     <script type="text/javascript" src="{{ asset('/vendor/adminlte/plugins/moment/moment.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/vendor/codalia/c.ajax.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/form.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/js/admin/delete.document.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/set.private.groups.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/disable.toolbars.js') }}"></script>
 @endpush

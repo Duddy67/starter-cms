@@ -232,8 +232,6 @@ class PostController extends Controller
 
             $refresh['post-image'] = url('/').'/storage/thumbnails/'.$image->disk_name;
             $refresh['image'] = '';
-            // Make the image deletable.
-            $refresh['deleteDocumentUrl'] = route('admin.posts.deleteImage', array_merge($request->query(), ['post' => $post->id]));
         }
 
         if ($request->input('_close', null)) {
@@ -506,10 +504,10 @@ class PostController extends Controller
             $post->image->delete();
         }
         else {
-            return response()->json(['error' => __('messages.generic.no_document_to_delete')]);
+            return response()->json(['info' => __('messages.generic.no_document_to_delete')]);
         }
 
-        $refresh = ['post-image' => asset('/images/camera.png'), 'image' => '', 'deleteDocumentUrl' => ''];
+        $refresh = ['post-image' => asset('/images/camera.png'), 'image' => ''];
 
         return response()->json(['success' => __('messages.generic.image_deleted'), 'refresh' => $refresh]);
     }

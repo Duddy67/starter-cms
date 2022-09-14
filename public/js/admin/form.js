@@ -1,117 +1,154 @@
-(function($) {
+(function() {
 
-  // Run a function when the page is fully loaded including graphics.
-  $(window).on('load', function() {
-      let actions = ['save', 'saveClose', 'cancel', 'destroy'];
+    let localNamespace = {};
 
-      actions.forEach(function (action) {
-	  $('#'+action).click( function() { $.fn[action](); });
-      });
-  });
+    // Run a function when the page is fully loaded including graphics.
+    document.addEventListener('DOMContentLoaded', () => {
+        let actions = ['save', 'saveClose', 'cancel', 'destroy'];
 
-  $.fn.save = function() {
-      $.fn.runAjax();
-  }
+        actions.forEach(function (action) {
+            let button = document.getElementById(action);
 
-  $.fn.saveClose = function() {
-      $('input[name="_close"]').val(1);
-      $.fn.runAjax();
-  }
+            if (button) {
+                button.onclick = function(e) {
+                    localNamespace[action]();
+                }
+            }
+        });
 
-  $.fn.cancel = function() {
-      window.location.replace($('#cancelEdit').val());
-  }
+        let button = document.getElementById('deleteDocumentBtn');
 
-  $.fn.destroy = function() {
-      if (window.confirm('Are you sure ?')) {
-	  $('#deleteItem').submit();
-      }
-  }
+        if (button) {
+            button.addEventListener('click', function(e) {
+                runAjax(button.dataset.formId);
+            });
+        }
+    });
 
-  if (jQuery.fn.select2) {
-      $('.select2').select2();
-  }
+    function save() {
+        runAjax('itemForm');
+    }
 
-  $.fn.runAjax = function() {
-      let url = $('#itemForm').attr('action');
-      let formData = new FormData($('#itemForm')[0]);
+    function saveClose() {
+        document.querySelector('input[name="_close"]').value = 1;
+        runAjax('itemForm');
+    }
 
-      $('#ajax-progress').removeClass('d-none');
+    function cancel() {
+        window.location.replace(document.getElementById('cancelEdit').value);
+    }
 
-      $.ajax({
-        url: url,
-        // Always use the post method when sending data as FormData doesn't work with the put method.
-        // If a different method has to be used, it is set through the "_method" input.
-        method: 'post',
-        data: formData, 
-        contentType: false,
-        processData: false,
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-        success: function(result) {
-            $('#ajax-progress').addClass('d-none');
+    function destroy() {
+        if (window.confirm('Are you sure ?')) {
+            document.getElementById('deleteItem').submit();
+        }
+    }
+
+    // Store action functions.
+    localNamespace['save'] = save;
+    localNamespace['saveClose'] = saveClose;
+    localNamespace['cancel'] = cancel;
+    localNamespace['destroy'] = destroy;
+
+    function runAjax(formId) {
+        let form = document.getElementById(formId);
+
+        // Exit the function in case the document deletion is canceled. 
+        if (['deleteImage', 'deletePhoto'].includes(formId) && !window.confirm('Are you sure ?')) {
+            return;
+        }
+
+        let formData = new FormData(form);
+
+        const spinner = document.getElementById('ajax-progress');
+        spinner.classList.remove('d-none');
+
+        let ajax = new C_Ajax.init({
+            method: 'post',
+            url: form.action,
+            dataType: 'json',
+            data: formData,
+            headers: {'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'), 'Accept': 'application/json'}
+        });
+
+        ajax.run(getAjaxResult);
+    }
+
+    function getAjaxResult(status, result) {
+        const spinner = document.getElementById('ajax-progress');
+        spinner.classList.add('d-none');
+
+        if (status === 200) {
             // Loop through the returned result.
             for (const [key, value] of Object.entries(result)) {
                 if (key == 'redirect') {
                     window.location.href = result.redirect;
                 }
                 else if (key == 'refresh') {
-                    $.fn.refreshFieldValues(result.refresh);
+                    refreshFieldValues(result.refresh);
                 }
                 // messages
                 else if (['success', 'warning', 'info'].includes(key)) {
-                    $.fn.displayMessage(key, value);
-                }
-            }
-        },
-        error: function(result) {
-            $('#ajax-progress').addClass('d-none');
-            $.fn.displayMessage('danger', 'Please check the form below for errors.');
-            // Loop through the returned errors and set the messages accordingly.
-            for (const [name, message] of Object.entries(result.responseJSON.errors)) {
-                $('#'+name+'Error').text(message);
-
-                // Show the tab (if any) the field is part of.
-                if ($("#"+name).data('tab')) {
-                    $('.nav-tabs a[href="#'+$("#"+name).data('tab')+'"]').tab('show');
+                    displayMessage(key, value);
                 }
             }
         }
-      });
-  }
+        else if (status === 422) {
+            displayMessage('danger', 'Please check the form below for errors.');
+            // Loop through the returned errors and set the messages accordingly.
+            for (const [name, message] of Object.entries(result.errors)) {
+                document.getElementById(name+'Error').innerHTML = message;
+            }
+        }
+        else {
+            displayMessage('danger', 'Error '+status+': '+result.message);
+        }
+    }
 
-  $.fn.refreshFieldValues = function(values) {
-      for (const [index, value] of Object.entries(values)) {
-          if ($('#'+index).get(0).tagName == 'IMG') {
-              $('#'+index).attr('src', value);
-          }
-          else {
-              $('#'+index).val(value);
-          }
-      }
-  }
+    function refreshFieldValues(values) {
+        for (const [index, value] of Object.entries(values)) {
+            if (document.getElementById(index).tagName == 'IMG') {
+                document.getElementById(index).setAttribute('src', value);
+            }
+            else {
+                document.getElementById(index).value = value;
+            }
+        }
+    }
 
-  $.fn.displayMessage = function(type, message) {
-      // Empty some possible error messages.
-      $('div[id$="Error"]').each( function() {
-          $(this).text('');
-      });
+    function displayMessage(type, message) {
+        // Empty some possible error messages.
+        document.querySelectorAll('div[id$="Error"]').forEach(elem => {
+            elem.innerHTML = '';
+        });
 
-      // Hide the possible displayed flash messages.
-      $('.flash-message').each( function() {
-          if (!$(this).hasClass('d-none')) {
-              $(this).addClass('d-none');
-          }
-      });
+        // Hide the possible displayed flash messages.
+        document.querySelectorAll('.flash-message').forEach(elem => {
+            if (!elem.classList.contains('d-none')) {
+                elem.classList.add('d-none');
+            }
+        });
 
-      // Adapt to Bootstrap alert class names.
-      type = (type == 'error') ? 'danger' : type;
+        // Adapt to Bootstrap alert class names.
+        type = (type == 'error') ? 'danger' : type;
 
-      $('#ajax-message-alert').removeClass('d-none alert-success alert-danger alert-warning alert-info');
-      $('#ajax-message-alert').addClass('alert-'+type);
-      $('#ajax-message').text(message);
+        const messageAlert = document.getElementById('ajax-message-alert');
+        messageAlert.classList.remove('d-none', 'alert-success', 'alert-danger', 'alert-warning', 'alert-info');
+        messageAlert.classList.add('alert-'+type);
+        document.getElementById('ajax-message').innerHTML = message;
 
-      $(window).scrollTop(0);
-  }
+        window.scrollTo(0, 0);
+    }
+
+})();
+
+
+/* Used for the Select2 jQuery plugin. */
+(function($) {
+
+    if (jQuery.fn.select2) {
+        $('.select2').select2();
+    }
 
 })(jQuery);
 

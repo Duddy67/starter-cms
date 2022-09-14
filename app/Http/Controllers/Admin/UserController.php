@@ -182,8 +182,6 @@ class UserController extends Controller
 
             $refresh['user-photo'] = url('/').'/storage/thumbnails/'.$photo->disk_name;
             $refresh['photo'] = '';
-            // Make the photo deletable.
-            $refresh['deleteDocumentUrl'] = route('admin.users.deletePhoto', array_merge($request->query(), ['user' => $user->id]));
         }
 
         if ($request->input('_close', null)) {
@@ -398,10 +396,10 @@ class UserController extends Controller
             $user->photo->delete();
         }
         else {
-            return response()->json(['error' => __('messages.generic.no_document_to_delete')]);
+            return response()->json(['info' => __('messages.generic.no_document_to_delete')]);
         }
 
-        $refresh = ['user-photo' => asset('/images/user.png'), 'photo' => '', 'deleteDocumentUrl' => ''];
+        $refresh = ['user-photo' => asset('/images/user.png'), 'photo' => ''];
 
         return response()->json(['success' => __('messages.generic.photo_deleted'), 'refresh' => $refresh]);
     }

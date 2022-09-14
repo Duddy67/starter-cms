@@ -207,12 +207,6 @@ trait Form
                 continue;
             }
 
-            if (isset($field->extra) && in_array('disabled', $field->extra)) {
-                // Disabled field values are treated in the controller.
-                $fields[$key]->value = null;
-                continue;
-            }
-
             $item = (isset($this->item) && $this->item) ? $this->item : null;
 
             // Set the select field types.
@@ -247,7 +241,7 @@ trait Form
                 }
                 // Regular value field.
                 else {
-                    $fields[$key]->value = $item->{$field->name};
+                    $fields[$key]->value = (isset($item->{$field->name})) ? $item->{$field->name} : null;
                 }
 
                 if (isset($item->access_level) && !$item->canEdit()) {

@@ -38,13 +38,11 @@ class UpdateRequest extends FormRequest
         }
 
         if ($this->post->canChangeStatus()) {
-            // Some rules don't apply whith the API.
-            $rules['status'] = $this->wantsJson() ? '' : 'required';
+            $rules['status'] = 'required';
         }
 
         if ($this->post->canChangeAttachments()) {
-            // Some rules don't apply whith the API.
-            $rules['owned_by'] = $this->wantsJson() ? '' : 'required';
+            $rules['owned_by'] = 'required';
         }
 
         return $rules;
