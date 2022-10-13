@@ -19,6 +19,8 @@
 	<link rel="stylesheet" href="{{ asset('/css/style.css') }}">
         <!-- Google fonts -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Work Sans:100,200,300,400,500|Whisper|Alex Brush">
+        <!-- Favicon -->
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
     </head>
     <body>
 

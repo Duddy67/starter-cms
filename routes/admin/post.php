@@ -15,6 +15,8 @@ Route::put('/posts/unpublish', [AdminPostController::class, 'massUnpublish'])->n
 Route::get('/post/{post}/up', [AdminPostController::class, 'up'])->name('admin.posts.up');
 Route::get('/post/{post}/down', [AdminPostController::class, 'down'])->name('admin.posts.down');
 Route::get('/posts/{post}/edit', [AdminPostController::class, 'edit'])->name('admin.posts.edit');
+Route::get('/posts/{post}/layout', [AdminPostController::class, 'layout'])->name('admin.posts.layout');
+Route::delete('/posts/{post}/delete-layout-item', [AdminPostController::class, 'deleteLayoutItem'])->name('admin.posts.deleteLayoutItem');
 Route::delete('/posts/{post}/delete-image', [AdminPostController::class, 'deleteImage'])->name('admin.posts.deleteImage');
 Route::resource('posts', AdminPostController::class, ['as' => 'admin'])->except(['show', 'edit']);
 // Categories

@@ -453,6 +453,9 @@ trait Form
         elseif (isset($field->extra) && in_array('yes_no', $field->extra)) {
             $options = Setting::getYesNoOptions();
         }
+        elseif ($field->name == 'layout') {
+            $options = Setting::getLayoutOptions($this->getClassName());
+        }
         else {
             // Call the model method.
             $options = ($item) ? $item->$function() : $this->model->$function();

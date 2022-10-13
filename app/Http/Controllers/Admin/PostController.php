@@ -18,6 +18,7 @@ use Illuminate\Support\Str;
 use App\Models\Cms\Document;
 use Carbon\Carbon;
 use App\Models\Post\Ordering;
+use App\Models\LayoutItem;
 
 
 class PostController extends Controller
@@ -115,7 +116,8 @@ class PostController extends Controller
         $post->checkOut();
 
         // Gather the needed data to build the form.
-        
+//$tag = $post->tags->where('id', 1)->first();
+//file_put_contents('debog_file.txt', print_r($tag->data, true));
         $except = (auth()->user()->getRoleLevel() > $post->getOwnerRoleLevel() || $post->owned_by == auth()->user()->id) ? ['owner_name'] : ['owned_by'];
 
         $fields = $this->getFields($except);
@@ -173,7 +175,8 @@ class PostController extends Controller
         $post->extra_fields = $request->input('extra_fields');
         $post->settings = $request->input('settings');
         $post->updated_by = auth()->user()->id;
-
+//file_put_contents('debog_file.txt', print_r($request->input('layout_items'), true));
+LayoutItem::storeItems($post, $request->input('layout_items'));
         if ($post->canChangeAccessLevel()) {
             $post->access_level = $request->input('access_level');
 
@@ -492,6 +495,24 @@ class PostController extends Controller
     }
 
     /*
+     * Returns all the items linked to the post's layout.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Post $post
+     * @return JSON 
+     */
+    public function layout(Request $request, Post $post)
+    {
+        $data = [];
+
+        foreach ($post->layoutItems as $item) {
+            $data[] = ['id_nb' => $item->id_nb, 'type' => $item->type, 'value' => $item->value, 'order' => $item->order];
+        }
+
+        return response()->json($data);
+    }
+
+    /*
      * Delete the image Document linked to the item.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -510,6 +531,28 @@ class PostController extends Controller
         $refresh = ['post-image' => asset('/images/camera.png'), 'image' => ''];
 
         return response()->json(['success' => __('messages.generic.image_deleted'), 'refresh' => $refresh]);
+    }
+
+    /*
+     * Delete the given layout item linked to the post.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Post $post
+     * @return JSON 
+     */
+    public function deleteLayoutItem(Request $request, Post $post)
+    {
+//file_put_contents('debog_file.txt', print_r($request->input('id_nb'), true));
+        $idNb = $request->input('id_nb');
+
+        foreach ($post->layoutItems as $item) {
+            if ($item->id_nb == $idNb) {
+                $item->delete();
+                break;
+            }
+        }
+
+        return response()->json(['success' => __('messages.generic.layout_item_deleted')]);
     }
 
     public function up(Request $request, Post $post)

@@ -23,6 +23,10 @@ tr.clickable-row {
   background-color: white;
 }
 
+.top-panel {
+  width: 99% !important;
+}
+
 /** Batch modal window **/
 .modal-content {
   background-color: #fefefe;

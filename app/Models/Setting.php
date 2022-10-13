@@ -248,6 +248,19 @@ class Setting extends Model
         return ($extraField) ? $item->extra_fields[$extraField] : null;
     }
 
+    public static function getLayoutOptions($className)
+    {
+        $json = file_get_contents(resource_path().'/views/admin/layouts/plugins/'.strtolower($className).'.json', true);
+        $layouts = json_decode($json);
+        $options = [];
+
+        foreach ($layouts as $layout) {
+            $options[] = ['value' => $layout->value, 'text' => $layout->text];
+        }
+
+        return $options;
+    }
+
     public static function getTimezoneOptions()
     {
         $timezoneIdentifiers = \DateTimeZone::listIdentifiers();

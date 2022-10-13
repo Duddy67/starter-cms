@@ -73,7 +73,7 @@
 
   <!-- Copyright -->
   <div class="footer-copyright text-center py-3">© @php echo date('Y'); @endphp Copyright:
-    <a href="https://mdbootstrap.com/"> MDBootstrap.com</a>
+    <a href="https://codalia.fr/">Codalia</a>
   </div>
   <!-- Copyright -->
 

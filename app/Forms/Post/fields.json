@@ -122,6 +122,14 @@
     "placeholder": "labels.generic.alt_img"
   },
   {
+    "label": "labels.generic.layout",
+    "type": "select",
+    "name": "layout",
+    "id": "layout",
+    "tab": "layout",
+    "options": [] 
+  },
+  {
     "label": "labels.generic.show_owner",
     "type": "select",
     "name": "show_owner",

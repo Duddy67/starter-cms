@@ -18,6 +18,7 @@
         <nav class="nav nav-tabs">
             <a class="nav-item nav-link active" href="#details" data-toggle="tab">@php echo __('labels.generic.details'); @endphp</a>
             <a class="nav-item nav-link" href="#extra" data-toggle="tab">@php echo __('labels.generic.extra'); @endphp</a>
+            <a class="nav-item nav-link" href="#layout" data-toggle="tab">@php echo __('labels.generic.layout'); @endphp</a>
             <a class="nav-item nav-link" href="#settings" data-toggle="tab">@php echo __('labels.title.settings'); @endphp</a>
             <a class="nav-item nav-link" href="#meta_data" data-toggle="tab">@php echo __('labels.generic.meta_data'); @endphp</a>
             <a class="nav-item nav-link" href="#extra_fields" data-toggle="tab">@php echo __('labels.generic.extra_fields'); @endphp</a>
@@ -50,6 +51,11 @@
                     </div>
                 @endif
 
+                @if ($field->name == 'layout')
+                    <div class="layout-items" id="layout-items">
+                    </div>
+                @endif
+
                 @if (!next($fields) || isset($fields[$key + 1]->tab))
                     </div>
                 @endif
@@ -59,6 +65,7 @@
         <input type="hidden" id="cancelEdit" value="{{ route('admin.posts.cancel', $query) }}">
         <input type="hidden" id="close" name="_close" value="0">
         <input type="hidden" id="siteUrl" value="{{ url('/') }}">
+        <input type="hidden" id="postLayout" value="{{ isset($post) ? route('admin.posts.layout', $query) : '' }}">
     </form>
     <x-toolbar :items=$actions />
 
@@ -72,11 +79,18 @@
             @method('delete')
             @csrf
         </form>
+
+        <form id="deleteLayoutItem" action="{{ route('admin.posts.deleteLayoutItem', $query) }}" method="post">
+            @method('delete')
+            @csrf
+            <input type="hidden" name="id_nb" id="_idNb" value="">
+        </form>
     @endif
 @endsection
 
 @push ('style')
     <link rel="stylesheet" href="{{ asset('/vendor/adminlte/plugins/daterangepicker/daterangepicker.css') }}">
+    <link rel="stylesheet" href="{{ asset('/vendor/codalia/css/c.layout.css') }}">
 @endpush
 
 @push ('scripts')
@@ -85,6 +99,9 @@
     <script type="text/javascript" src="{{ asset('/vendor/tinymce/tinymce.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/codalia/c.ajax.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/vendor/codalia/lang/en.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/vendor/codalia/c.layout.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/js/admin/post/layout.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/form.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/post/set.main.category.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/set.private.groups.js') }}"></script>

@@ -22,6 +22,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="{{ asset('/vendor/adminlte/plugins/select2/css/select2.min.css') }}">
   <!-- Custom style -->
   <link rel="stylesheet" href="{{ asset('/css/admin/style.css') }}">
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
   <!-- Additional style sheets -->
   @stack ('style')
 </head>

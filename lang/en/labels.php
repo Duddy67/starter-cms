@@ -122,6 +122,7 @@ return [
 	'category' => 'Category',
 	'ordering' => 'Ordering',
 	'type' => 'Type',
+	'layout' => 'Layout',
 	'format' => 'Format',
 	'preview' => 'Preview',
 	'none' => 'None',

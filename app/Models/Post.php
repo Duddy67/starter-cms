@@ -12,6 +12,7 @@ use App\Models\User\Group;
 use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
 use App\Models\Cms\Document;
+use App\Models\LayoutItem;
 use App\Support\PostCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -94,6 +95,14 @@ class Post extends Model
     public function orderings()
     {
         return $this->hasMany(Ordering::class);
+    }
+
+    /**
+     * Get all of the post's layout items.
+     */
+    public function layoutItems()
+    {
+        return $this->morphMany(LayoutItem::class, 'layout_itemable')->orderBy('order');
     }
 
     /**
