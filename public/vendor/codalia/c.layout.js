@@ -77,6 +77,11 @@ const C_Layout = (function() {
 	    toolbar: 'code | bold italic underline | link | numlist',
 	    //height: 500,
 	    convert_urls: false,
+            setup: function(editor) {
+                editor.on('change', function () {
+                    editor.save();
+                });
+            }
 	});
 
         return editor;
@@ -191,8 +196,8 @@ const C_Layout = (function() {
 
               if (oldChild.dataset.type === 'paragraph') {
                   // Remove then reinstanciate a brand new TinyMce editor.
-                  //tinymce.get('paragraph-'+_idNbList[index2]).remove();
-                  //_initTinyMceEditor(_idNbList[index2]);
+                  tinymce.get('paragraph-'+_idNbList[index2]).remove();
+                  _initTinyMceEditor(_idNbList[index2]);
               }
 
               break;
@@ -362,17 +367,17 @@ const C_Layout = (function() {
     function _createParagraph(idNb, data) {
         let value = (data !== undefined) ? data.value : '';
 
-	let attribs = {'name':'layout_items[paragraph_'+idNb+']', 'id':'paragraph-'+idNb, 'class':'tinymce-paragraph form-control'};
+	let attribs = {'name':'layout_items[paragraph_'+idNb+']', 'id':'paragraph-'+idNb, 'class':'form-control'};
 	document.getElementById('layout-item-row-1-cell-1-'+idNb).append(_createElement('textarea', attribs));
 	document.getElementById('paragraph-'+idNb).value = value;
-        //_initTinyMceEditor(idNb);
+        _initTinyMceEditor(idNb);
     }
 
     function _createImage(idNb, data) {
         let url = (data !== undefined) ? data.url : '';
         let alt = (data !== undefined) ? data.alt : '';
 
-	let attribs = {'type':'text', 'name':'layout_items[image_'+idNb+']', 'id':'image-'+idNb, 'class':'form-control', 'value':url};
+	let attribs = {'type':'file', 'name':'layout_items[image_'+idNb+']', 'id':'image-'+idNb, 'class':'form-control', 'value':url};
 	document.getElementById('layout-item-row-1-cell-1-'+idNb).append(_createElement('input', attribs));
 	// Create the second row.
 	attribs = {id: 'layout-item-row-2-cell-1-'+idNb, class: 'layout-item-cells-row-2 layout-item-cell-1-row-2'};

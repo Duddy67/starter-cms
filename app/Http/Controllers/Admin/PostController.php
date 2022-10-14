@@ -175,8 +175,8 @@ class PostController extends Controller
         $post->extra_fields = $request->input('extra_fields');
         $post->settings = $request->input('settings');
         $post->updated_by = auth()->user()->id;
-//file_put_contents('debog_file.txt', print_r($request->input('layout_items'), true));
-LayoutItem::storeItems($post, $request->input('layout_items'));
+//file_put_contents('debog_file.txt', print_r($request->all()['layout_items'], true));
+LayoutItem::storeItems($post, $request->all()['layout_items']);
         if ($post->canChangeAccessLevel()) {
             $post->access_level = $request->input('access_level');
 

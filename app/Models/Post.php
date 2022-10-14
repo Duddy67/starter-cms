@@ -121,6 +121,10 @@ class Post extends Model
             $this->image->delete();
         }
 
+        foreach ($this->layoutItems as $item) {
+            $item->delete();
+        }
+
         Ordering::where('post_id', $this->id)->delete();
 
         parent::delete();

@@ -32,12 +32,25 @@ class LayoutItem extends Model
         return $this->morphTo();
     }
 
+    /**
+     * Get the image associated with the layout item.
+     */
+    public function image()
+    {
+        return $this->morphOne(Document::class, 'documentable')->where('field', 'image');
+    }
+
     public static function storeItems($model, $items)
     {
-        $ids = [];
-
+file_put_contents('debog_file.txt', print_r($items, true));
+return;
         foreach ($items as $key => $value) {
             $type = $id = $order = null;
+
+            if (str_starts_with($key, 'image_') || str_starts_with($key, 'alt_image_')) {
+                preg_match('#_([0-9]+)$#', $key, $matches);
+                continue;
+            }
 
             if (preg_match('#^([a-z]+)_([0-9]+)$#', $key, $matches)) {
                 $type = $matches[1];
@@ -53,11 +66,44 @@ class LayoutItem extends Model
                     $item = LayoutItem::create(['type' => $type, 'id_nb' => $id, 'value' => $value, 'order' => $order]);
                     $model->layoutItems()->save($item);
                 }
-
-                $ids[] = $item->id;
             }
         }
+    }
 
-//file_put_contents('debog_file.txt', print_r($items, true));
+    public static function storeImage($model, $items, $id)
+    {
+        $order = $items['layout_item_ordering_'.$id];
+        $upload = (isset($items['image_'.$id])) ? $items['image_'.$id] : null;
+        $alt = $items['alt_image_'.$id];
+
+        if ($item = $model->layoutItems->where('id_nb', $id)->first()) {
+            // The image has been replaced.
+            if ($upload) {
+                $item->image->delete();
+
+                if ($image = $item->setImageData($upload)) {
+                    $item->image()->save($image);
+                }
+            }
+
+            $item->order = $order;
+            $item->save();
+        }
+        // New image to upload.
+        elseif ($upload) {
+        }
+    }
+
+    private function setImageData($upload)
+    {
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            $image = new Document;
+            $image->upload($request->file('image'), 'image');
+
+            return $image;
+        }
+
+        return null;
     }
 }
+
