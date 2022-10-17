@@ -62,6 +62,9 @@
   width: 40%;
 }
 
+.layout-item-thumbnail {
+}
+
 .layout-item-order-number {
   width: 30px;
   font-weight: bold;

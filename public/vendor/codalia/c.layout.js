@@ -374,11 +374,13 @@ const C_Layout = (function() {
     }
 
     function _createImage(idNb, data) {
-        let url = (data !== undefined) ? data.url : '';
-        let alt = (data !== undefined) ? data.alt : '';
+        let thumbnail = (data !== undefined) ? data.value.thumbnail : 'images/camera.png';
+        let altText = (data !== undefined) ? data.value.alt_text : '';
+        let siteUrl = document.getElementById('siteUrl').value;
 
-	let attribs = {'type':'file', 'name':'layout_items[image_'+idNb+']', 'id':'image-'+idNb, 'class':'form-control', 'value':url};
+	let attribs = {'type':'file', 'name':'layout_items[upload_'+idNb+']', 'id':'layout-item-upload-'+idNb, 'class':'form-control'};
 	document.getElementById('layout-item-row-1-cell-1-'+idNb).append(_createElement('input', attribs));
+
 	// Create the second row.
 	attribs = {id: 'layout-item-row-2-cell-1-'+idNb, class: 'layout-item-cells-row-2 layout-item-cell-1-row-2'};
 	document.getElementById('layout-item-'+idNb).appendChild(_createElement('span', {class: 'layout-item-row-separator'}));
@@ -388,8 +390,15 @@ const C_Layout = (function() {
 	document.getElementById('layout-item-row-2-cell-1-'+idNb).append(_createElement('span', attribs));
 	document.getElementById('alt-label-'+idNb).textContent = CodaliaLang.layout['alt'];
 
-	attribs = {'type':'text', 'name':'layout_items[alt_image_'+idNb+']', 'id':'alt-image-'+idNb, 'class':'form-control', 'value':alt};
+	attribs = {'type':'text', 'name':'layout_items[alt_text_'+idNb+']', 'id':'alt-text-'+idNb, 'class':'form-control', 'value':altText};
 	document.getElementById('layout-item-row-2-cell-1-'+idNb).append(_createElement('input', attribs));
+
+	attribs = {id: 'layout-item-row-2-cell-2-'+idNb, class: 'layout-item-cells-row-2 layout-item-cell-2-row-2'};
+	document.getElementById('layout-item-'+idNb).appendChild(_createElement('span', {class: 'layout-item-row-separator'}));
+	document.getElementById('layout-item-'+idNb).append(_createElement('div', attribs));
+
+	attribs = {id: 'layout-item-thumbnail-'+idNb, src: siteUrl+thumbnail};
+	document.getElementById('layout-item-row-2-cell-2-'+idNb).append(_createElement('img', attribs));
     }
 
     // Function used as a class constructor.

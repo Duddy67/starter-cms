@@ -116,8 +116,12 @@ class PostController extends Controller
         $post->checkOut();
 
         // Gather the needed data to build the form.
-//$tag = $post->tags->where('id', 1)->first();
-//file_put_contents('debog_file.txt', print_r($tag->data, true));
+/*foreach ($post->layoutItems as $item) {
+    if ($item->type == 'image') {
+file_put_contents('debog_file.txt', print_r($item->image->getThumbnailUrl(), true));
+    }
+}*/
+//var_dump($post->layoutItems->where('id_nb', 5)->first());
         $except = (auth()->user()->getRoleLevel() > $post->getOwnerRoleLevel() || $post->owned_by == auth()->user()->id) ? ['owner_name'] : ['owned_by'];
 
         $fields = $this->getFields($except);
@@ -175,8 +179,7 @@ class PostController extends Controller
         $post->extra_fields = $request->input('extra_fields');
         $post->settings = $request->input('settings');
         $post->updated_by = auth()->user()->id;
-//file_put_contents('debog_file.txt', print_r($request->all()['layout_items'], true));
-LayoutItem::storeItems($post, $request->all()['layout_items']);
+
         if ($post->canChangeAccessLevel()) {
             $post->access_level = $request->input('access_level');
 
@@ -235,6 +238,11 @@ LayoutItem::storeItems($post, $request->all()['layout_items']);
 
             $refresh['post-image'] = url('/').'/storage/thumbnails/'.$image->disk_name;
             $refresh['image'] = '';
+        }
+
+$layoutRefresh = LayoutItem::storeItems($post, $request->all()['layout_items']);
+        foreach ($layoutRefresh as $key => $value) {
+            $refresh[$key] = $value;
         }
 
         if ($request->input('_close', null)) {
@@ -506,7 +514,8 @@ LayoutItem::storeItems($post, $request->all()['layout_items']);
         $data = [];
 
         foreach ($post->layoutItems as $item) {
-            $data[] = ['id_nb' => $item->id_nb, 'type' => $item->type, 'value' => $item->value, 'order' => $item->order];
+            $value = ($item->type == 'image') ? json_decode($item->value) : $item->value;
+            $data[] = ['id_nb' => $item->id_nb, 'type' => $item->type, 'value' => $value, 'order' => $item->order];
         }
 
         return response()->json($data);
@@ -542,11 +551,15 @@ LayoutItem::storeItems($post, $request->all()['layout_items']);
      */
     public function deleteLayoutItem(Request $request, Post $post)
     {
-//file_put_contents('debog_file.txt', print_r($request->input('id_nb'), true));
         $idNb = $request->input('id_nb');
 
         foreach ($post->layoutItems as $item) {
             if ($item->id_nb == $idNb) {
+                // First delete the image file. 
+                if ($item->type == 'image') {
+                    $item->image->delete();
+                }
+
                 $item->delete();
                 break;
             }
