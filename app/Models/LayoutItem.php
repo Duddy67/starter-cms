@@ -41,14 +41,29 @@ class LayoutItem extends Model
         return $this->morphOne(Document::class, 'documentable')->where('field', 'image');
     }
 
-    public static function storeItems($model, $items)
+    /**
+     * Delete the model from the database (override).
+     *
+     * @return bool|null
+     *
+     * @throws \LogicException
+     */
+    public function delete()
+    {
+        if ($this->image) {
+            $this->image->delete();
+        }
+
+        parent::delete();
+    }
+
+    public static function storeItems(object $model): array
     {
         $refresh = [];
 
         if (isset(request()->all()['layout_items'])) {
             $items = request()->all()['layout_items'];
 
-//file_put_contents('debog_file.txt', print_r($items, true));
             foreach ($items as $key => $value) {
                 // Image items.
                 if (preg_match('#^([upload|alt_text]{1,})_([0-9]+)$#', $key, $matches)) {
@@ -68,14 +83,17 @@ class LayoutItem extends Model
                     }
 
                     if ($item) {
-                        LayoutItem::uploadImage($item, $id);
+                        if (!$image = $item->uploadImage($id)) {
+                            // Use the current image.
+                            $image = $item->image;
+                        }
 
-                        $item->value = json_encode(['alt_text' => $items['alt_text_'.$id], 'thumbnail' => $item->image->getThumbnailUrl()]);
-                        //$item->value = json_encode(['alt_text' => $items['alt_text_'.$id], 'thumbnail' => $image->getThumbnailUrl()]);
+                        // Store value as JSON.
+                        $item->value = json_encode(['alt_text' => $items['alt_text_'.$id], 'thumbnail' => $image->getThumbnailUrl()]);
                         $item->order = $items['layout_item_ordering_'.$id];
                         $item->save();
 
-                        $refresh['layout-item-thumbnail-'.$id] = $item->image->getThumbnailUrl();
+                        $refresh['layout-item-thumbnail-'.$id] = url('/').'/'.$image->getThumbnailUrl();
                         $refresh['layout-item-upload-'.$id] = '';
                     }
 
@@ -87,12 +105,6 @@ class LayoutItem extends Model
                     $type = $matches[1];
                     $id = $matches[2];
                     $order = $items['layout_item_ordering_'.$id];
-                    //$item = $model->layoutItems->where('id_nb', $id)->first();
-
-                    /*if (!$item) {
-                        $item = LayoutItem::create(['type' => $type, 'id_nb' => $id]);
-                        $model->layoutItems()->save($item);
-                    }*/
 
                     if ($item = $model->layoutItems->where('id_nb', $id)->first()) {
                         $item->value = $value;
@@ -103,20 +115,6 @@ class LayoutItem extends Model
                         $item = LayoutItem::create(['type' => $type, 'id_nb' => $id, 'value' => $value, 'order' => $order]);
                         $model->layoutItems()->save($item);
                     }
-
-                    /*if ($type == 'image') {
-                        LayoutItem::uploadImage($item, $id);
-                        $item->value = json_encode(['alt_text' => $items['alt_text_'.$id], 'thumbnail' => $item->image->getThumbnailUrl()]);
-
-                        $refresh['layout-item-thumbnail-'.$id] = url('/').'/'.$item->image->getThumbnailUrl();
-                        $refresh['layout-item-upload-'.$id] = '';
-                    }
-                    else {
-                        $item->value = $value;
-                    }
-
-                    $item->order = $order;
-                    $item->save();*/
                 }
             }
         }
@@ -124,35 +122,27 @@ class LayoutItem extends Model
         return $refresh;
     }
 
-    public static function hasImageFile($id)
+    public static function hasImageFile(int $id): bool
     {
         return (Request::hasFile('layout_items.upload_'.$id) && Request::file('layout_items.upload_'.$id)->isValid()); 
     }
 
-    public static function uploadImage(&$item, $id)
+    public function uploadImage(int $id): ?Document
     {
-        //$upload = (Request::hasFile('layout_items.upload_'.$id) && Request::file('layout_items.upload_'.$id)->isValid());
-        //$item = $model->layoutItems->where('id_nb', $id)->first();
-
-        //
-        /*if (!$item && $upload) {
-            $item = LayoutItem::create(['type' => 'image', 'id_nb' => $id]);
-            $model->layoutItems()->save($item);
-        }*/
+        $image = null;
 
         if (LayoutItem::hasImageFile($id)) {
             // The image has been replaced.
-            if ($item->image) {
-                $item->image->delete();
+            if ($this->image) {
+                $this->image->delete();
             }
 
             $image = new Document;
             $image->upload(Request::file('layout_items.upload_'.$id), 'image');
-            $item->image()->save($image);
-            $item->refresh();
+            $this->image()->save($image);
         }
 
-        //return $image;
+        return $image;
     }
 }
 

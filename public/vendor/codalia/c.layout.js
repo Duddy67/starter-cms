@@ -374,7 +374,7 @@ const C_Layout = (function() {
     }
 
     function _createImage(idNb, data) {
-        let thumbnail = (data !== undefined) ? data.value.thumbnail : 'images/camera.png';
+        let thumbnail = (data !== undefined) ? data.value.thumbnail : '/images/camera.png';
         let altText = (data !== undefined) ? data.value.alt_text : '';
         let siteUrl = document.getElementById('siteUrl').value;
 

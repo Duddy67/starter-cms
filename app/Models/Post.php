@@ -298,6 +298,19 @@ class Post extends Model
         return $this->categories()->where('id', $this->main_cat_id)->first();
     }
 
+    public function getLayoutRawContent()
+    {
+        $rawContent = '';
+
+        foreach ($this->layoutItems as $item) {
+            if ($item->type != 'image') {
+                $rawContent .= strip_tags($item->value.' ');
+            }
+        }
+
+        return $rawContent;
+    }
+
     public static function searchInPosts($keyword)
     {
         $query = Post::query();

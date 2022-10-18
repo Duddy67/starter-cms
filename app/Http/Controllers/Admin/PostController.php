@@ -116,14 +116,7 @@ class PostController extends Controller
         $post->checkOut();
 
         // Gather the needed data to build the form.
-/*foreach ($post->layoutItems as $item) {
-    if ($item->type == 'image') {
-file_put_contents('debog_file.txt', print_r($item->image->getThumbnailUrl(), true));
-    }
-}*/
-//var_dump($post->layoutItems->where('id_nb', 5)->first());
         $except = (auth()->user()->getRoleLevel() > $post->getOwnerRoleLevel() || $post->owned_by == auth()->user()->id) ? ['owner_name'] : ['owned_by'];
-
         $fields = $this->getFields($except);
         $this->setFieldValues($fields, $post);
         $except = (!$post->canEdit()) ? ['destroy', 'save', 'saveClose'] : [];
@@ -172,13 +165,15 @@ file_put_contents('debog_file.txt', print_r($item->image->getThumbnailUrl(), tru
         $post->title = $request->input('title');
         $post->slug = ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('title'), '-');
         $post->content = $request->input('content');
-        $post->raw_content = strip_tags($request->input('content'));
         $post->excerpt = $request->input('excerpt');
         $post->alt_img = $request->input('alt_img');
         $post->meta_data = $request->input('meta_data');
         $post->extra_fields = $request->input('extra_fields');
         $post->settings = $request->input('settings');
         $post->updated_by = auth()->user()->id;
+        $layoutRefresh = LayoutItem::storeItems($post);
+        // Prioritize layout items over regular content when storing raw content.
+        $post->raw_content = ($post->layoutItems()->exists()) ? $post->getLayoutRawContent() : strip_tags($request->input('content'));
 
         if ($post->canChangeAccessLevel()) {
             $post->access_level = $request->input('access_level');
@@ -228,6 +223,10 @@ file_put_contents('debog_file.txt', print_r($item->image->getThumbnailUrl(), tru
 
         $refresh = ['updated_at' => Setting::getFormattedDate($post->updated_at), 'updated_by' => auth()->user()->name, 'slug' => $post->slug];
 
+        foreach ($layoutRefresh as $key => $value) {
+            $refresh[$key] = $value;
+        }
+
         if ($image = $this->uploadImage($request)) {
             // Delete the previous post image if any.
             if ($post->image) {
@@ -238,11 +237,6 @@ file_put_contents('debog_file.txt', print_r($item->image->getThumbnailUrl(), tru
 
             $refresh['post-image'] = url('/').'/storage/thumbnails/'.$image->disk_name;
             $refresh['image'] = '';
-        }
-
-$layoutRefresh = LayoutItem::storeItems($post, $request->all()['layout_items']);
-        foreach ($layoutRefresh as $key => $value) {
-            $refresh[$key] = $value;
         }
 
         if ($request->input('_close', null)) {
@@ -264,22 +258,25 @@ $layoutRefresh = LayoutItem::storeItems($post, $request->all()['layout_items']);
     public function store(StoreRequest $request)
     {
         $post = Post::create([
-          'title' => $request->input('title'), 
-          'slug' => ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('title'), '-'),
-          'status' => $request->input('status'), 
-          'content' => $request->input('content'), 
-          'access_level' => $request->input('access_level'), 
-          'owned_by' => $request->input('owned_by'),
-          'main_cat_id' => $request->input('main_cat_id'),
-          'alt_img' => $request->input('alt_img'),
-          'meta_data' => $request->input('meta_data'),
-          'extra_fields' => $request->input('extra_fields'),
-          'settings' => $request->input('settings'),
-          'excerpt' => $request->input('excerpt'),
+            'title' => $request->input('title'), 
+            'slug' => ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('title'), '-'),
+            'status' => $request->input('status'), 
+            'content' => $request->input('content'), 
+            'access_level' => $request->input('access_level'), 
+            'owned_by' => $request->input('owned_by'),
+            'main_cat_id' => $request->input('main_cat_id'),
+            'alt_img' => $request->input('alt_img'),
+            'meta_data' => $request->input('meta_data'),
+            'extra_fields' => $request->input('extra_fields'),
+            'settings' => $request->input('settings'),
+            'excerpt' => $request->input('excerpt'),
         ]);
 
-        $post->raw_content = strip_tags($request->input('content'));
+        LayoutItem::storeItems($post);
+        // Prioritize layout items over regular content when storing raw content.
+        $post->raw_content = ($post->layoutItems()->exists()) ? $post->getLayoutRawContent() : strip_tags($request->input('content'));
         $post->updated_by = auth()->user()->id;
+
         $post->save();
 
         if ($request->input('groups') !== null) {
@@ -555,11 +552,6 @@ $layoutRefresh = LayoutItem::storeItems($post, $request->all()['layout_items']);
 
         foreach ($post->layoutItems as $item) {
             if ($item->id_nb == $idNb) {
-                // First delete the image file. 
-                if ($item->type == 'image') {
-                    $item->image->delete();
-                }
-
                 $item->delete();
                 break;
             }
