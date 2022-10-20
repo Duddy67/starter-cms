@@ -89,7 +89,7 @@ class LayoutItem extends Model
                         }
 
                         // Store value as JSON.
-                        $item->value = json_encode(['alt_text' => $items['alt_text_'.$id], 'thumbnail' => $image->getThumbnailUrl()]);
+                        $item->value = json_encode(['alt_text' => $items['alt_text_'.$id], 'url' => $image->getUrl(), 'thumbnail' => $image->getThumbnailUrl()]);
                         $item->order = $items['layout_item_ordering_'.$id];
                         $item->save();
 
@@ -101,9 +101,10 @@ class LayoutItem extends Model
                 }
 
                 // Regular items.
-                if (preg_match('#^([a-z]+)_([0-9]+)$#', $key, $matches)) {
-                    $type = $matches[1];
-                    $id = $matches[2];
+                if (preg_match('#^([a-z]+)_([a-z]*)_?([0-9]+)$#', $key, $matches)) {
+                    // Concatenate possible compound type names (eg: group_start).
+                    $type = (!empty($matches[2])) ? $matches[1].'_'.$matches[2] : $matches[1];
+                    $id = $matches[3];
                     $order = $items['layout_item_ordering_'.$id];
 
                     if ($item = $model->layoutItems->where('id_nb', $id)->first()) {

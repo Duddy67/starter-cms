@@ -41,6 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'), 'Accept': 'application/json'}
             });
         }
+
+        if (type == 'group_start') {
+            layout.removeGroupEndItem(idNb);
+        }
     };
 
     // Store the callback function into the global window object.

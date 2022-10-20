@@ -167,6 +167,7 @@ class PostController extends Controller
         $post->content = $request->input('content');
         $post->excerpt = $request->input('excerpt');
         $post->alt_img = $request->input('alt_img');
+        $post->layout = $request->input('layout');
         $post->meta_data = $request->input('meta_data');
         $post->extra_fields = $request->input('extra_fields');
         $post->settings = $request->input('settings');

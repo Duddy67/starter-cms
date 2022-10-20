@@ -88,6 +88,50 @@ const C_Layout = (function() {
     }
 
     /**
+      * Creates a new structure for the item.
+      *
+      * @param   integer idNb       The id number for the structure.
+      * @param   string  itemType   The item type.
+      *
+      * @return  void
+     */
+    function _createItemStructure(idNb, itemType) {
+        // A new group item actually starts with a group_start item.
+        itemType = (itemType == 'group') ? 'group_start' : itemType;
+        // Creates the item div then its inner structure.
+        let attribs = {id: 'layout-item-'+idNb, class: 'layout-item', 'data-type': itemType};
+        let itemContainer = _createElement('div', attribs);
+
+        for (let i = 0; i < 3; i++) {
+            cellNb = i + 1;
+
+            let attribs = {
+                id: 'layout-item-row-1-cell-'+cellNb+'-'+idNb,
+                class: 'layout-item-cells-row-1'
+            };
+
+            itemContainer.appendChild(_createElement('div', attribs));
+        }
+
+        _container.appendChild(itemContainer);
+
+        // Creates first an empty label.
+        attribs = {class: 'item-space', id: 'layout-item-delete-label-'+idNb};
+        document.getElementById('layout-item-row-1-cell-3-'+idNb).appendChild(_createElement('span', attribs));
+        document.getElementById('layout-item-delete-label-'+idNb).innerHTML = '&nbsp;';
+
+        // No remove button for group_end items.
+        if (itemType != 'group_end') {
+            document.getElementById('layout-item-row-1-cell-3-'+idNb).appendChild(_createButton('remove', idNb));
+        }
+
+        // Element label
+        attribs = {'title': CodaliaLang.layout[itemType], 'class':'item-label', 'id':'layout-item-label-'+idNb};
+        document.getElementById('layout-item-row-1-cell-1-'+idNb).append(_createElement('span', attribs));
+        document.getElementById('layout-item-label-'+idNb).textContent = CodaliaLang.layout[itemType];
+    }
+
+    /**
       * Inserts an ordering functionality in the given item. This functionality allows the
       * items to go up or down into the item list.
       *
@@ -186,6 +230,10 @@ const C_Layout = (function() {
                   index2 = i;
               }
 
+              if (!_checkGroupItemOverlapping(index1, index2)) {
+                  return;
+              }
+
               // Gets the reference item before which the other item will be inserted.
               let refItem = document.getElementById('layout-item-'+_idNbList[index1]);
               // Momentarily withdraws the other items from the DOM.
@@ -250,6 +298,26 @@ const C_Layout = (function() {
 	      document.getElementById('layout-item-order-number-'+idNb).classList.add('last-item');
 	    }
         }
+    }
+
+    /**
+      * Make sure the couples of group items don't overlap each others when reversing the item order.
+      *
+      * @param   integer index1   The first item id number 
+      * @param   integer index2   The second item id number 
+      *
+      * @return  boolean
+     */
+    function _checkGroupItemOverlapping(index1, index2) {
+        let item1Type = document.getElementById('layout-item-'+_idNbList[index1]).dataset.type;
+        let item2Type = document.getElementById('layout-item-'+_idNbList[index2]).dataset.type;
+
+        if (item2Type == 'group_start' && item1Type == 'group_end' || item2Type == 'group_end' && item1Type == 'group_start') {
+            alert(CodaliaLang.message['alert_overlapping']);
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -401,6 +469,45 @@ const C_Layout = (function() {
 	document.getElementById('layout-item-row-2-cell-2-'+idNb).append(_createElement('img', attribs));
     }
 
+    function _createGroup(idNb, data) {
+        let value = (data !== undefined) ? data.value : '';
+        //
+        let type = (data !== undefined) ? data.type : 'group_start';
+        let separator = ' ------------------------------------------ ';
+	let attribs = {'type':'text', 'name':'layout_items['+type+'_'+idNb+']', 'id':type+'-'+idNb, 'class':'form-control', 'value':value};
+
+        if (type == 'group_end') {
+            // Create a fake field to use it as "separator".
+            attribs = {'type':'text', 'id':'group-'+idNb, 'disabled':'disabled', 'class':'form-control', 'value':separator+CodaliaLang.layout['group_end']+separator};
+            document.getElementById('layout-item-row-1-cell-1-'+idNb).append(_createElement('input', attribs));
+            attribs = {'type':'hidden', 'name':'layout_items[group_end_'+idNb+']', 'id':'group_end-'+idNb, 'value':value};
+        }
+
+        document.getElementById('layout-item-row-1-cell-1-'+idNb).append(_createElement('input', attribs));
+
+        // Group items go by two (start and end). 
+        if (data === undefined) {
+            // Store the id number of the group_start item previously created.
+	    _setItemOrdering(idNb);
+	    _setOddEven();
+
+            // Create a brand new group_end item.
+            let newIdNb = _getNewIdNumber();
+            _createItemStructure(newIdNb, 'group_end');
+
+            // Create a fake field to use it as "separator".
+            attribs = {'type':'text', 'id':'group-'+newIdNb, 'disabled':'disabled', 'class':'form-control', 'value':separator+CodaliaLang.layout['group_end']+separator};
+            document.getElementById('layout-item-row-1-cell-1-'+newIdNb).append(_createElement('input', attribs));
+            // Link the 2 group items by setting the value with the id number of the corresponding group_start item.
+            attribs = {'type':'hidden', 'name':'layout_items[group_end_'+newIdNb+']', 'id':'group_end-'+newIdNb, 'value':idNb};
+            document.getElementById('layout-item-row-1-cell-1-'+newIdNb).append(_createElement('input', attribs));
+            // Return the new id number to the createItem function.
+            return newIdNb;
+        }
+
+        return idNb;
+    }
+
     // Function used as a class constructor.
     const _Layout = function() {
 
@@ -413,7 +520,7 @@ const C_Layout = (function() {
 	let _selectItem = _createElement('select', attribs);
 
 	// Builds the select options.
-	let items = ['title', 'paragraph', 'image'];
+	let items = ['title', 'paragraph', 'image', 'group'];
 	let options = '';
 
 	for (let i = 0; i < items.length; i++) {
@@ -454,33 +561,7 @@ const C_Layout = (function() {
 		idNb = _getNewIdNumber();
 	    }
 
-	    // Creates the item div then its inner structure.
-	    let attribs = {id: 'layout-item-'+idNb, class: 'layout-item', 'data-type': itemType};
-	    let itemContainer = _createElement('div', attribs);
-
-	    for (let i = 0; i < 3; i++) {
-		cellNb = i + 1;
-
-		let attribs = {
-		    id: 'layout-item-row-1-cell-'+cellNb+'-'+idNb,
-		    class: 'layout-item-cells-row-1'
-		};
-
-		itemContainer.appendChild(_createElement('div', attribs));
-	    }
-
-	    _container.appendChild(itemContainer);
-
-	    // Creates first an empty label.
-	    attribs = {class: 'item-space', id: 'layout-item-delete-label-'+idNb};
-	    document.getElementById('layout-item-row-1-cell-3-'+idNb).appendChild(_createElement('span', attribs));
-	    document.getElementById('layout-item-delete-label-'+idNb).innerHTML = '&nbsp;';
-
-	    document.getElementById('layout-item-row-1-cell-3-'+idNb).appendChild(_createButton('remove', idNb));
-	    // Element label
-	    attribs = {'title': CodaliaLang.layout[itemType], 'class':'item-label', 'id':'layout-item-label-'+idNb};
-	    document.getElementById('layout-item-row-1-cell-1-'+idNb).append(_createElement('span', attribs));
-	    document.getElementById('layout-item-label-'+idNb).textContent = CodaliaLang.layout[itemType];
+            _createItemStructure(idNb, itemType);
 
 	    switch (itemType) {
 	        case 'title':
@@ -492,10 +573,25 @@ const C_Layout = (function() {
 	        case 'image':
 		    _createImage(idNb, data);
 		    break;
+                // group, group_start, group_end
+                default:
+		   idNb = _createGroup(idNb, data);
 	    }
 
 	    _setItemOrdering(idNb);
 	    _setOddEven();
+        },
+
+        removeGroupEndItem: function(groupStartId) {
+            // Loops through the id number list.
+            for (let i = 0; i < _idNbList.length; i++) {
+                let itemType = document.getElementById('layout-item-'+_idNbList[i]).dataset.type;
+
+                if (itemType == 'group_end' && document.getElementById('group_end-'+_idNbList[i]).value == groupStartId) {
+                    _removeItem(_idNbList[i]);
+                    return;
+                }
+            }
         }
     };
 
