@@ -37,8 +37,16 @@
   padding-bottom: 20px;
 }
 
+.layout-item-cell-1 {
+  width: 88%;
+}
+
 .layout-item-cell-2 {
-  padding-top: 20px;
+  width: 8%;
+}
+
+.layout-item-cell-3 {
+  width: 8%;
 }
 
 .layout-item-cell-2-row-2,
@@ -63,6 +71,14 @@
 }
 
 .layout-item-thumbnail {
+}
+
+.layout-item-upload {
+  margin-bottom: 20px;
+}
+
+.layout-item-alt-text {
+  margin-bottom: 20px;
 }
 
 .layout-item-order-number {
@@ -135,4 +151,3 @@ div[class$='-even'] {
 .select2-container {
   /*width: 439.35px !important;*/
 }
-

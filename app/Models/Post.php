@@ -304,7 +304,7 @@ class Post extends Model
         $rawContent = '';
 
         foreach ($this->layoutItems as $item) {
-            if ($item->type != 'image') {
+            if ($item->type == 'title' || $item->type == 'paragraph') {
                 $rawContent .= strip_tags($item->value.' ');
             }
         }

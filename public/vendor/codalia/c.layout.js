@@ -107,7 +107,7 @@ const C_Layout = (function() {
 
             let attribs = {
                 id: 'layout-item-row-1-cell-'+cellNb+'-'+idNb,
-                class: 'layout-item-cells-row-1'
+                class: 'layout-item-cells-row-1 layout-item-cell-'+cellNb
             };
 
             itemContainer.appendChild(_createElement('div', attribs));
@@ -120,8 +120,15 @@ const C_Layout = (function() {
         document.getElementById('layout-item-row-1-cell-3-'+idNb).appendChild(_createElement('span', attribs));
         document.getElementById('layout-item-delete-label-'+idNb).innerHTML = '&nbsp;';
 
-        // No remove button for group_end items.
-        if (itemType != 'group_end') {
+        if (itemType == 'group_end') {
+            // Create a fake button for group_end items.
+            let label = CodaliaLang.action['remove'];
+            let attribs = {class: 'btn btn-secondary', title: label, disabled:'disabled'};
+            let button = _createElement('button', attribs);
+            button.innerHTML = '<span class="icon-remove icon-white"></span> '+label;
+            document.getElementById('layout-item-row-1-cell-3-'+idNb).appendChild(button);
+        }
+        else {
             document.getElementById('layout-item-row-1-cell-3-'+idNb).appendChild(_createButton('remove', idNb));
         }
 
@@ -446,27 +453,25 @@ const C_Layout = (function() {
         let altText = (data !== undefined) ? data.value.alt_text : '';
         let siteUrl = document.getElementById('siteUrl').value;
 
-	let attribs = {'type':'file', 'name':'layout_items[upload_'+idNb+']', 'id':'layout-item-upload-'+idNb, 'class':'form-control'};
-	document.getElementById('layout-item-row-1-cell-1-'+idNb).append(_createElement('input', attribs));
+	// Create a global row to wrap the fields related to the image.
+	let attribs = {id: 'layout-item-row-image-'+idNb, class: 'row'};
+	document.getElementById('layout-item-row-1-cell-1-'+idNb).append(_createElement('div', attribs));
 
-	// Create the second row.
-	attribs = {id: 'layout-item-row-2-cell-1-'+idNb, class: 'layout-item-cells-row-2 layout-item-cell-1-row-2'};
-	document.getElementById('layout-item-'+idNb).appendChild(_createElement('span', {class: 'layout-item-row-separator'}));
-	document.getElementById('layout-item-'+idNb).append(_createElement('div', attribs));
+	// Create a div to wrap both the upload and alt fields.
+	attribs = {id: 'layout-item-image-'+idNb, class: 'col-lg-10'};
+	document.getElementById('layout-item-row-image-'+idNb).append(_createElement('div', attribs));
 
-	attribs = {'title': CodaliaLang.layout['alt'], 'class':'item-label', 'id':'alt-label-'+idNb};
-	document.getElementById('layout-item-row-2-cell-1-'+idNb).append(_createElement('span', attribs));
-	document.getElementById('alt-label-'+idNb).textContent = CodaliaLang.layout['alt'];
+	attribs = {'type':'file', 'name':'layout_items[upload_'+idNb+']', 'id':'layout-item-upload-'+idNb, 'class':'form-control layout-item-upload'};
+	document.getElementById('layout-item-image-'+idNb).append(_createElement('input', attribs));
+	attribs = {'type':'text', 'name':'layout_items[alt_text_'+idNb+']', 'id':'alt-text-'+idNb, 'class':'form-control layout-item-alt-text', 'value':altText};
+	document.getElementById('layout-item-image-'+idNb).append(_createElement('input', attribs));
 
-	attribs = {'type':'text', 'name':'layout_items[alt_text_'+idNb+']', 'id':'alt-text-'+idNb, 'class':'form-control', 'value':altText};
-	document.getElementById('layout-item-row-2-cell-1-'+idNb).append(_createElement('input', attribs));
+	// Create a div to wrap the image field.
+	attribs = {id: 'layout-item-thumbnail-div-'+idNb, class: 'col-lg-2 text-center'};
+	document.getElementById('layout-item-row-image-'+idNb).append(_createElement('div', attribs));
 
-	attribs = {id: 'layout-item-row-2-cell-2-'+idNb, class: 'layout-item-cells-row-2 layout-item-cell-2-row-2'};
-	document.getElementById('layout-item-'+idNb).appendChild(_createElement('span', {class: 'layout-item-row-separator'}));
-	document.getElementById('layout-item-'+idNb).append(_createElement('div', attribs));
-
-	attribs = {id: 'layout-item-thumbnail-'+idNb, src: siteUrl+thumbnail};
-	document.getElementById('layout-item-row-2-cell-2-'+idNb).append(_createElement('img', attribs));
+	attribs = {id: 'layout-item-thumbnail-'+idNb, src: siteUrl+thumbnail, class:'rounded'};
+	document.getElementById('layout-item-thumbnail-div-'+idNb).append(_createElement('img', attribs));
     }
 
     function _createGroup(idNb, data) {
