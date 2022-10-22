@@ -412,6 +412,8 @@ const C_Layout = (function() {
      * @return  void
     */
     function _setOddEven() {
+        let group = '';
+        let j = 0
         // Loops through the id number list.
         for (let i = 0; i < _idNbList.length; i++) {
             // Gets the item.
@@ -419,13 +421,29 @@ const C_Layout = (function() {
             // First removes the current class.
             itemContainer.classList.remove('layout-item-odd');
             itemContainer.classList.remove('layout-item-even');
+            itemContainer.classList.remove('layout-item-a-odd');
+            itemContainer.classList.remove('layout-item-a-even');
+            itemContainer.classList.remove('layout-item-b-odd');
+            itemContainer.classList.remove('layout-item-b-even');
+
+            if (itemContainer.dataset.type == 'group_start') {
+                j++;
+                group = 'b-';
+                if ((j + 1) % 2) {
+                    group = 'a-';
+                }
+            }
 
             // Uses the modulo operator to add the proper class.
             if ((i + 1) % 2) {
-                itemContainer.classList.add('layout-item-odd');
+                itemContainer.classList.add('layout-item-'+group+'odd');
             }
             else {
-                itemContainer.classList.add('layout-item-even');
+                itemContainer.classList.add('layout-item-'+group+'even');
+            }
+
+            if (itemContainer.dataset.type == 'group_end') {
+                group = '';
             }
         }
     }
@@ -585,6 +603,10 @@ const C_Layout = (function() {
 
 	    _setItemOrdering(idNb);
 	    _setOddEven();
+
+            if (data === undefined) {
+                window.scrollTo(0, document.body.scrollHeight);
+            }
         },
 
         removeGroupEndItem: function(groupStartId) {

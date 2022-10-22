@@ -128,6 +128,23 @@ div[class$='-even'] {
   background-color: #fff;
 }
 
+/* Used for groups */
+div[class$='-a-odd'] {
+  background-color: #d9e8c6;
+}
+
+div[class$='-a-even'] {
+  background-color: #fafff3;
+}
+
+div[class$='-b-odd'] {
+  background-color: #fff9f9;
+}
+
+div[class$='-b-even'] {
+  background-color: #ffe7e8;
+}
+
 .radio-option {
   margin-left: 5px;
   margin-right: 15px;
