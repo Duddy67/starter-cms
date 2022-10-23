@@ -47,6 +47,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const validateFields = function() {
+
+        if (!layout.validateFields()) {
+            // Switch to the layout tab.
+            $('.nav-tabs a[href="#layout"]').tab('show');
+
+            return false;
+        }
+
+        return true;
+    }
+
     // Store the callback function into the global window object.
     window.afterRemoveItem = afterRemoveItem;
+    window.validateFields = validateFields;
 });

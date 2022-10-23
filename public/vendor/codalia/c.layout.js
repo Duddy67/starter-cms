@@ -60,6 +60,10 @@ const C_Layout = (function() {
 	return newIdNb + 1;
     }
 
+    function _isEmpty(text) {
+        return text === null || text.match(/^ *$/) !== null;
+    };
+
     /**
       * Creates a new TinyMce editor instance for the given textarea.
       *
@@ -619,6 +623,46 @@ const C_Layout = (function() {
                     return;
                 }
             }
+        },
+
+        validateFields: function() {
+            // Loops through the id number list.
+            for (let i = 0; i < _idNbList.length; i++) {
+                // Gets the item.
+                let itemContainer = document.getElementById('layout-item-'+_idNbList[i]);
+                let itemType = itemContainer.dataset.type;
+
+                if (itemType == 'title') {
+                    if (_isEmpty(document.getElementById('title-'+_idNbList[i]).value)) {
+                        document.getElementById('title-'+_idNbList[i]).classList.add('mandatory');
+                        alert('title empty!');
+
+                        return false;
+                    }
+                    else {
+                        // Remove possible previous alert. 
+                        document.getElementById('title-'+_idNbList[i]).classList.remove('mandatory');
+                    }
+                }
+
+                if (itemType == 'paragraph') {
+                    if (_isEmpty(tinymce.get('paragraph-'+_idNbList[i]).getContent())) {
+                        document.getElementById('layout-item-row-1-cell-1-'+_idNbList[i]).classList.add('mandatory');
+                        alert('paragraph empty!');
+
+                        return false;
+                    }
+                    else {
+                        // Remove possible previous alert. 
+                        document.getElementById('layout-item-row-1-cell-1-'+_idNbList[i]).classList.remove('mandatory');
+                    }
+                }
+
+                if (itemType == 'image') {
+                }
+            }
+
+            return true;
         }
     };
 

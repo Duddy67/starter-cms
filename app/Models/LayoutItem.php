@@ -107,6 +107,9 @@ class LayoutItem extends Model
                     $id = $matches[3];
                     $order = $items['layout_item_ordering_'.$id];
 
+                    // Prevent group start empty value to be stored as NULL.
+                    $value = ($type == 'group_start' && empty($value)) ? '' : $value;
+
                     if ($item = $model->layoutItems->where('id_nb', $id)->first()) {
                         $item->value = $value;
                         $item->order = $order;

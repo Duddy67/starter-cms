@@ -58,6 +58,11 @@
             return;
         }
 
+        // Check for possible dynamic item field validation such as CReapeter, Layout etc...
+        if (typeof validateFields === 'function' && !validateFields()) {
+            return;
+        }
+
         let formData = new FormData(form);
 
         const spinner = document.getElementById('ajax-progress');
