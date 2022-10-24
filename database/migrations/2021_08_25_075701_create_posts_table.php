@@ -17,7 +17,7 @@ class CreatePostsTable extends Migration
             $table->id();
             $table->string('title', 100);
             $table->string('slug', 100);
-            $table->text('content');
+            $table->text('content')->nullable();
             $table->text('raw_content')->nullable();
             $table->text('excerpt')->nullable();
             $table->char('status', 12);

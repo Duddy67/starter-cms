@@ -473,6 +473,7 @@ const C_Layout = (function() {
     function _createImage(idNb, data) {
         let thumbnail = (data !== undefined) ? data.value.thumbnail : '/images/camera.png';
         let altText = (data !== undefined) ? data.value.alt_text : '';
+        let status = (data !== undefined) ? 'update' : 'new';
         let siteUrl = document.getElementById('siteUrl').value;
 
 	// Create a global row to wrap the fields related to the image.
@@ -492,7 +493,7 @@ const C_Layout = (function() {
 	attribs = {id: 'layout-item-thumbnail-div-'+idNb, class: 'col-lg-2 text-center'};
 	document.getElementById('layout-item-row-image-'+idNb).append(_createElement('div', attribs));
 
-	attribs = {id: 'layout-item-thumbnail-'+idNb, src: siteUrl+thumbnail, class:'rounded'};
+	attribs = {id: 'layout-item-thumbnail-'+idNb, src: siteUrl+thumbnail, 'data-status': status, class:'rounded'};
 	document.getElementById('layout-item-thumbnail-div-'+idNb).append(_createElement('img', attribs));
     }
 
@@ -635,7 +636,7 @@ const C_Layout = (function() {
                 if (itemType == 'title') {
                     if (_isEmpty(document.getElementById('title-'+_idNbList[i]).value)) {
                         document.getElementById('title-'+_idNbList[i]).classList.add('mandatory');
-                        alert('title empty!');
+                        alert(CodaliaLang.message['empty_title']);
 
                         return false;
                     }
@@ -648,7 +649,7 @@ const C_Layout = (function() {
                 if (itemType == 'paragraph') {
                     if (_isEmpty(tinymce.get('paragraph-'+_idNbList[i]).getContent())) {
                         document.getElementById('layout-item-row-1-cell-1-'+_idNbList[i]).classList.add('mandatory');
-                        alert('paragraph empty!');
+                        alert(CodaliaLang.message['empty_paragraph']);
 
                         return false;
                     }
@@ -659,6 +660,41 @@ const C_Layout = (function() {
                 }
 
                 if (itemType == 'image') {
+                    let maxSize = 2; // In MB
+                    let types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg'];
+                    let upload = document.getElementById('layout-item-upload-'+_idNbList[i]);
+                    let status = document.getElementById('layout-item-thumbnail-'+_idNbList[i]).dataset.status;
+                    // Remove possible previous alert. 
+                    upload.classList.remove('mandatory');
+
+                    if (status == 'new' && upload.files.length == 0) {
+                        upload.classList.add('mandatory');
+                        alert(CodaliaLang.message['no_file_selected']);
+                        return false;
+                    }
+
+                    // Check for file size and type.
+                    if (upload.files.length > 0) {
+                        const fileSize = upload.files[0].size / 1024 / 1024; // In MB
+
+                        if (fileSize > maxSize) {
+                            upload.classList.add('mandatory');
+                            alert(CodaliaLang.message['file_too_big']+maxSize+' MB.');
+                            return false;
+                        }
+
+                        if (!types.includes(upload.files[0].type)) {
+                            upload.classList.add('mandatory');
+
+                            let allowedTypes = '';
+                            types.forEach(function(type) {
+                                allowedTypes += type+' ';
+                            });
+
+                            alert(CodaliaLang.message['file_type_not_allowed']+allowedTypes);
+                            return false;
+                        }
+                    }
                 }
             }
 

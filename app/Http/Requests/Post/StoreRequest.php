@@ -26,10 +26,14 @@ class StoreRequest extends FormRequest
         return [
             'title' => 'required',
             'access_level' => 'required',
-            'content' => 'required',
             'image' => ['nullable', 'image', 'mimes:jpg,png,jpeg,gif,svg', 'max:2048', 'dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000'],
             'status' => 'required',
             'owned_by' => 'required',
         ];
+
+        // Prioritize layout items over regular content.
+        if (!isset($this->request->all()['layout_items'])) {
+            $rules['content'] = 'required';
+        }
     }
 }
