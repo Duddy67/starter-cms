@@ -95,6 +95,7 @@ class LayoutItem extends Model
 
                         $refresh['layout-item-thumbnail-'.$id] = url('/').'/'.$image->getThumbnailUrl();
                         $refresh['layout-item-upload-'.$id] = '';
+                        $refresh['layout-item-image-status-'.$id] = 'update';
                     }
 
                     continue;
@@ -102,7 +103,7 @@ class LayoutItem extends Model
 
                 // Regular items.
                 if (preg_match('#^([a-z]+)_([a-z]*)_?([0-9]+)$#', $key, $matches)) {
-                    // Concatenate possible compound type names (eg: group_start).
+                    // Concatenate possible compound type names (eg: text_block, group_start...).
                     $type = (!empty($matches[2])) ? $matches[1].'_'.$matches[2] : $matches[1];
                     $id = $matches[3];
                     $order = $items['layout_item_ordering_'.$id];

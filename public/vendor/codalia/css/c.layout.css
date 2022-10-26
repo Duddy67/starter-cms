@@ -9,12 +9,11 @@
 }
 
 #select-layout-item {
-  margin-bottom: 30px;
+  margin-bottom: 60px;
 }
 
 .add-button-container {
-  /*border: 1px solid #666666;*/
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 .layout-item {
@@ -120,29 +119,48 @@
   display: block;
 }
 
-div[class$='-odd'] {
+.layout-item-odd {
   background-color: #f1f7ff;
 }
 
-div[class$='-even'] {
+.layout-item-even {
   background-color: #fff;
 }
 
 /* Used for groups */
-div[class$='-a-odd'] {
+.layout-item-a-odd {
   background-color: #d9e8c6;
 }
 
-div[class$='-a-even'] {
+.layout-item-a-even {
   background-color: #fafff3;
 }
 
-div[class$='-b-odd'] {
+.layout-item-b-odd {
+  background-color: #ffe7e8;
+}
+
+.layout-item-b-even {
   background-color: #fff9f9;
 }
 
-div[class$='-b-even'] {
-  background-color: #ffe7e8;
+.layout-item-group-start {
+  border-left: 2px dashed #9c9c9c;
+  border-top: 2px dashed #9c9c9c;
+  border-right: 2px dashed #9c9c9c;
+  margin-top: 10px;
+}
+
+.layout-item-group-end {
+  border-left: 2px dashed #9c9c9c;
+  border-bottom: 2px dashed #9c9c9c;
+  border-right: 2px dashed #9c9c9c;
+  margin-bottom: 10px;
+}
+
+.layout-item-in-group {
+  border-left: 2px dashed #9c9c9c;
+  border-right: 2px dashed #9c9c9c;
 }
 
 .radio-option {

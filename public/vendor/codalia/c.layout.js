@@ -73,18 +73,27 @@ const C_Layout = (function() {
      */
     function _initTinyMceEditor(idNb) {
         let editor = tinymce.init({
-	    selector: '#paragraph-'+idNb,
+	    selector: '#text_block-'+idNb,
 	    plugins: 'code link lists',
 	    entity_encoding: 'raw',
 	    menubar: false,
-	    forced_root_block : false,
+	    //forced_root_block : false,
 	    toolbar: 'code | bold italic underline | link | numlist',
-	    //height: 500,
+	    height: 400,
 	    convert_urls: false,
             setup: function(editor) {
                 editor.on('change', function () {
                     editor.save();
                 });
+                // Disable the shift + enter key combination.
+                /*editor.on('keydown', function (event) {
+                    if (event.keyCode == 13 && event.shiftKey)  {
+                        console.log(event);
+                        event.preventDefault();
+                        event.stopPropagation();
+                        return false;
+                    }
+                });*/
             }
 	});
 
@@ -253,9 +262,9 @@ const C_Layout = (function() {
               // Switches the 2 items.
               _container.insertBefore(oldChild, refItem);
 
-              if (oldChild.dataset.type === 'paragraph') {
+              if (oldChild.dataset.type === 'text_block') {
                   // Remove then reinstanciate a brand new TinyMce editor.
-                  tinymce.get('paragraph-'+_idNbList[index2]).remove();
+                  tinymce.get('text_block-'+_idNbList[index2]).remove();
                   _initTinyMceEditor(_idNbList[index2]);
               }
 
@@ -417,7 +426,8 @@ const C_Layout = (function() {
     */
     function _setOddEven() {
         let group = '';
-        let j = 0
+        let j = 0;
+
         // Loops through the id number list.
         for (let i = 0; i < _idNbList.length; i++) {
             // Gets the item.
@@ -429,6 +439,9 @@ const C_Layout = (function() {
             itemContainer.classList.remove('layout-item-a-even');
             itemContainer.classList.remove('layout-item-b-odd');
             itemContainer.classList.remove('layout-item-b-even');
+            itemContainer.classList.remove('layout-item-group-start');
+            itemContainer.classList.remove('layout-item-group-end');
+            itemContainer.classList.remove('layout-item-in-group');
 
             if (itemContainer.dataset.type == 'group_start') {
                 j++;
@@ -436,6 +449,8 @@ const C_Layout = (function() {
                 if ((j + 1) % 2) {
                     group = 'a-';
                 }
+
+                itemContainer.classList.add('layout-item-group-start');
             }
 
             // Uses the modulo operator to add the proper class.
@@ -446,7 +461,12 @@ const C_Layout = (function() {
                 itemContainer.classList.add('layout-item-'+group+'even');
             }
 
+            if (itemContainer.dataset.type != 'group_start' && itemContainer.dataset.type != 'group_end' && group != '') {
+                itemContainer.classList.add('layout-item-in-group');
+            }
+
             if (itemContainer.dataset.type == 'group_end') {
+                itemContainer.classList.add('layout-item-group-end');
                 group = '';
             }
         }
@@ -461,12 +481,12 @@ const C_Layout = (function() {
 	document.getElementById('layout-item-row-1-cell-1-'+idNb).append(_createElement('input', attribs));
     }
 
-    function _createParagraph(idNb, data) {
+    function _createTextBlock(idNb, data) {
         let value = (data !== undefined) ? data.value : '';
 
-	let attribs = {'name':'layout_items[paragraph_'+idNb+']', 'id':'paragraph-'+idNb, 'class':'form-control'};
+	let attribs = {'name':'layout_items[text_block_'+idNb+']', 'id':'text_block-'+idNb, 'class':'form-control'};
 	document.getElementById('layout-item-row-1-cell-1-'+idNb).append(_createElement('textarea', attribs));
-	document.getElementById('paragraph-'+idNb).value = value;
+	document.getElementById('text_block-'+idNb).value = value;
         _initTinyMceEditor(idNb);
     }
 
@@ -493,8 +513,10 @@ const C_Layout = (function() {
 	attribs = {id: 'layout-item-thumbnail-div-'+idNb, class: 'col-lg-2 text-center'};
 	document.getElementById('layout-item-row-image-'+idNb).append(_createElement('div', attribs));
 
-	attribs = {id: 'layout-item-thumbnail-'+idNb, src: siteUrl+thumbnail, 'data-status': status, class:'rounded'};
+	attribs = {id: 'layout-item-thumbnail-'+idNb, src: siteUrl+thumbnail, class:'rounded'};
 	document.getElementById('layout-item-thumbnail-div-'+idNb).append(_createElement('img', attribs));
+	attribs = {'type':'hidden', 'id':'layout-item-image-status-'+idNb, 'value':status};
+	document.getElementById('layout-item-thumbnail-div-'+idNb).append(_createElement('input', attribs));
     }
 
     function _createGroup(idNb, data) {
@@ -548,7 +570,7 @@ const C_Layout = (function() {
 	let _selectItem = _createElement('select', attribs);
 
 	// Builds the select options.
-	let items = ['title', 'paragraph', 'image', 'group'];
+	let items = ['title', 'text_block', 'image', 'group'];
 	let options = '';
 
 	for (let i = 0; i < items.length; i++) {
@@ -595,8 +617,8 @@ const C_Layout = (function() {
 	        case 'title':
 		    _createTitle(idNb, data);
 		    break;
-	        case 'paragraph':
-		    _createParagraph(idNb, data);
+	        case 'text_block':
+		    _createTextBlock(idNb, data);
 		    break;
 	        case 'image':
 		    _createImage(idNb, data);
@@ -646,10 +668,10 @@ const C_Layout = (function() {
                     }
                 }
 
-                if (itemType == 'paragraph') {
-                    if (_isEmpty(tinymce.get('paragraph-'+_idNbList[i]).getContent())) {
+                if (itemType == 'text_block') {
+                    if (_isEmpty(tinymce.get('text_block-'+_idNbList[i]).getContent())) {
                         document.getElementById('layout-item-row-1-cell-1-'+_idNbList[i]).classList.add('mandatory');
-                        alert(CodaliaLang.message['empty_paragraph']);
+                        alert(CodaliaLang.message['empty_text_block']);
 
                         return false;
                     }
@@ -663,7 +685,7 @@ const C_Layout = (function() {
                     let maxSize = 2; // In MB
                     let types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg'];
                     let upload = document.getElementById('layout-item-upload-'+_idNbList[i]);
-                    let status = document.getElementById('layout-item-thumbnail-'+_idNbList[i]).dataset.status;
+                    let status = document.getElementById('layout-item-image-status-'+_idNbList[i]).value;
                     // Remove possible previous alert. 
                     upload.classList.remove('mandatory');
 

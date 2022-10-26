@@ -40,6 +40,14 @@ a {
   margin-right: 10px;
 }
 
+.text-block {
+  /*background-color: #f8f9fa;*/
+}
+
+.text-block p {
+  /*background-color: #f8f9fa;*/
+}
+
 .ajax-progress {
   position: absolute;
   top: 0;
