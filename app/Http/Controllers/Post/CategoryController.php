@@ -17,6 +17,7 @@ class CategoryController extends Controller
     {
         $page = 'post.category';
         $theme = Setting::getValue('website', 'theme', 'starter');
+        $menu = Menu::getMenu('main-menu');
 
 	if (!$category = Category::where('id', $id)->first()) {
             $page = '404';
@@ -30,7 +31,6 @@ class CategoryController extends Controller
 
         $category->global_settings = PostSetting::getDataByGroup('categories');
 	$settings = $category->getSettings();
-        $menu = Menu::getMenu('main-menu');
 	$posts = $category->getPosts($request);
         $segments = PostSetting::getSegments();
         $metaData = $category->meta_data;

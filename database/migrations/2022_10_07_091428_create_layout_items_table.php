@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('layout_items', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('layout_itemable_id');
+            $table->unsignedBigInteger('layout_itemable_id')->nullable();
+            $table->string('layout_itemable_type', 255)->nullable();
             $table->unsignedSmallInteger('id_nb');
-            $table->string('layout_itemable_type', 255);
             $table->string('type', 50);
             $table->text('value')->nullable();
-            $table->unsignedTinyInteger('order');
+            $table->unsignedTinyInteger('order')->nullable();
         });
     }
 

@@ -11,6 +11,7 @@ use App\Models\User\Role;
 use App\Models\User\Permission;
 use Carbon\Carbon;
 use App\Models\Setting;
+use App\Models\Post\Setting as PostSetting;
 
 
 class DatabaseSeeder extends Seeder
@@ -114,9 +115,47 @@ class DatabaseSeeder extends Seeder
             ['group' => 'app', 'key' => 'timezone', 'value' => 'Europe/Paris'],
             ['group' => 'app', 'key' => 'date_format', 'value' => 'd/m/Y H:i'],
             ['group' => 'pagination', 'key' => 'per_page', 'value' => '5'],
+            ['group' => 'website', 'key' => 'admin_email', 'value' => 'admin@domain.com'],
             ['group' => 'website', 'key' => 'allow_registering', 'value' => 1],
             ['group' => 'website', 'key' => 'redirect_to_admin', 'value' => 0],
             ['group' => 'website', 'key' => 'theme', 'value' => 'starter']
+        ]);
+
+        PostSetting::insert([
+            ['group' => 'posts', 'key' => 'show_owner', 'value' => 1],
+            ['group' => 'posts', 'key' => 'show_created_at', 'value' => 1],
+            ['group' => 'posts', 'key' => 'show_excerpt', 'value' => 1],
+            ['group' => 'posts', 'key' => 'show_image', 'value' => 1],
+            ['group' => 'posts', 'key' => 'show_categories', 'value' => 1],
+            ['group' => 'posts', 'key' => 'alias_extra_field_1', 'value' => ''],
+            ['group' => 'posts', 'key' => 'alias_extra_field_2', 'value' => ''],
+            ['group' => 'posts', 'key' => 'alias_extra_field_3', 'value' => ''],
+            ['group' => 'posts', 'key' => 'alias_extra_field_4', 'value' => ''],
+            ['group' => 'posts', 'key' => 'alias_extra_field_5', 'value' => ''],
+            ['group' => 'posts', 'key' => 'alias_extra_field_6', 'value' => ''],
+            ['group' => 'posts', 'key' => 'alias_extra_field_7', 'value' => ''],
+            ['group' => 'posts', 'key' => 'alias_extra_field_8', 'value' => ''],
+            ['group' => 'posts', 'key' => 'alias_extra_field_9', 'value' => ''],
+            ['group' => 'posts', 'key' => 'alias_extra_field_10', 'value' => ''],
+            ['group' => 'categories', 'key' => 'show_name', 'value' => 1],
+            ['group' => 'categories', 'key' => 'show_search', 'value' => 1],
+            ['group' => 'categories', 'key' => 'show_description', 'value' => 1],
+            ['group' => 'categories', 'key' => 'show_subcategories', 'value' => 1],
+            ['group' => 'categories', 'key' => 'show_post_excerpt', 'value' => 1],
+            ['group' => 'categories', 'key' => 'show_post_image', 'value' => 1],
+            ['group' => 'categories', 'key' => 'show_post_categories', 'value' => 1],
+            ['group' => 'categories', 'key' => 'show_post_ordering', 'value' => 'no_ordering'],
+            ['group' => 'categories', 'key' => 'alias_extra_field_1', 'value' => ''],
+            ['group' => 'categories', 'key' => 'alias_extra_field_2', 'value' => ''],
+            ['group' => 'categories', 'key' => 'alias_extra_field_3', 'value' => ''],
+            ['group' => 'categories', 'key' => 'alias_extra_field_4', 'value' => ''],
+            ['group' => 'categories', 'key' => 'alias_extra_field_5', 'value' => ''],
+            ['group' => 'categories', 'key' => 'alias_extra_field_6', 'value' => ''],
+            ['group' => 'categories', 'key' => 'alias_extra_field_7', 'value' => ''],
+            ['group' => 'categories', 'key' => 'alias_extra_field_8', 'value' => ''],
+            ['group' => 'categories', 'key' => 'alias_extra_field_9', 'value' => ''],
+            ['group' => 'categories', 'key' => 'alias_extra_field_10', 'value' => ''],
+
         ]);
     }
 }
