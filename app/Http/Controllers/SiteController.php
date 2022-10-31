@@ -19,6 +19,7 @@ class SiteController extends Controller
         $menu->allow_registering = Setting::getValue('website', 'allow_registering', 0);
         $theme = Setting::getValue('website', 'theme', 'starter');
         $query = $request->query();
+        $timezone = Setting::getValue('app', 'timezone');
 
         if ($category = Category::where('slug', $page)->first()) {
             $posts = $category->getAllPosts($request);
@@ -53,7 +54,7 @@ class SiteController extends Controller
 
         $segments = PostSetting::getSegments();
 
-        return view('themes.'.$theme.'.index', compact('page', 'menu', 'category', 'settings', 'posts', 'segments', 'metaData', 'query'));
+        return view('themes.'.$theme.'.index', compact('page', 'menu', 'category', 'settings', 'posts', 'segments', 'metaData', 'timezone', 'query'));
     }
 
 
@@ -63,6 +64,7 @@ class SiteController extends Controller
         $menu = Menu::getMenu('main-menu');
         $menu->allow_registering = Setting::getValue('website', 'allow_registering', 0);
         $theme = Setting::getValue('website', 'theme', 'starter');
+        $timezone = Setting::getValue('app', 'timezone');
 
         // First make sure the category exists.
 	if (!$category = Category::where('slug', $page)->first()) {
@@ -82,6 +84,6 @@ class SiteController extends Controller
         $metaData = $post->meta_data;
 	$query = $request->query();
 
-        return view('themes.'.$theme.'.index', compact('page', 'menu', 'category', 'post', 'segments', 'metaData', 'query'));
+        return view('themes.'.$theme.'.index', compact('page', 'menu', 'category', 'post', 'segments', 'metaData', 'timezone', 'query'));
     }
 }

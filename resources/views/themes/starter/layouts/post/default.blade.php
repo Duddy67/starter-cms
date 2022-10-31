@@ -31,7 +31,7 @@
     @endif
 
     @if ($item->type == 'text_block')
-        <p>{!! $item->value !!}</p>
+        {!! $item->value !!}
         @continue
     @endif
 
