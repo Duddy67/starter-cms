@@ -55,6 +55,7 @@
         </div>
 
         <input type="hidden" id="cancelEdit" value="{{ route('admin.post.categories.cancel', $query) }}">
+        <input type="hidden" id="siteUrl" value="{{ url('/') }}">
         <input type="hidden" id="close" name="_close" value="0">
 
         @if (isset($category))
