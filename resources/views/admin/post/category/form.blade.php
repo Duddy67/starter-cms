@@ -48,6 +48,14 @@
                 @php $value = (isset($category) || str_starts_with($field->name, 'alias_extra_field_')) ? old($field->name, $field->value) : old($field->name); @endphp
                 <x-input :field="$field" :value="$value" />
 
+                @if ($field->name == 'image')
+                    <div class="col category-image">
+                        @php $path = (isset($category) && $category->image) ? url('/').$category->image->getThumbnailUrl() : asset('/images/camera.png'); @endphp
+                        <img src="{{ $path }}" id="category-image" />
+                        <button type="button" id="deleteDocumentBtn" data-form-id="deleteImage" class="btn btn-danger float-right">Delete image</button>
+                    </div>
+                @endif
+
                 @if (!next($fields) || isset($fields[$key + 1]->tab))
                     </div>
                 @endif
@@ -66,6 +74,11 @@
 
     @if (isset($category))
         <form id="deleteItem" action="{{ route('admin.post.categories.destroy', $query) }}" method="post">
+            @method('delete')
+            @csrf
+        </form>
+
+        <form id="deleteImage" action="{{ route('admin.post.categories.deleteImage', $query) }}" method="post">
             @method('delete')
             @csrf
         </form>

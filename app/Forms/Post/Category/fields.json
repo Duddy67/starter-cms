@@ -94,6 +94,19 @@
     "id": "description"
   },
   {
+    "label": "labels.generic.image",
+    "type": "file",
+    "name": "image",
+    "id": "image"
+  },
+  {
+    "label": "labels.generic.alt_img",
+    "type": "text",
+    "name": "alt_img",
+    "id": "alt_img",
+    "placeholder": "labels.generic.alt_img"
+  },
+  {
     "label": "labels.generic.show_name",
     "type": "select",
     "name": "show_name",

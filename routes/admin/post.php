@@ -28,6 +28,7 @@ Route::put('/post/categories/unpublish', [AdminPostCategoryController::class, 'm
 Route::get('/post/categories/{category}/up', [AdminPostCategoryController::class, 'up'])->name('admin.post.categories.up');
 Route::get('/post/categories/{category}/down', [AdminPostCategoryController::class, 'down'])->name('admin.post.categories.down');
 Route::get('/post/categories/{category}/edit', [AdminPostCategoryController::class, 'edit'])->name('admin.post.categories.edit');
+Route::delete('/post/categories/{category}/delete-image', [AdminPostCategoryController::class, 'deleteImage'])->name('admin.post.categories.deleteImage');
 Route::resource('post/categories', AdminPostCategoryController::class, ['as' => 'admin.post'])->except(['show', 'edit']);
 // Settings
 Route::get('/post/settings', [AdminPostSettingController::class, 'index'])->name('admin.post.settings.index');

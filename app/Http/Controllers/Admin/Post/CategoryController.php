@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Setting;
 use App\Models\Post\Setting as PostSetting;
 use App\Traits\Form;
+use App\Models\Cms\Document;
 use App\Traits\CheckInCheckOut;
 use App\Http\Requests\Post\Category\StoreRequest;
 use App\Http\Requests\Post\Category\UpdateRequest;
@@ -174,6 +175,7 @@ class CategoryController extends Controller
         $category->slug = ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('name'), '-');
         $category->description = $request->input('description');
         $category->extra_fields = $request->input('extra_fields');
+        $category->alt_img = $request->input('alt_img');
         $category->meta_data = $request->input('meta_data');
         $category->settings = $request->input('settings');
         $category->updated_by = auth()->user()->id;
@@ -239,6 +241,18 @@ class CategoryController extends Controller
 
         $refresh = ['updated_at' => Setting::getFormattedDate($category->updated_at), 'updated_by' => auth()->user()->name, 'slug' => $category->slug];
 
+        if ($image = $this->uploadImage($request)) {
+            // Delete the previous post image if any.
+            if ($category->image) {
+                $category->image->delete();
+            }
+
+            $category->image()->save($image);
+
+            $refresh['category-image'] = url('/').'/storage/thumbnails/'.$image->disk_name;
+            $refresh['image'] = '';
+        }
+
         if ($request->input('_close', null)) {
             $category->checkIn();
             // Store the message to be displayed on the list view after the redirect.
@@ -279,6 +293,7 @@ class CategoryController extends Controller
             'slug' => ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('name'), '-'),
             'status' => $request->input('status'), 
             'description' => $request->input('description'), 
+            'alt_img' => $request->input('alt_img'),
             'access_level' => $request->input('access_level'), 
             'owned_by' => $request->input('owned_by'),
             'parent_id' => (empty($request->input('parent_id'))) ? null : $request->input('parent_id'),
@@ -294,6 +309,10 @@ class CategoryController extends Controller
 
         $category->updated_by = auth()->user()->id;
         $category->save();
+
+        if ($image = $this->uploadImage($request)) {
+            $category->image()->save($image);
+        }
 
         $request->session()->flash('success', __('messages.category.create_success'));
 
@@ -437,6 +456,45 @@ class CategoryController extends Controller
         }
 
         return redirect()->route('admin.post.categories.index', $request->query())->with('success', __('messages.category.change_status_list_success', ['number' => $changed]));
+    }
+
+    /*
+     * Delete the image Document linked to the item.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Post\Category $category
+     * @return JSON
+     */
+    public function deleteImage(Request $request, Category $category)
+    {
+        if ($category->image) {
+            $category->image->delete();
+        }
+        else {
+            return response()->json(['info' => __('messages.generic.no_document_to_delete')]);
+        }
+
+        $refresh = ['category-image' => asset('/images/camera.png'), 'image' => ''];
+
+        return response()->json(['success' => __('messages.generic.image_deleted'), 'refresh' => $refresh]);
+    }
+
+    /*
+     * Creates a Document associated with the uploaded image file.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \App\Models\Cms\Document
+     */
+    private function uploadImage(Request $request)
+    {
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            $image = new Document;
+            $image->upload($request->file('image'), 'image');
+
+            return $image;
+        }
+
+        return null;
     }
 
     /**

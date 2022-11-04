@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Post;
 use App\Models\Post\Setting as PostSetting;
 use App\Models\Post\Ordering as PostOrdering;
+use App\Models\Cms\Document;
 use Kalnoy\Nestedset\NodeTrait;
 use App\Models\User\Group;
 use App\Traits\TreeAccessLevel;
@@ -92,6 +93,14 @@ class Category extends Model
     }
 
     /**
+     * Get the image associated with the category.
+     */
+    public function image()
+    {
+        return $this->morphOne(Document::class, 'documentable')->where('field', 'image');
+    }
+
+    /**
      * Delete the model from the database (override).
      *
      * @return bool|null
@@ -101,6 +110,10 @@ class Category extends Model
     public function delete()
     {
         PostOrdering::where('category_id', $this->id)->delete();
+
+        if ($this->image) {
+            $this->image->delete();
+        }
 
         parent::delete();
     }
