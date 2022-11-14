@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Menu;
 use Kalnoy\Nestedset\NodeTrait;
 use App\Models\User\Group;
+use App\Models\Translation;
 use App\Traits\CheckInCheckOut;
 use Request;
 
@@ -28,8 +29,6 @@ class Item extends Model
      * @var array
      */
     protected $fillable = [
-        'title',
-        'url',
         'model',
         'class',
         'anchor',
@@ -48,6 +47,37 @@ class Item extends Model
         'checked_out_time'
     ];
 
+    /**
+     * Get all of the item's translations.
+     */
+    public function translations()
+    {
+        return $this->morphMany(Translation::class, 'translatable');
+    }
+
+    /**
+     * Get a given item's translation.
+     */
+    public function getTranslation($local)
+    {
+        return $this->morphMany(Translation::class, 'translatable')->where('locale', $local)->first();
+    }
+
+    /**
+     * Get a given item's translation or create it if it doesn't exist.
+     */
+    public function getOrCreateTranslation($local)
+    {
+        $translation = $this->getTranslation($local);
+
+        if ($translation === null) {
+            $translation =  Translation::create(['locale' => $locale]);
+            $this->translations()->save($translation);
+        }
+
+        return $translation;
+    }
+
 
     /*
      * Gets the menu items as a tree.
@@ -57,10 +87,19 @@ class Item extends Model
         $search = $request->input('search', null);
 
         if ($search !== null) {
-            return Item::where('title', 'like', '%'.$search.'%')->get();
+            //return Item::where('title', 'like', '%'.$search.'%')->get();
+            return Item::whereHas('translations', function ($query) { 
+                       $query->where('translatable_type', '=', 'App\Models\Menu\Item')
+                             ->where('locale', '=', config('app.locale'))
+                             ->where('title', 'like', '%'.$search.'%');
+                   })->get();
         }
         else {
-          return Item::where('menu_code', $code)->defaultOrder()->get()->toTree();
+            //return Item::where('menu_code', $code)->defaultOrder()->get()->toTree();
+            return Item::where('menu_code', $code)->whereHas('translations', function ($query) { 
+                       $query->where('translatable_type', '=', 'App\Models\Menu\Item')
+                             ->where('locale', '=', config('app.locale'));
+                   })->defaultOrder()->get()->toTree();
         }
     }
 

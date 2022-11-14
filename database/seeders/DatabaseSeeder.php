@@ -33,16 +33,17 @@ class DatabaseSeeder extends Seeder
 
         // Creates the root item which is the parent of all of the menu items.
         $node = new Item;
-        $node->title = 'Root';
         $node->menu_code = 'root';
-        $node->url = 'root';
         $node->status = 'published';
         // Saved as root
         $node->save();
 
+        $translation = $node->getOrCreateTranslation(config('app.locale'));
+        $translation->title = 'Root';
+        $translation->url = 'root';
+        $translation->save();
+
         $menuItem = Item::create([
-            'title' => 'Home',
-            'url' => '/',
             'status' => 'published',
             'parent_id' => 1,
         ]);
@@ -52,6 +53,11 @@ class DatabaseSeeder extends Seeder
 
         $menuItem->menu_code = 'main-menu';
         $menuItem->save();
+
+        $translation = $menuItem->getOrCreateTranslation(config('app.locale'));
+        $translation->title = 'Home';
+        $translation->url = '/';
+        $translation->save();
 
         Email::create([
           'code' => 'user_registration',

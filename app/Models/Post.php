@@ -13,6 +13,7 @@ use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
 use App\Models\Cms\Document;
 use App\Models\LayoutItem;
+use App\Models\Translation;
 use App\Support\PostCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,18 +29,11 @@ class Post extends Model
      * @var array
      */
     protected $fillable = [
-        'title',
-        'slug',
         'status',
         'owned_by',
         'main_cat_id',
-        'content',
-        'excerpt',
-        'alt_img',
         'layout',
         'access_level',
-        'extra_fields',
-        'meta_data',
         'settings',
     ];
 
@@ -60,8 +54,6 @@ class Post extends Model
      * @var array
      */
     protected $casts = [
-        'extra_fields' => 'array',
-        'meta_data' => 'array',
         'settings' => 'array'
     ];
 
@@ -107,6 +99,37 @@ class Post extends Model
     }
 
     /**
+     * Get all of the post's translations.
+     */
+    public function translations()
+    {
+        return $this->morphMany(Translation::class, 'translatable');
+    }
+
+    /**
+     * Get a given post's translation.
+     */
+    public function getTranslation($local)
+    {
+        return $this->morphMany(Translation::class, 'translatable')->where('locale', $local)->first();
+    }
+
+    /**
+     * Get a given post's translation or create it if it doesn't exist.
+     */
+    public function getOrCreateTranslation($local)
+    {
+        $translation = $this->getTranslation($local);
+
+        if ($translation === null) {
+            $translation =  Translation::create(['locale' => $locale]);
+            $this->translations()->save($translation);
+        }
+
+        return $translation;
+    }
+
+    /**
      * Delete the model from the database (override).
      *
      * @return bool|null
@@ -124,6 +147,10 @@ class Post extends Model
 
         foreach ($this->layoutItems as $item) {
             $item->delete();
+        }
+
+        foreach ($this->translations as $translation) {
+            $translation->delete();
         }
 
         Ordering::where('post_id', $this->id)->delete();
@@ -155,9 +182,18 @@ class Post extends Model
         $categories = $request->input('categories', []);
 
         $query = Post::query();
-        $query->select('posts.*', 'users.name as owner_name')->leftJoin('users', 'posts.owned_by', '=', 'users.id');
+        $query->select('posts.*', 'users.name as owner_name', 'translations.title as title')
+              ->leftJoin('users', 'posts.owned_by', '=', 'users.id');
         // Join the role tables to get the owner's role level.
-        $query->join('model_has_roles', 'posts.owned_by', '=', 'model_id')->join('roles', 'roles.id', '=', 'role_id');
+        $query->join('model_has_roles', 'posts.owned_by', '=', 'model_id')
+              ->join('roles', 'roles.id', '=', 'role_id');
+
+        // Get the default locale translation.
+        $query->join('translations', function ($join) { 
+            $join->on('posts.id', '=', 'translatable_id')
+                 ->where('translations.translatable_type', '=', 'App\Models\Post')
+                 ->where('translations.locale', '=', config('app.locale'));
+        });
 
         if ($search !== null) {
             $query->where('posts.title', 'like', '%'.$search.'%');

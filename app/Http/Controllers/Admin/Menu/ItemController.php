@@ -105,8 +105,10 @@ class ItemController extends Controller
     public function edit(Request $request, $code, $id)
     {
         $item = $this->item = Item::select('menu_items.*','users.name as modifier_name')
-                                    ->leftJoin('users as users', 'menu_items.updated_by', '=', 'users.id')
-                                    ->findOrFail($id);
+            ->leftJoin('users as users', 'menu_items.updated_by', '=', 'users.id')
+            ->whereHas('translations', function ($query) { 
+                  $query->where('locale', '=', config('app.locale'));
+        })->findOrFail($id);
 
         if ($item->checked_out && $item->checked_out != auth()->user()->id) {
             return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.checked_out'));
@@ -178,8 +180,6 @@ class ItemController extends Controller
             return response()->json(['error' => __('messages.generic.must_not_be_descendant')]);
         }
 
-        $item->title = $request->input('title');
-        $item->url = $request->input('url');
         $item->model = $request->input('model');
         $item->class = $request->input('class');
         $item->anchor = $request->input('anchor');
@@ -188,6 +188,11 @@ class ItemController extends Controller
         $item->parent_id = $request->input('parent_id');
 
         $item->save();
+
+        $translation = $item->getOrCreateTranslation($request->input('locale'));
+        $translation->title = $request->input('title');
+        $translation->url = $request->input('url');
+        $translation->save();
 
         if ($request->input('_close', null)) {
             $item->checkIn();
@@ -220,8 +225,6 @@ class ItemController extends Controller
         $parent = Item::findOrFail($request->input('parent_id'));
 
         $item = Item::create([
-            'title' => $request->input('title'), 
-            'url' => $request->input('url'), 
             'model' => $request->input('model'), 
             'class' => $request->input('class'), 
             'anchor' => $request->input('anchor'), 
@@ -234,6 +237,11 @@ class ItemController extends Controller
         $item->updated_by = auth()->user()->id;
 
         $item->save();
+
+        $translation = $item->getOrCreateTranslation($request->input('locale'));
+        $translation->title = $request->input('title');
+        $translation->url = $request->input('url');
+        $translation->save();
 
         $request->session()->flash('success', __('messages.menuitem.create_success'));
 

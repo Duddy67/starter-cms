@@ -261,6 +261,18 @@ class Setting extends Model
         return $options;
     }
 
+    public static function getLocaleOptions()
+    {
+        $locales = config('app.locales')
+        $options = [];
+
+        foreach ($locales as $locale) {
+            $options[] = ['value' => $locale, 'text' => __('labels.locale.'.$locale)];
+        }
+
+        return $options;
+    }
+
     public static function getTimezoneOptions()
     {
         $timezoneIdentifiers = \DateTimeZone::listIdentifiers();

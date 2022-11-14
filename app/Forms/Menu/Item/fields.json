@@ -40,6 +40,13 @@
     "id": "anchor"
   },
   {
+    "label": "labels.generic.locale",
+    "type": "select",
+    "name": "locale",
+    "id": "locale",
+    "options": [] 
+  },
+  {
     "label": "labels.generic.status",
     "type": "select",
     "name": "status",

@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('layout_itemable_type', 255)->nullable();
             $table->unsignedSmallInteger('id_nb');
             $table->string('type', 50);
-            $table->text('value')->nullable();
             $table->unsignedTinyInteger('order')->nullable();
         });
     }

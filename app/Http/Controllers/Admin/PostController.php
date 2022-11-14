@@ -101,9 +101,11 @@ class PostController extends Controller
     public function edit(Request $request, int $id)
     {
         $post = $this->item = Post::select('posts.*', 'users.name as owner_name', 'users2.name as modifier_name')
-                                    ->leftJoin('users', 'posts.owned_by', '=', 'users.id')
-                                    ->leftJoin('users as users2', 'posts.updated_by', '=', 'users2.id')
-                                    ->findOrFail($id);
+            ->leftJoin('users', 'posts.owned_by', '=', 'users.id')
+            ->leftJoin('users as users2', 'posts.updated_by', '=', 'users2.id')
+            ->whereHas('translations', function ($query) { 
+                  $query->where('locale', '=', config('app.locale'));
+        })->findOrFail($id);
                         
         if (!$post->canAccess()) {
             return redirect()->route('admin.posts.index')->with('error',  __('messages.generic.access_not_auth'));
@@ -162,19 +164,10 @@ class PostController extends Controller
             return response()->json(['redirect' => route('admin.posts.index', $request->query())]);
         }
 
-        $post->title = $request->input('title');
-        $post->slug = ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('title'), '-');
-        $post->content = $request->input('content');
-        $post->excerpt = $request->input('excerpt');
-        $post->alt_img = $request->input('alt_img');
         $post->layout = $request->input('layout');
-        $post->meta_data = $request->input('meta_data');
-        $post->extra_fields = $request->input('extra_fields');
         $post->settings = $request->input('settings');
         $post->updated_by = auth()->user()->id;
         $layoutRefresh = LayoutItem::storeItems($post);
-        // Prioritize layout items over regular content when storing raw content.
-        $post->raw_content = ($post->layoutItems()->exists()) ? $post->getLayoutRawContent() : strip_tags($request->input('content'));
 
         if ($post->canChangeAccessLevel()) {
             $post->access_level = $request->input('access_level');
@@ -222,6 +215,18 @@ class PostController extends Controller
 
         $post->save();
 
+        $translation = $post->getOrCreateTranslation($request->input('locale'));
+        $translation->title = $request->input('title');
+        $translation->slug = ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('title'), '-');
+        $translation->content = $request->input('content');
+        $translation->excerpt = $request->input('excerpt');
+        $translation->alt_img = $request->input('alt_img');
+        $translation->meta_data = $request->input('meta_data');
+        $translation->extra_fields = $request->input('extra_fields');
+        // Prioritize layout items over regular content when storing raw content.
+        $translation->raw_content = ($post->layoutItems()->exists()) ? $post->getLayoutRawContent() : strip_tags($request->input('content'));
+        $translation->save();
+
         $refresh = ['updated_at' => Setting::getFormattedDate($post->updated_at), 'updated_by' => auth()->user()->name, 'slug' => $post->slug];
 
         foreach ($layoutRefresh as $key => $value) {
@@ -259,26 +264,29 @@ class PostController extends Controller
     public function store(StoreRequest $request)
     {
         $post = Post::create([
-            'title' => $request->input('title'), 
-            'slug' => ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('title'), '-'),
             'status' => $request->input('status'), 
-            'content' => $request->input('content'), 
             'access_level' => $request->input('access_level'), 
             'owned_by' => $request->input('owned_by'),
             'main_cat_id' => $request->input('main_cat_id'),
-            'alt_img' => $request->input('alt_img'),
-            'meta_data' => $request->input('meta_data'),
-            'extra_fields' => $request->input('extra_fields'),
             'settings' => $request->input('settings'),
-            'excerpt' => $request->input('excerpt'),
         ]);
 
         LayoutItem::storeItems($post);
-        // Prioritize layout items over regular content when storing raw content.
-        $post->raw_content = ($post->layoutItems()->exists()) ? $post->getLayoutRawContent() : strip_tags($request->input('content'));
         $post->updated_by = auth()->user()->id;
 
         $post->save();
+
+        $translation = $post->getOrCreateTranslation(config('app.locale'));
+        $translation->title = $request->input('title');
+        $translation->slug = ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('title'), '-');
+        $translation->content = $request->input('content');
+        $translation->excerpt = $request->input('excerpt');
+        $translation->alt_img = $request->input('alt_img');
+        $translation->meta_data = $request->input('meta_data');
+        $translation->extra_fields = $request->input('extra_fields');
+        // Prioritize layout items over regular content when storing raw content.
+        $translation->raw_content = ($post->layoutItems()->exists()) ? $post->getLayoutRawContent() : strip_tags($request->input('content'));
+        $translation->save();
 
         if ($request->input('groups') !== null) {
             $post->groups()->attach($request->input('groups'));

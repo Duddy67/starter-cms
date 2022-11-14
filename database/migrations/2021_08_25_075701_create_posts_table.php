@@ -15,18 +15,10 @@ class CreatePostsTable extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 100);
-            $table->string('slug', 100);
-            $table->text('content')->nullable();
-            $table->text('raw_content')->nullable();
-            $table->text('excerpt')->nullable();
             $table->char('status', 12);
             $table->unsignedBigInteger('main_cat_id')->nullable();
             $table->char('access_level', 10);
-            $table->string('alt_img', 250)->nullable();
             $table->string('layout', 30)->nullable();
-            $table->json('extra_fields')->nullable();
-            $table->json('meta_data')->nullable();
             $table->json('settings');
             $table->unsignedBigInteger('checked_out')->nullable();
             $table->timestamp('checked_out_time')->nullable();
