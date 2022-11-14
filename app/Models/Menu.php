@@ -141,7 +141,13 @@ class Menu extends Model
 
     public function getMenuItems()
     {
-        $nodes = Item::where('menu_code', $this->code)->defaultOrder()->get()->toTree();
+        $nodes = Item::select('menu_items.*', 'translations.title as title', 'translations.url as url')
+                       ->where('menu_code', $this->code)
+                       ->join('translations', function ($join) {
+                           $join->on('menu_items.id', '=', 'translatable_id')
+                                ->where('translations.translatable_type', '=', 'App\Models\Menu\Item')
+                                ->where('locale', '=', config('app.locale'));
+        })->defaultOrder()->get()->toTree();
         $menuItems = [];
 
         $traverse = function ($nodes, $level = 0) use (&$traverse, &$menuItems) {

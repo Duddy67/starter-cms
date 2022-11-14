@@ -109,17 +109,17 @@ class Post extends Model
     /**
      * Get a given post's translation.
      */
-    public function getTranslation($local)
+    public function getTranslation($locale)
     {
-        return $this->morphMany(Translation::class, 'translatable')->where('locale', $local)->first();
+        return $this->morphMany(Translation::class, 'translatable')->where('locale', $locale)->first();
     }
 
     /**
      * Get a given post's translation or create it if it doesn't exist.
      */
-    public function getOrCreateTranslation($local)
+    public function getOrCreateTranslation($locale)
     {
-        $translation = $this->getTranslation($local);
+        $translation = $this->getTranslation($locale);
 
         if ($translation === null) {
             $translation =  Translation::create(['locale' => $locale]);

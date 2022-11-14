@@ -21,7 +21,8 @@ class SiteController extends Controller
         $query = $request->query();
         $timezone = Setting::getValue('app', 'timezone');
 
-        if ($category = Category::where('slug', $page)->first()) {
+        // DUMB REQUEST !
+        if ($category = Category::where('status', $page)->first()) {
             $posts = $category->getAllPosts($request);
 
             $globalSettings = PostSetting::getDataByGroup('categories');

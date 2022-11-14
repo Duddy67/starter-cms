@@ -263,7 +263,7 @@ class Setting extends Model
 
     public static function getLocaleOptions()
     {
-        $locales = config('app.locales')
+        $locales = config('app.locales');
         $options = [];
 
         foreach ($locales as $locale) {
