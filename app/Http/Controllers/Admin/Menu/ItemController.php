@@ -104,11 +104,15 @@ class ItemController extends Controller
      */
     public function edit(Request $request, $code, $id)
     {
-        $item = $this->item = Item::select('menu_items.*','users.name as modifier_name')
+        /*$item = $this->item = Item::select('menu_items.*','users.name as modifier_name', 'translations.title as title', 'translations.url as url')
             ->leftJoin('users as users', 'menu_items.updated_by', '=', 'users.id')
-            ->whereHas('translations', function ($query) { 
-                  $query->where('locale', '=', config('app.locale'));
-        })->findOrFail($id);
+            ->join('translations', function ($join) { 
+                $join->on('menu_items.id', '=', 'translatable_id')
+                     ->where('translations.translatable_type', '=', 'App\Models\Menu\Item')
+                     ->where('locale', '=', config('app.locale'));
+        })->findOrFail($id);*/
+
+        $item = $this->item = Item::getItem($id);
 
         if ($item->checked_out && $item->checked_out != auth()->user()->id) {
             return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.checked_out'));
@@ -267,11 +271,11 @@ class ItemController extends Controller
             return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.delete_not_auth'));
         }
 
-        $name = $item->name;
+        $title = $item->getTranslation(config('app.locale'))->title;
 
         $item->delete();
 
-        return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitem.delete_success', ['name' => $name]));
+        return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitem.delete_success', ['title' => $title]));
     }
 
     /**

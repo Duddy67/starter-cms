@@ -445,7 +445,7 @@ trait Form
             // Pass the current item object if available.
             $options = Setting::$function($item);
         }
-        elseif (in_array($field->name, ['status', 'owned_by', 'access_level']) && !method_exists($this->model, $function)) {
+        elseif (in_array($field->name, ['status', 'owned_by', 'access_level', 'locale']) && !method_exists($this->model, $function)) {
             // Call the Setting method when not availabe in the model.
             $options = Setting::$function();
         }

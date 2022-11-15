@@ -189,15 +189,15 @@ class Post extends Model
               ->join('roles', 'roles.id', '=', 'role_id');
 
         // Get the default locale translation.
-        $query->join('translations', function ($join) { 
+        $query->join('translations', function ($join) use($search) { 
             $join->on('posts.id', '=', 'translatable_id')
                  ->where('translations.translatable_type', '=', 'App\Models\Post')
                  ->where('translations.locale', '=', config('app.locale'));
-        });
 
-        if ($search !== null) {
-            $query->where('posts.title', 'like', '%'.$search.'%');
-        }
+            if ($search !== null) {
+                $join->where('translations.title', 'like', '%'.$search.'%');
+            }
+        });
 
         if ($sortedBy !== null) {
             // Separate name and direction.

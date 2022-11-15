@@ -86,25 +86,29 @@ class Item extends Model
     {
         $search = $request->input('search', null);
 
-        if ($search !== null) {
-            //return Item::where('title', 'like', '%'.$search.'%')->get();
-            return Item::select('menu_items.*', 'translations.title as title', 'translations.url as url')
-                         ->join('translations', function ($join) { 
-                             $join->on('menu_items.id', '=', 'translatable_id')
-                                  ->where('translatable_type', '=', 'App\Models\Menu\Item')
-                                  ->where('locale', '=', config('app.locale'))
-                                  ->where('title', 'like', '%'.$search.'%');
-                   })->get();
-        }
-        else {
-            //return Item::where('menu_code', $code)->defaultOrder()->get()->toTree();
-            return Item::select('menu_items.*', 'translations.title as title', 'translations.url as url')
-                         ->where('menu_code', $code)->join('translations', function ($join) { 
-                             $join->on('menu_items.id', '=', 'translatable_id')
-                                  ->where('translations.translatable_type', '=', 'App\Models\Menu\Item')
-                                  ->where('locale', '=', config('app.locale'));
-                   })->defaultOrder()->get()->toTree();
-        }
+        return Item::select('menu_items.*', 'translations.title as title', 'translations.url as url')
+                     ->where('menu_code', $code)->join('translations', function ($join) use($search) { 
+                         $join->on('menu_items.id', '=', 'translatable_id')
+                              ->where('translations.translatable_type', '=', 'App\Models\Menu\Item')
+                              ->where('locale', '=', config('app.locale'));
+
+                              if ($search !== null) {
+                                  $join->where('translations.title', 'like', '%'.$search.'%');
+                              }
+               })->defaultOrder()->get()->toTree();
+    }
+
+    public static function getItem($id, $locale = null)
+    {
+        $locale = ($locale === null) ? config('app.locale') : $locale;
+
+        return Item::select('menu_items.*','users.name as modifier_name', 'translations.title as title', 'translations.url as url')
+            ->leftJoin('users as users', 'menu_items.updated_by', '=', 'users.id')
+            ->join('translations', function ($join) use($locale) { 
+                $join->on('menu_items.id', '=', 'translatable_id')
+                     ->where('translations.translatable_type', '=', 'App\Models\Menu\Item')
+                     ->where('locale', '=', $locale);
+        })->findOrFail($id);
     }
 
     /*
@@ -151,7 +155,14 @@ class Item extends Model
         // Get the parent menu code.
         $code = Request::route()->parameter('code');
 
-        $nodes = Item::whereIn('menu_code', ['root', $code])->get()->toTree();
+        $nodes = Item::select('menu_items.*', 'translations.title as title')
+            ->whereIn('menu_code', ['root', $code])
+            ->join('translations', function($join) {
+                $join->on('menu_items.id', '=', 'translatable_id')
+                     ->where('translations.translatable_type', '=', 'App\Models\Menu\Item')
+                     ->where('locale', '=', config('app.locale'));
+        })->get()->toTree();
+
         // Defines the state of the current instance.
         $isNew = ($this->id) ? false : true;
         $options = [];

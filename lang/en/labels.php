@@ -100,6 +100,7 @@ return [
 	'name' => 'Name',
 	'slug' => 'Slug',
 	'code' => 'Code',
+	'locale' => 'Locale',
 	'alias' => 'Alias',
 	'id' => 'ID',
 	'description' => 'Description',
@@ -216,6 +217,11 @@ return [
     ],
     'pagination' => [
 	'results' => 'Showing :first to :last of :total results',
+    ],
+    'locale' => [
+	'en' => 'English',
+	'fr' => 'French',
+	'es' => 'Spanish',
     ],
 ];
 

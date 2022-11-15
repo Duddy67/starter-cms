@@ -88,7 +88,7 @@ return [
     'menuitem' => [
         'create_success' => 'Menu item successfully created.',
         'update_success' => 'Menu item successfully updated.',
-        'delete_success' => 'Menu item successfully deleted.',
+        'delete_success' => 'Menu item :title successfully deleted.',
         'delete_list_success' => ':number menu items have been successfully deleted.',
         'change_status_list_success' => 'Menu item statuses successfully changed.',
     ],
