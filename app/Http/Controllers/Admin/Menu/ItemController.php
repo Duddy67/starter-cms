@@ -69,6 +69,7 @@ class ItemController extends Controller
         $filters = $this->getFilters($request);
         $items = $this->model->getItems($request, $code);
         $rows = $this->getRowTree($columns, $items);
+        $this->setRowValues($rows, $columns, $items);
         $query = $request->query();
         $query['code'] = $code;
 
@@ -91,8 +92,9 @@ class ItemController extends Controller
         $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
         $actions = $this->getActions('form', ['destroy']);
         $query = array_merge($request->query(), ['code' => $code]);
+        $locale = config('app.locale');
 
-        return view('admin.menu.item.form', compact('fields', 'actions', 'query'));
+        return view('admin.menu.item.form', compact('fields', 'actions', 'locale', 'query'));
     }
 
     /**
@@ -401,6 +403,41 @@ class ItemController extends Controller
 
         $item->down();
         return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]));
+    }
+
+    /*
+     * Sets the row values specific to the Item model.
+     *
+     * @param  Array  $rows
+     * @param  Array of stdClass Objects  $columns
+     * @param  Kalnoy\Nestedset\Collection  $items
+     * @return void
+     */
+    private function setRowValues(&$rows, $columns, $items)
+    {
+        $traverse = function ($menuItems, $i = 0) use (&$traverse, $rows, $columns) {
+            foreach ($menuItems as $item) {
+                foreach ($columns as $column) {
+                    if ($column->name == 'locales') {
+                        $locales = '';
+
+                        foreach ($item->translations as $translation) {
+                            $locales .= $translation->locale.', ';
+                        }
+
+                        $locales = substr($locales, 0, -2);
+
+                        $rows[$i]->locales = $locales;
+                    }
+                }
+
+                $i++;
+
+                $traverse($item->children, $i);
+            }
+        };
+
+        $traverse($items);
     }
 
     /*

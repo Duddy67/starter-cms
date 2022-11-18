@@ -3,6 +3,12 @@
     // Run a function when the page is fully loaded including graphics.
     document.addEventListener('DOMContentLoaded', () => {
 
+        // The item is new.
+        if (document.getElementById('deleteItem') === null) {
+            // Block the drop down list on the default locale.
+            document.getElementById('locale').disabled = true;
+        }
+
         document.getElementById('locale').onchange = function(e) {
             let action = document.getElementById('itemForm').getAttribute('action');
             let url = '';

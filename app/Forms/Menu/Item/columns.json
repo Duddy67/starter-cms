@@ -28,6 +28,11 @@
     "type": "string"
   },
   {
+    "label": "labels.generic.locales",
+    "name": "locales",
+    "type": "string"
+  },
+  {
     "label": "labels.generic.created_at",
     "name": "created_at",
     "type": "date"

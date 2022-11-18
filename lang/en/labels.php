@@ -101,6 +101,7 @@ return [
 	'slug' => 'Slug',
 	'code' => 'Code',
 	'locale' => 'Locale',
+	'locales' => 'Locales',
 	'alias' => 'Alias',
 	'id' => 'ID',
 	'description' => 'Description',
