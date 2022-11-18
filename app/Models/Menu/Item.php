@@ -87,24 +87,24 @@ class Item extends Model
         $search = $request->input('search', null);
 
         return Item::select('menu_items.*', 'translations.title as title', 'translations.url as url')
-                     ->where('menu_code', $code)->join('translations', function ($join) use($search) { 
-                         $join->on('menu_items.id', '=', 'translatable_id')
-                              ->where('translations.translatable_type', '=', 'App\Models\Menu\Item')
-                              ->where('locale', '=', config('app.locale'));
+            ->where('menu_code', $code)
+            ->join('translations', function ($join) use($search) { 
+                $join->on('menu_items.id', '=', 'translatable_id')
+                     ->where('translations.translatable_type', '=', 'App\Models\Menu\Item')
+                     ->where('locale', '=', config('app.locale'));
 
-                              if ($search !== null) {
-                                  $join->where('translations.title', 'like', '%'.$search.'%');
-                              }
-               })->defaultOrder()->get()->toTree();
+                     if ($search !== null) {
+                         $join->where('translations.title', 'like', '%'.$search.'%');
+                     }
+
+        })->defaultOrder()->get()->toTree();
     }
 
-    public static function getItem($id, $locale = null)
+    public static function getItem($id, $locale)
     {
-        $locale = ($locale === null) ? config('app.locale') : $locale;
-
         return Item::select('menu_items.*','users.name as modifier_name', 'translations.title as title', 'translations.url as url')
             ->leftJoin('users as users', 'menu_items.updated_by', '=', 'users.id')
-            ->join('translations', function ($join) use($locale) { 
+            ->leftJoin('translations', function ($join) use($locale) { 
                 $join->on('menu_items.id', '=', 'translatable_id')
                      ->where('translations.translatable_type', '=', 'App\Models\Menu\Item')
                      ->where('locale', '=', $locale);

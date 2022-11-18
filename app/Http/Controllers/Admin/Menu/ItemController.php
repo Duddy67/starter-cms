@@ -104,15 +104,8 @@ class ItemController extends Controller
      */
     public function edit(Request $request, $code, $id)
     {
-        /*$item = $this->item = Item::select('menu_items.*','users.name as modifier_name', 'translations.title as title', 'translations.url as url')
-            ->leftJoin('users as users', 'menu_items.updated_by', '=', 'users.id')
-            ->join('translations', function ($join) { 
-                $join->on('menu_items.id', '=', 'translatable_id')
-                     ->where('translations.translatable_type', '=', 'App\Models\Menu\Item')
-                     ->where('locale', '=', config('app.locale'));
-        })->findOrFail($id);*/
-
-        $item = $this->item = Item::getItem($id);
+        $locale = ($request->query('locale', null)) ? $request->query('locale') : config('app.locale');
+        $item = $this->item = Item::getItem($id, $locale);
 
         if ($item->checked_out && $item->checked_out != auth()->user()->id) {
             return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.checked_out'));
@@ -136,7 +129,7 @@ class ItemController extends Controller
         // Add the id parameter to the query.
         $query = array_merge($request->query(), ['code' => $code, 'item' => $id]);
 
-        return view('admin.menu.item.form', compact('item', 'fields', 'actions', 'query'));
+        return view('admin.menu.item.form', compact('item', 'fields', 'locale', 'actions', 'query'));
     }
 
     /**
@@ -152,7 +145,7 @@ class ItemController extends Controller
             $item->checkIn();
         }
 
-        return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]));
+        return redirect()->route('admin.menu.items.index', array_merge(request()->except('locale'), ['code' => $code]));
     }
 
     /**
@@ -202,7 +195,7 @@ class ItemController extends Controller
             $item->checkIn();
             // Store the message to be displayed on the list view after the redirect.
             $request->session()->flash('success', __('messages.menuitem.update_success'));
-            return response()->json(['redirect' => route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))]);
+            return response()->json(['redirect' => route('admin.menu.items.index', array_merge(request()->except('locale'), ['code' => $code]))]);
         }
 
         $refresh = ['updated_at' => Setting::getFormattedDate($item->updated_at), 'updated_by' => auth()->user()->name];
@@ -242,7 +235,8 @@ class ItemController extends Controller
 
         $item->save();
 
-        $translation = $item->getOrCreateTranslation($request->input('locale'));
+        // Store the very first translation as the default locale.
+        $translation = $item->getOrCreateTranslation(config('app.locale'));
         $translation->title = $request->input('title');
         $translation->url = $request->input('url');
         $translation->save();
