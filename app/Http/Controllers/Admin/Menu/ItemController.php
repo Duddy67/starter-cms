@@ -147,7 +147,7 @@ class ItemController extends Controller
             $item->checkIn();
         }
 
-        return redirect()->route('admin.menu.items.index', array_merge(request()->except('locale'), ['code' => $code]));
+        return redirect()->route('admin.menu.items.index', array_merge(\Arr::except($request->query(), ['locale']), ['code' => $code]));
     }
 
     /**
@@ -197,7 +197,8 @@ class ItemController extends Controller
             $item->checkIn();
             // Store the message to be displayed on the list view after the redirect.
             $request->session()->flash('success', __('messages.menuitem.update_success'));
-            return response()->json(['redirect' => route('admin.menu.items.index', array_merge(request()->except('locale'), ['code' => $code]))]);
+            $query = \Arr::except($request->query(), ['locale']);
+            return response()->json(['redirect' => route('admin.menu.items.index', array_merge($query, ['code' => $code]))]);
         }
 
         $refresh = ['updated_at' => Setting::getFormattedDate($item->updated_at), 'updated_by' => auth()->user()->name];

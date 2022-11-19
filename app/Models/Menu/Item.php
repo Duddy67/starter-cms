@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Menu;
 use Kalnoy\Nestedset\NodeTrait;
 use App\Models\User\Group;
-use App\Models\Translation;
 use App\Traits\CheckInCheckOut;
+use App\Traits\Translatable;
 use Request;
 
 
 class Item extends Model
 {
-    use HasFactory, NodeTrait, CheckInCheckOut;
+    use HasFactory, NodeTrait, CheckInCheckOut, Translatable;
 
     /**
      * The table associated with the model.
@@ -47,37 +47,20 @@ class Item extends Model
         'checked_out_time'
     ];
 
-    /**
-     * Get all of the item's translations.
-     */
-    public function translations()
-    {
-        return $this->morphMany(Translation::class, 'translatable');
-    }
 
     /**
-     * Get a given item's translation.
+     * Delete the model from the database (override).
+     *
+     * @return bool|null
+     *
+     * @throws \LogicException
      */
-    public function getTranslation($locale)
+    public function delete()
     {
-        return $this->morphMany(Translation::class, 'translatable')->where('locale', $locale)->first();
+        $this->translations()->delete();
+
+        parent::delete();
     }
-
-    /**
-     * Get a given item's translation or create it if it doesn't exist.
-     */
-    public function getOrCreateTranslation($locale)
-    {
-        $translation = $this->getTranslation($locale);
-
-        if ($translation === null) {
-            $translation =  Translation::create(['locale' => $locale]);
-            $this->translations()->save($translation);
-        }
-
-        return $translation;
-    }
-
 
     /*
      * Gets the menu items as a tree.
