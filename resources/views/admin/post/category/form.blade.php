@@ -62,6 +62,8 @@
             @endforeach
         </div>
 
+        <input type="hidden" id="currentLocale" value="{{ $locale }}">
+        <input type="hidden" id="cancelChangeLocale" value="0">
         <input type="hidden" id="cancelEdit" value="{{ route('admin.post.categories.cancel', $query) }}">
         <input type="hidden" id="siteUrl" value="{{ url('/') }}">
         <input type="hidden" id="close" name="_close" value="0">
@@ -95,6 +97,7 @@
     <script type="text/javascript" src="{{ asset('/vendor/tinymce/tinymce.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/codalia/c.ajax.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/daterangepicker.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/js/admin/locale.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/form.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/set.private.groups.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/disable.toolbars.js') }}"></script>

@@ -58,7 +58,15 @@ class ItemController extends Controller
     public function index(Request $request, $code)
     {
         // Gather the needed data to build the item list.
-        $columns = $this->getColumns();
+
+        $except = [];
+
+        if ($request->input('search', null)) {
+            $except = ['ordering'];
+        }
+           
+        $columns = $this->getColumns($except);
+
         $except = (!$this->menu->canEdit()) ? ['create', 'publish', 'unpublish'] : [];
 
         if (!$this->menu->canDelete()) {

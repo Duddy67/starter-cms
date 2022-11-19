@@ -69,18 +69,19 @@ class Item extends Model
     {
         $search = $request->input('search', null);
 
-        return Item::select('menu_items.*', 'translations.title as title', 'translations.url as url')
+        $query = Item::select('menu_items.*', 'translations.title as title', 'translations.url as url')
             ->where('menu_code', $code)
             ->join('translations', function ($join) use($search) { 
                 $join->on('menu_items.id', '=', 'translatable_id')
-                     ->where('translations.translatable_type', '=', 'App\Models\Menu\Item')
-                     ->where('locale', '=', config('app.locale'));
+                    ->where('translations.translatable_type', '=', 'App\Models\Menu\Item')
+                    ->where('locale', '=', config('app.locale'));
+        });
 
-                     if ($search !== null) {
-                         $join->where('translations.title', 'like', '%'.$search.'%');
-                     }
+        if ($search !== null) {
+            $query->where('translations.title', 'like', '%'.$search.'%');
+        }
 
-        })->defaultOrder()->get()->toTree();
+        return $query->defaultOrder()->get()->toTree();
     }
 
     public static function getItem($id, $locale)

@@ -14,12 +14,13 @@ use Kalnoy\Nestedset\NodeTrait;
 use App\Models\User\Group;
 use App\Traits\TreeAccessLevel;
 use App\Traits\CheckInCheckOut;
+use App\Traits\Translatable;
 use Illuminate\Http\Request;
 
 
 class Category extends Model
 {
-    use HasFactory, NodeTrait, TreeAccessLevel, CheckInCheckOut;
+    use HasFactory, NodeTrait, TreeAccessLevel, CheckInCheckOut, Translatable;
 
     /**
      * The table associated with the model.
@@ -115,6 +116,8 @@ class Category extends Model
             $this->image->delete();
         }
 
+        $this->translations()->delete();
+
         parent::delete();
     }
     /*
@@ -124,12 +127,34 @@ class Category extends Model
     {
         $search = $request->input('search', null);
 
+        $query = Category::select('post_categories.*', 'users.name as owner_name', 'translations.name as name')
+            ->leftJoin('users', 'post_categories.owned_by', '=', 'users.id')
+            ->join('translations', function ($join) use($search) { 
+                $join->on('post_categories.id', '=', 'translatable_id')
+                    ->where('translations.translatable_type', '=', 'App\Models\Post\Category')
+                    ->where('locale', '=', config('app.locale'));
+        });
+
         if ($search !== null) {
-            return Category::where('name', 'like', '%'.$search.'%')->get();
+            $query->where('translations.name', 'like', '%'.$search.'%');
         }
-        else {
-            return Category::select('post_categories.*', 'users.name as owner_name')->leftJoin('users', 'post_categories.owned_by', '=', 'users.id')->defaultOrder()->get()->toTree();
-        }
+
+        return $query->defaultOrder()->get()->toTree();
+    }
+
+    public static function getItem($id, $locale)
+    {
+        return Category::select('post_categories.*', 'users.name as owner_name', 'users2.name as modifier_name',
+                            'translations.name as name', 'translations.slug as slug', 
+                            'translations.description as description', 'translations.alt_img as alt_img',
+                            'translations.extra_fields as extra_fields', 'translations.meta_data as meta_data')
+            ->leftJoin('users', 'post_categories.owned_by', '=', 'users.id')
+            ->leftJoin('users as users2', 'post_categories.updated_by', '=', 'users2.id')
+            ->leftJoin('translations', function ($join) use($locale) { 
+                $join->on('post_categories.id', '=', 'translatable_id')
+                     ->where('translations.translatable_type', '=', 'App\Models\Post\Category')
+                     ->where('locale', '=', $locale);
+        })->findOrFail($id);
     }
 
     public function getUrl()
@@ -232,7 +257,14 @@ class Category extends Model
 
     public function getParentIdOptions()
     {
-        $nodes = Category::get()->toTree();
+        //$nodes = Category::get()->toTree();
+        $nodes = Category::select('post_categories.*', 'translations.name as name')
+            ->join('translations', function($join) {
+                $join->on('post_categories.id', '=', 'translatable_id')
+                     ->where('translations.translatable_type', '=', 'App\Models\Post\Category')
+                     ->where('locale', '=', config('app.locale'));
+        })->get()->toTree();
+
         $options = [];
         // Defines the state of the current instance.
         $isNew = ($this->id) ? false : true;
