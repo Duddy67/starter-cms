@@ -102,10 +102,6 @@ class CategoryController extends Controller
     {
         $locale = ($request->query('locale', null)) ? $request->query('locale') : config('app.locale');
         $category = $this->item = Category::getItem($id, $locale);
-        /*$category = $this->item = Category::select('post_categories.*', 'users.name as owner_name', 'users2.name as modifier_name')
-                                            ->leftJoin('users', 'post_categories.owned_by', '=', 'users.id')
-                                            ->leftJoin('users as users2', 'post_categories.updated_by', '=', 'users2.id')
-                                            ->findOrFail($id);*/
 
         if (!$category->canAccess()) {
             return redirect()->route('admin.post.categories.index')->with('error',  __('messages.generic.access_not_auth'));
@@ -253,7 +249,7 @@ class CategoryController extends Controller
         $translation->meta_data = $request->input('meta_data');
         $translation->save();
 
-        $refresh = ['updated_at' => Setting::getFormattedDate($category->updated_at), 'updated_by' => auth()->user()->name, 'slug' => $category->slug];
+        $refresh = ['updated_at' => Setting::getFormattedDate($category->updated_at), 'updated_by' => auth()->user()->name, 'slug' => $translation->slug];
 
         if ($image = $this->uploadImage($request)) {
             // Delete the previous post image if any.

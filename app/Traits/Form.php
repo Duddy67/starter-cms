@@ -235,9 +235,10 @@ trait Form
                 elseif ($field->name == 'updated_by') {
                     $fields[$key]->value = $item->modifier_name;
                 }
-                // Checks for values set in array as meta_data, extra_fields etc..
+                // Checks for field groups set as json values such as meta_data, extra_fields etc..
                 elseif (isset($field->group) && isset($item->{$field->group})) {
-                    $field->value = (isset($item->{$field->group}[$field->name])) ? $item->{$field->group}[$field->name] : null;
+                    $group = json_decode($item->{$field->group}, true);
+                    $field->value = (isset($group[$field->name])) ? $group[$field->name] : null;
                 }
                 // Regular value field.
                 else {
@@ -302,9 +303,13 @@ trait Form
      */  
     public function getFieldGroups(array $fields, array $groups): array
     {
+        if (!isset($this->model->fieldGroups)) {
+            return $fields;
+        }
+
         foreach ($groups as $group) {
-            // Check first that group name exists as attribute in the model.
-            if (\Schema::hasColumn($this->model->getTable(), $group)) {
+            // Check first that group name is set in the model fieldGroups array.
+            if (in_array($group, $this->model->fieldGroups)) {
                 $data = $this->getData($group);
 
                 foreach ($data as $field) {

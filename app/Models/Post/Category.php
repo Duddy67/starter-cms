@@ -35,15 +35,10 @@ class Category extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
-        'slug',
         'status',
         'owned_by',
-        'description',
         'access_level',
         'parent_id',
-        'extra_fields',
-        'meta_data',
         'settings',
     ];
 
@@ -64,9 +59,17 @@ class Category extends Model
      * @var array
      */
     protected $casts = [
-        'extra_fields' => 'array',
-        'meta_data' => 'array',
         'settings' => 'array'
+    ];
+
+    /**
+     * The extra group fields.
+     *
+     * @var array
+     */
+    public $fieldGroups = [
+        'meta_data',
+        'extra_fields'
     ];
 
     /**
