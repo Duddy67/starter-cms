@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
 class Translation extends Model
 {
@@ -57,5 +58,12 @@ class Translation extends Model
     public function translatable()
     {
         return $this->morphTo();
+    }
+
+    public function setAttributes(Request $request, array $attributes): void
+    {
+        foreach ($attributes as $attribute) {
+            $this->{$attribute} = $request->input($attribute);
+        }
     }
 }

@@ -15,18 +15,18 @@
     "placeholder": "labels.post.slug"
   },
   {
+    "label": "labels.generic.locale",
+    "type": "select",
+    "name": "locale",
+    "id": "locale",
+    "options": [] 
+  },
+  {
     "label": "labels.generic.status",
     "type": "select",
     "name": "status",
     "id": "status",
     "blank": "labels.generic.select_option",
-    "options": [] 
-  },
-  {
-    "label": "labels.generic.locale",
-    "type": "select",
-    "name": "locale",
-    "id": "locale",
     "options": [] 
   },
   {

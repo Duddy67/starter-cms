@@ -11,9 +11,9 @@ use App\Models\Post\Setting as PostSetting;
 use App\Models\User\Group;
 use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
+use App\Traits\Translatable;
 use App\Models\Cms\Document;
 use App\Models\LayoutItem;
-use App\Models\Translation;
 use App\Support\PostCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Post extends Model
 {
-    use HasFactory, AccessLevel, CheckInCheckOut;
+    use HasFactory, AccessLevel, CheckInCheckOut, Translatable;
 
     /**
      * The attributes that are mass assignable.
@@ -55,6 +55,16 @@ class Post extends Model
      */
     protected $casts = [
         'settings' => 'array'
+    ];
+
+    /**
+     * The extra group fields.
+     *
+     * @var array
+     */
+    public $fieldGroups = [
+        'meta_data',
+        'extra_fields'
     ];
 
 
@@ -99,37 +109,6 @@ class Post extends Model
     }
 
     /**
-     * Get all of the post's translations.
-     */
-    public function translations()
-    {
-        return $this->morphMany(Translation::class, 'translatable');
-    }
-
-    /**
-     * Get a given post's translation.
-     */
-    public function getTranslation($locale)
-    {
-        return $this->morphMany(Translation::class, 'translatable')->where('locale', $locale)->first();
-    }
-
-    /**
-     * Get a given post's translation or create it if it doesn't exist.
-     */
-    public function getOrCreateTranslation($locale)
-    {
-        $translation = $this->getTranslation($locale);
-
-        if ($translation === null) {
-            $translation =  Translation::create(['locale' => $locale]);
-            $this->translations()->save($translation);
-        }
-
-        return $translation;
-    }
-
-    /**
      * Delete the model from the database (override).
      *
      * @return bool|null
@@ -149,9 +128,7 @@ class Post extends Model
             $item->delete();
         }
 
-        foreach ($this->translations as $translation) {
-            $translation->delete();
-        }
+        $this->translations()->delete();
 
         Ordering::where('post_id', $this->id)->delete();
 
@@ -259,6 +236,22 @@ class Post extends Model
         return $query->paginate($perPage);
     }
 
+    public static function getItem($id, $locale)
+    {
+        return Post::select('posts.*', 'users.name as owner_name', 'users2.name as modifier_name',
+                            'translations.title as title', 'translations.slug as slug', 
+                            'translations.content as content', 'translations.excerpt as excerpt', 
+                            'translations.raw_content as raw_content', 'translations.alt_img as alt_img',
+                            'translations.extra_fields as extra_fields', 'translations.meta_data as meta_data')
+            ->leftJoin('users', 'posts.owned_by', '=', 'users.id')
+            ->leftJoin('users as users2', 'posts.updated_by', '=', 'users2.id')
+            ->leftJoin('translations', function ($join) use($locale) { 
+                $join->on('posts.id', '=', 'translatable_id')
+                     ->where('translations.translatable_type', '=', 'App\Models\Post')
+                     ->where('locale', '=', $locale);
+        })->findOrFail($id);
+    }
+
     public function getUrl()
     {
         $segments = PostSetting::getSegments();
@@ -267,7 +260,14 @@ class Post extends Model
 
     public function getCategoriesOptions()
     {
-        $nodes = Category::get()->toTree();
+        //$nodes = Category::get()->toTree();
+        $nodes = Category::select('post_categories.*', 'translations.name as name')
+            ->join('translations', function($join) {
+                $join->on('post_categories.id', '=', 'translatable_id')
+                     ->where('translations.translatable_type', '=', 'App\Models\Post\Category')
+                     ->where('locale', '=', config('app.locale'));
+        })->get()->toTree();
+
         $options = [];
         $userGroupIds = auth()->user()->getGroupIds();
 

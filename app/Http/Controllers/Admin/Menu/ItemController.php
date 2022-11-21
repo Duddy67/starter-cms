@@ -197,8 +197,7 @@ class ItemController extends Controller
         $item->save();
 
         $translation = $item->getOrCreateTranslation($request->input('locale'));
-        $translation->title = $request->input('title');
-        $translation->url = $request->input('url');
+        $translation->setAttributes($request, ['title', 'url']);
         $translation->save();
 
         if ($request->input('_close', null)) {
@@ -248,8 +247,7 @@ class ItemController extends Controller
 
         // Store the very first translation as the default locale.
         $translation = $item->getOrCreateTranslation(config('app.locale'));
-        $translation->title = $request->input('title');
-        $translation->url = $request->input('url');
+        $translation->setAttributes($request, ['title', 'url']);
         $translation->save();
 
         $request->session()->flash('success', __('messages.menuitem.create_success'));

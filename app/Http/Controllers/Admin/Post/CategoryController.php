@@ -85,8 +85,8 @@ class CategoryController extends Controller
         $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
         $this->setFieldValues($fields);
         $actions = $this->getActions('form', ['destroy']);
-        $query = $request->query();
         $locale = config('app.locale');
+        $query = $request->query();
 
         return view('admin.post.category.form', compact('fields', 'actions', 'locale', 'query'));
     }
@@ -241,12 +241,8 @@ class CategoryController extends Controller
         $category->save();
 
         $translation = $category->getOrCreateTranslation($request->input('locale'));
-        $translation->name = $request->input('name');
+        $translation->setAttributes($request, ['name', 'description', 'extra_fields', 'meta_data', 'alt_img']);
         $translation->slug = ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('name'), '-');
-        $translation->description = $request->input('description');
-        $translation->extra_fields = $request->input('extra_fields');
-        $translation->alt_img = $request->input('alt_img');
-        $translation->meta_data = $request->input('meta_data');
         $translation->save();
 
         $refresh = ['updated_at' => Setting::getFormattedDate($category->updated_at), 'updated_by' => auth()->user()->name, 'slug' => $translation->slug];
@@ -316,12 +312,8 @@ class CategoryController extends Controller
 
         // Store the very first translation as the default locale.
         $translation = $category->getOrCreateTranslation(config('app.locale'));
-        $translation->name = $request->input('name');
+        $translation->setAttributes($request, ['name', 'description', 'extra_fields', 'meta_data', 'alt_img']);
         $translation->slug = ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('name'), '-');
-        $translation->description = $request->input('description');
-        $translation->extra_fields = $request->input('extra_fields');
-        $translation->alt_img = $request->input('alt_img');
-        $translation->meta_data = $request->input('meta_data');
         $translation->save();
 
         if ($image = $this->uploadImage($request)) {

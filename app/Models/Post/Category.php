@@ -260,7 +260,6 @@ class Category extends Model
 
     public function getParentIdOptions()
     {
-        //$nodes = Category::get()->toTree();
         $nodes = Category::select('post_categories.*', 'translations.name as name')
             ->join('translations', function($join) {
                 $join->on('post_categories.id', '=', 'translatable_id')

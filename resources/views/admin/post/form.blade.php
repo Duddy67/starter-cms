@@ -41,6 +41,11 @@
                 @endif
 
                 @php $value = (isset($post) || str_starts_with($field->name, 'alias_extra_field_')) ? old($field->name, $field->value) : old($field->name); @endphp
+
+                @if ($field->name == 'locale')
+                    @php $value = $locale; @endphp
+                @endif
+
                 <x-input :field="$field" :value="$value" />
 
                 @if ($field->name == 'image')
@@ -62,6 +67,8 @@
             @endforeach
         </div>
 
+        <input type="hidden" id="currentLocale" value="{{ $locale }}">
+        <input type="hidden" id="cancelChangeLocale" value="0">
         <input type="hidden" id="cancelEdit" value="{{ route('admin.posts.cancel', $query) }}">
         <input type="hidden" id="close" name="_close" value="0">
         <input type="hidden" id="siteUrl" value="{{ url('/') }}">
@@ -98,6 +105,7 @@
     <script type="text/javascript" src="{{ asset('/vendor/adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/tinymce/tinymce.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/daterangepicker.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/js/admin/locale.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/codalia/c.ajax.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/codalia/lang/en.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/codalia/c.layout.js') }}"></script>

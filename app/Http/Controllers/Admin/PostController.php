@@ -67,6 +67,7 @@ class PostController extends Controller
         $filters = $this->getFilters($request);
         $items = $this->model->getItems($request);
         $rows = $this->getRows($columns, $items);
+        $this->setRowValues($rows, $columns, $items);
         $query = $request->query();
         $url = ['route' => 'admin.posts', 'item_name' => 'post', 'query' => $query];
 
@@ -86,9 +87,10 @@ class PostController extends Controller
         $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
         $this->setFieldValues($fields);
         $actions = $this->getActions('form', ['destroy']);
+        $locale = config('app.locale');
         $query = $request->query();
 
-        return view('admin.post.form', compact('fields', 'actions', 'query'));
+        return view('admin.post.form', compact('fields', 'actions', 'locale', 'query'));
     }
 
     /**
@@ -100,12 +102,8 @@ class PostController extends Controller
      */
     public function edit(Request $request, int $id)
     {
-        $post = $this->item = Post::select('posts.*', 'users.name as owner_name', 'users2.name as modifier_name')
-            ->leftJoin('users', 'posts.owned_by', '=', 'users.id')
-            ->leftJoin('users as users2', 'posts.updated_by', '=', 'users2.id')
-            ->whereHas('translations', function ($query) { 
-                  $query->where('locale', '=', config('app.locale'));
-        })->findOrFail($id);
+        $locale = ($request->query('locale', null)) ? $request->query('locale') : config('app.locale');
+        $post = $this->item = Post::getItem($id, $locale);
                         
         if (!$post->canAccess()) {
             return redirect()->route('admin.posts.index')->with('error',  __('messages.generic.access_not_auth'));
@@ -126,7 +124,7 @@ class PostController extends Controller
         // Add the id parameter to the query.
         $query = array_merge($request->query(), ['post' => $id]);
 
-        return view('admin.post.form', compact('post', 'fields', 'actions', 'query'));
+        return view('admin.post.form', compact('post', 'fields', 'actions', 'locale', 'query'));
     }
 
     /**
@@ -142,7 +140,7 @@ class PostController extends Controller
             $post->checkIn();
         }
 
-        return redirect()->route('admin.posts.index', $request->query());
+        return redirect()->route('admin.posts.index', \Arr::except($request->query(), ['locale']));
     }
 
     /**
@@ -216,18 +214,13 @@ class PostController extends Controller
         $post->save();
 
         $translation = $post->getOrCreateTranslation($request->input('locale'));
-        $translation->title = $request->input('title');
+        $translation->setAttributes($request, ['title', 'content', 'excerpt', 'alt_img', 'meta_data', 'extra_fields']);
         $translation->slug = ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('title'), '-');
-        $translation->content = $request->input('content');
-        $translation->excerpt = $request->input('excerpt');
-        $translation->alt_img = $request->input('alt_img');
-        $translation->meta_data = $request->input('meta_data');
-        $translation->extra_fields = $request->input('extra_fields');
         // Prioritize layout items over regular content when storing raw content.
         $translation->raw_content = ($post->layoutItems()->exists()) ? $post->getLayoutRawContent() : strip_tags($request->input('content'));
         $translation->save();
 
-        $refresh = ['updated_at' => Setting::getFormattedDate($post->updated_at), 'updated_by' => auth()->user()->name, 'slug' => $post->slug];
+        $refresh = ['updated_at' => Setting::getFormattedDate($post->updated_at), 'updated_by' => auth()->user()->name, 'slug' => $translation->slug];
 
         foreach ($layoutRefresh as $key => $value) {
             $refresh[$key] = $value;
@@ -249,7 +242,7 @@ class PostController extends Controller
             $post->checkIn();
             // Store the message to be displayed on the list view after the redirect.
             $request->session()->flash('success', __('messages.post.update_success'));
-            return response()->json(['redirect' => route('admin.posts.index', $request->query())]);
+            return response()->json(['redirect' => route('admin.posts.index', \Arr::except($request->query(), ['locale']))]);
         }
 
         return response()->json(['success' => __('messages.post.update_success'), 'refresh' => $refresh]);
@@ -277,13 +270,8 @@ class PostController extends Controller
         $post->save();
 
         $translation = $post->getOrCreateTranslation(config('app.locale'));
-        $translation->title = $request->input('title');
+        $translation->setAttributes($request, ['title', 'content', 'excerpt', 'alt_img', 'meta_data', 'extra_fields']);
         $translation->slug = ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('title'), '-');
-        $translation->content = $request->input('content');
-        $translation->excerpt = $request->input('excerpt');
-        $translation->alt_img = $request->input('alt_img');
-        $translation->meta_data = $request->input('meta_data');
-        $translation->extra_fields = $request->input('extra_fields');
         // Prioritize layout items over regular content when storing raw content.
         $translation->raw_content = ($post->layoutItems()->exists()) ? $post->getLayoutRawContent() : strip_tags($request->input('content'));
         $translation->save();
@@ -324,10 +312,10 @@ class PostController extends Controller
             return redirect()->route('admin.posts.edit', array_merge($request->query(), ['post' => $post->id]))->with('error',  __('messages.generic.delete_not_auth'));
         }
 
-        $name = $post->name;
+        $title = $post->getTranslation(config('app.locale'))->title;
         $post->delete();
 
-        return redirect()->route('admin.posts.index', $request->query())->with('success', __('messages.post.delete_success', ['name' => $name]));
+        return redirect()->route('admin.posts.index', $request->query())->with('success', __('messages.post.delete_success', ['title' => $title]));
     }
 
     /**
@@ -607,6 +595,33 @@ class PostController extends Controller
         }
 
         return null;
+    }
+
+    /*
+     * Sets the row values specific to the Post model.
+     *
+     * @param  Array  $rows
+     * @param  Array of stdClass Objects  $columns
+     * @param  Kalnoy\Nestedset\Collection  $items
+     * @return void
+     */
+    private function setRowValues(&$rows, $columns, $items)
+    {
+        foreach ($items as $key => $item) {
+            foreach ($columns as $column) {
+                if ($column->name == 'locales') {
+                    $locales = '';
+
+                    foreach ($item->translations as $translation) {
+                        $locales .= $translation->locale.', ';
+                    }
+
+                    $locales = substr($locales, 0, -2);
+
+                    $rows[$key]->locales = $locales;
+                }
+            }
+        }
     }
 
     /*
