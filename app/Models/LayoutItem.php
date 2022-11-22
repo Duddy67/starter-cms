@@ -121,8 +121,8 @@ class LayoutItem extends Model
                     // The attribute to set by default.
                     $attribute = 'text';
 
-                    if ($type == 'group_start') {
-                        $value = $this->setGroupStartData($value);
+                    if ($type == 'group_start' || $type == 'group_end') {
+                        $value = $this->setGroupStartData($type, $value);
                         $attribute = 'data';
                     }
 
@@ -165,10 +165,14 @@ class LayoutItem extends Model
         return $image;
     }
 
-    private function setGroupStartData(string $value)
+    private function setGroupStartData(string $type, string $value)
     {
         if (empty($value)) {
             return '{}';
+        }
+
+        if ($type = 'group_end') {
+            return json_encode(['parent_id' => $value]);
         }
 
         $value = explode('|', $value);

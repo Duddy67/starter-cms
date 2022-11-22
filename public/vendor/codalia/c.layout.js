@@ -520,11 +520,20 @@ const C_Layout = (function() {
     }
 
     function _createGroup(idNb, data) {
-        let value = (data !== undefined) ? data.data.class+'|'+data.data.groups_in_row : '';
+        let value = '';
         //
         let type = (data !== undefined) ? data.type : 'group_start';
         let separator = ' ------------------------------------------ ';
 	let attribs = {'type':'text', 'name':'layout_items['+type+'_'+idNb+']', 'id':type+'-'+idNb, 'class':'form-control', 'value':value};
+
+        if (data !== undefined) {
+            if (type == 'group_start') {
+               value = data.data.class+'|'+data.data.groups_in_row;
+            }
+            else {
+               value = data.data.parent_id;
+            }
+        }
 
         if (type == 'group_end') {
             // Create a fake field to use it as "separator".
