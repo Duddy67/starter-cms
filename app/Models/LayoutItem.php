@@ -21,8 +21,18 @@ class LayoutItem extends Model
     protected $fillable = [
         'id_nb',
         'type',
-        'value',
+        'text',
+        'data',
         'order',
+    ];
+
+    /**
+     * The attributes that should be casted.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'data' => 'array'
     ];
 
     /**
@@ -88,8 +98,9 @@ class LayoutItem extends Model
                             $image = $item->image;
                         }
 
-                        // Store value as JSON.
-                        $item->value = json_encode(['alt_text' => $items['alt_text_'.$id], 'url' => $image->getUrl(), 'thumbnail' => $image->getThumbnailUrl()]);
+                        // Store image data.
+                        $item->data = json_encode(['url' => $image->getUrl(), 'thumbnail' => $image->getThumbnailUrl()]);
+                        $item->text = $items['alt_text_'.$id];
                         $item->order = $items['layout_item_ordering_'.$id];
                         $item->save();
 
@@ -107,17 +118,21 @@ class LayoutItem extends Model
                     $type = (!empty($matches[2])) ? $matches[1].'_'.$matches[2] : $matches[1];
                     $id = $matches[3];
                     $order = $items['layout_item_ordering_'.$id];
+                    // The attribute to set by default.
+                    $attribute = 'text';
 
-                    // Prevent group start empty value to be stored as NULL.
-                    $value = ($type == 'group_start' && empty($value)) ? '' : $value;
+                    if ($type == 'group_start') {
+                        $value = $this->setGroupStartData($value);
+                        $attribute = 'data';
+                    }
 
                     if ($item = $model->layoutItems->where('id_nb', $id)->first()) {
-                        $item->value = $value;
+                        $item->{$attribute} = $value;
                         $item->order = $order;
                         $item->save();
                     }
                     else {
-                        $item = LayoutItem::create(['type' => $type, 'id_nb' => $id, 'value' => $value, 'order' => $order]);
+                        $item = LayoutItem::create(['type' => $type, 'id_nb' => $id, $attribute => $value, 'order' => $order]);
                         $model->layoutItems()->save($item);
                     }
                 }
@@ -148,6 +163,24 @@ class LayoutItem extends Model
         }
 
         return $image;
+    }
+
+    private function setGroupStartData(string $value)
+    {
+        if (empty($value)) {
+            return '{}';
+        }
+
+        $value = explode('|', $value);
+        $data = ['class' => '', 'groups_in_row' => ''];
+
+        if (count($value) == 2) {
+            $data['groups_in_row'] = $value[1];
+        }
+
+        $data['class'] = $value[0];
+
+        return json_encode($data);
     }
 }
 
