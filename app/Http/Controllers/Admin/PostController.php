@@ -267,6 +267,7 @@ class PostController extends Controller
             'owned_by' => $request->input('owned_by'),
             'main_cat_id' => $request->input('main_cat_id'),
             'alt_img' => $request->input('alt_img'),
+            'layout' => $request->input('layout'),
             'meta_data' => $request->input('meta_data'),
             'extra_fields' => $request->input('extra_fields'),
             'settings' => $request->input('settings'),
