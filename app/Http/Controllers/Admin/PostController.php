@@ -512,7 +512,6 @@ class PostController extends Controller
         $data = [];
 
         foreach ($post->layoutItems as $item) {
-            //$value = ($item->type == 'image') ? json_decode($item->value) : $item->value;
             $data[] = ['id_nb' => $item->id_nb, 'type' => $item->type, 'text' => $item->text, 'data' => $item->data, 'order' => $item->order];
         }
 

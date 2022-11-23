@@ -524,16 +524,19 @@ const C_Layout = (function() {
         //
         let type = (data !== undefined) ? data.type : 'group_start';
         let separator = ' ------------------------------------------ ';
-	let attribs = {'type':'text', 'name':'layout_items['+type+'_'+idNb+']', 'id':type+'-'+idNb, 'class':'form-control', 'value':value};
 
         if (data !== undefined) {
             if (type == 'group_start') {
-               value = data.data.class+'|'+data.data.groups_in_row;
+               value = data.data.class !== undefined ? data.data.class : '';
+               // Check for the groups_in_row attribute.
+               value = data.data.groups_in_row !== undefined && data.data.groups_in_row != '' ? value+'|'+data.data.groups_in_row : value;
             }
             else {
                value = data.data.parent_id;
             }
         }
+
+	let attribs = {'type':'text', 'name':'layout_items['+type+'_'+idNb+']', 'id':type+'-'+idNb, 'class':'form-control', 'value':value};
 
         if (type == 'group_end') {
             // Create a fake field to use it as "separator".

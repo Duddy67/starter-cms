@@ -99,7 +99,7 @@ class LayoutItem extends Model
                         }
 
                         // Store image data.
-                        $item->data = json_encode(['url' => $image->getUrl(), 'thumbnail' => $image->getThumbnailUrl()]);
+                        $item->data = ['url' => $image->getUrl(), 'thumbnail' => $image->getThumbnailUrl()];
                         $item->text = $items['alt_text_'.$id];
                         $item->order = $items['layout_item_ordering_'.$id];
                         $item->save();
@@ -122,7 +122,7 @@ class LayoutItem extends Model
                     $attribute = 'text';
 
                     if ($type == 'group_start' || $type == 'group_end') {
-                        $value = $this->setGroupStartData($type, $value);
+                        $value = self::setGroupData($type, $value);
                         $attribute = 'data';
                     }
 
@@ -165,14 +165,14 @@ class LayoutItem extends Model
         return $image;
     }
 
-    private function setGroupStartData(string $type, string $value)
+    public static function setGroupData(string $type, string|null $value)
     {
         if (empty($value)) {
-            return '{}';
+            return [];
         }
 
-        if ($type = 'group_end') {
-            return json_encode(['parent_id' => $value]);
+        if ($type == 'group_end') {
+            return ['parent_id' => $value];
         }
 
         $value = explode('|', $value);
@@ -184,7 +184,7 @@ class LayoutItem extends Model
 
         $data['class'] = $value[0];
 
-        return json_encode($data);
+        return $data;
     }
 }
 
