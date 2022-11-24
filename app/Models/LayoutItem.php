@@ -22,8 +22,18 @@ class LayoutItem extends Model
     protected $fillable = [
         'id_nb',
         'type',
-        'value',
+        'text',
+        'data',
         'order',
+    ];
+
+    /**
+     * The attributes that should be casted.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'data' => 'array'
     ];
 
     /**
@@ -91,10 +101,14 @@ class LayoutItem extends Model
                             $image = $item->image;
                         }
 
-                        // Store value as JSON.
-                        $item->value = json_encode(['alt_text' => $items['alt_text_'.$id], 'url' => $image->getUrl(), 'thumbnail' => $image->getThumbnailUrl()]);
+                        // Store image data.
+                        $item->data = ['url' => $image->getUrl(), 'thumbnail' => $image->getThumbnailUrl()];
                         $item->order = $items['layout_item_ordering_'.$id];
                         $item->save();
+
+                        $translation = $item->getOrCreateTranslation($locale);
+                        $translation->text = $items['alt_text_'.$id];
+                        $translation->save();
 
                         $refresh['layout-item-thumbnail-'.$id] = url('/').'/'.$image->getThumbnailUrl();
                         $refresh['layout-item-upload-'.$id] = '';
@@ -111,23 +125,23 @@ class LayoutItem extends Model
                     $id = $matches[3];
                     $order = $items['layout_item_ordering_'.$id];
 
-                    // Prevent group start empty value to be stored as NULL.
-                    $value = ($type == 'group_start' && empty($value)) ? '' : $value;
-
                     if ($item = $model->layoutItems->where('id_nb', $id)->first()) {
                         $item->order = $order;
                         $item->save();
-
-                        $translation = $item->getOrCreateTranslation($locale);
-                        $translation->value = $value;
-                        $translation->save();
                     }
                     else {
                         $item = LayoutItem::create(['type' => $type, 'id_nb' => $id, 'order' => $order]);
                         $model->layoutItems()->save($item);
+                    }
 
+                    if ($type == 'group_start' || $type == 'group_end') {
+                        $item->data = self::setGroupData($type, $value);
+                        $item->save();
+                    }
+                    // text_block, title.
+                    else {
                         $translation = $item->getOrCreateTranslation($locale);
-                        $translation->value = $value;
+                        $translation->text = $value;
                         $translation->save();
                     }
                 }
@@ -158,6 +172,28 @@ class LayoutItem extends Model
         }
 
         return $image;
+    }
+
+    public static function setGroupData(string $type, string|null $value)
+    {
+        if (empty($value)) {
+            return [];
+        }
+
+        if ($type == 'group_end') {
+            return ['parent_id' => $value];
+        }
+
+        $value = explode('|', $value);
+        $data = ['class' => '', 'groups_in_row' => ''];
+
+        if (count($value) == 2) {
+            $data['groups_in_row'] = $value[1];
+        }
+
+        $data['class'] = $value[0];
+
+        return $data;
     }
 }
 

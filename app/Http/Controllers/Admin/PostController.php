@@ -261,6 +261,7 @@ class PostController extends Controller
             'access_level' => $request->input('access_level'), 
             'owned_by' => $request->input('owned_by'),
             'main_cat_id' => $request->input('main_cat_id'),
+            'layout' => $request->input('layout'),
             'settings' => $request->input('settings'),
         ]);
 
@@ -506,10 +507,11 @@ class PostController extends Controller
     public function layout(Request $request, Post $post)
     {
         $data = [];
+        $locale = ($request->query('locale', null)) ? $request->query('locale') : config('app.locale');
 
         foreach ($post->layoutItems as $item) {
-            $value = ($item->type == 'image') ? json_decode($item->getTranslation($request->input('locale'))->value) : $item->getTranslation($request->input('locale'))->value;
-            $data[] = ['id_nb' => $item->id_nb, 'type' => $item->type, 'value' => $value, 'order' => $item->order];
+            $text = (str_starts_with($item->type, 'group_') || $item->getTranslation($locale) === null) ? '' : $item->getTranslation($locale)->text;
+            $data[] = ['id_nb' => $item->id_nb, 'type' => $item->type, 'text' => $text, 'data' => $item->data, 'order' => $item->order];
         }
 
         return response()->json($data);

@@ -341,7 +341,7 @@ class Post extends Model
 
         foreach ($this->layoutItems as $item) {
             if ($item->type == 'title' || $item->type == 'text_block') {
-                $rawContent .= strip_tags($item->value.' ');
+                $rawContent .= strip_tags($item->text.' ');
             }
         }
 

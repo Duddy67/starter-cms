@@ -26,7 +26,7 @@ class Translation extends Model
         'description',
         'alt_img',
         'url',
-        'value',
+        'text',
         'meta_data',
         'extra_fields',
     ];

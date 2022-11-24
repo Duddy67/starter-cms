@@ -25,7 +25,7 @@ return new class extends Migration
             $table->text('raw_content')->nullable();
             $table->text('excerpt')->nullable();
             $table->text('description')->nullable();
-            $table->text('value')->nullable();
+            $table->text('text')->nullable();
             $table->string('url')->nullable();
             $table->string('alt_img', 250)->nullable();
             $table->json('meta_data')->nullable();
