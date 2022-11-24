@@ -165,7 +165,7 @@ class PostController extends Controller
         $post->layout = $request->input('layout');
         $post->settings = $request->input('settings');
         $post->updated_by = auth()->user()->id;
-        $layoutRefresh = LayoutItem::storeItems($post);
+        $layoutRefresh = LayoutItem::storeItems($post, $request->input('locale'));
 
         if ($post->canChangeAccessLevel()) {
             $post->access_level = $request->input('access_level');
@@ -264,7 +264,7 @@ class PostController extends Controller
             'settings' => $request->input('settings'),
         ]);
 
-        LayoutItem::storeItems($post);
+        LayoutItem::storeItems($post, config('app.locale'));
         $post->updated_by = auth()->user()->id;
 
         $post->save();
@@ -508,7 +508,7 @@ class PostController extends Controller
         $data = [];
 
         foreach ($post->layoutItems as $item) {
-            $value = ($item->type == 'image') ? json_decode($item->value) : $item->value;
+            $value = ($item->type == 'image') ? json_decode($item->getTranslation($request->input('locale'))->value) : $item->getTranslation($request->input('locale'))->value;
             $data[] = ['id_nb' => $item->id_nb, 'type' => $item->type, 'value' => $value, 'order' => $item->order];
         }
 

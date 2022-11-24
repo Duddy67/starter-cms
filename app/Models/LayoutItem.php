@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Request;
 use App\Models\Cms\Document;
+use App\Traits\Translatable;
 
 class LayoutItem extends Model
 {
-    use HasFactory;
+    use HasFactory, Translatable;
 
     public $timestamps = false;
 
@@ -54,10 +55,12 @@ class LayoutItem extends Model
             $this->image->delete();
         }
 
+        $this->translations()->delete();
+
         parent::delete();
     }
 
-    public static function storeItems(object $model): array
+    public static function storeItems(object $model, string $locale): array
     {
         $refresh = [];
 
@@ -112,13 +115,20 @@ class LayoutItem extends Model
                     $value = ($type == 'group_start' && empty($value)) ? '' : $value;
 
                     if ($item = $model->layoutItems->where('id_nb', $id)->first()) {
-                        $item->value = $value;
                         $item->order = $order;
                         $item->save();
+
+                        $translation = $item->getOrCreateTranslation($locale);
+                        $translation->value = $value;
+                        $translation->save();
                     }
                     else {
-                        $item = LayoutItem::create(['type' => $type, 'id_nb' => $id, 'value' => $value, 'order' => $order]);
+                        $item = LayoutItem::create(['type' => $type, 'id_nb' => $id, 'order' => $order]);
                         $model->layoutItems()->save($item);
+
+                        $translation = $item->getOrCreateTranslation($locale);
+                        $translation->value = $value;
+                        $translation->save();
                     }
                 }
             }
