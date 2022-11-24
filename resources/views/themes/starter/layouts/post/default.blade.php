@@ -7,11 +7,10 @@
     @endif
 
     @if ($item->type == 'group_start')
-        @php $data = explode('|', $item->value); @endphp
-        @if (count($data) == 2)
-           @php $limit = $data[1]; @endphp
+        @if (!empty($item->data['groups_in_row']))
+           @php $limit = $item->data['groups_in_row']; @endphp
         @endif
-        <div class="{{ $data[0] }}">
+        <div class="{{ $item->data['class'] }}">
     @endif
 
     @if ($item->type == 'group_end')
@@ -26,18 +25,17 @@
     @endif
 
     @if ($item->type == 'title')
-        <h3>{{ $item->value }}</h3>
+        <h3>{{ $item->text }}</h3>
         @continue
     @endif
 
     @if ($item->type == 'text_block')
-        {!! $item->value !!}
+        {!! $item->text !!}
         @continue
     @endif
 
     @if ($item->type== 'image')
-        @php $image = json_decode($item->value, true); @endphp
-        <img class="rounded img-fluid" src="{{ url('/').$image['url'] }}" alt="{{ $image['alt_text'] }}">
+        <img class="rounded img-fluid" src="{{ url('/').$item->data['url'] }}" alt="{{ $item->text }}">
         @continue
     @endif
 

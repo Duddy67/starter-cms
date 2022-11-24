@@ -475,14 +475,14 @@ const C_Layout = (function() {
     // Functions that create layout items.
 
     function _createTitle(idNb, data) {
-        let value = (data !== undefined) ? data.value : '';
+        let value = (data !== undefined) ? data.text : '';
 
 	let attribs = {'type':'text', 'name':'layout_items[title_'+idNb+']', 'id':'title-'+idNb, 'class':'form-control', 'value':value};
 	document.getElementById('layout-item-row-1-cell-1-'+idNb).append(_createElement('input', attribs));
     }
 
     function _createTextBlock(idNb, data) {
-        let value = (data !== undefined) ? data.value : '';
+        let value = (data !== undefined) ? data.text : '';
 
 	let attribs = {'name':'layout_items[text_block_'+idNb+']', 'id':'text_block-'+idNb, 'class':'form-control'};
 	document.getElementById('layout-item-row-1-cell-1-'+idNb).append(_createElement('textarea', attribs));
@@ -491,8 +491,8 @@ const C_Layout = (function() {
     }
 
     function _createImage(idNb, data) {
-        let thumbnail = (data !== undefined) ? data.value.thumbnail : '/images/camera.png';
-        let altText = (data !== undefined) ? data.value.alt_text : '';
+        let thumbnail = (data !== undefined) ? data.data.thumbnail : '/images/camera.png';
+        let altText = (data !== undefined) ? data.text : '';
         let status = (data !== undefined) ? 'update' : 'new';
         let siteUrl = document.getElementById('siteUrl').value;
 
@@ -520,10 +520,22 @@ const C_Layout = (function() {
     }
 
     function _createGroup(idNb, data) {
-        let value = (data !== undefined) ? data.value : '';
+        let value = '';
         //
         let type = (data !== undefined) ? data.type : 'group_start';
         let separator = ' ------------------------------------------ ';
+
+        if (data !== undefined) {
+            if (type == 'group_start') {
+               value = data.data.class !== undefined ? data.data.class : '';
+               // Check for the groups_in_row attribute.
+               value = data.data.groups_in_row !== undefined && data.data.groups_in_row != '' ? value+'|'+data.data.groups_in_row : value;
+            }
+            else {
+               value = data.data.parent_id;
+            }
+        }
+
 	let attribs = {'type':'text', 'name':'layout_items['+type+'_'+idNb+']', 'id':type+'-'+idNb, 'class':'form-control', 'value':value};
 
         if (type == 'group_end') {
