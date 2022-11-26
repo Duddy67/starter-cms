@@ -17,7 +17,8 @@
 	<p class="categories">
 	    <h6>Categories</h6>
 	    @foreach ($post->categories as $category)
-		<a href="{{ url('/'.$segments->plugin.$category->getUrl()) }}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">{{ $category->name }}</a>
+                @php $translation = $category->getTranslation($locale); @endphp
+		<a href="{{ url('/'.$locale.'/'.$segments->plugin.$category->getUrl()) }}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">{{ $translation->name }}</a>
 	    @endforeach
 	</p>
     @endif

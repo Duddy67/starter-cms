@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
-    public function show(Request $request, $id, $slug)
+    public function show(Request $request, $locale, $id, $slug)
     {
         $post = Post::select('posts.*', 'users.name as owner_name', 'users2.name as modifier_name')
 			->leftJoin('users', 'posts.owned_by', '=', 'users.id')
@@ -26,12 +26,12 @@ class PostController extends Controller
 
 	if (!$post) {
             $page = '404';
-            return view('themes.'.$theme.'.index', compact('page', 'menu'));
+            return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu'));
 	}
 
 	if (!$post->canAccess()) {
             $page = '403';
-            return view('themes.'.$theme.'.index', compact('page', 'menu'));
+            return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu'));
 	}
 
         $page = 'post';
@@ -41,8 +41,8 @@ class PostController extends Controller
         $timezone = Setting::getValue('app', 'timezone');
         $metaData = $post->meta_data;
         $segments = PostSetting::getSegments();
-	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug]);
+	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug, 'locale' => $locale]);
 
-        return view('themes.'.$theme.'.index', compact('page', 'menu', 'id', 'slug', 'post', 'segments', 'settings', 'timezone', 'metaData', 'query'));
+        return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu', 'id', 'slug', 'post', 'segments', 'settings', 'timezone', 'metaData', 'query'));
     }
 }

@@ -28,34 +28,50 @@ use App\Models\Post\Setting as PostSetting;
 |
 */
 
-$segments = PostSetting::getSegments();
-Route::get('/'.$segments->post.'/{id}/{slug}', [PostController::class, 'show'])->name('post');
-Route::get('/'.$segments->plugin.'/'.$segments->category.'/{id}/{slug}', [PostCategoryController::class, 'index'])->name('post.category');
-
-Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login']);
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
-Route::get('/profile/token', [TokenController::class, 'update'])->name('profile.token');
-
-Route::get('/cms/filemanager', [FileManagerController::class, 'index'])->name('cms.filemanager.index');
-Route::post('/cms/filemanager', [FileManagerController::class, 'upload']);
-Route::delete('/cms/filemanager', [FileManagerController::class, 'destroy'])->name('cms.filemanager.destroy');
-
-Route::get('/expired', function () {
-    return view('cms.filemanager.expired');
-})->name('expired');
-
-Route::middleware(['guest'])->group(function () {
-    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [RegisterController::class, 'register']);
-    Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-    Route::get('/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-    Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
-    Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::get('/', function () {
+    return redirect(app()->getLocale());
 });
 
+Route::prefix('{locale}')
+    ->where(['locale' => '[a-zA-Z]{2}'])
+    ->middleware('setlocale')
+    ->group(function () {
+
+    $segments = PostSetting::getSegments();
+    Route::get('/'.$segments->post.'/{id}/{slug}', [PostController::class, 'show'])->name('post');
+    Route::get('/'.$segments->plugin.'/'.$segments->category.'/{id}/{slug}', [PostCategoryController::class, 'index'])->name('post.category');
+    Route::get('/search', [SearchController::class, 'index'])->name('search');
+    Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+    Route::get('/{page}/{id}/{slug}', [SiteController::class, 'show'])->name('site.show');
+
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    Route::get('/profile/token', [TokenController::class, 'update'])->name('profile.token');
+
+    Route::get('/cms/filemanager', [FileManagerController::class, 'index'])->name('cms.filemanager.index');
+    Route::post('/cms/filemanager', [FileManagerController::class, 'upload']);
+    Route::delete('/cms/filemanager', [FileManagerController::class, 'destroy'])->name('cms.filemanager.destroy');
+
+    Route::get('/expired', function () {
+        return view('cms.filemanager.expired');
+    })->name('expired');
+
+    Route::middleware(['guest'])->group(function () {
+        Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+        Route::post('/register', [RegisterController::class, 'register']);
+        Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+        Route::get('/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+        Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+        Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+    });
+
+    Route::get('/{page?}', [SiteController::class, 'index'])->where('page', '^(?!admin).*$')->name('site.index');
+});
+
+/***** BACK OFFICE *****/
 Route::prefix('admin')->group(function () {
 
     Route::middleware(['admin'])->group(function () {
@@ -73,9 +89,4 @@ Route::prefix('admin')->group(function () {
         Route::group([], __DIR__.'/admin/settings.php');
     });
 });
-
-Route::get('/search', [SearchController::class, 'index'])->name('search');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
-Route::get('/{page?}', [SiteController::class, 'index'])->name('site.index');
-Route::get('/{page}/{id}/{slug}', [SiteController::class, 'show'])->name('site.show');
 

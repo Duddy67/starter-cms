@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
-    public function index(Request $request, $id, $slug)
+    public function index(Request $request, $locale, $id, $slug)
     {
         $page = 'post.category';
         $theme = Setting::getValue('website', 'theme', 'starter');
@@ -21,12 +21,12 @@ class CategoryController extends Controller
 
 	if (!$category = Category::where('id', $id)->first()) {
             $page = '404';
-            return view('themes.'.$theme.'.index', compact('page', 'menu'));
+            return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu'));
 	}
 
 	if (!$category->canAccess()) {
             $page = '403';
-            return view('themes.'.$theme.'.index', compact('page', 'menu'));
+            return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu'));
 	}
 
         $category->global_settings = PostSetting::getDataByGroup('categories');
@@ -34,8 +34,8 @@ class CategoryController extends Controller
 	$posts = $category->getPosts($request);
         $segments = PostSetting::getSegments();
         $metaData = $category->meta_data;
-	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug]);
+	$query = array_merge($request->query(), ['locale' => $locale, 'id' => $id, 'slug' => $slug]);
 
-        return view('themes.'.$theme.'.index', compact('page', 'menu', 'category', 'segments', 'settings', 'posts', 'metaData', 'query'));
+        return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu', 'category', 'segments', 'settings', 'posts', 'metaData', 'query'));
     }
 }

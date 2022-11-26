@@ -12,7 +12,8 @@ class SiteController extends Controller
 {
     public function index(Request $request)
     {
-        $page = ($request->segment(1)) ? $request->segment(1) : 'home';
+        $locale = $request->segment(1);
+        $page = ($request->segment(2)) ? $request->segment(2) : 'home';
         $posts = null;
         $settings = $metaData = [];
         $menu = Menu::getMenu('main-menu');
@@ -46,22 +47,24 @@ class SiteController extends Controller
             }
         }
         elseif ($page == 'home' || file_exists(resource_path().'/views/themes/'.$theme.'/pages/'.$page.'.blade.php')) {
-            return view('themes.'.$theme.'.index', compact('page', 'menu', 'query'));
+            return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu', 'query'));
         }
         else {
             $page = '404';
-            return view('themes.'.$theme.'.index', compact('page', 'menu'));
+            return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu'));
         }
 
         $segments = PostSetting::getSegments();
 
-        return view('themes.'.$theme.'.index', compact('page', 'menu', 'category', 'settings', 'posts', 'segments', 'metaData', 'timezone', 'query'));
+        return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu', 'category', 'settings', 'posts', 'segments', 'metaData', 'timezone', 'query'));
     }
 
 
     public function show(Request $request)
     {
-        $page = $request->segment(1);
+//file_put_contents('debog_file.txt', print_r($request->segment(1), true));
+        $locale = $request->segment(1);
+        $page = $request->segment(2);
         $menu = Menu::getMenu('main-menu');
         $menu->allow_registering = Setting::getValue('website', 'allow_registering', 0);
         $theme = Setting::getValue('website', 'theme', 'starter');
@@ -70,13 +73,13 @@ class SiteController extends Controller
         // First make sure the category exists.
 	if (!$category = Category::where('slug', $page)->first()) {
             $page = '404';
-            return view('themes.'.$theme.'.index', compact('page', 'menu'));
+            return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu'));
         }
 
         // Then make sure the post exists and is part of the category.
 	if (!$post = $category->posts->where('id', $request->segment(2))->first()) {
             $page = '404';
-            return view('themes.'.$theme.'.index', compact('page', 'menu'));
+            return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu'));
         }
 
         $post->global_settings = PostSetting::getDataByGroup('posts');
@@ -85,6 +88,6 @@ class SiteController extends Controller
         $metaData = $post->meta_data;
 	$query = $request->query();
 
-        return view('themes.'.$theme.'.index', compact('page', 'menu', 'category', 'post', 'segments', 'metaData', 'timezone', 'query'));
+        return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu', 'category', 'post', 'segments', 'metaData', 'timezone', 'query'));
     }
 }

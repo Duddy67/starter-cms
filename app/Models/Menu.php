@@ -143,6 +143,7 @@ class Menu extends Model
     {
         $nodes = Item::select('menu_items.*', 'translations.title as title', 'translations.url as url')
                        ->where('menu_code', $this->code)
+                       ->where('status', 'published')
                        ->join('translations', function ($join) {
                            $join->on('menu_items.id', '=', 'translatable_id')
                                 ->where('translations.translatable_type', '=', 'App\Models\Menu\Item')
