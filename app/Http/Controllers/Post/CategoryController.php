@@ -19,7 +19,7 @@ class CategoryController extends Controller
         $theme = Setting::getValue('website', 'theme', 'starter');
         $menu = Menu::getMenu('main-menu');
 
-	if (!$category = Category::where('id', $id)->first()) {
+	if (!$category = Category::getItem($id, $locale)) {
             $page = '404';
             return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu'));
 	}
@@ -33,7 +33,7 @@ class CategoryController extends Controller
 	$settings = $category->getSettings();
 	$posts = $category->getPosts($request);
         $segments = PostSetting::getSegments();
-        $metaData = $category->meta_data;
+        $metaData = json_decode($category->meta_data, true);
 	$query = array_merge($request->query(), ['locale' => $locale, 'id' => $id, 'slug' => $slug]);
 
         return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu', 'category', 'segments', 'settings', 'posts', 'metaData', 'query'));

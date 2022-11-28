@@ -1,7 +1,9 @@
-<h1 class="h2"><a href="{{ url($post->getUrl()) }}">{{ $post->title }}</a></h1>
+<h1 class="h2"><a href="{{ url($locale.$post->getUrl()) }}">{{ $post->title }}</a></h1>
 
-@php $count = $limit = 0; @endphp
-@foreach ($post->layoutItems as $key => $item)
+@php $layoutItems = $post->getLayoutItems($locale); $count = $limit = 0; @endphp
+
+@foreach ($layoutItems as $key => $item)
+
     @if ($count == 0)
         <div class="row">
     @endif

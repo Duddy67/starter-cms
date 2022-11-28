@@ -168,7 +168,7 @@ class Post extends Model
         // Get the default locale translation.
         $query->join('translations', function ($join) use($search) { 
             $join->on('posts.id', '=', 'translatable_id')
-                 ->where('translations.translatable_type', '=', 'App\Models\Post')
+                 ->where('translations.translatable_type', '=', Post::class)
                  ->where('translations.locale', '=', config('app.locale'));
 
             if ($search !== null) {
@@ -247,7 +247,7 @@ class Post extends Model
             ->leftJoin('users as users2', 'posts.updated_by', '=', 'users2.id')
             ->leftJoin('translations', function ($join) use($locale) { 
                 $join->on('posts.id', '=', 'translatable_id')
-                     ->where('translations.translatable_type', '=', 'App\Models\Post')
+                     ->where('translations.translatable_type', '=', Post::class)
                      ->where('locale', '=', $locale);
         })->findOrFail($id);
     }
@@ -258,13 +258,22 @@ class Post extends Model
         return '/'.$segments->post.'/'.$this->id.'/'.$this->slug;
     }
 
+    public function getCategories($locale)
+    {
+        return $this->categories()->select('post_categories.*', 'translations.name as name', 'translations.slug as slug')
+                    ->join('translations', function ($join) use($locale) { 
+                        $join->on('post_categories.id', '=', 'translatable_id')
+                             ->where('translations.translatable_type', '=', Category::class)
+                             ->where('locale', '=', $locale);
+        })->get();
+    }
+
     public function getCategoriesOptions()
     {
-        //$nodes = Category::get()->toTree();
         $nodes = Category::select('post_categories.*', 'translations.name as name')
             ->join('translations', function($join) {
                 $join->on('post_categories.id', '=', 'translatable_id')
-                     ->where('translations.translatable_type', '=', 'App\Models\Post\Category')
+                     ->where('translations.translatable_type', '=', Category::class)
                      ->where('locale', '=', config('app.locale'));
         })->get()->toTree();
 
@@ -286,6 +295,17 @@ class Post extends Model
         $traverse($nodes);
 
         return $options;
+    }
+
+    public function getLayoutItems($locale)
+    {
+        return $this->layoutItems()->select('layout_items.*', 'translations.text as text')
+                    // Use leftJoin to also get the group type items. 
+                    ->leftJoin('translations', function ($join) use($locale) { 
+                        $join->on('layout_items.id', '=', 'translatable_id')
+                             ->where('translations.translatable_type', '=', LayoutItem::class)
+                             ->where('locale', '=', $locale);
+        })->get();
     }
 
     public function getSettings()

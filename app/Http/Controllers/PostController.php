@@ -15,10 +15,13 @@ class PostController extends Controller
 {
     public function show(Request $request, $locale, $id, $slug)
     {
-        $post = Post::select('posts.*', 'users.name as owner_name', 'users2.name as modifier_name')
+        /*$post = Post::select('posts.*', 'users.name as owner_name', 'users2.name as modifier_name')
 			->leftJoin('users', 'posts.owned_by', '=', 'users.id')
 			->leftJoin('users as users2', 'posts.updated_by', '=', 'users2.id')
-			->where('posts.id', $id)->first();
+			->where('posts.id', $id)->first();*/
+
+        $post = Post::getItem($id, $locale);
+        $post->translation = $post->getTranslation($locale);
 
         $menu = Menu::getMenu('main-menu');
         $menu->allow_registering = Setting::getValue('website', 'allow_registering', 0);
@@ -39,7 +42,8 @@ class PostController extends Controller
         $post->global_settings = PostSetting::getDataByGroup('posts');
 	$settings = $post->getSettings();
         $timezone = Setting::getValue('app', 'timezone');
-        $metaData = $post->meta_data;
+        //$metaData = json_decode($post->meta_data, true);
+        $metaData = $post->translation->meta_data;
         $segments = PostSetting::getSegments();
 	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug, 'locale' => $locale]);
 

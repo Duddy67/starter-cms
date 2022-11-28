@@ -22,8 +22,9 @@ class SiteController extends Controller
         $query = $request->query();
         $timezone = Setting::getValue('app', 'timezone');
 
-        // DUMB REQUEST !
-        if ($category = Category::where('status', $page)->first()) {
+        $category = Category::getItem($page, $locale, true);
+
+        if ($category) {
             $posts = $category->getAllPosts($request);
 
             $globalSettings = PostSetting::getDataByGroup('categories');
@@ -38,8 +39,7 @@ class SiteController extends Controller
             }
 
             $category->global_settings = $globalSettings;
-            $metaData = $category->meta_data;
-
+            $metaData = json_decode($category->meta_data, true);
             $globalSettings = PostSetting::getDataByGroup('posts');
 
             foreach ($posts as $post) {
@@ -62,7 +62,6 @@ class SiteController extends Controller
 
     public function show(Request $request)
     {
-//file_put_contents('debog_file.txt', print_r($request->segment(1), true));
         $locale = $request->segment(1);
         $page = $request->segment(2);
         $menu = Menu::getMenu('main-menu');
@@ -70,14 +69,16 @@ class SiteController extends Controller
         $theme = Setting::getValue('website', 'theme', 'starter');
         $timezone = Setting::getValue('app', 'timezone');
 
+        $category = Category::getItem($page, $locale, true);
+
         // First make sure the category exists.
-	if (!$category = Category::where('slug', $page)->first()) {
+	if (!$category) {
             $page = '404';
             return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu'));
         }
 
         // Then make sure the post exists and is part of the category.
-	if (!$post = $category->posts->where('id', $request->segment(2))->first()) {
+	if (!$post = $category->posts->where('id', $request->segment(3))->first()) {
             $page = '404';
             return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu'));
         }
@@ -85,7 +86,7 @@ class SiteController extends Controller
         $post->global_settings = PostSetting::getDataByGroup('posts');
         $page = $page.'-details';
         $segments = PostSetting::getSegments();
-        $metaData = $post->meta_data;
+        $metaData = json_decode($post->meta_data, true);
 	$query = $request->query();
 
         return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu', 'category', 'post', 'segments', 'metaData', 'timezone', 'query'));

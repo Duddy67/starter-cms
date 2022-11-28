@@ -132,9 +132,9 @@ class Category extends Model
 
         $query = Category::select('post_categories.*', 'users.name as owner_name', 'translations.name as name')
             ->leftJoin('users', 'post_categories.owned_by', '=', 'users.id')
-            ->join('translations', function ($join) use($search) { 
+            ->join('translations', function ($join) { 
                 $join->on('post_categories.id', '=', 'translatable_id')
-                    ->where('translations.translatable_type', '=', 'App\Models\Post\Category')
+                    ->where('translations.translatable_type', '=', Category::class)
                     ->where('locale', '=', config('app.locale'));
         });
 
@@ -145,19 +145,26 @@ class Category extends Model
         return $query->defaultOrder()->get()->toTree();
     }
 
-    public static function getItem($id, $locale)
+    public static function getItem(int|string $id, string $locale, bool $bySlug = false)
     {
-        return Category::select('post_categories.*', 'users.name as owner_name', 'users2.name as modifier_name',
+        $query = Category::select('post_categories.*', 'users.name as owner_name', 'users2.name as modifier_name',
                             'translations.name as name', 'translations.slug as slug', 
                             'translations.description as description', 'translations.alt_img as alt_img',
                             'translations.extra_fields as extra_fields', 'translations.meta_data as meta_data')
             ->leftJoin('users', 'post_categories.owned_by', '=', 'users.id')
             ->leftJoin('users as users2', 'post_categories.updated_by', '=', 'users2.id')
-            ->leftJoin('translations', function ($join) use($locale) { 
+            ->join('translations', function ($join) use($id, $locale, $bySlug) { 
                 $join->on('post_categories.id', '=', 'translatable_id')
-                     ->where('translations.translatable_type', '=', 'App\Models\Post\Category')
-                     ->where('locale', '=', $locale);
-        })->findOrFail($id);
+                     ->where('translations.translatable_type', Category::class)
+                     ->where('translations.locale', $locale);
+
+                     if ($bySlug) {
+                         // id stands for slug.
+                         $join->where('translations.slug', $id);
+                     }
+        });
+
+        return ($bySlug) ? $query->first() : $query->find($id);
     }
 
     public function getUrl()
@@ -196,7 +203,6 @@ class Category extends Model
      */
     private function getQuery(Request $request)
     {
-//file_put_contents('debog_file.txt', print_r($request->segment(1), true));
         $locale = ($request->segment(1)) ? $request->segment(1) : config('app.locale');
         $query = Post::query();
         $query->select('posts.*', 'users.name as owner_name',

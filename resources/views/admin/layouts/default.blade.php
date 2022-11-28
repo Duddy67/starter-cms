@@ -38,19 +38,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="{{ route('site.index') }}" class="nav-link" target="_blank">Home</a>
+        <a href="{{ route('site.index', ['locale' => config('app.locale')]) }}" class="nav-link" target="_blank">Home</a>
       </li>
       <!--<li class="nav-item d-none d-sm-inline-block">
         <a href="#" class="nav-link">Contact</a>
       </li>-->
       <li class="nav-item d-none d-sm-inline-block">
-        <a class="nav-link" href="{{ route('logout') }}"
+        <a class="nav-link" href="{{ route('logout', ['locale' => config('app.locale')]) }}"
            onclick="event.preventDefault();
                          document.getElementById('logout-form').submit();">
             {{ __('Logout') }}
         </a>
 
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+        <form id="logout-form" action="{{ route('logout', ['locale' => config('app.locale')]) }}" method="POST" style="display: none;">
             @csrf
         </form>
       </li>
