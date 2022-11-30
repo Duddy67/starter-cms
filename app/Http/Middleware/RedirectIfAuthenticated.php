@@ -24,13 +24,13 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                return redirect('/'.app()->getLocale().RouteServiceProvider::HOME);
             }
         }
 
         // Check whether guests are allowed to register.
         if ($request->segment(1) == 'register' && !Setting::getValue('website', 'allow_registering', 0)) {
-            return redirect(RouteServiceProvider::HOME);
+            return redirect('/'.app()->getLocale().RouteServiceProvider::HOME);
         }
 
         return $next($request);

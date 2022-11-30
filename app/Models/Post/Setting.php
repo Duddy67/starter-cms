@@ -82,12 +82,18 @@ class Setting extends Model
 	return $settings;
     }
 
-    public static function getSegments(): object
+    public static function getSegments()
     {
         $json = file_get_contents(base_path().'/routes/segments/post.json', true);
         $segments = json_decode($json);
+        // Set a fallback to prevent Artisan commands (cache:clear ...) to generate errors.
+        $locale = \App::runningInConsole() ? app()->getLocale() : request()->segment(1);
+        // The user has just landed on the website, no locale variable has been set yet.
+        $locale = (empty($locale)) ? config('app.fallback_locale') : $locale;
+        // Make sure the locale attribute exists.
+        $locale = (!isset($segments->$locale)) ? config('app.fallback_locale') : $locale; 
 
-        return $segments->{app()->getLocale()};
+        return $segments->$locale;
     }
 
     public static function getPostOrderingOptions(): array

@@ -21,8 +21,9 @@ class SiteController extends Controller
         $theme = Setting::getValue('website', 'theme', 'starter');
         $query = $request->query();
         $timezone = Setting::getValue('app', 'timezone');
+        $slug = __('locales.homepage.'.$locale);
 
-        $category = Category::getItem($page, $locale, true);
+        $category = Category::getItem($slug, $locale, true);
 
         if ($category) {
             $posts = $category->getAllPosts($request);

@@ -10,11 +10,15 @@
               </ul>
         </div>
     @endif
+{{ app()->getLocale() }}
+    <div class="me-5">
+        @include ('themes.starter.partials.site.locales')
+    </div>
 
     @if (Route::has('login'))
         <div class="hidden fixed me-2 px-6 py-4 sm:block">
             @auth
-                <a href="{{ url('/profile') }}" class="text-sm text-gray-700 underline">Profile</a>
+                <a href="{{ url('/'.app()->getLocale().'/profile') }}" class="text-sm text-gray-700 underline">Profile</a>
             @else
                 <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Log in</a>
 
