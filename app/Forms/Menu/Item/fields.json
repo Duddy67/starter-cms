@@ -14,10 +14,10 @@
     "placeholder": "labels.menuitem.url"
   },
   {
-    "label": "labels.menuitem.model",
+    "label": "labels.menuitem.model_name",
     "type": "text",
-    "name": "model",
-    "id": "model",
+    "name": "model_name",
+    "id": "model_name",
     "placeholder": "labels.menuitem.model_example"
   },
   {

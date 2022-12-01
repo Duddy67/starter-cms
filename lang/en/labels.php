@@ -73,8 +73,8 @@ return [
 	'edit_menu_item' => 'Edit a menu item',
 	'parent_item' => 'Parent item',
 	'url' => 'URL',
-	'model' => 'Model',
-	'model_example' => '\App\Models\Post',
+	'model_name' => 'Model name',
+	'model_example' => 'ex: Post',
 	'class' => 'Class',
 	'anchor' => 'Anchor',
     ],
@@ -218,11 +218,6 @@ return [
     ],
     'pagination' => [
 	'results' => 'Showing :first to :last of :total results',
-    ],
-    'locale' => [
-	'en' => 'English',
-	'fr' => 'French',
-	'es' => 'Spanish',
     ],
 ];
 

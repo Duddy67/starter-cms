@@ -18,7 +18,7 @@
 	    <h6>Categories</h6>
             @php $categories = $post->getCategories($locale); @endphp
 	    @foreach ($categories as $category)
-		<a href="{{ url('/'.$locale.'/'.$segments->plugin.$category->getUrl()) }}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">{{ $category->name }}</a>
+		<a href="{{ url('/'.$locale.'/'.$segments['plugin'].$category->getUrl()) }}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">{{ $category->name }}</a>
 	    @endforeach
 	</p>
     @endif

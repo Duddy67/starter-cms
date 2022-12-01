@@ -16,7 +16,7 @@ class CreateMenuItemsTable extends Migration
         Schema::create('menu_items', function (Blueprint $table) {
             $table->id();
             $table->string('menu_code', 30)->nullable();
-            $table->string('model', 100)->nullable();
+            $table->string('model_name', 100)->nullable();
             $table->string('class', 100)->nullable();
             $table->string('anchor', 100)->nullable();
             $table->char('status', 12);

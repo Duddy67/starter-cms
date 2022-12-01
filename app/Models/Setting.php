@@ -267,10 +267,24 @@ class Setting extends Model
         $options = [];
 
         foreach ($locales as $locale) {
-            $options[] = ['value' => $locale, 'text' => __('labels.locale.'.$locale)];
+            $options[] = ['value' => $locale, 'text' => __('locales.options.'.$locale)];
         }
 
         return $options;
+    }
+
+    public static function getSegments($modelName)
+    {
+        // The locales.php file always lives in the "en" lang folder.
+        $segments = __('locales.segments.'.$modelName, [], 'en');
+        // Set a fallback to prevent Artisan commands (cache:clear ...) to generate errors.
+        $locale = \App::runningInConsole() ? app()->getLocale() : request()->segment(1);
+        // The user has just landed on the website, no locale variable has been set yet.
+        $locale = (empty($locale)) ? config('app.fallback_locale') : $locale;
+        // Make sure the locale attribute exists.
+        $locale = (!isset($segments[$locale])) ? config('app.fallback_locale') : $locale; 
+
+        return $segments[$locale];
     }
 
     public static function getTimezoneOptions()

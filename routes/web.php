@@ -15,7 +15,7 @@ use App\Http\Controllers\SiteController;
 use App\Http\Controllers\TokenController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ContactController;
-use App\Models\Post\Setting as PostSetting;
+use App\Models\Setting;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,9 +37,9 @@ Route::prefix('{locale}')
     ->middleware('setlocale')
     ->group(function () {
 
-    $segments = PostSetting::getSegments();
-    Route::get('/'.$segments->post.'/{id}/{slug}', [PostController::class, 'show'])->name('post');
-    Route::get('/'.$segments->plugin.'/'.$segments->category.'/{id}/{slug}', [PostCategoryController::class, 'index'])->name('post.category');
+    $segments = Setting::getSegments('Post');
+    Route::get('/'.$segments['post'].'/{id}/{slug}', [PostController::class, 'show'])->name('post');
+    Route::get('/'.$segments['plugin'].'/'.$segments['category'].'/{id}/{slug}', [PostCategoryController::class, 'index'])->name('post.category');
     Route::get('/search', [SearchController::class, 'index'])->name('search');
     Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
     Route::get('/{page}/{id}/{slug}', [SiteController::class, 'show'])->name('site.show');

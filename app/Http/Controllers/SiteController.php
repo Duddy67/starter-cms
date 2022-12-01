@@ -21,7 +21,7 @@ class SiteController extends Controller
         $theme = Setting::getValue('website', 'theme', 'starter');
         $query = $request->query();
         $timezone = Setting::getValue('app', 'timezone');
-        $slug = __('locales.homepage.'.$locale);
+        $slug = __('locales.homepage.'.$locale, [], 'en');
 
         $category = Category::getItem($slug, $locale, true);
 
@@ -55,7 +55,7 @@ class SiteController extends Controller
             return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu'));
         }
 
-        $segments = PostSetting::getSegments();
+        $segments = Setting::getSegments('Post');
 
         return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu', 'category', 'settings', 'posts', 'segments', 'metaData', 'timezone', 'query'));
     }
@@ -86,7 +86,7 @@ class SiteController extends Controller
 
         $post->global_settings = PostSetting::getDataByGroup('posts');
         $page = $page.'-details';
-        $segments = PostSetting::getSegments();
+        $segments = Setting::getSegments('Post');
         $metaData = json_decode($post->meta_data, true);
 	$query = $request->query();
 
