@@ -4,7 +4,7 @@
     @if ($menu)
         <div class="collapse navbar-collapse" id="navbarCollapse">
               <ul class="navbar-nav mr-auto">
-                  @foreach ($menu->getMenuItems() as $item)
+                  @foreach ($menu->getMenuItems($locale) as $item)
                       @include ('themes.starter.partials.menu.items')
                   @endforeach
               </ul>

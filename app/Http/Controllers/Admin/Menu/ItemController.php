@@ -187,7 +187,7 @@ class ItemController extends Controller
             return response()->json(['error' => __('messages.generic.must_not_be_descendant')]);
         }
 
-        $item->model = $request->input('model');
+        $item->model_name = $request->input('model_name');
         $item->class = $request->input('class');
         $item->anchor = $request->input('anchor');
         $item->updated_by = auth()->user()->id;
@@ -232,7 +232,7 @@ class ItemController extends Controller
         $parent = Item::findOrFail($request->input('parent_id'));
 
         $item = Item::create([
-            'model' => $request->input('model'), 
+            'model_name' => $request->input('model_name'), 
             'class' => $request->input('class'), 
             'anchor' => $request->input('anchor'), 
             'status' => ($parent->status == 'unpublished') ? 'unpublished' : $request->input('status'), 
@@ -422,7 +422,10 @@ class ItemController extends Controller
      */
     private function setRowValues(&$rows, $columns, $items)
     {
-        $traverse = function ($menuItems, $i = 0) use (&$traverse, $rows, $columns) {
+        $traverse = function ($menuItems) use (&$traverse, $rows, $columns) {
+            // Use the number of times the recursive function is called as the $rows id.
+            static $counter = 0;
+
             foreach ($menuItems as $item) {
                 foreach ($columns as $column) {
                     if ($column->name == 'locales') {
@@ -434,13 +437,13 @@ class ItemController extends Controller
 
                         $locales = substr($locales, 0, -2);
 
-                        $rows[$i]->locales = $locales;
+                        $rows[$counter]->locales = $locales;
                     }
                 }
 
-                $i++;
+                $counter++;
 
-                $traverse($item->children, $i);
+                $traverse($item->children);
             }
         };
 

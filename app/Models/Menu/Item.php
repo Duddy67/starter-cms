@@ -74,7 +74,7 @@ class Item extends Model
             ->where('menu_code', $code)
             ->join('translations', function ($join) use($search) { 
                 $join->on('menu_items.id', '=', 'translatable_id')
-                    ->where('translations.translatable_type', '=', 'App\Models\Menu\Item')
+                    ->where('translations.translatable_type', Item::class)
                     ->where('locale', '=', config('app.locale'));
         });
 
@@ -91,7 +91,7 @@ class Item extends Model
             ->leftJoin('users as users', 'menu_items.updated_by', '=', 'users.id')
             ->leftJoin('translations', function ($join) use($locale) { 
                 $join->on('menu_items.id', '=', 'translatable_id')
-                     ->where('translations.translatable_type', '=', 'App\Models\Menu\Item')
+                     ->where('translations.translatable_type', '=', Item::class)
                      ->where('locale', '=', $locale);
         })->findOrFail($id);
     }
@@ -144,7 +144,7 @@ class Item extends Model
             ->whereIn('menu_code', ['root', $code])
             ->join('translations', function($join) {
                 $join->on('menu_items.id', '=', 'translatable_id')
-                     ->where('translations.translatable_type', '=', 'App\Models\Menu\Item')
+                     ->where('translations.translatable_type', Item::class)
                      ->where('locale', '=', config('app.locale'));
         })->get()->toTree();
 

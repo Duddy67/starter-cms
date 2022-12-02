@@ -139,15 +139,15 @@ class Menu extends Model
         return $menuItems;
     }
 
-    public function getMenuItems()
+    public function getMenuItems($locale)
     {
         $nodes = Item::select('menu_items.*', 'translations.title as title', 'translations.url as url')
                        ->where('menu_code', $this->code)
                        ->where('status', 'published')
-                       ->join('translations', function ($join) {
+                       ->join('translations', function ($join) use($locale) {
                            $join->on('menu_items.id', '=', 'translatable_id')
-                                ->where('translations.translatable_type', '=', 'App\Models\Menu\Item')
-                                ->where('locale', '=', config('app.locale'));
+                                ->where('translations.translatable_type', Item::class)
+                                ->where('locale', $locale);
         })->defaultOrder()->get()->toTree();
         $menuItems = [];
 

@@ -539,7 +539,10 @@ class CategoryController extends Controller
      */
     private function setRowValues(&$rows, $columns, $items)
     {
-        $traverse = function ($categories, $i = 0) use (&$traverse, $rows, $columns) {
+        $traverse = function ($categories) use (&$traverse, $rows, $columns) {
+            // Use the number of times the recursive function is called as the $rows id.
+            static $counter = 0;
+
             foreach ($categories as $item) {
                 foreach ($columns as $column) {
                     if ($column->name == 'locales') {
@@ -551,13 +554,13 @@ class CategoryController extends Controller
 
                         $locales = substr($locales, 0, -2);
 
-                        $rows[$i]->locales = $locales;
+                        $rows[$counter]->locales = $locales;
                     }
                 }
 
-                $i++;
+                $counter++;
 
-                $traverse($item->children, $i);
+                $traverse($item->children);
             }
         };
 
