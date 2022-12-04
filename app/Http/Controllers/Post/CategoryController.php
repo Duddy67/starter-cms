@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
-    public function index(Request $request, $locale, $id, $slug)
+    public function index(Request $request, string $locale, int $id, string $slug)
     {
         $page = 'post.category';
         $theme = Setting::getValue('website', 'theme', 'starter');

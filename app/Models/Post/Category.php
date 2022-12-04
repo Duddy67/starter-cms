@@ -145,26 +145,29 @@ class Category extends Model
         return $query->defaultOrder()->get()->toTree();
     }
 
-    public static function getItem(int|string $id, string $locale, bool $bySlug = false)
+    public static function getItem(int|string $id, string $locale, bool $frontend = false)
     {
+        // Check if the $id variable is passed as a slug value.
+        $slug = (is_string($id)) ? true : false;
+
         $query = Category::select('post_categories.*', 'users.name as owner_name', 'users2.name as modifier_name',
                             'translations.name as name', 'translations.slug as slug', 
                             'translations.description as description', 'translations.alt_img as alt_img',
                             'translations.extra_fields as extra_fields', 'translations.meta_data as meta_data')
             ->leftJoin('users', 'post_categories.owned_by', '=', 'users.id')
             ->leftJoin('users as users2', 'post_categories.updated_by', '=', 'users2.id')
-            ->join('translations', function ($join) use($id, $locale, $bySlug) { 
+            ->leftJoin('translations', function ($join) use($id, $locale, $slug) { 
                 $join->on('post_categories.id', '=', 'translatable_id')
                      ->where('translations.translatable_type', Category::class)
                      ->where('translations.locale', $locale);
 
-                     if ($bySlug) {
+                     if ($slug) {
                          // id stands for slug.
                          $join->where('translations.slug', $id);
                      }
         });
 
-        return ($bySlug) ? $query->first() : $query->find($id);
+        return ($slug) ? $query->first() : $query->find($id);
     }
 
     public function getUrl()
@@ -205,20 +208,27 @@ class Category extends Model
     {
         $locale = ($request->segment(1)) ? $request->segment(1) : config('app.locale');
         $query = Post::query();
-        $query->select('posts.*', 'users.name as owner_name',
-                                  'translations.title as title',
-                                  'translations.slug as slug',
-                                  'translations.excerpt as excerpt')
+        $query->selectRaw('posts.*, users.name as owner_name,'.
+                                  'COALESCE(locale.title, fallback.title) title,'.
+                                  'COALESCE(locale.slug, fallback.slug) slug,'.
+                                  'COALESCE(locale.excerpt, fallback.excerpt) excerpt,'.
+                                  'COALESCE(locale.alt_img, fallback.alt_img) alt_img')
               ->leftJoin('users', 'posts.owned_by', '=', 'users.id');
         // Join the role tables to get the owner's role level.
         $query->join('model_has_roles', 'posts.owned_by', '=', 'model_id')->join('roles', 'roles.id', '=', 'role_id');
 
-        // Get the default locale translation.
-        $query->join('translations', function ($join) use($locale) { 
-            $join->on('posts.id', '=', 'translatable_id')
-                 ->where('translations.translatable_type', '=', 'App\Models\Post')
-                 ->where('translations.locale', '=', $locale);
+        $query->leftJoin('translations AS locale', function ($join) use($locale) { 
+            $join->on('posts.id', '=', 'locale.translatable_id')
+                 ->where('locale.translatable_type', Post::class)
+                 ->where('locale.locale', $locale);
         });
+        // Switch to the fallback locale in case locale is not found.
+        $query->leftJoin('translations AS fallback', function ($join) { 
+            $join->on('posts.id', '=', 'fallback.translatable_id')
+                 ->where('fallback.translatable_type', Post::class)
+                 ->where('fallback.locale', config('app.fallback_locale'));
+        });
+
 
         // Get only the posts related to this category. 
         $query->whereHas('categories', function ($query) {

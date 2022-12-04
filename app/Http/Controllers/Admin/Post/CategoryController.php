@@ -98,7 +98,7 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function edit(Request $request, $id)
+    public function edit(Request $request, int $id)
     {
         $locale = ($request->query('locale', null)) ? $request->query('locale') : config('app.locale');
         $category = $this->item = Category::getItem($id, $locale);

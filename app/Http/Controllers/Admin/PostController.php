@@ -118,6 +118,7 @@ class PostController extends Controller
         // Gather the needed data to build the form.
         $except = (auth()->user()->getRoleLevel() > $post->getOwnerRoleLevel() || $post->owned_by == auth()->user()->id) ? ['owner_name'] : ['owned_by'];
         $fields = $this->getFields($except);
+        $post->current_locale = $locale;
         $this->setFieldValues($fields, $post);
         $except = (!$post->canEdit()) ? ['destroy', 'save', 'saveClose'] : [];
         $actions = $this->getActions('form', $except);
@@ -642,6 +643,17 @@ class PostController extends Controller
                     if ($field->name == $key) {
                         $field->value = ($value) ? $value : __('labels.generic.none');
                     }
+                }
+            }
+        }
+
+        // Empty the translation fields if the translation for the current locale hasn't been created yet.
+        if ($post && $post->getTranslation($post->current_locale) === null) {
+            foreach ($fields as $field) {
+                if (in_array($field->name, ['title', 'slug', 'content', 'excerpt', 'alt_img'])
+                    || str_starts_with($field->name, 'meta_') 
+                    || str_starts_with($field->name, 'extra_field_')) {
+                    $field->value = null;
                 }
             }
         }

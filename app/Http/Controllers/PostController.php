@@ -13,13 +13,8 @@ use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
-    public function show(Request $request, $locale, $id, $slug)
+    public function show(Request $request, string $locale, int $id, string $slug)
     {
-        /*$post = Post::select('posts.*', 'users.name as owner_name', 'users2.name as modifier_name')
-			->leftJoin('users', 'posts.owned_by', '=', 'users.id')
-			->leftJoin('users as users2', 'posts.updated_by', '=', 'users2.id')
-			->where('posts.id', $id)->first();*/
-
         $post = Post::getItem($id, $locale);
         $post->translation = $post->getTranslation($locale);
 
@@ -42,8 +37,7 @@ class PostController extends Controller
         $post->global_settings = PostSetting::getDataByGroup('posts');
 	$settings = $post->getSettings();
         $timezone = Setting::getValue('app', 'timezone');
-        //$metaData = json_decode($post->meta_data, true);
-        $metaData = $post->translation->meta_data;
+        $metaData = json_decode($post->meta_data, true);
         $segments = Setting::getSegments('Post');
 	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug, 'locale' => $locale]);
 

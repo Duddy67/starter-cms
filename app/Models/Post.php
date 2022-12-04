@@ -236,19 +236,28 @@ class Post extends Model
         return $query->paginate($perPage);
     }
 
-    public static function getItem($id, $locale)
+    public static function getItem(int $id, string $locale)
     {
-        return Post::select('posts.*', 'users.name as owner_name', 'users2.name as modifier_name',
-                            'translations.title as title', 'translations.slug as slug', 
-                            'translations.content as content', 'translations.excerpt as excerpt', 
-                            'translations.raw_content as raw_content', 'translations.alt_img as alt_img',
-                            'translations.extra_fields as extra_fields', 'translations.meta_data as meta_data')
+        return Post::selectRaw('posts.*, users.name as owner_name, users2.name as modifier_name,'.
+                               'COALESCE(locale.title, fallback.title) title,'.
+                               'COALESCE(locale.slug, fallback.slug) slug,'.
+                               'COALESCE(locale.content, fallback.content) content,'.
+                               'COALESCE(locale.excerpt, fallback.excerpt) excerpt,'.
+                               'COALESCE(locale.raw_content, fallback.raw_content) raw_content,'.
+                               'COALESCE(locale.alt_img, fallback.alt_img) alt_img,'.
+                               'COALESCE(locale.extra_fields, fallback.extra_fields) extra_fields,'.
+                               'COALESCE(locale.meta_data, fallback.meta_data) meta_data')
             ->leftJoin('users', 'posts.owned_by', '=', 'users.id')
             ->leftJoin('users as users2', 'posts.updated_by', '=', 'users2.id')
-            ->leftJoin('translations', function ($join) use($locale) { 
-                $join->on('posts.id', '=', 'translatable_id')
-                     ->where('translations.translatable_type', '=', Post::class)
-                     ->where('locale', '=', $locale);
+            ->leftJoin('translations AS locale', function ($join) use($locale) {
+                $join->on('posts.id', '=', 'locale.translatable_id')
+                     ->where('locale.translatable_type', Post::class)
+                     ->where('locale.locale', $locale);
+          // Switch to the fallback locale in case locale is not found, (used on front-end).
+          })->leftJoin('translations AS fallback', function ($join) {
+                $join->on('posts.id', '=', 'fallback.translatable_id')
+                     ->where('fallback.translatable_type', Post::class)
+                     ->where('fallback.locale', config('app.fallback_locale'));
         })->findOrFail($id);
     }
 

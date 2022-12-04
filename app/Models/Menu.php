@@ -141,14 +141,20 @@ class Menu extends Model
 
     public function getMenuItems($locale)
     {
-        $nodes = Item::select('menu_items.*', 'translations.title as title', 'translations.url as url')
+        $nodes = Item::selectRaw('menu_items.*, COALESCE(locale.title, fallback.title) title, COALESCE(locale.url, fallback.url) url')
                        ->where('menu_code', $this->code)
                        ->where('status', 'published')
-                       ->join('translations', function ($join) use($locale) {
-                           $join->on('menu_items.id', '=', 'translatable_id')
-                                ->where('translations.translatable_type', Item::class)
-                                ->where('locale', $locale);
+                       ->leftJoin('translations AS locale', function ($join) use($locale) {
+                           $join->on('menu_items.id', '=', 'locale.translatable_id')
+                                ->where('locale.translatable_type', Item::class)
+                                ->where('locale.locale', $locale);
+                      // Switch to the fallback locale in case locale is not found.
+                      })->leftJoin('translations AS fallback', function ($join) {
+                           $join->on('menu_items.id', '=', 'fallback.translatable_id')
+                                ->where('fallback.translatable_type', Item::class)
+                                ->where('fallback.locale', config('app.fallback_locale'));
         })->defaultOrder()->get()->toTree();
+
         $menuItems = [];
 
         $traverse = function ($nodes, $level = 0) use (&$traverse, &$menuItems) {
