@@ -118,6 +118,7 @@ class CategoryController extends Controller
         $except = (auth()->user()->getRoleLevel() > $category->getOwnerRoleLevel() || $category->owned_by == auth()->user()->id) ? ['owner_name'] : ['owned_by'];
 
         $fields = $this->getFields($except);
+        $category->current_locale = $locale;
         $this->setFieldValues($fields, $category);
         $except = (!$category->canEdit()) ? ['destroy', 'save', 'saveClose'] : [];
         $actions = $this->getActions('form', $except);
@@ -592,6 +593,8 @@ class CategoryController extends Controller
             return;
         }
 
+        $localeExists = ($category->getTranslation($category->current_locale) === null) ? false : true;
+
         foreach ($fields as $field) {
             if ($field->name == 'parent_id') {
                 foreach ($field->options as $key => $option) {
@@ -604,6 +607,13 @@ class CategoryController extends Controller
 
             if (isset($field->group) && $field->group == 'settings') {
                 $field->value = (isset($category->settings[$field->name])) ? $category->settings[$field->name] : null;
+            }
+
+            // Empty the translation fields if the translation for the current locale hasn't been created yet.
+            if (!$localeExists && (in_array($field->name, ['name', 'slug', 'description', 'alt_img'])
+                || str_starts_with($field->name, 'meta_') 
+                || str_starts_with($field->name, 'extra_field_'))) {
+                $field->value = null;
             }
         }
     }

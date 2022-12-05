@@ -18,8 +18,18 @@ trait Translatable
     /**
      * Get a given item's translation.
      */
-    public function getTranslation(string $locale): Translation|null
+    public function getTranslation(string $locale, bool $fallback = false): Translation|null
     {
+        if ($fallback) {
+            return Translation::select('*')
+                ->where('translatable_id', $this->id)
+                ->where('translatable_type', get_class($this))
+                ->where(function ($query) use($locale) {
+                     $query->where('locale', $locale)
+                           ->orWhere('locale', config('app.fallback_locale'));
+            })->first();
+        }
+
         return $this->morphMany(Translation::class, 'translatable')->where('locale', $locale)->first();
     }
 

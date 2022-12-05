@@ -3,10 +3,11 @@
 @if ($category->descendants->count())
     <ul class="list-group">
     @php 
-	$traverse = function ($categories, $prefix = '-') use (&$traverse, $segments) {
+	$traverse = function ($categories, $prefix = '-') use (&$traverse, $segments, $locale) {
 	    foreach ($categories as $category) {
+                $translation = $category->getTranslation($locale, true);
     @endphp
-      <li class="list-group-item"><a href="{{ url('/').'/'.$segments['plugin'].$category->getUrl() }}">{{ $prefix.' '.$category->name }}</a> ({{ $category->posts->count() }})</li>
+      <li class="list-group-item"><a href="{{ url('/').'/'.$locale.'/'.$segments['plugin'].$category->getUrl($translation->slug) }}">{{ $prefix.' '.$translation->name }}</a> ({{ $category->posts->count() }})</li>
     @php 
 		$traverse($category->children, $prefix.'-');
 	    }

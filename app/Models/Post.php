@@ -308,12 +308,16 @@ class Post extends Model
 
     public function getLayoutItems($locale)
     {
-        return $this->layoutItems()->select('layout_items.*', 'translations.text as text')
-                    // Use leftJoin to also get the group type items. 
-                    ->leftJoin('translations', function ($join) use($locale) { 
-                        $join->on('layout_items.id', '=', 'translatable_id')
-                             ->where('translations.translatable_type', '=', LayoutItem::class)
-                             ->where('locale', '=', $locale);
+        return $this->layoutItems()->selectRaw('layout_items.*, COALESCE(locale.text, fallback.text) text')
+                    ->leftJoin('translations AS locale', function ($join) use($locale) { 
+                        $join->on('layout_items.id', '=', 'locale.translatable_id')
+                             ->where('locale.translatable_type', '=', LayoutItem::class)
+                             ->where('locale.locale', '=', $locale);
+                  // Switch to the fallback locale in case locale is not found, (used on front-end).
+                  })->leftJoin('translations AS fallback', function ($join) {
+                        $join->on('layout_items.id', '=', 'fallback.translatable_id')
+                             ->where('fallback.translatable_type', LayoutItem::class)
+                             ->where('fallback.locale', config('app.fallback_locale'));
         })->get();
     }
 

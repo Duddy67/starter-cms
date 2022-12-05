@@ -150,30 +150,39 @@ class Category extends Model
         // Check if the $id variable is passed as a slug value.
         $slug = (is_string($id)) ? true : false;
 
-        $query = Category::select('post_categories.*', 'users.name as owner_name', 'users2.name as modifier_name',
-                            'translations.name as name', 'translations.slug as slug', 
-                            'translations.description as description', 'translations.alt_img as alt_img',
-                            'translations.extra_fields as extra_fields', 'translations.meta_data as meta_data')
+        $query = Category::selectRaw('post_categories.*, users.name as owner_name, users2.name as modifier_name,'.
+                                     'COALESCE(locale.name, fallback.name) name,'.
+                                     'COALESCE(locale.slug, fallback.slug) slug,'.
+                                     'COALESCE(locale.description, fallback.description) description,'.
+                                     'COALESCE(locale.alt_img, fallback.alt_img) alt_img,'.
+                                     'COALESCE(locale.extra_fields, fallback.extra_fields) extra_fields,'.
+                                     'COALESCE(locale.meta_data, fallback.meta_data) meta_data')
             ->leftJoin('users', 'post_categories.owned_by', '=', 'users.id')
             ->leftJoin('users as users2', 'post_categories.updated_by', '=', 'users2.id')
-            ->leftJoin('translations', function ($join) use($id, $locale, $slug) { 
-                $join->on('post_categories.id', '=', 'translatable_id')
-                     ->where('translations.translatable_type', Category::class)
-                     ->where('translations.locale', $locale);
-
-                     if ($slug) {
-                         // id stands for slug.
-                         $join->where('translations.slug', $id);
-                     }
+            ->leftJoin('translations AS locale', function ($join) use($id, $locale, $slug) { 
+                $join->on('post_categories.id', '=', 'locale.translatable_id')
+                     ->where('locale.translatable_type', Category::class)
+                     ->where('locale.locale', $locale);
+        // Switch to the fallback locale in case locale is not found, (used on front-end).
+        })->leftJoin('translations AS fallback', function ($join) use($id, $slug) {
+              $join->on('post_categories.id', '=', 'fallback.translatable_id')
+                   ->where('fallback.translatable_type', Category::class)
+                   ->where('fallback.locale', config('app.fallback_locale'));
         });
+
+        if ($slug) {
+            $query->where('locale.slug', $id)->orWhere('fallback.slug', $id);
+        }
 
         return ($slug) ? $query->first() : $query->find($id);
     }
 
-    public function getUrl()
+    public function getUrl($slug = null)
     {
+        $slug = ($slug) ? $slug : $this->slug;
+
         $segments = Setting::getSegments('Post');
-        return '/'.$segments['category'].'/'.$this->id.'/'.$this->slug;
+        return '/'.$segments['category'].'/'.$this->id.'/'.$slug;
     }
 
     /*
@@ -195,7 +204,7 @@ class Category extends Model
         $query = $this->getQuery($request);
 
         if ($search !== null) {
-            $query->where('posts.title', 'like', '%'.$search.'%');
+            $query->where('locale.title', 'like', '%'.$search.'%');
         }
 
         return $query->paginate($perPage);

@@ -6,7 +6,7 @@
     <div>{!! $category->description !!}</div>
 @endif
 
-@if ($settings['show_search'])
+@if ($settings['show_search'] && (count($posts) || isset($query['search'])))
     <div class="card">
 	<div class="card-body">
 	    @include('themes.starter.partials.filters')

@@ -25,7 +25,7 @@ class SiteController extends Controller
 
         $category = Category::getItem($slug, $locale, true);
 
-        if ($category) {
+        if ($category && view()->exists('themes.'.$theme.'.pages.'.$page)) {
             $posts = $category->getAllPosts($request);
 
             $globalSettings = PostSetting::getDataByGroup('categories');
