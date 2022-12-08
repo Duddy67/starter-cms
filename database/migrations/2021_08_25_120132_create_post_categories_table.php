@@ -17,6 +17,7 @@ class CreatePostCategoriesTable extends Migration
             $table->id();
             $table->string('code', 30)->nullable();
             $table->char('status', 12);
+            $table->string('page', 30)->nullable();
             $table->char('access_level', 10);
             $table->json('settings');
 	    $table->nestedSet();

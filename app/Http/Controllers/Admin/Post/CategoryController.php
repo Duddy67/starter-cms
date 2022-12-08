@@ -181,6 +181,7 @@ class CategoryController extends Controller
 
         $category->settings = $request->input('settings');
         $category->updated_by = auth()->user()->id;
+        $category->page = $request->input('page');
 
         if ($category->canChangeAttachments()) {
 
@@ -298,6 +299,7 @@ class CategoryController extends Controller
         $category = Category::create([
             'status' => $request->input('status'), 
             'access_level' => $request->input('access_level'), 
+            'page' => $request->input('page'), 
             'owned_by' => $request->input('owned_by'),
             'parent_id' => (empty($request->input('parent_id'))) ? null : $request->input('parent_id'),
             'settings' => $request->input('settings'),

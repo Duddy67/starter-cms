@@ -30,6 +30,14 @@
     "options": [] 
   },
   {
+    "label": "labels.generic.page",
+    "type": "select",
+    "name": "page",
+    "id": "page",
+    "blank": "labels.generic.none",
+    "options": [] 
+  },
+  {
     "label": "labels.generic.status",
     "type": "select",
     "name": "status",

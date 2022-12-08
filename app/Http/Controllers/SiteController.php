@@ -13,6 +13,7 @@ class SiteController extends Controller
     public function index(Request $request)
     {
         $locale = $request->segment(1);
+        // Get the page name from the url or set it to 'home' if none is found       
         $page = ($request->segment(2)) ? $request->segment(2) : 'home';
         $posts = null;
         $settings = $metaData = [];
@@ -21,11 +22,11 @@ class SiteController extends Controller
         $theme = Setting::getValue('website', 'theme', 'starter');
         $query = $request->query();
         $timezone = Setting::getValue('app', 'timezone');
-        $slug = __('locales.homepage.'.$locale, [], 'en');
+        $slug = ($page == 'home') ? __('locales.homepage.'.$locale, [], 'en') : $page;
 
         $category = Category::getItem($slug, $locale, true);
 
-        if ($category && view()->exists('themes.'.$theme.'.pages.'.$page)) {
+        if ($category) {
             $posts = $category->getAllPosts($request);
 
             $globalSettings = PostSetting::getDataByGroup('categories');
@@ -47,7 +48,7 @@ class SiteController extends Controller
                 $post->global_settings = $globalSettings;
             }
         }
-        elseif ($page == 'home' || file_exists(resource_path().'/views/themes/'.$theme.'/pages/'.$page.'.blade.php')) {
+        elseif (file_exists(resource_path().'/views/themes/'.$theme.'/pages/'.$page.'.blade.php')) {
             return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu', 'query'));
         }
         else {
@@ -55,7 +56,17 @@ class SiteController extends Controller
             return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu'));
         }
 
+        // A category has been found.
+
+        // Check if page or category page actually exists.
+        if (!view()->exists('themes.'.$theme.'.pages.'.$category->page) && !view()->exists('themes.'.$theme.'.pages.'.$page)) {
+            $page = '404';
+            return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu'));
+        }
+
         $segments = Setting::getSegments('Post');
+        // Prioritize the category page over the page from the url.
+        $page = ($category->page) ? $category->page : $page;
 
         return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu', 'category', 'settings', 'posts', 'segments', 'metaData', 'timezone', 'query'));
     }

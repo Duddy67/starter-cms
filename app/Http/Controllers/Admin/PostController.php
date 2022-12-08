@@ -163,7 +163,7 @@ class PostController extends Controller
             return response()->json(['redirect' => route('admin.posts.index', $request->query())]);
         }
 
-        $post->layout = $request->input('layout');
+        $post->page = $request->input('page');
         $post->settings = $request->input('settings');
         $post->updated_by = auth()->user()->id;
         $layoutRefresh = LayoutItem::storeItems($post, $request->input('locale'));
@@ -262,7 +262,7 @@ class PostController extends Controller
             'access_level' => $request->input('access_level'), 
             'owned_by' => $request->input('owned_by'),
             'main_cat_id' => $request->input('main_cat_id'),
-            'layout' => $request->input('layout'),
+            'page' => $request->input('page'),
             'settings' => $request->input('settings'),
         ]);
 

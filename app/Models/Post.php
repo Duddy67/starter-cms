@@ -32,7 +32,7 @@ class Post extends Model
         'status',
         'owned_by',
         'main_cat_id',
-        'layout',
+        'page',
         'access_level',
         'settings',
     ];

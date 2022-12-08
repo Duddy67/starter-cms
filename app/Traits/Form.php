@@ -458,8 +458,8 @@ trait Form
         elseif (isset($field->extra) && in_array('yes_no', $field->extra)) {
             $options = Setting::getYesNoOptions();
         }
-        elseif ($field->name == 'layout') {
-            $options = Setting::getLayoutOptions($this->getClassName());
+        elseif ($field->name == 'page') {
+            $options = Setting::getPageOptions();
         }
         else {
             // Call the model method.
@@ -469,7 +469,7 @@ trait Form
         if (isset($field->extra) && in_array('global_setting', $field->extra)) {
             $options[] = ['value' => 'global_setting', 'text' => __('labels.generic.global_setting')];
         }
-
+        
         return $options;
     }
 

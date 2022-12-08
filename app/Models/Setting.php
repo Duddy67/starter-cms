@@ -248,14 +248,21 @@ class Setting extends Model
         return ($extraField) ? $item->extra_fields[$extraField] : null;
     }
 
-    public static function getLayoutOptions($className)
+    public static function getPageOptions()
     {
-        $json = file_get_contents(resource_path().'/views/admin/layouts/plugins/'.strtolower($className).'.json', true);
-        $layouts = json_decode($json);
+        $theme = Setting::getValue('website', 'theme');
+        $pages = @scandir(resource_path().'/views/themes/'.$theme.'/pages');
+        $pages = (!$pages) ? [] : $pages;
         $options = [];
 
-        foreach ($layouts as $layout) {
-            $options[] = ['value' => $layout->value, 'text' => $layout->text];
+        foreach ($pages as $key => $page) {
+            // Skip the '.', and '..' directories as well as other directories and the no blade files. 
+            if ($key < 2 || !is_file(resource_path().'/views/themes/'.$theme.'/pages/'.$page) || !str_ends_with($page, '.blade.php')) {
+                continue;
+            }
+
+            // Removes ".blade.php" from the end of the string.
+            $options[] = ['value' => substr($page, 0, -10), 'text' => substr($page, 0, -10)];
         }
 
         return $options;

@@ -18,7 +18,7 @@ class CreatePostsTable extends Migration
             $table->char('status', 12);
             $table->unsignedBigInteger('main_cat_id')->nullable();
             $table->char('access_level', 10);
-            $table->string('layout', 30)->nullable();
+            $table->string('page', 30)->nullable();
             $table->json('settings');
             $table->unsignedBigInteger('checked_out')->nullable();
             $table->timestamp('checked_out_time')->nullable();

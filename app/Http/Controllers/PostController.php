@@ -16,13 +16,11 @@ class PostController extends Controller
     public function show(Request $request, string $locale, int $id, string $slug)
     {
         $post = Post::getItem($id, $locale);
-        $post->translation = $post->getTranslation($locale);
-
         $menu = Menu::getMenu('main-menu');
         $menu->allow_registering = Setting::getValue('website', 'allow_registering', 0);
         $theme = Setting::getValue('website', 'theme', 'starter');
 
-	if (!$post) {
+	if (!$post || $post->layoutItems()->exists() && (!view()->exists('themes.'.$theme.'.pages.'.$post->page))) {
             $page = '404';
             return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu'));
 	}
@@ -34,6 +32,7 @@ class PostController extends Controller
 
         $page = 'post';
 
+        $post->translation = $post->getTranslation($locale);
         $post->global_settings = PostSetting::getDataByGroup('posts');
 	$settings = $post->getSettings();
         $timezone = Setting::getValue('app', 'timezone');
