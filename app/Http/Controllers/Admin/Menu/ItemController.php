@@ -166,7 +166,7 @@ class ItemController extends Controller
      * @param  \App\Models\Menu\Item  $item
      * @return JSON
      */
-    public function update(UpdateRequest $request, $code, Item $item)
+    public function update(UpdateRequest $request, string $code, Item $item)
     {
         if ($item->checked_out != auth()->user()->id) {
             $request->session()->flash('error', __('messages.generic.user_id_does_not_match'));

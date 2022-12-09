@@ -274,7 +274,7 @@ class Setting extends Model
         $options = [];
 
         foreach ($locales as $locale) {
-            $options[] = ['value' => $locale, 'text' => __('locales.options.'.$locale)];
+            $options[] = ['value' => $locale, 'text' => __('labels.locales.'.$locale)];
         }
 
         return $options;
