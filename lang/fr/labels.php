@@ -173,5 +173,10 @@ return [
     'pagination' => [
 	'results' => 'Showing :first to :last of :total results',
     ],
+    'locales' => [
+	'en' => 'Anglais',
+	'fr' => 'Français',
+	'es' => 'Espagnol',
+    ],
 ];
 

@@ -10,7 +10,7 @@
               </ul>
         </div>
     @endif
-{{ app()->getLocale() }}
+
     <div class="me-5">
         @include ('themes.starter.partials.site.locales')
     </div>

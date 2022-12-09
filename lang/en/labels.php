@@ -220,5 +220,10 @@ return [
     'pagination' => [
 	'results' => 'Showing :first to :last of :total results',
     ],
+    'locales' => [
+	'en' => 'English',
+	'fr' => 'French',
+	'es' => 'Spanish',
+    ],
 ];
 

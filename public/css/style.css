@@ -48,6 +48,10 @@ a {
   /*background-color: #f8f9fa;*/
 }
 
+.locale-flag {
+  margin-top: 5px;
+}
+
 .ajax-progress {
   position: absolute;
   top: 0;

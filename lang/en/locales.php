@@ -21,10 +21,5 @@ return [
             ],
         ],
     ],
-    'options' => [
-	'en' => 'English',
-	'fr' => 'French',
-	'es' => 'Spanish',
-    ],
 ];
 
