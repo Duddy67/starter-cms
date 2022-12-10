@@ -11,14 +11,14 @@ class PostCollection extends Collection
     public function filterPostsByCategories(array $categories, array $except = [])
     {
         return $this->filter(function ($post) use($categories, $except) {
-            $slugs = [];
+            $ids = [];
 
             foreach ($post->categories as $category) {
-                $slugs[] = $category->slug;
+                $ids[] = $category->id;
             }
 
             // Make sure the post belongs to any of the given categories (OR).
-            if (!empty(array_intersect($categories, $slugs)) && empty(array_intersect($except, $slugs))) {
+            if (!empty(array_intersect($categories, $ids)) && empty(array_intersect($except, $ids))) {
                 return $post;
             }
         });
@@ -27,23 +27,23 @@ class PostCollection extends Collection
     public function filterPostsByAllCategories(array $categories, array $except = [])
     {
         return $this->filter(function ($post) use($categories, $except) {
-            $slugs = [];
+            $ids = [];
 
             foreach ($post->categories as $category) {
-                $slugs[] = $category->slug;
+                $ids[] = $category->id;
             }
 
             // Make sure the post belongs to all the given categories (AND).
-            if (count(array_intersect($categories, $slugs)) == count($categories) && empty(array_intersect($except, $slugs))) {
+            if (count(array_intersect($categories, $ids)) == count($categories) && empty(array_intersect($except, $ids))) {
                 return $post;
             }
         });
     }
 
-    public function filterPostsBySlug(array $slugs)
+    public function filterPostsById(array $ids)
     {
-        return $this->filter(function ($post) use($slugs) {
-            if (in_array($post->slug, $slugs)) {
+        return $this->filter(function ($post) use($ids) {
+            if (in_array($post->id, $ids)) {
                 return $post;
             }
         });
