@@ -3,25 +3,25 @@
 return [
 
     'dashboard' => [
-        'welcome' => 'Hello :name. Welcome to Starter CMS.',
-        'last_connection' => 'Your last connection dates back to: :date.',
-        'last_users_logged_in' => 'The last users logged in',
+        'welcome' => 'Bonjour :name. Bienvenue sur Starter CMS.',
+        'last_connection' => 'Votre dernière connexion date de: :date.',
+        'last_users_logged_in' => 'Les derniers utilisateurs connectés',
     ],
-    'users' => [
-        'update_success' => 'User successfully updated.',
-        'create_success' => 'User successfully created.',
-        'delete_success' => 'The user ":name" has been successfully deleted.',
-        'delete_list_success' => ':number users have been successfully deleted.',
-        'edit_not_auth' => 'You are not authorised to edit users.',
-        'delete_not_auth' => 'You are not authorised to delete users.',
-        'edit_user_not_auth' => 'You are not authorised to edit this user.',
-        'update_user_not_auth' => 'You are not authorised to update this user.',
-        'delete_user_not_auth' => 'You are not authorised to delete this user.',
-        'delete_list_not_auth' => 'You are not authorised to delete this user: :name',
-        'alert_user_dependencies' => 'You cannot delete this user: :name as he/she owns :number :dependencies. Please modify these dependencies accordingly then try again.',
-        'unknown_user' => 'Unknown user.',
+    'user' => [
+        'update_success' => 'Utilisateur mis à jour avec succès.',
+        'create_success' => 'Utilisateur créé avec succès.',
+        'delete_success' => 'L\'utilisateur ":name" a été supprimé avec succès.',
+        'delete_list_success' => ':number utilisateurs ont été supprimés avec succès.',
+        'edit_not_auth' => 'Vous n\'êtes pas autorisé(e) à éditer des utilisateurs.',
+        'delete_not_auth' => 'Vous n\'êtes pas autorisé(e) à supprimer des utilisateurs.',
+        'edit_user_not_auth' => 'Vous n\'êtes pas autorisé(e) à éditer cet utilisateur.',
+        'update_user_not_auth' => 'Vous n\'êtes pas autorisé(e) à mettre à jour cet utilisateur.',
+        'delete_user_not_auth' => 'Vous n\'êtes pas autorisé(e) à supprimer cet utilisateur.',
+        'delete_list_not_auth' => 'Vous n\'êtes pas autorisé(e) à supprimer cet utilisateur: :name',
+        'alert_user_dependencies' => 'Vous ne pouvez pas supprimer l\'utilisateur: :name car il possède :number :dependencies. Veuillez modifier ces dépendances et essayer à nouveau.',
+        'unknown_user' => 'Utilisateur inconnu.',
     ],
-    'roles' => [
+    'role' => [
         'create_success' => 'Role successfully created.',
         'update_success' => 'Role successfully updated.',
         'delete_success' => 'The role ":name" has been successfully deleted.',
@@ -34,7 +34,7 @@ return [
         'users_assigned_to_roles' => 'One or more users are assigned to this role: :name',
         'cannot_delete_roles' => 'The following roles cannot be deleted: :roles',
     ],
-    'permissions' => [
+    'permission' => [
         'role_does_not_exist' => 'This role :name does not exist.',
         'invalid_permission_names' => 'The permission names: :names are invalid.',
         'build_success' => ':number permissions have been successfully built.',
@@ -42,7 +42,7 @@ return [
         'no_new_permissions' => 'No new permissions have been built.',
         'missing_alert' => '(missing !)',
     ],
-    'groups' => [
+    'group' => [
         'create_success' => 'Group successfully created.',
         'update_success' => 'Group successfully updated.',
         'delete_success' => 'The group ":name" has been successfully deleted.',
@@ -50,7 +50,7 @@ return [
         'edit_not_auth' => 'You are not authorised to edit groups.',
         'delete_not_auth' => 'You are not authorised to delete groups.',
     ],
-    'posts' => [
+    'post' => [
         'create_success' => 'Post successfully created.',
         'update_success' => 'Post successfully updated.',
         'delete_success' => 'The post ":name" has been successfully deleted.',
@@ -60,26 +60,44 @@ return [
         'publish_list_success' => ':number posts have been successfully published.',
         'unpublish_list_success' => ':number posts have been successfully unpublished.',
     ],
-    'categories' => [
-        'create_success' => 'category successfully created.',
-        'update_success' => 'category successfully updated.',
-        'change_status_list_success' => 'category statuses successfully changed.',
+    'category' => [
+        'create_success' => 'Category successfully created.',
+        'update_success' => 'Category successfully updated.',
+        'change_status_list_success' => 'Category statuses successfully changed.',
         'no_subcategories' => 'No sub-categories',
     ],
-    'emails' => [
+    'email' => [
         'create_success' => 'Email successfully created.',
         'update_success' => 'Email successfully updated.',
         'delete_success' => 'The email ":name" has been successfully deleted.',
         'delete_list_success' => ':number emails have been successfully deleted.',
         'edit_not_auth' => 'You are not authorised to edit emails.',
         'delete_not_auth' => 'You are not authorised to delete emails.',
+        'test_email_sending' => 'A test email is about to be sent to :email.',
+        'test_email_sending_ok' => 'The email has been successfully sent.',
+        'test_email_sending_error' => 'The email could not be sent. Please check the logs and the email settings then try again.',
     ],
-    'documents' => [
+    'document' => [
         'create_success' => 'Document successfully created.',
         'delete_success' => 'The document ":name" has been successfully deleted.',
+        'no_document_to_delete' => 'No document to delete.',
     ],
-    'menus' => [
+    'menu' => [
         'menu_not_found' => 'The menu with the code: :code cannot be found.',
+    ],
+    'menuitem' => [
+        'create_success' => 'Menu item successfully created.',
+        'update_success' => 'Menu item successfully updated.',
+        'delete_success' => 'Menu item :title successfully deleted.',
+        'delete_list_success' => ':number menu items have been successfully deleted.',
+        'change_status_list_success' => 'Menu item statuses successfully changed.',
+    ],
+    'search' => [
+        'invalid_keyword_length' => 'Keyword must be at least :length characters.',
+        'no_matches_found' => 'No matches found.',
+    ],
+    'message' => [
+        'send_success' => 'Your message has been sent successfully.',
     ],
     'general' => [
         'update_success' => 'Parameters successfully saved.',
@@ -105,6 +123,9 @@ return [
         'mass_unpublish_not_auth' => 'You are not authorised to unpublish some of the selected items.',
         'must_not_be_descendant' => 'Node must not be a descendant.',
         'item_is_private' => ':name item is private.',
+        'image_deleted' => 'image successfully deleted.',
+        'no_item_found' => 'No item has been found.',
+        'no_document_to_delete' => 'No document to delete.',
         'can_no_longer_create_item' => 'Warning: The user ":name" is currently the owner of this item. However, he or she is no longer allowed to create this item type. Please assign this item to a different user.',
     ]
 ];

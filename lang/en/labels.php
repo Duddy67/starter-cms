@@ -191,7 +191,7 @@ return [
 	'meta_og_type' => 'Open Graph - type',
 	'meta_og_image' => 'Open Graph - image',
 	'meta_og_url' => 'Open Graph - url',
-	'meta_og_local' => 'Open Graph - local',
+	'meta_og_local' => 'Open Graph - locale',
     ],
     'filter' => [
 	'search' => 'Search',
