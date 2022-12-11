@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Menu;
 use Kalnoy\Nestedset\NodeTrait;
 use App\Models\User\Group;
+use App\Models\Setting;
 use App\Traits\CheckInCheckOut;
 use Request;
 
@@ -30,7 +31,7 @@ class Item extends Model
     protected $fillable = [
         'title',
         'url',
-        'model',
+        'model_name',
         'class',
         'anchor',
         'status',
@@ -85,10 +86,10 @@ class Item extends Model
         foreach ($parts as $part) {
             if (substr($part, 0, 1) == '{') {
                 $segment = str_replace(str_split('{}'), '', $part);
-                $segments = $this->model::getSegments();
+                $segments = Setting::getSegments($this->model_name);
 
-                if (isset($segments->{$segment})) {
-                    $url .= '/'.$segments->{$segment};
+                if (isset($segments[$segment])) {
+                    $url .= '/'.$segments[$segment];
                 }
                 // If the segment variable doesn't exist, return the url as it is.
                 else {

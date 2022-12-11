@@ -40,7 +40,7 @@ class PostController extends Controller
 	$settings = $post->getSettings();
         $timezone = Setting::getValue('app', 'timezone');
         $metaData = $post->meta_data;
-        $segments = PostSetting::getSegments();
+        $segments = Setting::getSegments('Post');
 	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug]);
 
         return view('themes.'.$theme.'.index', compact('page', 'menu', 'id', 'slug', 'post', 'segments', 'settings', 'timezone', 'metaData', 'query'));

@@ -52,7 +52,7 @@ class SiteController extends Controller
             return view('themes.'.$theme.'.index', compact('page', 'menu'));
         }
 
-        $segments = PostSetting::getSegments();
+        $segments = Setting::getSegments('Post');
 
         return view('themes.'.$theme.'.index', compact('page', 'menu', 'category', 'settings', 'posts', 'segments', 'metaData', 'timezone', 'query'));
     }
@@ -80,7 +80,7 @@ class SiteController extends Controller
 
         $post->global_settings = PostSetting::getDataByGroup('posts');
         $page = $page.'-details';
-        $segments = PostSetting::getSegments();
+        $segments = Setting::getSegments('Post');
         $metaData = $post->meta_data;
 	$query = $request->query();
 

@@ -15,7 +15,7 @@ use App\Http\Controllers\SiteController;
 use App\Http\Controllers\TokenController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ContactController;
-use App\Models\Post\Setting as PostSetting;
+use App\Models\Setting;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,9 +28,9 @@ use App\Models\Post\Setting as PostSetting;
 |
 */
 
-$segments = PostSetting::getSegments();
-Route::get('/'.$segments->post.'/{id}/{slug}', [PostController::class, 'show'])->name('post');
-Route::get('/'.$segments->plugin.'/'.$segments->category.'/{id}/{slug}', [PostCategoryController::class, 'index'])->name('post.category');
+$segments = Setting::getSegments('Post');
+Route::get('/'.$segments['post'].'/{id}/{slug}', [PostController::class, 'show'])->name('post');
+Route::get('/'.$segments['plugin'].'/'.$segments['category'].'/{id}/{slug}', [PostCategoryController::class, 'index'])->name('post.category');
 
 Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');

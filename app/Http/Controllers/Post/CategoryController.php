@@ -32,7 +32,7 @@ class CategoryController extends Controller
         $category->global_settings = PostSetting::getDataByGroup('categories');
 	$settings = $category->getSettings();
 	$posts = $category->getPosts($request);
-        $segments = PostSetting::getSegments();
+        $segments = Setting::getSegments('Post');
         $metaData = $category->meta_data;
 	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug]);
 

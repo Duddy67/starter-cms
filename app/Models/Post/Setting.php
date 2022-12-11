@@ -82,14 +82,6 @@ class Setting extends Model
 	return $settings;
     }
 
-    public static function getSegments(): object
-    {
-        $json = file_get_contents(base_path().'/routes/segments/post.json', true);
-        $segments = json_decode($json);
-
-        return $segments->{app()->getLocale()};
-    }
-
     public static function getPostOrderingOptions(): array
     {
       return [
