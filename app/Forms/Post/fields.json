@@ -122,11 +122,12 @@
     "placeholder": "labels.generic.alt_img"
   },
   {
-    "label": "labels.generic.layout",
+    "label": "labels.generic.page",
     "type": "select",
-    "name": "layout",
-    "id": "layout",
-    "tab": "layout",
+    "name": "page",
+    "id": "page",
+    "tab": "layout_items",
+    "blank": "labels.generic.none",
     "options": [] 
   },
   {

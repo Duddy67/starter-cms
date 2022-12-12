@@ -24,7 +24,7 @@ class PostController extends Controller
         $menu->allow_registering = Setting::getValue('website', 'allow_registering', 0);
         $theme = Setting::getValue('website', 'theme', 'starter');
 
-	if (!$post) {
+        if (!$post || ($post->layoutItems()->exists() && !view()->exists('themes.'.$theme.'.pages.'.$post->page))) {
             $page = '404';
             return view('themes.'.$theme.'.index', compact('page', 'menu'));
 	}

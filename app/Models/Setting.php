@@ -248,25 +248,32 @@ class Setting extends Model
         return ($extraField) ? $item->extra_fields[$extraField] : null;
     }
 
+    public static function getPageOptions()
+    {
+        $theme = Setting::getValue('website', 'theme');
+        $pages = @scandir(resource_path().'/views/themes/'.$theme.'/pages');
+        $pages = (!$pages) ? [] : $pages;
+        $options = [];
+
+        foreach ($pages as $key => $page) {
+            // Skip the '.', and '..' directories as well as other directories and the no blade files.
+            if ($key < 2 || !is_file(resource_path().'/views/themes/'.$theme.'/pages/'.$page) || !str_ends_with($page, '.blade.php')) {
+                continue;
+            }
+
+            // Removes ".blade.php" from the end of the string.
+            $options[] = ['value' => substr($page, 0, -10), 'text' => substr($page, 0, -10)];
+        }
+
+        return $options;
+    }
+
     public static function getSegments($modelName)
     {
         // The locales.php file always lives in the "en" lang folder.
         $segments = __('locales.segments.'.$modelName, [], 'en');
 
         return (isset($segments[config('app.locale')])) ? $segments[config('app.locale')] : $segments[config('app.fallback_locale')];
-    }
-
-    public static function getLayoutOptions($className)
-    {
-        $json = file_get_contents(resource_path().'/views/admin/layouts/plugins/'.strtolower($className).'.json', true);
-        $layouts = json_decode($json);
-        $options = [];
-
-        foreach ($layouts as $layout) {
-            $options[] = ['value' => $layout->value, 'text' => $layout->text];
-        }
-
-        return $options;
     }
 
     public static function getTimezoneOptions()

@@ -167,7 +167,7 @@ class PostController extends Controller
         $post->content = $request->input('content');
         $post->excerpt = $request->input('excerpt');
         $post->alt_img = $request->input('alt_img');
-        $post->layout = $request->input('layout');
+        $post->page = $request->input('page');
         $post->meta_data = $request->input('meta_data');
         $post->extra_fields = $request->input('extra_fields');
         $post->settings = $request->input('settings');
@@ -267,7 +267,7 @@ class PostController extends Controller
             'owned_by' => $request->input('owned_by'),
             'main_cat_id' => $request->input('main_cat_id'),
             'alt_img' => $request->input('alt_img'),
-            'layout' => $request->input('layout'),
+            'page' => $request->input('page'),
             'meta_data' => $request->input('meta_data'),
             'extra_fields' => $request->input('extra_fields'),
             'settings' => $request->input('settings'),

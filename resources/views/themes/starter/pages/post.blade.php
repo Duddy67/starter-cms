@@ -1,5 +1,5 @@
 @if ($post->layoutItems()->exists())
-    @include('themes.starter.layouts.post.'.$post->layout)
+    @include('themes.starter.pages.'.$post->page)
 @else
     <h1 class="h2"><a href="{{ url($post->getUrl()) }}">{{ $post->title }}</a></h1>
 

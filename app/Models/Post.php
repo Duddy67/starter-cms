@@ -36,7 +36,7 @@ class Post extends Model
         'content',
         'excerpt',
         'alt_img',
-        'layout',
+        'page',
         'access_level',
         'extra_fields',
         'meta_data',

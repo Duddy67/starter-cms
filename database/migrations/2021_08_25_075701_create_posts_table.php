@@ -24,7 +24,7 @@ class CreatePostsTable extends Migration
             $table->unsignedBigInteger('main_cat_id')->nullable();
             $table->char('access_level', 10);
             $table->string('alt_img', 250)->nullable();
-            $table->string('layout', 30)->nullable();
+            $table->string('page', 30)->nullable();
             $table->json('extra_fields')->nullable();
             $table->json('meta_data')->nullable();
             $table->json('settings');
