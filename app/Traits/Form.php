@@ -450,16 +450,13 @@ trait Form
             // Pass the current item object if available.
             $options = Setting::$function($item);
         }
-        elseif (in_array($field->name, ['status', 'owned_by', 'access_level', 'locale']) && !method_exists($this->model, $function)) {
+        elseif (in_array($field->name, ['status', 'owned_by', 'access_level', 'locale', 'page']) && !method_exists($this->model, $function)) {
             // Call the Setting method when not availabe in the model.
             $options = Setting::$function();
         }
         // Sets the yes/no select lists.
         elseif (isset($field->extra) && in_array('yes_no', $field->extra)) {
             $options = Setting::getYesNoOptions();
-        }
-        elseif ($field->name == 'page') {
-            $options = Setting::getPageOptions();
         }
         else {
             // Call the model method.
