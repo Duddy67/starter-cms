@@ -108,5 +108,7 @@ class RegisterController extends Controller
 	}
 
 	Email::sendEmail('user_registration', $user);
+
+        return redirect(app()->getLocale().RouteServiceProvider::PROFILE);
     }
 }
