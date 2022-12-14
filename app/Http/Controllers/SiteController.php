@@ -22,11 +22,18 @@ class SiteController extends Controller
         $theme = Setting::getValue('website', 'theme', 'starter');
         $query = $request->query();
         $timezone = Setting::getValue('app', 'timezone');
+        // Get the home page name in the corresponding language, or use the page name from the url.
         $slug = ($page == 'home') ? __('locales.homepage.'.$locale, [], 'en') : $page;
 
         $category = Category::getItem($slug, $locale, true);
 
         if ($category) {
+            // Check first if a page or a category page actually exists.
+            if (!view()->exists('themes.'.$theme.'.pages.'.$category->page) && !view()->exists('themes.'.$theme.'.pages.'.$page)) {
+                $page = '404';
+                return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu'));
+            }
+
             $posts = $category->getAllPosts($request);
 
             $globalSettings = PostSetting::getDataByGroup('categories');
@@ -48,18 +55,11 @@ class SiteController extends Controller
                 $post->global_settings = $globalSettings;
             }
         }
+        // Just display the page.
         elseif (file_exists(resource_path().'/views/themes/'.$theme.'/pages/'.$page.'.blade.php')) {
             return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu', 'query'));
         }
         else {
-            $page = '404';
-            return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu'));
-        }
-
-        // A category has been found.
-
-        // Check if page or category page actually exists.
-        if (!view()->exists('themes.'.$theme.'.pages.'.$category->page) && !view()->exists('themes.'.$theme.'.pages.'.$page)) {
             $page = '404';
             return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu'));
         }

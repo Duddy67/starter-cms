@@ -269,11 +269,18 @@ class Post extends Model
 
     public function getCategories($locale)
     {
-        return $this->categories()->select('post_categories.*', 'translations.name as name', 'translations.slug as slug')
-                    ->join('translations', function ($join) use($locale) { 
-                        $join->on('post_categories.id', '=', 'translatable_id')
-                             ->where('translations.translatable_type', '=', Category::class)
-                             ->where('locale', '=', $locale);
+        return $this->categories()->selectRaw('post_categories.*,'.
+                                              'COALESCE(locale.name, fallback.name) name,'.
+                                              'COALESCE(locale.slug, fallback.slug) slug')
+            ->leftJoin('translations AS locale', function ($join) use($locale) { 
+                $join->on('post_categories.id', '=', 'locale.translatable_id')
+                     ->where('locale.translatable_type', '=', Category::class)
+                     ->where('locale.locale', '=', $locale);
+            // Switch to the fallback locale in case locale is not found, (used on front-end).
+            })->leftJoin('translations AS fallback', function ($join) {
+                $join->on('post_categories.id', '=', 'fallback.translatable_id')
+                     ->where('fallback.translatable_type', Category::class)
+                     ->where('fallback.locale', config('app.fallback_locale'));
         })->get();
     }
 
