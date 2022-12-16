@@ -276,6 +276,7 @@ class ItemController extends Controller
 
         $title = $item->getTranslation(config('app.locale'))->title;
 
+        $item->deleteDescendants();
         $item->delete();
 
         return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitem.delete_success', ['title' => $title]));
@@ -299,6 +300,7 @@ class ItemController extends Controller
         foreach ($request->input('ids') as $id) {
             $item = Item::findOrFail($id);
 
+            $item->deleteDescendants();
             $item->delete();
             $deleted++;
         }

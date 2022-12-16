@@ -59,7 +59,7 @@ class CategoryController extends Controller
         if ($request->input('search', null)) {
             $except = ['ordering'];
         }
-           
+
         $columns = $this->getColumns($except);
         $actions = $this->getActions('list');
         $filters = $this->getFilters($request);
@@ -348,8 +348,8 @@ class CategoryController extends Controller
 
         $name = $category->getTranslation(config('app.locale'))->name;
 
-        //$category->categories()->detach();
-        //$category->delete();
+        $category->deleteDescendants();
+        $category->delete();
 
         return redirect()->route('admin.post.categories.index', $request->query())->with('success', __('messages.category.delete_success', ['name' => $name]));
     }
@@ -375,7 +375,7 @@ class CategoryController extends Controller
                   ]);
             }
 
-            //$category->categories()->detach();
+            $category->deleteDescendants();
             $category->delete();
 
             $deleted++;

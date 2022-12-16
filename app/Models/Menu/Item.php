@@ -181,4 +181,23 @@ class Item extends Model
     {
         return $this->{$fieldName};
     }
+
+    /*
+     *  Delete the node descendants leaf node by leaf node in order to use the delete
+     *  method of the model.
+     *  Note: For whatever reason, the NodeTrait doesn't use this method which causes errors.
+     *  https://github.com/lazychaser/laravel-nestedset/issues/568
+     */
+    public function deleteDescendants()
+    {
+        $leaves = Item::whereDescendantOf($this)->whereIsLeaf()->get();
+
+        while ($leaves->isNotEmpty()) {
+            foreach ($leaves as $leaf) {
+                $leaf->delete();
+            }
+
+            $leaves = Item::whereDescendantOf($this)->whereIsLeaf()->get();
+        }
+    }
 }
