@@ -53,7 +53,7 @@ return [
     'post' => [
         'create_success' => 'Post successfully created.',
         'update_success' => 'Post successfully updated.',
-        'delete_success' => 'The post ":name" has been successfully deleted.',
+        'delete_success' => 'The post ":title" has been successfully deleted.',
         'delete_list_success' => ':number posts have been successfully deleted.',
         'edit_not_auth' => 'You are not authorised to edit posts.',
         'delete_not_auth' => 'You are not authorised to delete posts.',
@@ -63,6 +63,7 @@ return [
     'category' => [
         'create_success' => 'Category successfully created.',
         'update_success' => 'Category successfully updated.',
+        'delete_success' => 'The category ":name" has been successfully deleted.',
         'change_status_list_success' => 'Category statuses successfully changed.',
         'no_subcategories' => 'No sub-categories',
     ],

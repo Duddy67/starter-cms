@@ -339,8 +339,8 @@ class CategoryController extends Controller
 
         $name = $category->name;
 
-        //$category->categories()->detach();
-        //$category->delete();
+        $category->deleteDescendants();
+        $category->delete();
 
         return redirect()->route('admin.post.categories.index', $request->query())->with('success', __('messages.category.delete_success', ['name' => $name]));
     }
@@ -366,7 +366,7 @@ class CategoryController extends Controller
                   ]);
             }
 
-            //$category->categories()->detach();
+            $category->deleteDescendants();
             $category->delete();
 
             $deleted++;

@@ -53,7 +53,7 @@ return [
     'post' => [
         'create_success' => 'Post créé avec succès.',
         'update_success' => 'Post mis à jour avec succès.',
-        'delete_success' => 'Le post ":name" a été supprimé avec succès.',
+        'delete_success' => 'Le post ":title" a été supprimé avec succès.',
         'delete_list_success' => ':number posts ont été supprimés avec succès.',
         'edit_not_auth' => 'Vous n\'êtes pas autorisé(e) à éditer des posts.',
         'delete_not_auth' => 'Vous n\'êtes pas autorisé(e) à supprimer des posts.',
@@ -63,6 +63,7 @@ return [
     'category' => [
         'create_success' => 'Catégorie créée avec succès.',
         'update_success' => 'Catégorie mise à jour avec succès.',
+        'delete_success' => 'La catégorie ":name" a été supprimée avec succès.',
         'change_status_list_success' => 'Statuts de catégorie changés avec succès.',
         'no_subcategories' => 'Aucune sous-catégories',
     ],
