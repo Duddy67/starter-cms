@@ -10,7 +10,7 @@ use App\Models\Post;
 use App\Models\Post\Setting as PostSetting;
 use App\Models\Post\Ordering as PostOrdering;
 use App\Models\Cms\Document;
-use Kalnoy\Nestedset\NodeTrait;
+use App\Traits\Node;
 use App\Models\User\Group;
 use App\Traits\TreeAccessLevel;
 use App\Traits\CheckInCheckOut;
@@ -19,7 +19,7 @@ use Illuminate\Http\Request;
 
 class Category extends Model
 {
-    use HasFactory, NodeTrait, TreeAccessLevel, CheckInCheckOut;
+    use HasFactory, Node, TreeAccessLevel, CheckInCheckOut;
 
     /**
      * The table associated with the model.
@@ -320,34 +320,5 @@ class Category extends Model
     public function getExtraFieldByAlias($alias)
     {
         return Setting::getExtraFieldByAlias($this, $alias);
-    }
-
-    /*
-     *  Overwrite the deleteDescendants() NodeTrait function.
-     *
-     *  Delete the node's descendants leaf node by leaf node in order to use the delete
-     *  method of the model.
-     *
-     *  Note:
-     *  The NodeTrait uses the statement: $node->descendants()->delete(). However, descendants()
-     *  returns a QueryBuilder object and the delete() statement delete all related elements using
-     *  a QueryBuilder delete statement.
-     *  Given it's not an Eloquent statement it doesn't trigger any Eloquent events and thus the 
-     *  delete() method of the model is not called.
-     *
-     *  https://github.com/lazychaser/laravel-nestedset/issues/568
-     *  https://laracasts.com/discuss/channels/eloquent/is-it-possible-override-the-delete-method
-     */
-    public function deleteDescendants()
-    {
-        $leaves = Category::whereDescendantOf($this)->whereIsLeaf()->get();
-
-        while ($leaves->isNotEmpty()) {
-            foreach ($leaves as $leaf) {
-                $leaf->delete();
-            }
-
-            $leaves = Category::whereDescendantOf($this)->whereIsLeaf()->get();
-        }
     }
 }

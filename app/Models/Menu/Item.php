@@ -5,7 +5,7 @@ namespace App\Models\Menu;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Menu;
-use Kalnoy\Nestedset\NodeTrait;
+use App\Traits\Node;
 use App\Models\User\Group;
 use App\Models\Setting;
 use App\Traits\CheckInCheckOut;
@@ -14,7 +14,7 @@ use Request;
 
 class Item extends Model
 {
-    use HasFactory, NodeTrait, CheckInCheckOut;
+    use HasFactory, Node, CheckInCheckOut;
 
     /**
      * The table associated with the model.
@@ -142,34 +142,5 @@ class Item extends Model
     public function getSelectedValue($fieldName)
     {
         return $this->{$fieldName};
-    }
-
-    /*
-     *  Overwrite the deleteDescendants() NodeTrait function.
-     *
-     *  Delete the node's descendants leaf node by leaf node in order to use the delete
-     *  method of the model.
-     *
-     *  Note:
-     *  The NodeTrait uses the statement: $node->descendants()->delete(). However, descendants()
-     *  returns a QueryBuilder object and the delete() statement delete all related elements using
-     *  a QueryBuilder delete statement.
-     *  Given it's not an Eloquent statement it doesn't trigger any Eloquent events and thus the 
-     *  delete() method of the model is not called.
-     *
-     *  https://github.com/lazychaser/laravel-nestedset/issues/568
-     *  https://laracasts.com/discuss/channels/eloquent/is-it-possible-override-the-delete-method
-     */
-    public function deleteDescendants()
-    {
-        $leaves = Item::whereDescendantOf($this)->whereIsLeaf()->get();
-
-        while ($leaves->isNotEmpty()) {
-            foreach ($leaves as $leaf) {
-                $leaf->delete();
-            }
-
-            $leaves = Item::whereDescendantOf($this)->whereIsLeaf()->get();
-        }
     }
 }
