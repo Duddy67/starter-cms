@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Menu\Item;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreRequest extends FormRequest
 {
@@ -28,6 +29,7 @@ class StoreRequest extends FormRequest
                 'required',
             ],
             'url' => 'required',
+            'model_name' => Rule::requiredIf(\Str::contains($this->url, ['{', '}'])),
             'status' => 'required',
         ];
     }
