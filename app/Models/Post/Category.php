@@ -10,7 +10,7 @@ use App\Models\Post;
 use App\Models\Post\Setting as PostSetting;
 use App\Models\Post\Ordering as PostOrdering;
 use App\Models\Cms\Document;
-use Kalnoy\Nestedset\NodeTrait;
+use App\Traits\Node;
 use App\Models\User\Group;
 use App\Traits\TreeAccessLevel;
 use App\Traits\CheckInCheckOut;
@@ -20,7 +20,7 @@ use Illuminate\Http\Request;
 
 class Category extends Model
 {
-    use HasFactory, NodeTrait, TreeAccessLevel, CheckInCheckOut, Translatable;
+    use HasFactory, Node, TreeAccessLevel, CheckInCheckOut, Translatable;
 
     /**
      * The table associated with the model.
@@ -391,24 +391,5 @@ class Category extends Model
     public function getExtraFieldByAlias($alias)
     {
         return Setting::getExtraFieldByAlias($this, $alias);
-    }
-
-    /*
-     *  Delete the node descendants leaf node by leaf node in order to use the delete
-     *  method of the model.
-     *  Note: For whatever reason, the NodeTrait doesn't use this method which causes errors.
-     *  https://github.com/lazychaser/laravel-nestedset/issues/568
-     */
-    public function deleteDescendants()
-    {
-        $leaves = Category::whereDescendantOf($this)->whereIsLeaf()->get();
-
-        while ($leaves->isNotEmpty()) {
-            foreach ($leaves as $leaf) {
-                $leaf->delete();
-            }
-
-            $leaves = Category::whereDescendantOf($this)->whereIsLeaf()->get();
-        }
     }
 }

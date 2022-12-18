@@ -5,7 +5,7 @@ namespace App\Models\Menu;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Menu;
-use Kalnoy\Nestedset\NodeTrait;
+use App\Traits\Node;
 use App\Models\User\Group;
 use App\Models\Setting;
 use App\Traits\CheckInCheckOut;
@@ -15,7 +15,7 @@ use Request;
 
 class Item extends Model
 {
-    use HasFactory, NodeTrait, CheckInCheckOut, Translatable;
+    use HasFactory, Node, CheckInCheckOut, Translatable;
 
     /**
      * The table associated with the model.
@@ -180,24 +180,5 @@ class Item extends Model
     public function getSelectedValue($fieldName)
     {
         return $this->{$fieldName};
-    }
-
-    /*
-     *  Delete the node descendants leaf node by leaf node in order to use the delete
-     *  method of the model.
-     *  Note: For whatever reason, the NodeTrait doesn't use this method which causes errors.
-     *  https://github.com/lazychaser/laravel-nestedset/issues/568
-     */
-    public function deleteDescendants()
-    {
-        $leaves = Item::whereDescendantOf($this)->whereIsLeaf()->get();
-
-        while ($leaves->isNotEmpty()) {
-            foreach ($leaves as $leaf) {
-                $leaf->delete();
-            }
-
-            $leaves = Item::whereDescendantOf($this)->whereIsLeaf()->get();
-        }
     }
 }
