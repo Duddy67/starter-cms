@@ -146,9 +146,9 @@ class Category extends Model
         return $query->defaultOrder()->get()->toTree();
     }
 
-    public static function getItem(int|string $id, string $locale, bool $frontend = false)
+    public static function getItem(int|string $id, string $locale)
     {
-        // Check if the $id variable is passed as a slug value.
+        // Check if the $id variable is passed as a slug value (used on front-end).
         $slug = (is_string($id)) ? true : false;
 
         $query = Category::selectRaw('post_categories.*, users.name as owner_name, users2.name as modifier_name,'.

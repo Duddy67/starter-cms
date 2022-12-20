@@ -25,7 +25,7 @@ class SiteController extends Controller
         // Get the home page name in the corresponding language, or use the page name from the url.
         $slug = ($page == 'home') ? __('locales.homepage.'.$locale, [], 'en') : $page;
 
-        $category = Category::getItem($slug, $locale, true);
+        $category = Category::getItem($slug, $locale);
 
         if ($category) {
             // Check first if a page or a category page actually exists.
@@ -81,7 +81,7 @@ class SiteController extends Controller
         $theme = Setting::getValue('website', 'theme', 'starter');
         $timezone = Setting::getValue('app', 'timezone');
 
-        $category = Category::getItem($page, $locale, true);
+        $category = Category::getItem($page, $locale);
 
         // First make sure the category exists.
 	if (!$category) {
