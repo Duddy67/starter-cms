@@ -13,8 +13,6 @@ class SiteController extends Controller
     public function index(Request $request)
     {
         $locale = $request->segment(1);
-        // Get the page name from the url or set it to 'home' if none is found       
-        $page = ($request->segment(2)) ? $request->segment(2) : 'home';
         $posts = null;
         $settings = $metaData = [];
         $menu = Menu::getMenu('main-menu');
@@ -22,10 +20,11 @@ class SiteController extends Controller
         $theme = Setting::getValue('website', 'theme', 'starter');
         $query = $request->query();
         $timezone = Setting::getValue('app', 'timezone');
-        // Get the home page name in the corresponding language, or use the page name from the url.
-        $slug = ($page == 'home') ? __('locales.homepage.'.$locale, [], 'en') : $page;
+        // Get the page name from the url or set it to the home page name in the
+        // corresponding language if none is found.
+        $page = ($request->segment(2)) ? $request->segment(2) : __('locales.homepage.'.$locale, [], 'en');
 
-        $category = Category::getItem($slug, $locale);
+        $category = Category::getItem($page, $locale);
 
         if ($category) {
             // Check first if a page or a category page actually exists.
