@@ -152,12 +152,12 @@ class Category extends Model
         $slug = (is_string($id)) ? true : false;
 
         $query = Category::selectRaw('post_categories.*, users.name as owner_name, users2.name as modifier_name,'.
-                                     'COALESCE(locale.name, fallback.name) name,'.
-                                     'COALESCE(locale.slug, fallback.slug) slug,'.
-                                     'COALESCE(locale.description, fallback.description) description,'.
-                                     'COALESCE(locale.alt_img, fallback.alt_img) alt_img,'.
-                                     'COALESCE(locale.extra_fields, fallback.extra_fields) extra_fields,'.
-                                     'COALESCE(locale.meta_data, fallback.meta_data) meta_data')
+                                     'COALESCE(locale.name, fallback.name) as name,'.
+                                     'COALESCE(locale.slug, fallback.slug) as slug,'.
+                                     'COALESCE(locale.description, fallback.description) as description,'.
+                                     'COALESCE(locale.alt_img, fallback.alt_img) as alt_img,'.
+                                     'COALESCE(locale.extra_fields, fallback.extra_fields) as extra_fields,'.
+                                     'COALESCE(locale.meta_data, fallback.meta_data) as meta_data')
             ->leftJoin('users', 'post_categories.owned_by', '=', 'users.id')
             ->leftJoin('users as users2', 'post_categories.updated_by', '=', 'users2.id')
             ->leftJoin('translations AS locale', function ($join) use($id, $locale, $slug) { 
@@ -219,10 +219,10 @@ class Category extends Model
         $locale = ($request->segment(1)) ? $request->segment(1) : config('app.locale');
         $query = Post::query();
         $query->selectRaw('posts.*, users.name as owner_name,'.
-                                  'COALESCE(locale.title, fallback.title) title,'.
-                                  'COALESCE(locale.slug, fallback.slug) slug,'.
-                                  'COALESCE(locale.excerpt, fallback.excerpt) excerpt,'.
-                                  'COALESCE(locale.alt_img, fallback.alt_img) alt_img')
+                                  'COALESCE(locale.title, fallback.title) as title,'.
+                                  'COALESCE(locale.slug, fallback.slug) as slug,'.
+                                  'COALESCE(locale.excerpt, fallback.excerpt) as excerpt,'.
+                                  'COALESCE(locale.alt_img, fallback.alt_img) as alt_img')
               ->leftJoin('users', 'posts.owned_by', '=', 'users.id');
         // Join the role tables to get the owner's role level.
         $query->join('model_has_roles', 'posts.owned_by', '=', 'model_id')->join('roles', 'roles.id', '=', 'role_id');

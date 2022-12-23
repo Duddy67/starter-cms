@@ -141,7 +141,7 @@ class Menu extends Model
 
     public function getMenuItems($locale)
     {
-        $nodes = Item::selectRaw('menu_items.*, COALESCE(locale.title, fallback.title) title, COALESCE(locale.url, fallback.url) url')
+        $nodes = Item::selectRaw('menu_items.*, COALESCE(locale.title, fallback.title) as title, COALESCE(locale.url, fallback.url) as url')
                        ->where('menu_code', $this->code)
                        ->where('status', 'published')
                        ->leftJoin('translations AS locale', function ($join) use($locale) {

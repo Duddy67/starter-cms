@@ -31,7 +31,7 @@ class UpdateRequest extends FormRequest
 	    $rules = array_merge($rules, [
 		'code' => [
 		    'required',
-		    'regex:/^[a-z0-9_]{3,}$/',
+		    'regex:/^[a-z0-9-]{3,}$/',
 		    Rule::unique('emails')->ignore($this->email->id)
 		],
 		'body_html' => 'required_if:format,html',

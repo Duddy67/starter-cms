@@ -27,6 +27,9 @@ class Translation extends Model
         'alt_img',
         'url',
         'text',
+        'subject',
+        'body_html',
+        'body_text',
         'meta_data',
         'extra_fields',
     ];
@@ -65,5 +68,27 @@ class Translation extends Model
         foreach ($attributes as $attribute) {
             $this->{$attribute} = $request->input($attribute);
         }
+    }
+
+    public static function getTranslatableAttributes(): array
+    {
+        return [
+            'locale',
+            'title',
+            'name',
+            'slug',
+            'content',
+            'raw_content',
+            'excerpt',
+            'description',
+            'alt_img',
+            'url',
+            'text',
+            'subject',
+            'body_html',
+            'body_text',
+            'meta_data',
+            'extra_fields',
+        ];
     }
 }

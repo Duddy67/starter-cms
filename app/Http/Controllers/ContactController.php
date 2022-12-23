@@ -19,6 +19,8 @@ class ContactController extends Controller
      */
     public function store(StoreRequest $request)
     {
+        $locale = $request->segment(1);
+
         $id = DB::table('contacts')->insertGetId([
             'name' => $request->input('name'), 
             'email' => $request->input('email'), 
@@ -36,7 +38,7 @@ class ContactController extends Controller
         $contact->recipient = Setting::getValue('website', 'admin_email');
 
         if (!empty($contact->recipient)) {
-            Email::sendEmail('new_message', $contact);
+            Email::sendEmail('new-message', $contact, $locale);
         }
 
         $request->session()->flash('success', __('messages.message.send_success'));

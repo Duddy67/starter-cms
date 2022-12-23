@@ -605,7 +605,7 @@ class PostController extends Controller
      *
      * @param  Array  $rows
      * @param  Array of stdClass Objects  $columns
-     * @param  Kalnoy\Nestedset\Collection  $items
+     * @param  \Illuminate\Pagination\LengthAwarePaginator  $groups
      * @return void
      */
     private function setRowValues(&$rows, $columns, $items)

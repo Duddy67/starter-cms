@@ -239,14 +239,14 @@ class Post extends Model
     public static function getItem(int $id, string $locale)
     {
         return Post::selectRaw('posts.*, users.name as owner_name, users2.name as modifier_name,'.
-                               'COALESCE(locale.title, fallback.title) title,'.
-                               'COALESCE(locale.slug, fallback.slug) slug,'.
-                               'COALESCE(locale.content, fallback.content) content,'.
-                               'COALESCE(locale.excerpt, fallback.excerpt) excerpt,'.
-                               'COALESCE(locale.raw_content, fallback.raw_content) raw_content,'.
-                               'COALESCE(locale.alt_img, fallback.alt_img) alt_img,'.
-                               'COALESCE(locale.extra_fields, fallback.extra_fields) extra_fields,'.
-                               'COALESCE(locale.meta_data, fallback.meta_data) meta_data')
+                               'COALESCE(locale.title, fallback.title) as title,'.
+                               'COALESCE(locale.slug, fallback.slug) as slug,'.
+                               'COALESCE(locale.content, fallback.content) as content,'.
+                               'COALESCE(locale.excerpt, fallback.excerpt) as excerpt,'.
+                               'COALESCE(locale.raw_content, fallback.raw_content) as raw_content,'.
+                               'COALESCE(locale.alt_img, fallback.alt_img) as alt_img,'.
+                               'COALESCE(locale.extra_fields, fallback.extra_fields) as extra_fields,'.
+                               'COALESCE(locale.meta_data, fallback.meta_data) as meta_data')
             ->leftJoin('users', 'posts.owned_by', '=', 'users.id')
             ->leftJoin('users as users2', 'posts.updated_by', '=', 'users2.id')
             ->leftJoin('translations AS locale', function ($join) use($locale) {
@@ -270,8 +270,8 @@ class Post extends Model
     public function getCategories($locale)
     {
         return $this->categories()->selectRaw('post_categories.*,'.
-                                              'COALESCE(locale.name, fallback.name) name,'.
-                                              'COALESCE(locale.slug, fallback.slug) slug')
+                                              'COALESCE(locale.name, fallback.name) as name,'.
+                                              'COALESCE(locale.slug, fallback.slug) as slug')
             ->leftJoin('translations AS locale', function ($join) use($locale) { 
                 $join->on('post_categories.id', '=', 'locale.translatable_id')
                      ->where('locale.translatable_type', '=', Category::class)
@@ -315,7 +315,7 @@ class Post extends Model
 
     public function getLayoutItems($locale)
     {
-        return $this->layoutItems()->selectRaw('layout_items.*, COALESCE(locale.text, fallback.text) text')
+        return $this->layoutItems()->selectRaw('layout_items.*, COALESCE(locale.text, fallback.text) as text')
                     ->leftJoin('translations AS locale', function ($join) use($locale) { 
                         $join->on('layout_items.id', '=', 'locale.translatable_id')
                              ->where('locale.translatable_type', '=', LayoutItem::class)

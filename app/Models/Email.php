@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use App\Mail\AppMailer;
 use Illuminate\Support\Facades\Mail;
 use App\Traits\CheckInCheckOut;
+use App\Traits\Translatable;
 
 
 class Email extends Model
 {
-    use HasFactory, CheckInCheckOut;
+    use HasFactory, CheckInCheckOut, Translatable;
 
     /**
      * The attributes that are mass assignable.
@@ -20,9 +21,7 @@ class Email extends Model
      */
     protected $fillable = [
         'code',
-        'subject',
-        'body_html',
-        'body_text',
+        'plain_text',
     ];
 
     /**
@@ -40,45 +39,38 @@ class Email extends Model
     /*
      * Override.
      */
-    public function save(array $options = [])
-    {
-        // Replace the HTML entities set by the editor in the code placeholders (eg: {{ $data-&gt;name }}).
-	$this->body_html = preg_replace('#({{[\s\$a-zA-Z0-9_]+)-&gt;([a-zA-Z0-9_\s]+}})#', '$1->$2', $this->body_html);
-
-        parent::save($options);
-
-	$this->setViewFiles();
-    }
-
-    /*
-     * Override.
-     */
     public function delete()
     {
         $code = $this->code;
+        $this->translations()->delete();
 
         parent::delete();
 
 	// Delete template files associated with the model.
-	unlink(resource_path().'/views/emails/'.$code.'.blade.php');
-	unlink(resource_path().'/views/emails/'.$code.'_plain.blade.php');
+
+        foreach (config('app.locales') as $locale) {
+            if (file_exists(resource_path().'/views/emails/'.$locale.'-'.$code.'.blade.php')) {
+                unlink(resource_path().'/views/emails/'.$locale.'-'.$code.'.blade.php');
+                unlink(resource_path().'/views/emails/'.$locale.'-'.$code.'-plain.blade.php');
+            }
+        }
     }
 
     /*
      * Creates or updates the template files associated with the model.
      */
-    private function setViewFiles()
+    public function setViewFiles($locale)
     {
         if (!file_exists(resource_path().'/views/emails')) {
 	    mkdir(resource_path().'/views/emails', 0755, true);
 	}
 
         // Name the email template after the code attribute.
-	$html = resource_path().'/views/emails/'.$this->code.'.blade.php';
-	$text = resource_path().'/views/emails/'.$this->code.'_plain.blade.php';
+	$html = resource_path().'/views/emails/'.$locale.'-'.$this->code.'.blade.php';
+	$text = resource_path().'/views/emails/'.$locale.'-'.$this->code.'-plain.blade.php';
 
-	file_put_contents($html, $this->body_html);
-	file_put_contents($text, $this->body_text);
+	file_put_contents($html, $this->getTranslation($locale)->body_html);
+	file_put_contents($text, $this->getTranslation($locale)->body_text);
     }
 
     /*
@@ -90,10 +82,17 @@ class Email extends Model
         $search = $request->input('search', null);
         $sortedBy = $request->input('sorted_by', null);
 
-	$query = Email::query();
+        $query = Email::select('emails.*', 'translations.subject as subject')
+            ->join('translations', function ($join) use($search) { 
+                $join->on('emails.id', '=', 'translatable_id')
+                    ->where('translations.translatable_type', Email::class)
+                    ->where('locale', '=', config('app.locale'));
+        });
+
+	//$query = Email::query();
 
 	if ($search !== null) {
-	    $query->where('code', 'like', '%'.$search.'%');
+	    $query->where('emails.code', 'like', '%'.$search.'%');
 	}
 
 	if ($sortedBy !== null) {
@@ -102,6 +101,20 @@ class Email extends Model
 	}
 
         return $query->paginate($perPage);
+    }
+
+    public static function getItem($id, $locale)
+    {
+        return Email::select('emails.*','users.name as modifier_name',
+                             'translations.subject as subject',
+                             'translations.body_html as body_html',
+                             'translations.body_text as body_text')
+            ->leftJoin('users as users', 'emails.updated_by', '=', 'users.id')
+            ->leftJoin('translations', function ($join) use($locale) { 
+                $join->on('emails.id', '=', 'translatable_id')
+                     ->where('translations.translatable_type', '=', Email::class)
+                     ->where('locale', '=', $locale);
+        })->findOrFail($id);
     }
 
     /*
@@ -132,7 +145,7 @@ class Email extends Model
     {
         $data = auth()->user();
         $data->subject = 'Starter CMS - Test email';
-	$data->view = 'admin.email.send_test_email';
+	$data->view = 'admin.email.send-test-email';
 
         try {
             Mail::to($data->email)->send(new AppMailer($data));
@@ -148,16 +161,25 @@ class Email extends Model
      * Send an email through a given email template.
      * @param  string  $code
      * @param  mixed  data$
-     * @return void
+     * @return boolean
      */
-    public static function sendEmail(string $code, mixed $data): bool
+    public static function sendEmail(string $code, mixed $data, string $locale): bool
     {
 	$email = Email::where('code', $code)->first();
-	$data->subject = self::parseSubject($email->subject, $data);
+        // Check if the view for the current locale exists or use the fallback locale.
+        $locale = (file_exists(resource_path().'/views/emails/'.$locale.'-'.$code.'.blade.php')) ? $locale : config('app.fallback_locale');
+
+        // Check the possibly view for the fallback locale.
+        if ($locale == config('app.fallback_locale') && !file_exists(resource_path().'/views/emails/'.$locale.'-'.$code.'.blade.php')) {
+            return false;
+        }
+
+        $translation = $email->getTranslation($locale, true);
+	$data->subject = self::parseSubject($translation->subject, $data);
 
 	// Use the email attribute as recipient in case the recipient attribute doesn't exist.
 	$recipient = (!isset($data->recipient) && isset($data->email)) ? $data->email : $data->recipient;
-	$data->view = 'emails.'.$code;
+	$data->view = 'emails.'.$locale.'-'.$code;
 
         try {
             Mail::to($recipient)->send(new AppMailer($data));

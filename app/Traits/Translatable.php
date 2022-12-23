@@ -21,12 +21,27 @@ trait Translatable
     public function getTranslation(string $locale, bool $fallback = false): Translation|null
     {
         if ($fallback) {
-            return Translation::select('*')
-                ->where('translatable_id', $this->id)
-                ->where('translatable_type', get_class($this))
-                ->where(function ($query) use($locale) {
-                     $query->where('locale', $locale)
-                           ->orWhere('locale', config('app.fallback_locale'));
+            $attributes = Translation::getTranslatableAttributes();
+            $coalesce = 'COALESCE(locale.id, fallback.id) AS id,';
+
+            foreach ($attributes as $attribute) {
+                $coalesce .= 'COALESCE(locale.'.$attribute.', fallback.'.$attribute.') AS '.$attribute.',';
+            }
+
+            $coalesce = substr($coalesce, 0, -1);
+
+            return Translation::selectRaw($coalesce)
+                  ->from('translations')
+                  ->where('translations.translatable_id', $this->id)
+                  ->where('translations.translatable_type', get_class($this))
+                  ->leftJoin('translations AS locale', function ($join) use($locale) { 
+                      $join->on('locale.translatable_id', 'translations.translatable_id')
+                           ->on('locale.translatable_type', 'translations.translatable_type')
+                           ->where('locale.locale', $locale);
+                  })->leftJoin('translations AS fallback', function ($join) {
+                        $join->on('fallback.translatable_id', 'translations.translatable_id')
+                             ->on('fallback.translatable_type', 'translations.translatable_type')
+                             ->where('fallback.locale', config('app.fallback_locale'));
             })->first();
         }
 

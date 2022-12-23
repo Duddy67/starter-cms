@@ -28,6 +28,9 @@ return new class extends Migration
             $table->text('text')->nullable();
             $table->string('url')->nullable();
             $table->string('alt_img', 250)->nullable();
+            $table->string('subject')->nullable();
+            $table->text('body_html')->nullable();
+            $table->text('body_text')->nullable();
             $table->json('meta_data')->nullable();
             $table->json('extra_fields')->nullable();
             $table->timestamps();

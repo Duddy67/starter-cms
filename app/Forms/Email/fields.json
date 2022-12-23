@@ -7,6 +7,13 @@
     "placeholder": "labels.generic.code"
   },
   {
+    "label": "labels.generic.locale",
+    "type": "select",
+    "name": "locale",
+    "id": "locale",
+    "options": [] 
+  },
+  {
     "label": "labels.email.subject",
     "type": "text",
     "name": "subject",
