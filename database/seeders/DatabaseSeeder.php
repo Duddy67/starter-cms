@@ -54,8 +54,13 @@ class DatabaseSeeder extends Seeder
         $menuItem->menu_code = 'main-menu';
         $menuItem->save();
 
-        $translation = $menuItem->getOrCreateTranslation(config('app.locale'));
+        $translation = $menuItem->getOrCreateTranslation('en');
         $translation->title = 'Home';
+        $translation->url = '/';
+        $translation->save();
+
+        $translation = $menuItem->getOrCreateTranslation('fr');
+        $translation->title = 'Accueil';
         $translation->url = '/';
         $translation->save();
 

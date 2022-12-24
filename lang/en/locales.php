@@ -7,6 +7,11 @@ return [
 	'fr' => 'accueil',
 	'es' => 'bienvenudo',
     ],
+    'pages' => [
+	'home' => 'home',
+	'accueil' => 'home',
+	'bienvenudo' => 'home',
+    ],
     'segments' => [
         'Post' => [
             'en' => [

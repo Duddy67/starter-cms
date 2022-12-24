@@ -21,16 +21,7 @@ trait Translatable
     public function getTranslation(string $locale, bool $fallback = false): Translation|null
     {
         if ($fallback) {
-            $attributes = Translation::getTranslatableAttributes();
-            $coalesce = 'COALESCE(locale.id, fallback.id) AS id,';
-
-            foreach ($attributes as $attribute) {
-                $coalesce .= 'COALESCE(locale.'.$attribute.', fallback.'.$attribute.') AS '.$attribute.',';
-            }
-
-            $coalesce = substr($coalesce, 0, -1);
-
-            return Translation::selectRaw($coalesce)
+            return Translation::selectRaw('COALESCE(locale.id, fallback.id) AS id,'.self::getFallbackCoalesce())
                   ->from('translations')
                   ->where('translations.translatable_id', $this->id)
                   ->where('translations.translatable_type', get_class($this))
@@ -61,5 +52,17 @@ trait Translatable
         }
 
         return $translation;
+    }
+
+    public static function getFallbackCoalesce(array $attributes = [], string $alias1 = 'locale', string $alias2 = 'fallback'): string
+    {
+        $attributes = (empty($attributes)) ? Translation::getTranslatableAttributes() : $attributes;
+        $coalesce = '';
+
+        foreach ($attributes as $attribute) {
+            $coalesce .= 'COALESCE('.$alias1.'.'.$attribute.', '.$alias2.'.'.$attribute.') AS '.$attribute.',';
+        }
+
+        return substr($coalesce, 0, -1);
     }
 }

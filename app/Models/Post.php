@@ -239,14 +239,9 @@ class Post extends Model
     public static function getItem(int $id, string $locale)
     {
         return Post::selectRaw('posts.*, users.name as owner_name, users2.name as modifier_name,'.
-                               'COALESCE(locale.title, fallback.title) as title,'.
-                               'COALESCE(locale.slug, fallback.slug) as slug,'.
-                               'COALESCE(locale.content, fallback.content) as content,'.
-                               'COALESCE(locale.excerpt, fallback.excerpt) as excerpt,'.
-                               'COALESCE(locale.raw_content, fallback.raw_content) as raw_content,'.
-                               'COALESCE(locale.alt_img, fallback.alt_img) as alt_img,'.
-                               'COALESCE(locale.extra_fields, fallback.extra_fields) as extra_fields,'.
-                               'COALESCE(locale.meta_data, fallback.meta_data) as meta_data')
+                                Translatable::getFallbackCoalesce(['title', 'slug', 'content', 'excerpt',
+                                                                   'raw_content', 'alt_img', 'extra_fields',
+                                                                   'meta_data']))
             ->leftJoin('users', 'posts.owned_by', '=', 'users.id')
             ->leftJoin('users as users2', 'posts.updated_by', '=', 'users2.id')
             ->leftJoin('translations AS locale', function ($join) use($locale) {
@@ -269,18 +264,17 @@ class Post extends Model
 
     public function getCategories($locale)
     {
-        return $this->categories()->selectRaw('post_categories.*,'.
-                                              'COALESCE(locale.name, fallback.name) as name,'.
-                                              'COALESCE(locale.slug, fallback.slug) as slug')
-            ->leftJoin('translations AS locale', function ($join) use($locale) { 
-                $join->on('post_categories.id', '=', 'locale.translatable_id')
-                     ->where('locale.translatable_type', '=', Category::class)
-                     ->where('locale.locale', '=', $locale);
-            // Switch to the fallback locale in case locale is not found, (used on front-end).
-            })->leftJoin('translations AS fallback', function ($join) {
-                $join->on('post_categories.id', '=', 'fallback.translatable_id')
-                     ->where('fallback.translatable_type', Category::class)
-                     ->where('fallback.locale', config('app.fallback_locale'));
+        return
+          $this->categories()->selectRaw('post_categories.*,'.Translatable::getFallbackCoalesce(['name', 'slug']))
+              ->leftJoin('translations AS locale', function ($join) use($locale) { 
+                  $join->on('post_categories.id', '=', 'locale.translatable_id')
+                       ->where('locale.translatable_type', '=', Category::class)
+                       ->where('locale.locale', '=', $locale);
+              // Switch to the fallback locale in case locale is not found, (used on front-end).
+              })->leftJoin('translations AS fallback', function ($join) {
+                  $join->on('post_categories.id', '=', 'fallback.translatable_id')
+                       ->where('fallback.translatable_type', Category::class)
+                       ->where('fallback.locale', config('app.fallback_locale'));
         })->get();
     }
 

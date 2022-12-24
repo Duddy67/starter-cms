@@ -27,8 +27,11 @@ class SiteController extends Controller
         $category = Category::getItem($page, $locale);
 
         if ($category) {
-            // Check first if a page or a category page actually exists.
-            if (!view()->exists('themes.'.$theme.'.pages.'.$category->page) && !view()->exists('themes.'.$theme.'.pages.'.$page)) {
+            // Prioritize the category page over the page from the url.
+            $page = (view()->exists('themes.'.$theme.'.pages.'.$category->page)) ? $category->page : $page;
+
+            // If the page from the url is used, make sure that the view exists.
+            if ($category->page != $page && !view()->exists('themes.'.$theme.'.pages.'.$page)) {
                 $page = '404';
                 return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu'));
             }
@@ -54,8 +57,9 @@ class SiteController extends Controller
                 $post->global_settings = $globalSettings;
             }
         }
-        // Just display the page.
-        elseif (file_exists(resource_path().'/views/themes/'.$theme.'/pages/'.$page.'.blade.php')) {
+        // Just display the page. Get the page name from the locale page mapping array.
+        elseif (file_exists(resource_path().'/views/themes/'.$theme.'/pages/'.__('locales.pages.'.$page, [], 'en').'.blade.php')) {
+            $page = __('locales.pages.'.$page, [], 'en');
             return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu', 'query'));
         }
         else {
@@ -64,8 +68,6 @@ class SiteController extends Controller
         }
 
         $segments = Setting::getSegments('Post');
-        // Prioritize the category page over the page from the url.
-        $page = ($category->page) ? $category->page : $page;
 
         return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu', 'category', 'settings', 'posts', 'segments', 'metaData', 'timezone', 'query'));
     }
