@@ -132,7 +132,7 @@ class Email extends Model
     {
         $data = auth()->user();
         $data->subject = 'Starter CMS - Test email';
-	$data->view = 'admin.email.send-test-email';
+	$data->view = 'emails.user-registration';
 
         try {
             Mail::to($data->email)->send(new AppMailer($data));
