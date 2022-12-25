@@ -67,7 +67,7 @@ class Email extends Model
     /*
      * Creates or updates the template files associated with the model.
      */
-    private function setViewFiles()
+    public function setViewFiles()
     {
         if (!file_exists(resource_path().'/views/emails')) {
 	    mkdir(resource_path().'/views/emails', 0755, true);
@@ -148,16 +148,25 @@ class Email extends Model
      * Send an email through a given email template.
      * @param  string  $code
      * @param  mixed  data$
-     * @return void
+     * @return boolean
      */
     public static function sendEmail(string $code, mixed $data): bool
     {
-	$email = Email::where('code', $code)->first();
+	if(!$email = Email::where('code', $code)->first()) {
+            report('Warning: Email object with code: "'.$code.'" not found.');
+            return false;
+        }
+
 	$data->subject = self::parseSubject($email->subject, $data);
 
 	// Use the email attribute as recipient in case the recipient attribute doesn't exist.
 	$recipient = (!isset($data->recipient) && isset($data->email)) ? $data->email : $data->recipient;
 	$data->view = 'emails.'.$code;
+
+        if (!file_exists(resource_path().'/views/emails/'.$code.'.blade.php')) {
+            report('Warning: Email view: "'.$code.'" not found.');
+            return false;
+        }
 
         try {
             Mail::to($recipient)->send(new AppMailer($data));

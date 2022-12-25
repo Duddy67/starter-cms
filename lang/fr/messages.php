@@ -99,6 +99,7 @@ return [
     ],
     'message' => [
         'send_success' => 'Votre message a été envoyé avec succès.',
+        'send_error' => 'Votre message n\'a pas pu être envoyé. Veuillez demander à l\administrateur de vérifier les logs et les paramètres d\'email.',
     ],
     'general' => [
         'update_success' => 'Paramètres sauvegardés avec succès.',

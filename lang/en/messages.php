@@ -99,6 +99,7 @@ return [
     ],
     'message' => [
         'send_success' => 'Your message has been sent successfully.',
+        'send_error' => 'Your message could not be sent. Please ask the administrator to check the logs and the email settings.',
     ],
     'general' => [
         'update_success' => 'Parameters successfully saved.',
