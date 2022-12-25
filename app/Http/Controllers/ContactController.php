@@ -36,7 +36,7 @@ class ContactController extends Controller
         $contact->recipient = Setting::getValue('website', 'admin_email');
 
         if (!empty($contact->recipient)) {
-            Email::sendEmail('new_message', $contact);
+            Email::sendEmail('new-message', $contact);
         }
 
         $request->session()->flash('success', __('messages.message.send_success'));

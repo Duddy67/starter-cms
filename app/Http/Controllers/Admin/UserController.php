@@ -217,7 +217,7 @@ class UserController extends Controller
             $user->groups()->attach($request->input('groups'));
         }
 
-        Email::sendEmail('user_registration', $user);
+        Email::sendEmail('user-registration', $user);
 
         if ($photo = $this->uploadPhoto($request)) {
             $user->photo()->save($photo);

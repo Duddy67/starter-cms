@@ -53,8 +53,8 @@ class DatabaseSeeder extends Seeder
         $menuItem->menu_code = 'main-menu';
         $menuItem->save();
 
-        Email::create([
-          'code' => 'user_registration',
+        $email = Email::create([
+          'code' => 'user-registration',
           'subject' => 'Welcome {{ $data->name }}',
           'body_html' => '<p>Hello {{ $data->name }}</p>'.
           '<p>Welcome to Starter CMS !<br />A user account has been created for you.</p>'.
@@ -63,14 +63,18 @@ class DatabaseSeeder extends Seeder
           'plain_text' => 0,
         ]);
 
-        Email::create([
-          'code' => 'new_message',
+        $email->setViewFiles();
+
+        $email = Email::create([
+          'code' => 'new-message',
           'subject' => 'New message',
           'body_html' => '<p>Hello administrator<br /><br />A user has sent a message.<br />'.
           'Name: {{ $data->name }}<br />Email: {{ $data->email }}<br />Object: {{ $data->object }}<br />'.
           'Message: {{ $data->message }}<br /><br />Best regard, <br />The Starter CMS team.</p>',
           'plain_text' => 0,
         ]);
+
+        $email->setViewFiles();
 
 	// First create the default permissions. 
 	

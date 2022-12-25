@@ -1,1 +1,0 @@
-<p>Hello administrator<br /><br />A user has sent a message.<br />Name: {{ $data->name }}<br />Email: {{ $data->email }}<br />Object: {{ $data->object }}<br />Message: {{ $data->message }}<br /><br />Best regard, <br />The Starter CMS team.</p>

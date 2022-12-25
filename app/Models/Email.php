@@ -61,7 +61,7 @@ class Email extends Model
 
 	// Delete template files associated with the model.
 	unlink(resource_path().'/views/emails/'.$code.'.blade.php');
-	unlink(resource_path().'/views/emails/'.$code.'_plain.blade.php');
+	unlink(resource_path().'/views/emails/'.$code.'-plain.blade.php');
     }
 
     /*
@@ -75,7 +75,7 @@ class Email extends Model
 
         // Name the email template after the code attribute.
 	$html = resource_path().'/views/emails/'.$this->code.'.blade.php';
-	$text = resource_path().'/views/emails/'.$this->code.'_plain.blade.php';
+	$text = resource_path().'/views/emails/'.$this->code.'-plain.blade.php';
 
 	file_put_contents($html, $this->body_html);
 	file_put_contents($text, $this->body_text);
@@ -132,7 +132,7 @@ class Email extends Model
     {
         $data = auth()->user();
         $data->subject = 'Starter CMS - Test email';
-	$data->view = 'admin.email.send_test_email';
+	$data->view = 'admin.email.send-test-email';
 
         try {
             Mail::to($data->email)->send(new AppMailer($data));

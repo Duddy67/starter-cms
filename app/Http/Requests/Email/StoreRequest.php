@@ -26,7 +26,7 @@ class StoreRequest extends FormRequest
         return [
 	    'code' => [
 		'required',
-		'regex:/^[a-z0-9_]{3,}$/',
+		'regex:/^[a-z0-9-]{3,}$/',
 		'unique:emails'
 	    ],
 	    'subject' => 'required',

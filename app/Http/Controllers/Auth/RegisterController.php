@@ -107,6 +107,6 @@ class RegisterController extends Controller
 	    $user->assignRole('registered');
 	}
 
-	Email::sendEmail('user_registration', $user);
+	Email::sendEmail('user-registration', $user);
     }
 }
