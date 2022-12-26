@@ -22,12 +22,29 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/login', [AuthController::class, 'login']);
 
-// Allows unauthenticated users to access the public posts.
-Route::get('posts', [PostController::class, 'index']);
-Route::get('posts/{post}', [PostController::class, 'show']);
+Route::prefix('{locale}')
+    ->where(['locale' => '[a-zA-Z]{2}'])
+    ->group(function () {
 
-Route::group(['middleware' => 'auth:api'], function () {
-    // Users must be authenticated to access CUD methods.
-    Route::apiResource('posts', PostController::class)->except(['index', 'show']);
+    // Allows unauthenticated users to access the public posts.
+    Route::get('/posts', [PostController::class, 'index']);
+    Route::get('/posts/{post}', [PostController::class, 'show']);
+
+    Route::group(['middleware' => 'auth:api'], function () {
+        // Users must be authenticated to access CUD methods.
+        Route::apiResource('/posts', PostController::class)->except(['index', 'show']);
+    });
+
+    Route::fallback(function () {
+        return response()->json([
+            'message' => __('messages.generic.bad_request')
+        ], 400);
+    });
+});
+
+Route::fallback(function () {
+    return response()->json([
+        'message' => __('messages.generic.bad_request')
+    ], 400);
 });
 

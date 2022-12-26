@@ -105,6 +105,7 @@ return [
     ],
     'generic' => [
         'ressource_not_found' => 'Ressource not found.',
+        'bad_request' => 'Bad request.',
         'access_not_auth' => 'You are not authorised to access this resource.',
         'edit_not_auth' => 'You are not authorised to edit this resource.',
         'create_not_auth' => 'You are not authorised to create a resource.',

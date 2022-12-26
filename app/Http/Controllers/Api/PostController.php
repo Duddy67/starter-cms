@@ -28,19 +28,52 @@ class PostController extends Controller
 
     public function index(Request $request)
     {
-        $query = Post::query();
-        $query->select('id', 'title', 'content')->whereIn('access_level', ['public_ro', 'public_rw']);
+        // Note: segment(1) is "api"
+        $locale = ($request->segment(2)) ? $request->segment(2) : config('app.locale');
+
+        $query = Post::query()->selectRaw('posts.id, users.name as owner_name,'.
+                                           Post::getFallbackCoalesce(['title', 'slug', 'excerpt', 'alt_img']))
+              ->leftJoin('users', 'posts.owned_by', '=', 'users.id');
+        // Join the role tables to get the owner's role level.
+        $query->join('model_has_roles', 'posts.owned_by', '=', 'model_id')->join('roles', 'roles.id', '=', 'role_id');
+
+        $query->leftJoin('translations AS locale', function ($join) use($locale) {
+            $join->on('posts.id', '=', 'locale.translatable_id')
+                 ->where('locale.translatable_type', Post::class)
+                 ->where('locale.locale', $locale);
+        });
+        // Switch to the fallback locale in case locale is not found.
+        $query->leftJoin('translations AS fallback', function ($join) {
+            $join->on('posts.id', '=', 'fallback.translatable_id')
+                 ->where('fallback.translatable_type', Post::class)
+                 ->where('fallback.locale', config('app.fallback_locale'));
+        })->whereIn('posts.access_level', ['public_ro', 'public_rw']);
 
         if (auth('api')->user()) {
-            $query->orWhere('owned_by', auth('api')->user()->id);
+            $query->orWhere('posts.owned_by', auth('api')->user()->id);
         }
 
         return response()->json($query->get());
     }
 
-    public function show($post)
+    public function show($locale, $post)
     {
-        if (!$post = Post::select('id', 'title', 'slug', 'access_level', 'owned_by', 'excerpt', 'content')->find($post)) {
+        $post = Post::selectRaw('posts.id, posts.access_level, posts.owned_by,'.
+                                 Post::getFallbackCoalesce(['title', 'slug', 'content', 'excerpt',
+                                                            'raw_content', 'alt_img', 'extra_fields',
+                                                            'meta_data']))
+            ->leftJoin('translations AS locale', function ($join) use($locale) {
+                $join->on('posts.id', '=', 'locale.translatable_id')
+                     ->where('locale.translatable_type', Post::class)
+                     ->where('locale.locale', $locale);
+            // Switch to the fallback locale in case locale is not found, (used on front-end).
+            })->leftJoin('translations AS fallback', function ($join) {
+                  $join->on('posts.id', '=', 'fallback.translatable_id')
+                       ->where('fallback.translatable_type', Post::class)
+                       ->where('fallback.locale', config('app.fallback_locale'));
+        })->find($post);
+
+        if (!$post) {
             return response()->json([
                 'message' => __('messages.generic.ressource_not_found')
             ], 404);
