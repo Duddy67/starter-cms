@@ -145,7 +145,7 @@ class Email extends Model
     {
         $data = auth()->user();
         $data->subject = 'Starter CMS - Test email';
-	$data->view = 'admin.email.send-test-email';
+	$data->view = 'emails.'.config('app.locale').'-user-registration';
 
         try {
             Mail::to($data->email)->send(new AppMailer($data));
@@ -165,12 +165,19 @@ class Email extends Model
      */
     public static function sendEmail(string $code, mixed $data, string $locale): bool
     {
-	$email = Email::where('code', $code)->first();
+        if(!$email = Email::where('code', $code)->first()) {
+            report('Warning: Email object with code: "'.$code.'" not found.');
+            return false;
+        }
+
+        $plain = ($email->plain_text) ? '-plain' : '';
+
         // Check if the view for the current locale exists or use the fallback locale.
-        $locale = (file_exists(resource_path().'/views/emails/'.$locale.'-'.$code.'.blade.php')) ? $locale : config('app.fallback_locale');
+        $locale = (file_exists(resource_path().'/views/emails/'.$locale.'-'.$code.$plain.'.blade.php')) ? $locale : config('app.fallback_locale');
 
         // Check the possibly view for the fallback locale.
-        if ($locale == config('app.fallback_locale') && !file_exists(resource_path().'/views/emails/'.$locale.'-'.$code.'.blade.php')) {
+        if ($locale == config('app.fallback_locale') && !file_exists(resource_path().'/views/emails/'.$locale.'-'.$code.$plain.'.blade.php')) {
+            report('Warning: Email view: "'.$locale.'-'.$code.$plain.'" not found.');
             return false;
         }
 

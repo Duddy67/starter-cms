@@ -239,7 +239,7 @@ class Post extends Model
     public static function getItem(int $id, string $locale)
     {
         return Post::selectRaw('posts.*, users.name as owner_name, users2.name as modifier_name,'.
-                                Translatable::getFallbackCoalesce(['title', 'slug', 'content', 'excerpt',
+                                Post::getFallbackCoalesce(['title', 'slug', 'content', 'excerpt',
                                                                    'raw_content', 'alt_img', 'extra_fields',
                                                                    'meta_data']))
             ->leftJoin('users', 'posts.owned_by', '=', 'users.id')
@@ -265,7 +265,7 @@ class Post extends Model
     public function getCategories($locale)
     {
         return
-          $this->categories()->selectRaw('post_categories.*,'.Translatable::getFallbackCoalesce(['name', 'slug']))
+          $this->categories()->selectRaw('post_categories.*,'.Post::getFallbackCoalesce(['name', 'slug']))
               ->leftJoin('translations AS locale', function ($join) use($locale) { 
                   $join->on('post_categories.id', '=', 'locale.translatable_id')
                        ->where('locale.translatable_type', '=', Category::class)

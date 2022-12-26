@@ -152,7 +152,7 @@ class Category extends Model
         $slug = (is_string($id)) ? true : false;
 
         $query = Category::selectRaw('post_categories.*, users.name as owner_name, users2.name as modifier_name,'.
-                                     Translatable::getFallbackCoalesce(['name', 'slug', 'description',
+                                     Category::getFallbackCoalesce(['name', 'slug', 'description',
                                                                         'alt_img', 'extra_fields', 'meta_data']))
             ->leftJoin('users', 'post_categories.owned_by', '=', 'users.id')
             ->leftJoin('users as users2', 'post_categories.updated_by', '=', 'users2.id')
@@ -214,7 +214,7 @@ class Category extends Model
     {
         $locale = ($request->segment(1)) ? $request->segment(1) : config('app.locale');
         $query = Post::query();
-        $query->selectRaw('posts.*, users.name as owner_name,'.Translatable::getFallbackCoalesce(['title', 'slug', 'excerpt', 'alt_img']))
+        $query->selectRaw('posts.*, users.name as owner_name,'.Category::getFallbackCoalesce(['title', 'slug', 'excerpt', 'alt_img']))
               ->leftJoin('users', 'posts.owned_by', '=', 'users.id');
         // Join the role tables to get the owner's role level.
         $query->join('model_has_roles', 'posts.owned_by', '=', 'model_id')->join('roles', 'roles.id', '=', 'role_id');
