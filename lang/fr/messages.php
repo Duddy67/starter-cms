@@ -104,7 +104,7 @@ return [
         'update_success' => 'Paramètres sauvegardés avec succès.',
     ],
     'generic' => [
-        'ressource_not_found' => 'Resource non trouvé.',
+        'resource_not_found' => 'Resource non trouvé.',
         'access_not_auth' => 'Vous n\'êtes pas autorisé(e) à accéder à cette resource.',
         'edit_not_auth' => 'Vous n\'êtes pas autorisé(e) à éditer cette resource.',
         'create_not_auth' => 'Vous n\'êtes pas autorisé(e) à créer une resource.',

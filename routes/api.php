@@ -34,17 +34,13 @@ Route::prefix('{locale}')
         // Users must be authenticated to access CUD methods.
         Route::apiResource('/posts', PostController::class)->except(['index', 'show']);
     });
-
-    Route::fallback(function () {
-        return response()->json([
-            'message' => __('messages.generic.bad_request')
-        ], 400);
-    });
 });
 
-Route::fallback(function () {
+// All unhandled routes go here.
+Route::any('{any}', function(){
     return response()->json([
-        'message' => __('messages.generic.bad_request')
-    ], 400);
-});
+        'status'    => false,
+        'message' => __('messages.generic.resource_not_found')
+    ], 404);
+})->where('any', '.*');
 

@@ -75,7 +75,7 @@ class PostController extends Controller
 
         if (!$post) {
             return response()->json([
-                'message' => __('messages.generic.ressource_not_found')
+                'message' => __('messages.generic.resource_not_found')
             ], 404);
         }
 
@@ -91,17 +91,21 @@ class PostController extends Controller
 
     public function store(StoreRequest $request)
     {
-        Post::create([
-            'title' => $request->input('title'), 
-            'slug' => ($request->input('slug', null)) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('title'), '-'),
+        $post = Post::create([
             'status' => 'unpublished',
-            'content' => $request->input('content'), 
             'access_level' => $request->input('access_level'), 
             'owned_by' => auth('api')->user()->id,
             'main_cat_id' => $request->input('main_cat_id', null),
             'settings' => $request->input('settings', $this->settings),
-            'excerpt' => $request->input('excerpt', null),
         ]);
+
+        $post->updated_by = auth('api')->user()->id;
+        $post->save();
+
+        $translation = $post->getOrCreateTranslation(config('app.locale'));
+        $translation->setAttributes($request, ['title', 'content', 'excerpt', 'alt_img', 'meta_data', 'extra_fields']);
+        $translation->slug = ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('title'), '-');
+        $translation->save();
         
         return response()->json([
             'message' => __('messages.post.create_success')
@@ -116,10 +120,6 @@ class PostController extends Controller
             ], 403);
         }
 
-        $post->title = $request->input('title');
-        $post->slug = ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('title'), '-');
-        $post->content = $request->input('content');
-        $post->excerpt = $request->input('excerpt', null);
         $post->settings = $request->input('settings', $this->settings);
         $post->updated_by = auth('api')->user()->id;
 
@@ -129,6 +129,11 @@ class PostController extends Controller
 
         $post->save();
         
+        $translation = $post->getOrCreateTranslation($request->input('locale'));
+        $translation->setAttributes($request, ['title', 'content', 'excerpt', 'alt_img', 'meta_data', 'extra_fields']);
+        $translation->slug = ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('title'), '-');
+        $translation->save();
+
         return response()->json([
             'message' => __('messages.post.update_success')
         ], 200);
@@ -142,11 +147,11 @@ class PostController extends Controller
             ], 403);
         }
 
-        $name = $post->title;
+        $title = $post->getTranslation(config('app.locale'))->title;
         $post->delete();
 
         return response()->json([
-            'message' => __('messages.post.delete_success', ['name' => $name])
+            'message' => __('messages.post.delete_success', ['title' => $title])
         ], 200);
     }
 }
