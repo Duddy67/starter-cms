@@ -105,7 +105,7 @@ return [
         'update_success' => 'Parameters successfully saved.',
     ],
     'generic' => [
-        'ressource_not_found' => 'Ressource not found.',
+        'resource_not_found' => 'Resource not found.',
         'access_not_auth' => 'You are not authorised to access this resource.',
         'edit_not_auth' => 'You are not authorised to edit this resource.',
         'create_not_auth' => 'You are not authorised to create a resource.',

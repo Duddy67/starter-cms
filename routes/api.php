@@ -31,3 +31,11 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::apiResource('posts', PostController::class)->except(['index', 'show']);
 });
 
+// All unhandled routes go here.
+Route::any('{any}', function(){
+    return response()->json([
+        'status'    => false,
+        'message' => __('messages.generic.resource_not_found')
+    ], 404);
+})->where('any', '.*');
+
