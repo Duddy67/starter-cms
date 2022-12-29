@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\Comment;
 use App\Models\Post\Setting as PostSetting;
 use App\Models\Menu;
 use App\Models\Setting;
@@ -44,5 +45,22 @@ class PostController extends Controller
 	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug]);
 
         return view('themes.'.$theme.'.index', compact('page', 'menu', 'id', 'slug', 'post', 'segments', 'settings', 'timezone', 'metaData', 'query'));
+    }
+
+    public function saveComment(Request $request, $id, $slug)
+    {
+        $comment = Comment::create([
+            'text' => $request->input('comment'), 
+            'owned_by' => Auth::id()
+        ]);
+
+        $post = Post::find($id);
+        $post->comments()->save($comment);
+
+        $request->session()->flash('success', __('messages.post.comment_success'));
+
+        //file_put_contents('debog_file.txt', print_r($request->all(), true));
+
+        return redirect()->route('post', ['id' => $id, 'slug' => $slug]);
     }
 }

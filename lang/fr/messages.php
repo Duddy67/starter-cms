@@ -59,6 +59,8 @@ return [
         'delete_not_auth' => 'Vous n\'êtes pas autorisé(e) à supprimer des posts.',
         'publish_list_success' => ':number posts ont été publiés avec succès.',
         'unpublish_list_success' => ':number posts ont été dépubliés avec succès.',
+        'create_comment_success' => 'Commentaire créé avec succès.',
+        'update_comment_success' => 'Commentaire mis à jour avec succès.',
     ],
     'category' => [
         'create_success' => 'Catégorie créée avec succès.',
