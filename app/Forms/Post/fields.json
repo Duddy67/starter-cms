@@ -175,5 +175,14 @@
     "extra": ["yes_no", "global_setting"],
     "group": "settings",
     "options": [] 
+  },
+  {
+    "label": "labels.generic.allow_comments",
+    "type": "select",
+    "name": "allow_comments",
+    "id": "allow_comments",
+    "extra": ["yes_no", "global_setting"],
+    "group": "settings",
+    "options": [] 
   }
 ]

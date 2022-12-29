@@ -13,6 +13,7 @@ use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
 use App\Models\Cms\Document;
 use App\Models\LayoutItem;
+use App\Models\Comment;
 use App\Support\PostCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -104,6 +105,14 @@ class Post extends Model
     public function layoutItems()
     {
         return $this->morphMany(LayoutItem::class, 'layout_itemable')->orderBy('order');
+    }
+
+    /**
+     * Get the comments for the blog post.
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 
     /**
