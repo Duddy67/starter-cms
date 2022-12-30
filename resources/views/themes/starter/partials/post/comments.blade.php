@@ -1,11 +1,25 @@
 <h3>{{ __('labels.post.comments') }}</h3>
 
-<form method="post" action="{{ route('post.comment', $query) }}">
-    @csrf
+@include('themes.starter.layouts.flash-message')
 
-    <textarea name="comment" class="tinymce-texteditor"></textarea>
-    <input type="submit" value="{{ __('labels.generic.submit') }}" class="btn btn-success mt-2 mb-4">
-</form>
+@guest
+    <div class="alert alert-info" role="alert">
+        {{ __('messages.post.comments_authentication_required') }}
+    </div>
+@endguest
+
+@auth
+    <form method="post" action="{{ route('post.comment', $query) }}">
+        @csrf
+
+        <textarea name="comment" class="tinymce-texteditor"></textarea>
+        @error('comment')
+            <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
+
+        <input type="submit" value="{{ __('labels.generic.submit') }}" class="btn btn-success mt-2 mb-4">
+    </form>
+@endauth
 
 @if ($post->comments()->exists())
     @foreach ($post->comments as $comment)

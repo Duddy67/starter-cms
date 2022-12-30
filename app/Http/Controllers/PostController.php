@@ -10,6 +10,7 @@ use App\Models\Post\Setting as PostSetting;
 use App\Models\Menu;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Comment\StoreRequest;
 
 
 class PostController extends Controller
@@ -47,7 +48,7 @@ class PostController extends Controller
         return view('themes.'.$theme.'.index', compact('page', 'menu', 'id', 'slug', 'post', 'segments', 'settings', 'timezone', 'metaData', 'query'));
     }
 
-    public function saveComment(Request $request, $id, $slug)
+    public function saveComment(StoreRequest $request, $id, $slug)
     {
         $comment = Comment::create([
             'text' => $request->input('comment'), 
@@ -57,8 +58,7 @@ class PostController extends Controller
         $post = Post::find($id);
         $post->comments()->save($comment);
 
-        $request->session()->flash('success', __('messages.post.comment_success'));
-
+        $request->session()->flash('success', __('messages.post.create_comment_success'));
         //file_put_contents('debog_file.txt', print_r($request->all(), true));
 
         return redirect()->route('post', ['id' => $id, 'slug' => $slug]);
