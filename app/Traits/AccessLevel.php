@@ -3,8 +3,6 @@
 namespace App\Traits;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-
 
 trait AccessLevel
 {
@@ -14,9 +12,9 @@ trait AccessLevel
      * @param Object  $item
      * @return bool
      */
-    public function canChangeAccessLevel(): bool
+    public function canChangeAccessLevel($guard = 'web'): bool
     {
-        return ($this->owned_by == auth()->user()->id || auth()->user()->getRoleLevel() > $this->getOwnerRoleLevel()) ? true: false;
+        return ($this->owned_by == auth($guard)->user()->id || auth($guard)->user()->getRoleLevel() > $this->getOwnerRoleLevel($guard)) ? true: false;
     }
 
     /*
@@ -25,9 +23,9 @@ trait AccessLevel
      * @param Object  $item
      * @return bool
      */
-    public function canAccess(): bool
+    public function canAccess($guard = 'web'): bool
     {
-        return (in_array($this->access_level, ['public_ro', 'public_rw']) || $this->shareGroups() || $this->canEdit()) ? true : false;
+        return (in_array($this->access_level, ['public_ro', 'public_rw']) || $this->shareGroups($guard) || $this->canEdit($guard)) ? true : false;
     }
 
     /*
@@ -36,14 +34,14 @@ trait AccessLevel
      * @param Object  $item
      * @return bool
      */
-    public function canEdit(): bool
+    public function canEdit($guard = 'web'): bool
     {
-        if (!Auth::check()) {
+        if (!auth($guard)->check()) {
             // The user must be authenticated to edit.
             return false;
         }
 
-        if ($this->access_level == 'public_rw' || $this->getOwnerRoleLevel() < auth()->user()->getRoleLevel() || $this->owned_by == auth()->user()->id || $this->shareReadWriteGroups()) {
+        if ($this->access_level == 'public_rw' || $this->getOwnerRoleLevel($guard) < auth($guard)->user()->getRoleLevel() || $this->owned_by == auth($guard)->user()->id || $this->shareReadWriteGroups($guard)) {
             return true;
         }
 
@@ -55,10 +53,10 @@ trait AccessLevel
      *
      * @return bool
      */
-    public function canDelete(): bool
+    public function canDelete($guard = 'web'): bool
     {
         // The owner role level is lower than the current user's or the current user owns the item.
-        if ($this->getOwnerRoleLevel() < auth()->user()->getRoleLevel() || $this->owned_by == auth()->user()->id) {
+        if ($this->getOwnerRoleLevel($guard) < auth($guard)->user()->getRoleLevel() || $this->owned_by == auth($guard)->user()->id) {
             return true;
         }
 
@@ -70,9 +68,9 @@ trait AccessLevel
      *
      * @return integer
      */
-    public function getOwnerRoleLevel(): int
+    public function getOwnerRoleLevel($guard = 'web'): int
     {
-        $owner = ($this->owned_by == auth()->user()->id) ? auth()->user() : User::findOrFail($this->owned_by);
+        $owner = ($this->owned_by == auth($guard)->user()->id) ? auth($guard)->user() : User::findOrFail($this->owned_by);
 
         return $owner->getRoleLevel();
     }
@@ -82,10 +80,10 @@ trait AccessLevel
      *
      * @return bool
      */
-    public function canChangeStatus(): bool
+    public function canChangeStatus($guard = 'web'): bool
     {
         // Use the access level constraints.
-        return $this->canChangeAccessLevel();
+        return $this->canChangeAccessLevel($guard);
     }
 
     /*
@@ -94,10 +92,10 @@ trait AccessLevel
      *
      * @return bool
      */
-    public function canChangeAttachments(): bool
+    public function canChangeAttachments($guard = 'web'): bool
     {
         // Use the access level constraints.
-        return $this->canChangeAccessLevel();
+        return $this->canChangeAccessLevel($guard);
     }
 
     /**
@@ -125,14 +123,14 @@ trait AccessLevel
      *
      * @return bool
      */
-    public function shareGroups(): bool
+    public function shareGroups($guard = 'web'): bool
     {
-        if (!Auth::check()) {
+        if (!auth($guard)->check()) {
             // The user must be authenticated to share groups.
             return false;
         }
 
-        $groups = array_intersect($this->getGroupIds(), auth()->user()->getGroupIds());
+        $groups = array_intersect($this->getGroupIds(), auth($guard)->user()->getGroupIds());
 
         return (!empty($groups)) ? true : false;
     }
@@ -142,9 +140,9 @@ trait AccessLevel
      *
      * @return bool
      */
-    public function shareReadWriteGroups(): bool
+    public function shareReadWriteGroups($guard = 'web'): bool
     {
-        $groups = array_intersect($this->getReadWriteGroupIds(), auth()->user()->getReadWriteGroupIds());
+        $groups = array_intersect($this->getReadWriteGroupIds(), auth($guard)->user()->getReadWriteGroupIds());
 
         return (!empty($groups)) ? true : false;
     }

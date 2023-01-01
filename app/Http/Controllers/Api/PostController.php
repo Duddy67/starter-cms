@@ -35,7 +35,8 @@ class PostController extends Controller
                                            Post::getFallbackCoalesce(['title', 'slug', 'excerpt', 'alt_img']))
               ->leftJoin('users', 'posts.owned_by', '=', 'users.id');
         // Join the role tables to get the owner's role level.
-        $query->join('model_has_roles', 'posts.owned_by', '=', 'model_id')->join('roles', 'roles.id', '=', 'role_id');
+        $query->join('model_has_roles', 'posts.owned_by', '=', 'model_id')
+              ->join('roles', 'roles.id', '=', 'role_id');
 
         $query->leftJoin('translations AS locale', function ($join) use($locale) {
             $join->on('posts.id', '=', 'locale.translatable_id')
@@ -49,8 +50,29 @@ class PostController extends Controller
                  ->where('fallback.locale', config('app.fallback_locale'));
         })->whereIn('posts.access_level', ['public_ro', 'public_rw']);
 
-        if (auth('api')->user()) {
-            $query->orWhere('posts.owned_by', auth('api')->user()->id);
+        if (auth('api')->check()) {
+            // N.B: Put the following part of the query into brackets.
+            $query->where(function($query) {
+
+                // Check for access levels.
+                $query->where(function($query) {
+                    $query->where('roles.role_level', '<', auth('api')->user()->getRoleLevel())
+                          ->orWhereIn('posts.access_level', ['public_ro', 'public_rw'])
+                          ->orWhere('posts.owned_by', auth('api')->user()->id);
+                });
+
+                $groupIds = auth('api')->user()->getGroupIds();
+
+                if (!empty($groupIds)) {
+                    // Check for access through groups.
+                    $query->orWhereHas('groups', function ($query)  use ($groupIds) {
+                        $query->whereIn('id', $groupIds);
+                    });
+                }
+            });
+        }
+        else {
+            $query->whereIn('posts.access_level', ['public_ro', 'public_rw']);
         }
 
         return response()->json($query->get());
@@ -80,7 +102,7 @@ class PostController extends Controller
         }
 
         // Check for private posts.
-        if ($post->access_level == 'private' && (!auth('api')->user() || auth('api')->user()->id != $post->owned_by)) {
+        if (!$post->canAccess('api')) {
             return response()->json([
                 'message' => __('messages.generic.access_not_auth')
             ], 403);
@@ -114,7 +136,7 @@ class PostController extends Controller
 
     public function update(UpdateRequest $request, Post $post)
     {
-        if (!$post->canEdit()) {
+        if (!$post->canEdit('api')) {
             return response()->json([
                 'message' => __('messages.generic.edit_not_auth')
             ], 403);
@@ -141,7 +163,7 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
-        if (!$post->canDelete()) {
+        if (!$post->canDelete('api')) {
             return response()->json([
                 'message' => __('messages.generic.delete_not_auth')
             ], 403);
