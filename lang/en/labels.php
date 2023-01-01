@@ -191,6 +191,7 @@ return [
 	'meta_og_image' => 'Open Graph - image',
 	'meta_og_url' => 'Open Graph - url',
 	'meta_og_local' => 'Open Graph - local',
+	'canonical_link' => 'Canonical link',
     ],
     'filter' => [
 	'search' => 'Search',
