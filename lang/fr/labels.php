@@ -196,6 +196,7 @@ return [
 	'meta_og_image' => 'Open Graph - image',
 	'meta_og_url' => 'Open Graph - url',
 	'meta_og_local' => 'Open Graph - langue',
+        'canonical_link' => 'Lien canonique',
     ],
     'filter' => [
 	'search' => 'Recherche',
