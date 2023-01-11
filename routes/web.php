@@ -30,6 +30,8 @@ use App\Models\Setting;
 
 $segments = Setting::getSegments('Post');
 Route::get('/'.$segments['post'].'/{id}/{slug}', [PostController::class, 'show'])->name('post');
+// Only authenticated users can post comments.
+Route::post('/'.$segments['post'].'/{id}/{slug}/comment', [PostController::class, 'saveComment'])->name('post.comment')->middleware('auth');
 Route::get('/'.$segments['plugin'].'/'.$segments['category'].'/{id}/{slug}', [PostCategoryController::class, 'index'])->name('post.category');
 
 Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
