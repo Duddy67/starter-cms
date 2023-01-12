@@ -298,9 +298,9 @@ class Setting extends Model
     /*
      * Generic function that returns model values which are handled by select inputs. 
      */
-    public function getSelectedValue($fieldName)
+    public function getSelectedValue(\stdClass $field): mixed
     {
-        if ($fieldName == 'per_page') {
+        if ($field->name == 'per_page') {
             return $this->where(['group' => 'pagination', 'key' => 'per_page'])->pluck('value')->first();
         }
     }

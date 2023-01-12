@@ -139,8 +139,8 @@ class Item extends Model
     /*
      * Generic function that returns model values which are handled by select inputs. 
      */
-    public function getSelectedValue($fieldName)
+    public function getSelectedValue(\stdClass $field): mixed
     {
-        return $this->{$fieldName};
+        return $this->{$field->name};
     }
 }

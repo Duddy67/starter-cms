@@ -217,7 +217,7 @@ trait Form
             if ($item) {
 
                 if ($field->type == 'select') {
-                    $fields[$key]->value = $item->getSelectedValue($field->name);
+                    $fields[$key]->value = $item->getSelectedValue($field);
                 }
                 elseif ($field->type == 'date') {
                     $datetime = $item->{$field->name}->tz(Setting::getValue('app', 'timezone'))->toDateTimeString();

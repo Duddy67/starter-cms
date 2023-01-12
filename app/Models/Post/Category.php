@@ -308,13 +308,17 @@ class Category extends Model
     /*
      * Generic function that returns model values which are handled by select inputs. 
      */
-    public function getSelectedValue($fieldName)
+    public function getSelectedValue(\stdClass $field): mixed
     {
-        if ($fieldName == 'groups') {
+        if ($field->name == 'groups') {
             return $this->groups->pluck('id')->toArray();
         }
 
-        return $this->{$fieldName};
+        if (isset($field->group) && $field->group == 'settings') {
+            return $this->settings[$field->name];
+        }
+
+        return $this->{$field->name};
     }
 
     public function getExtraFieldByAlias($alias)

@@ -223,13 +223,13 @@ class User extends Authenticatable
     /*
      * Generic function that returns model values which are handled by select inputs. 
      */
-    public function getSelectedValue($fieldName)
+    public function getSelectedValue(\stdClass $field): mixed
     {
-        if ($fieldName == 'role') {
+        if ($field->name == 'role') {
             return $this->getRoleName();
         }
 
-        if ($fieldName == 'groups') {
+        if ($field->name == 'groups') {
             return $this->groups->pluck('id')->toArray();
         }
 
