@@ -291,7 +291,7 @@ class Post extends Model
         }
 
         if (isset($field->group) && $field->group == 'settings') {
-            return $this->settings[$field->name];
+            return (isset($this->settings[$field->name])) ? $this->settings[$field->name] : null;
         }
 
         return $this->{$field->name};
