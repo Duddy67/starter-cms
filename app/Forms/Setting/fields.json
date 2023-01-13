@@ -23,6 +23,13 @@
     "group": "app"
   },
   {
+    "label": "labels.settings.collation",
+    "type": "text",
+    "name": "collation",
+    "id": "collation",
+    "group": "search"
+  },
+  {
     "label": "labels.settings.per_page",
     "type": "select",
     "name": "per_page",

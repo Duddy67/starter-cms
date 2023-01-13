@@ -26,7 +26,7 @@ class SearchController extends Controller
         $message = __('messages.search.no_matches_found');
 
         if ($request->filled('keyword')) {
-            if (strlen($request->input('keyword')) > 3) {
+            if (strlen($request->input('keyword')) > 2) {
                 $posts = Post::searchInPosts($request->input('keyword'))->paginate($perPage);
                 $posts = $this->formatResults($posts, $request->input('keyword'));
 
@@ -51,14 +51,53 @@ class SearchController extends Controller
      */
     public function formatResults($posts, $keyword)
     {
-        foreach ($posts as $post) {
+        foreach ($posts as $key => $post) {
             $post->search_results = [];
 
+            // Shorten the possible results coming from the raw_content field.
             if (preg_match_all('#.{0,30}'.$keyword.'.{0,30}#i', $post->raw_content, $matches)) {
                 $post->search_results = $matches[0];
             }
         }
 
         return $posts;
+    }
+
+    public function autocomplete(Request $request)
+    {
+        $query = Post::query()->select('title', 'raw_content');
+        $collation = Setting::getValue('search', 'collation');
+
+        $query->where(function($query) use($request, $collation) { 
+            if (empty($collation)) {
+                $query->where('title', 'LIKE', '%'.$request->get('query').'%')
+                      ->orWhere('raw_content', 'LIKE', '%'.$request->get('query').'%');
+            }
+            else {
+                $query->whereRaw('posts.title LIKE "%'.$request->get('query').'%" COLLATE '.$collation)
+                      ->orWhereRaw('posts.raw_content LIKE "%'.$request->get('query').'%" COLLATE '.$collation);
+            }
+        });
+
+        $query = Post::filterQueryByAuth($query);
+        $posts = $query->get();
+        $data = [];
+
+        foreach ($posts as $post) {
+            if ($post->title) {
+                $data[] = $post->title;
+            }
+
+            if (preg_match('#.{0,10}'.$request->get('query').'.{0,10}#i', $post->raw_content, $matches)) {
+                // Skip possible duplicates.
+                if (in_array($matches[0], $data)) {
+                    continue;
+                }
+
+                $data[] = $matches[0];
+            }
+        }
+
+        return response()->json($data);
     }
 }

@@ -76,6 +76,7 @@ Route::prefix('admin')->group(function () {
     });
 });
 
+Route::get('/autocomplete', [SearchController::class, 'autocomplete'])->name('autocomplete');
 Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/{page?}', [SiteController::class, 'index'])->name('site.index');

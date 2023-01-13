@@ -8,6 +8,7 @@ use App\Models\Post;
 use App\Http\Requests\Post\StoreRequest;
 use App\Http\Requests\Post\UpdateRequest;
 use Illuminate\Support\Str;
+use App\Models\Setting;
 
 
 class PostController extends Controller
@@ -28,7 +29,8 @@ class PostController extends Controller
 
     public function index(Request $request)
     {
-        $query = Post::query()->select('posts.id', 'title', 'content', 'excerpt');
+        $query = Post::query()->select('posts.id', 'title', 'slug', 'posts.access_level', 'excerpt', 'content', 'users.name as owner_name')
+                              ->join('users', 'posts.owned_by', '=', 'users.id');
         // Join the role tables to get the owner's role level.
         $query->join('model_has_roles', 'posts.owned_by', '=', 'model_id')
               ->join('roles', 'roles.id', '=', 'role_id');
@@ -58,7 +60,9 @@ class PostController extends Controller
             $query->whereIn('posts.access_level', ['public_ro', 'public_rw']);
         }
 
-        return response()->json($query->get());
+        $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
+
+        return response()->json($query->paginate($perPage));
     }
 
     public function show($post)
@@ -75,6 +79,25 @@ class PostController extends Controller
                 'message' => __('messages.generic.access_not_auth')
             ], 403);
         }
+
+        // Work on a cloned object to prevent extra data in the response whenever
+        // we access to a relationship: (eg: $post->image, $post->layoutItems).
+        $cPost = clone $post;
+        $post->image_url = ($cPost->image) ? url('/').$cPost->image->getUrl() : '';
+        $post->thumbnail_url = ($cPost->image) ? url('/').$cPost->image->getThumbnailUrl() : '';
+        $layout = [];
+
+        // Loop through the layout items if any.
+        foreach ($cPost->layoutItems as $layoutItem) {
+            $item = new \stdClass;
+            $item->type = $layoutItem->type;
+            $item->text = $layoutItem->text;
+            $item->data = $layoutItem->data;
+            $item->order = $layoutItem->order;
+            $layout[] = $item;
+        }
+
+        $post->layout_items = $layout;
 
         return response()->json($post);
     }

@@ -328,15 +328,13 @@ class Post extends Model
         return $rawContent;
     }
 
-    public static function searchInPosts($keyword)
+    public static function filterQueryByAuth($query)
     {
-        $query = Post::query();
-        $query->select('posts.*', 'users.name as owner_name')->leftJoin('users', 'posts.owned_by', '=', 'users.id');
         // Join the role tables to get the owner's role level.
-        $query->join('model_has_roles', 'posts.owned_by', '=', 'model_id')->join('roles', 'roles.id', '=', 'role_id');
+        $query->join('model_has_roles', 'posts.owned_by', '=', 'model_id')
+              ->join('roles', 'roles.id', '=', 'role_id');
 
         if (Auth::check()) {
-
             // N.B: Put the following part of the query into brackets.
             $query->where(function($query) {
 
@@ -360,12 +358,31 @@ class Post extends Model
         else {
             $query->whereIn('posts.access_level', ['public_ro', 'public_rw']);
         }
- 
+
         // Do not search unpublished posts.
         $query->where('posts.status', 'published');
 
-        $query->where('posts.title', 'like', '%'.$keyword.'%');
-        $query->orWhere('posts.raw_content', 'like', '%'.$keyword.'%');
+        return $query;
+    }
+
+    public static function searchInPosts($keyword)
+    {
+        $query = Post::query()->select('posts.*', 'users.name as owner_name')
+                              ->leftJoin('users', 'posts.owned_by', '=', 'users.id');
+
+        $query = self::filterQueryByAuth($query);
+        $collation = Setting::getValue('search', 'collation');
+
+        $query->where(function($query) use($keyword, $collation) {
+            if (empty($collation)) {
+                $query->where('title', 'LIKE', '%'.$keyword.'%')
+                      ->orWhere('raw_content', 'LIKE', '%'.$keyword.'%');
+            }
+            else {
+                $query->whereRaw('posts.title LIKE "%'.$keyword.'%" COLLATE '.$collation)
+                      ->orWhereRaw('posts.raw_content LIKE "%'.$keyword.'%" COLLATE '.$collation);
+            }
+        });
 
         return $query;
     }

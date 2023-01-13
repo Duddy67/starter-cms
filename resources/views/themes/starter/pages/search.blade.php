@@ -4,7 +4,7 @@
     <form id="item-filters" method="get">
         <div class="row">
             <div class="col-lg-12">
-                <input id="search" type="text" class="form-control" value="{{ request('keyword', '') }}" name="keyword" placeholder="Search by name">
+                <input id="search" type="text" autocomplete="off" class="form-control" value="{{ request('keyword', '') }}" name="keyword" placeholder="Search by name">
 
                 <button type="button" id="search-btn" class="btn btn-space btn-secondary mt-2">@lang ('labels.button.search')</button>
                 <button type="button" id="clear-search-btn" class="btn btn-space btn-secondary mt-2">@lang ('labels.button.clear')</button>
@@ -49,6 +49,20 @@
 <x-pagination :items=$posts />
 
 @push ('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js"></script>
     <script type="text/javascript" src="{{ $public }}/js/post/category.js"></script>
-@endpush
+    <script type="text/javascript">
+        var path = "{{ route('autocomplete') }}";
 
+        $('#search').typeahead({
+            minLength: 3,
+            source: function (query, process) {
+                return $.get(path, {
+                    query: query
+                }, function (data) {
+                    return process(data);
+                });
+            }
+        });
+    </script>
+@endpush

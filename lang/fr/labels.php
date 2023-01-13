@@ -91,6 +91,7 @@ return [
 	'name' => 'Nom du site',
 	'timezone' => 'Timezone',
 	'date_format' => 'Format de date',
+        'collation' => 'Collation à utiliser lors de la recherche',
 	'per_page' => 'Nombre d\'élément par page',
 	'admin_email' => 'Email de l\'administrateur du site',
 	'theme' => 'Thème utilisé pour le site',
