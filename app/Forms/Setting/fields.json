@@ -30,6 +30,13 @@
     "group": "search"
   },
   {
+    "label": "labels.settings.autocomplete_max_results",
+    "type": "text",
+    "name": "autocomplete_max_results",
+    "id": "autocomplete_max_results",
+    "group": "search"
+  },
+  {
     "label": "labels.settings.per_page",
     "type": "select",
     "name": "per_page",

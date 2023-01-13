@@ -21,6 +21,7 @@ class SearchController extends Controller
         $menu = Menu::getMenu('main-menu');
         $menu->allow_registering = Setting::getValue('website', 'allow_registering', 0);
         $theme = Setting::getValue('website', 'theme', 'starter');
+        $maxRows = Setting::getValue('search', 'autocomplete_max_results');
         $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $posts = collect(new Post);
         $message = __('messages.search.no_matches_found');
@@ -41,7 +42,7 @@ class SearchController extends Controller
             }
         }
           
-        return view('themes.'.$theme.'.index', compact('page', 'posts', 'menu', 'message'));
+        return view('themes.'.$theme.'.index', compact('page', 'posts', 'menu', 'message', 'maxRows'));
     }
 
     /**
@@ -67,6 +68,7 @@ class SearchController extends Controller
     {
         $query = Post::query()->select('title', 'raw_content');
         $collation = Setting::getValue('search', 'collation');
+        $maxRows = Setting::getValue('search', 'autocomplete_max_results');
 
         $query->where(function($query) use($request, $collation) { 
             if (empty($collation)) {
@@ -83,8 +85,8 @@ class SearchController extends Controller
         $posts = $query->get();
         $data = [];
 
-        foreach ($posts as $post) {
-            if ($post->title) {
+        foreach ($posts as $key => $post) {
+            if (preg_match('#'.$request->get('query').'#i', $post->title)) {
                 $data[] = $post->title;
             }
 
@@ -95,6 +97,10 @@ class SearchController extends Controller
                 }
 
                 $data[] = $matches[0];
+            }
+
+            if ($key > $maxRows - 1) {
+                break;
             }
         }
 

@@ -119,6 +119,7 @@ class DatabaseSeeder extends Seeder
             ['group' => 'app', 'key' => 'timezone', 'value' => 'Europe/Paris'],
             ['group' => 'app', 'key' => 'date_format', 'value' => 'd/m/Y H:i'],
             ['group' => 'search', 'key' => 'collation', 'value' => 'utf8mb4_0900_as_ci'],
+            ['group' => 'search', 'key' => 'autocomplete_max_results', 'value' => 8],
             ['group' => 'pagination', 'key' => 'per_page', 'value' => '5'],
             ['group' => 'website', 'key' => 'admin_email', 'value' => 'admin@domain.com'],
             ['group' => 'website', 'key' => 'allow_registering', 'value' => 1],

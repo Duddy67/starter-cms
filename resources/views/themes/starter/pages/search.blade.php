@@ -56,6 +56,7 @@
 
         $('#search').typeahead({
             minLength: 3,
+            limit: {{ $maxRows }},
             source: function (query, process) {
                 return $.get(path, {
                     query: query
