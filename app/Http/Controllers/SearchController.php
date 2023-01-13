@@ -76,8 +76,8 @@ class SearchController extends Controller
                       ->orWhere('raw_content', 'LIKE', '%'.$request->get('query').'%');
             }
             else {
-                $query->whereRaw('posts.title LIKE "%'.$request->get('query').'%" COLLATE '.$collation)
-                      ->orWhereRaw('posts.raw_content LIKE "%'.$request->get('query').'%" COLLATE '.$collation);
+                $query->whereRaw('posts.title LIKE "%'.addslashes($request->get('query')).'%" COLLATE '.$collation)
+                      ->orWhereRaw('posts.raw_content LIKE "%'.addslashes($request->get('query')).'%" COLLATE '.$collation);
             }
         });
 

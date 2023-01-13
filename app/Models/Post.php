@@ -379,8 +379,8 @@ class Post extends Model
                       ->orWhere('raw_content', 'LIKE', '%'.$keyword.'%');
             }
             else {
-                $query->whereRaw('posts.title LIKE "%'.$keyword.'%" COLLATE '.$collation)
-                      ->orWhereRaw('posts.raw_content LIKE "%'.$keyword.'%" COLLATE '.$collation);
+                $query->whereRaw('posts.title LIKE "%'.addslashes($keyword).'%" COLLATE '.$collation)
+                      ->orWhereRaw('posts.raw_content LIKE "%'.addslashes($keyword).'%" COLLATE '.$collation);
             }
         });
 
