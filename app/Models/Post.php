@@ -338,17 +338,21 @@ class Post extends Model
     /*
      * Generic function that returns model values which are handled by select inputs. 
      */
-    public function getSelectedValue($fieldName)
+    public function getSelectedValue(\stdClass $field): mixed
     {
-        if ($fieldName == 'groups') {
+        if ($field->name == 'groups') {
             return $this->groups->pluck('id')->toArray();
         }
 
-        if ($fieldName == 'categories') {
+        if ($field->name == 'categories') {
             return $this->categories->pluck('id')->toArray();
         }
 
-        return $this->{$fieldName};
+        if (isset($field->group) && $field->group == 'settings') {
+            return (isset($this->settings[$field->name])) ? $this->settings[$field->name] : null;
+        }
+
+        return $this->{$field->name};
     }
 
     public function getPrivateCategories()

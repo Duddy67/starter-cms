@@ -131,14 +131,13 @@ class Email extends Model
     /*
      * Generic function that returns model values which are handled by select inputs. 
      */
-    public function getSelectedValue($fieldName)
+    public function getSelectedValue(\stdClass $field): mixed
     {
-        if ($fieldName == 'format') {
+        if ($field->name == 'format') {
 	    return ($this->plain_text) ? 'plain_text' : 'html';
 	}
-	else {
-	    return $this->{$fieldName};
-	}
+
+        return $this->{$field->name};
     }
 
     public static function sendTestEmail()
