@@ -16,6 +16,9 @@ It's designed to quickly have a web application with the most common features.
 - File manager
 
 Note: A multilingual version of Starter CMS is available through the "translatable" branch.
-
+## Requirements
+- PHP version 8.0 or greater.
+- MySQL version 8.0 or greater OR MariaDB version 10.3 or greater.
+- HTTPS support
 ## License
 [GNU General Public License v3 or later](https://www.gnu.org/copyleft/gpl.html)
