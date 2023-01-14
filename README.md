@@ -12,7 +12,7 @@ It's designed to quickly have a web application with the most common features.
 - Basic search with autocomplete
 - Batch feature
 - Check-in/check-out system
-- CRUD API
+- REST API
 - File manager
 
 Note: A multilingual version of Starter CMS is available through the "translatable" branch.
