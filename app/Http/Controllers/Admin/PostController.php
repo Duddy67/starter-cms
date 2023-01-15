@@ -218,7 +218,7 @@ class PostController extends Controller
         $translation->setAttributes($request, ['title', 'content', 'excerpt', 'alt_img', 'meta_data', 'extra_fields']);
         $translation->slug = ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('title'), '-');
         // Prioritize layout items over regular content when storing raw content.
-        $translation->raw_content = ($post->layoutItems()->exists()) ? $post->getLayoutRawContent() : strip_tags($request->input('content'));
+        $translation->raw_content = ($post->layoutItems()->exists()) ? $post->getLayoutRawContent($request->input('locale')) : strip_tags($request->input('content'));
         $translation->save();
 
         $refresh = ['updated_at' => Setting::getFormattedDate($post->updated_at), 'updated_by' => auth()->user()->name, 'slug' => $translation->slug];
@@ -275,7 +275,7 @@ class PostController extends Controller
         $translation->setAttributes($request, ['title', 'content', 'excerpt', 'alt_img', 'meta_data', 'extra_fields']);
         $translation->slug = ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('title'), '-');
         // Prioritize layout items over regular content when storing raw content.
-        $translation->raw_content = ($post->layoutItems()->exists()) ? $post->getLayoutRawContent() : strip_tags($request->input('content'));
+        $translation->raw_content = ($post->layoutItems()->exists()) ? $post->getLayoutRawContent(config('app.locale')) : strip_tags($request->input('content'));
         $translation->save();
 
         if ($request->input('groups') !== null) {

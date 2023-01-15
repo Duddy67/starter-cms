@@ -40,6 +40,7 @@ Route::prefix('{locale}')
     $segments = Setting::getSegments('Post');
     Route::get('/'.$segments['post'].'/{id}/{slug}', [PostController::class, 'show'])->name('post');
     Route::get('/'.$segments['plugin'].'/'.$segments['category'].'/{id}/{slug}', [PostCategoryController::class, 'index'])->name('post.category');
+    Route::get('/autocomplete', [SearchController::class, 'autocomplete'])->name('autocomplete');
     Route::get('/search', [SearchController::class, 'index'])->name('search');
     Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
     Route::get('/{page}/{id}/{slug}', [SiteController::class, 'show'])->name('site.show');
