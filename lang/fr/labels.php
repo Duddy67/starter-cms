@@ -217,6 +217,7 @@ return [
 	'save_close' => 'Sauvegarder & fermer',
 	'cancel' => 'Annuler',
 	'update' => 'Mettre à jour',
+	'edit' => 'Editer',
 	'rebuild' => 'Reconstruire',
 	'batch' => 'Batch',
 	'checkin' => 'Déverrouiller',

@@ -216,6 +216,7 @@ return [
 	'save_close' => 'Save & close',
 	'cancel' => 'Cancel',
 	'update' => 'Update',
+	'edit' => 'Edit',
 	'rebuild' => 'Rebuild',
 	'batch' => 'Batch',
 	'checkin' => 'Check-in',

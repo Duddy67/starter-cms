@@ -11,6 +11,7 @@ use App\Models\Menu;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Comment\StoreRequest;
+use App\Http\Requests\Comment\UpdateRequest;
 
 
 class PostController extends Controller
@@ -59,8 +60,25 @@ class PostController extends Controller
         $post->comments()->save($comment);
 
         $request->session()->flash('success', __('messages.post.create_comment_success'));
-        //file_put_contents('debog_file.txt', print_r($request->all(), true));
 
         return redirect()->route('post', ['id' => $id, 'slug' => $slug]);
+    }
+
+    public function updateComment(UpdateRequest $request, Comment $comment)
+    {
+        //file_put_contents('debog_file.txt', print_r($request->all(), true));
+        if (auth()->user()->id != $comment->owned_by) {
+            return response()->json([ 'errors' => ['comment-'.$comment->id => 'Unauthorized'], 'commentId' => $comment->id, 'status' => true ], 422);
+        }
+
+        $comment->text = $request->input('comment-'.$comment->id); 
+        $comment->save();
+
+        return response()->json(['id' => $comment->id]);
+    }
+
+    public function deleteComment(Request $request, $id)
+    {
+        file_put_contents('debog_file.txt', print_r($id, true));
     }
 }

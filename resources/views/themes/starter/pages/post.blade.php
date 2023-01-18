@@ -38,15 +38,3 @@
     @endif
 @endif
 
-@push('scripts')
-    <script type="text/javascript" src="{{ asset('/vendor/tinymce/tinymce.min.js') }}"></script>
-    <script type="text/javascript">
-        tinymce.init({
-            selector: '.tinymce-texteditor',
-            entity_encoding: 'raw',
-            toolbar: 'urldialog',
-            height: 200,
-            convert_urls: false,
-        });
-    </script>
-@endpush
