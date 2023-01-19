@@ -41,6 +41,11 @@ class UpdateRequest extends FormRequest
 
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException(response()->json(['errors' => $validator->errors(), 'status' => true, 'commentId' => $this->comment->id], 422));
+        throw new HttpResponseException(response()->json([
+              'errors' => $validator->errors(), 
+              'status' => true, 
+              'commentId' => $this->comment->id,
+              'message' => __('messages.generic.form_errors')
+        ], 422));
     }
 }

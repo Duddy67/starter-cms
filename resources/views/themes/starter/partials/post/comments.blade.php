@@ -1,6 +1,6 @@
 <h3>{{ __('labels.post.comments') }}</h3>
 
-@include('themes.starter.layouts.flash-message')
+@include('themes.starter.layouts.flash-message', ['messageId' => 'ajax-message-alert-0'])
 
 @guest
     <div class="alert alert-info" role="alert">
@@ -23,16 +23,22 @@
 
 @if ($post->comments()->exists())
     @foreach ($post->comments as $comment)
-        <div class="card mb-4">
+        <div class="card mb-4" id="card-comment-{{ $comment->id }}">
             <div class="card-header">
-                {{ __('labels.post.posted_by', ['author' => $comment->author]) }} at @date ($comment->created_at->tz($timezone))
+                <div class="row">
+                    <div class="col-12">
+                    {{ __('labels.post.posted_by', ['author' => $comment->author]) }} at @date ($comment->created_at->tz($timezone))
+
+                    @if (auth()->check() && Auth::user()->id == $comment->owned_by)
+                        <button type="button" id="delete-btn-{{ $comment->id }}" data-comment-id="{{ $comment->id }}" class="btn btn-space btn-danger float-end">@lang ('labels.button.delete')</button>
+                        <span class="float-end">&nbsp;</span>
+                        <button type="button" id="edit-btn-{{ $comment->id }}" data-comment-id="{{ $comment->id }}" class="btn btn-space btn-primary float-end">@lang ('labels.button.edit')</button>
+                    @endif
+                    </div>
+                </div>
 
                 @if (auth()->check() && Auth::user()->id == $comment->owned_by)
-                    <button type="button" id="delete-btn-{{ $comment->id }}" data-comment-id="{{ $comment->id }}" class="btn btn-space btn-danger float-end">@lang ('labels.button.delete')</button>
-                    <span class="float-end">&nbsp;</span>
-                    <button type="button" id="edit-btn-{{ $comment->id }}" data-comment-id="{{ $comment->id }}" class="btn btn-space btn-primary float-end">@lang ('labels.button.edit')</button>
-
-                    <div class="alert alert-success alert-block flash-message d-none" id="ajax-message-alert-{{ $comment->id }}">
+                    <div class="alert alert-success alert-block mt-2 flash-message d-none" id="ajax-message-alert-{{ $comment->id }}">
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         <strong id="ajax-message-{{ $comment->id }}"></strong>
                     </div>

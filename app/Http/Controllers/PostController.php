@@ -66,19 +66,42 @@ class PostController extends Controller
 
     public function updateComment(UpdateRequest $request, Comment $comment)
     {
-        //file_put_contents('debog_file.txt', print_r($request->all(), true));
+        // Make sure the user match the comment owner.
         if (auth()->user()->id != $comment->owned_by) {
-            return response()->json([ 'errors' => ['comment-'.$comment->id => 'Unauthorized'], 'commentId' => $comment->id, 'status' => true ], 422);
+            return response()->json([
+                'errors' => [],
+                'commentId' => $comment->id,
+                'status' => true,
+                'message' => __('messages.post.edit_comment_not_auth')
+            ], 422);
         }
 
         $comment->text = $request->input('comment-'.$comment->id); 
         $comment->save();
 
-        return response()->json(['id' => $comment->id]);
+        return response()->json([
+            'id' => $comment->id, 
+            'action' => 'update', 
+            'message' => __('messages.post.update_comment_success')
+        ]);
     }
 
     public function deleteComment(Request $request, $id)
     {
-        file_put_contents('debog_file.txt', print_r($id, true));
+        // Make sure the user match the comment owner.
+        if (auth()->user()->id != $comment->owned_by) {
+            return response()->json([
+                'errors' => [],
+                'commentId' => $comment->id,
+                'status' => true,
+                'message' => __('messages.post.delete_comment_not_auth')
+            ], 422);
+        }
+
+        return response()->json([
+            'id' => 0, 
+            'action' => 'delete', 
+            'message' => __('messages.post.delete_comment_success')
+        ]);
     }
 }
