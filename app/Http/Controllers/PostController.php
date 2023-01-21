@@ -52,16 +52,23 @@ class PostController extends Controller
     public function saveComment(StoreRequest $request, $id, $slug)
     {
         $comment = Comment::create([
-            'text' => $request->input('comment'), 
+            'text' => $request->input('comment-0'), 
             'owned_by' => Auth::id()
         ]);
 
         $post = Post::find($id);
         $post->comments()->save($comment);
 
-        $request->session()->flash('success', __('messages.post.create_comment_success'));
+        $theme = Setting::getValue('website', 'theme', 'starter');
+        $timezone = Setting::getValue('app', 'timezone');
 
-        return redirect()->route('post', ['id' => $id, 'slug' => $slug]);
+        return response()->json([
+            'id' => $comment->id, 
+            'action' => 'create', 
+            'render' => view('themes.'.$theme.'.partials.post.comment', compact('comment', 'timezone'))->render(),
+            'text' => $comment->text,
+            'message' => __('messages.post.create_comment_success'),
+        ]);
     }
 
     public function updateComment(UpdateRequest $request, Comment $comment)
@@ -86,7 +93,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function deleteComment(Request $request, $id)
+    public function deleteComment(Request $request, Comment $comment)
     {
         // Make sure the user match the comment owner.
         if (auth()->user()->id != $comment->owned_by) {
@@ -98,8 +105,11 @@ class PostController extends Controller
             ], 422);
         }
 
+        $commentId = $comment->id;
+        $comment->delete();
+
         return response()->json([
-            'id' => 0, 
+            'id' => $commentId, 
             'action' => 'delete', 
             'message' => __('messages.post.delete_comment_success')
         ]);

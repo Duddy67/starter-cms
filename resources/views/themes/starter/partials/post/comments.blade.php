@@ -1,6 +1,6 @@
 <h3>{{ __('labels.post.comments') }}</h3>
 
-@include('themes.starter.layouts.flash-message', ['messageId' => 'ajax-message-alert-0'])
+@include('themes.starter.layouts.flash-message', ['alertId' => 'ajax-message-alert-0', 'messageId' => 'ajax-message-0'])
 
 @guest
     <div class="alert alert-info" role="alert">
@@ -9,60 +9,17 @@
 @endguest
 
 @auth
-    <form method="post" action="{{ route('post.comment', $query) }}">
+    <form method="post" id="createComment" action="{{ route('post.comment', $query) }}">
         @csrf
-
-        <textarea name="comment" id="tiny-comment-0" data-comment-id="0" class="tinymce-texteditor"></textarea>
-        @error('comment')
-            <div class="alert alert-danger">{{ $message }}</div>
-        @enderror
-
-        <input type="submit" value="{{ __('labels.generic.submit') }}" class="btn btn-success mt-2 mb-4">
+        <textarea name="comment-0" id="tiny-comment-0" data-comment-id="0" class="tinymce-texteditor"></textarea>
+        <button type="button" id="create-btn" class="btn btn-space btn-success mt-2 mb-4">@lang ('labels.generic.submit')</button>
+        <div class="text-danger mt-2" id="comment-0Error"></div>
     </form>
 @endauth
 
 @if ($post->comments()->exists())
     @foreach ($post->comments as $comment)
-        <div class="card mb-4" id="card-comment-{{ $comment->id }}">
-            <div class="card-header">
-                <div class="row">
-                    <div class="col-12">
-                    {{ __('labels.post.posted_by', ['author' => $comment->author]) }} at @date ($comment->created_at->tz($timezone))
-
-                    @if (auth()->check() && Auth::user()->id == $comment->owned_by)
-                        <button type="button" id="delete-btn-{{ $comment->id }}" data-comment-id="{{ $comment->id }}" class="btn btn-space btn-danger float-end">@lang ('labels.button.delete')</button>
-                        <span class="float-end">&nbsp;</span>
-                        <button type="button" id="edit-btn-{{ $comment->id }}" data-comment-id="{{ $comment->id }}" class="btn btn-space btn-primary float-end">@lang ('labels.button.edit')</button>
-                    @endif
-                    </div>
-                </div>
-
-                @if (auth()->check() && Auth::user()->id == $comment->owned_by)
-                    <div class="alert alert-success alert-block mt-2 flash-message d-none" id="ajax-message-alert-{{ $comment->id }}">
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        <strong id="ajax-message-{{ $comment->id }}"></strong>
-                    </div>
-
-                    <form id="updateComment-{{ $comment->id }}" action="{{ route('post.comment.update', ['comment' => $comment]) }}" style="display:none;" method="post">
-                        @method('put')
-                        @csrf
-
-                        <textarea name="comment-{{ $comment->id }}" id="tiny-comment-{{ $comment->id }}" data-comment-id="{{ $comment->id }}" class="tinymce-texteditor">{{ $comment->text }}</textarea>
-                        <button type="button" id="update-btn-{{ $comment->id }}" data-comment-id="{{ $comment->id }}" class="btn btn-space btn-success mt-2">@lang ('labels.button.update')</button>
-                        <button type="button" id="cancel-btn-{{ $comment->id }}" data-comment-id="{{ $comment->id }}" class="btn btn-space btn-info mt-2">@lang ('labels.button.cancel')</button>
-                        <div class="text-danger mt-2" id="comment-{{ $comment->id }}Error"></div>
-                    </form>
-
-                    <form id="deleteComment-{{ $comment->id }}" action="{{ route('post.comment.delete', ['id' => $comment->id]) }}" method="post">
-                        @method('delete')
-                        @csrf
-                    </form>
-                @endif
-            </div>
-            <div id="comment-{{ $comment->id }}" class="card-body">
-                {!! $comment->text !!}
-            </div>
-        </div>
+        @include('themes.starter.partials.post.comment')
     @endforeach
 @else
     <div class="alert alert-info" role="alert">
