@@ -33,10 +33,7 @@
     </div>
 @endif
 
-@php $alertId = (isset($alertId)) ? $alertId : 'ajax-message-alert'; 
-     $messageId = (isset($messageId)) ? $messageId : 'ajax-message'; @endphp
-
-<div class="alert alert-success alert-block d-none" id="{{ $alertId }}">
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>	
-    <strong id="{{ $messageId }}"></strong>
+<div class="alert alert-success alert-block d-none" id="ajax-message-alert">
+    <button type="button" class="close" data-dismiss="alert">×</button>	
+    <strong id="ajax-message"></strong>
 </div>

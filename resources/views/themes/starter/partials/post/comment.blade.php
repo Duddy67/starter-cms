@@ -14,7 +14,7 @@
 
         @if (auth()->check() && Auth::user()->id == $comment->owned_by)
             <div class="alert alert-success alert-block mt-2 flash-message d-none" id="ajax-message-alert-{{ $comment->id }}">
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" onclick="document.getElementById('ajax-message-alert-{{ $comment->id }}').classList.add('d-none');"></button>
                 <strong id="ajax-message-{{ $comment->id }}"></strong>
             </div>
 

@@ -1,7 +1,5 @@
 <h3>{{ __('labels.post.comments') }}</h3>
 
-@include('themes.starter.layouts.flash-message', ['alertId' => 'ajax-message-alert-0', 'messageId' => 'ajax-message-0'])
-
 @guest
     <div class="alert alert-info" role="alert">
         {{ __('messages.post.comments_authentication_required') }}
@@ -9,11 +7,16 @@
 @endguest
 
 @auth
+    <div class="alert alert-success alert-block d-none" id="ajax-message-alert-0">
+        <button type="button" class="btn-close" onclick="document.getElementById('ajax-message-alert-0').classList.add('d-none');"></button>	
+        <strong id="ajax-message-0"></strong>
+    </div>
+
     <form method="post" id="createComment" action="{{ route('post.comment', $query) }}">
         @csrf
         <textarea name="comment-0" id="tiny-comment-0" data-comment-id="0" class="tinymce-texteditor"></textarea>
-        <button type="button" id="create-btn" class="btn btn-space btn-success mt-2 mb-4">@lang ('labels.generic.submit')</button>
         <div class="text-danger mt-2" id="comment-0Error"></div>
+        <button type="button" id="create-btn" class="btn btn-space btn-success mt-2 mb-4">@lang ('labels.generic.submit')</button>
     </form>
 @endauth
 

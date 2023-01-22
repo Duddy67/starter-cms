@@ -105,11 +105,11 @@ class PostController extends Controller
             ], 422);
         }
 
-        $commentId = $comment->id;
+        $id = $comment->id;
         $comment->delete();
 
         return response()->json([
-            'id' => $commentId, 
+            'id' => $id, 
             'action' => 'delete', 
             'message' => __('messages.post.delete_comment_success')
         ]);

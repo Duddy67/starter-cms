@@ -5,17 +5,20 @@ document.addEventListener('DOMContentLoaded', () => {
         initTinyMceEditor(item.dataset.commentId);
     });
 
-    document.getElementById('create-btn').onclick = function() { 
-        runAjax(document.getElementById('createComment'));
+    // Check first the comment editor is available (ie: the user is authenticated).
+    if (document.getElementById('create-btn')) { 
+        document.getElementById('create-btn').onclick = function() { 
+            runAjax(document.getElementById('createComment'));
+        }
     }
 
+    // Attach click event to dynamic button elements, (DOM event delegation.)
     document.addEventListener('click', function(e) {
         const deleteBtn = e.target.closest('[id^="delete-btn-"]');
         const editBtn = e.target.closest('[id^="edit-btn-"]');
         const updateBtn = e.target.closest('[id^="update-btn-"]');
         const cancelBtn = e.target.closest('[id^="cancel-btn-"]');
 
-        // Delete the given comment.
         if (deleteBtn) {
             if (window.confirm('Are you sure ?')) {
                 runAjax(document.getElementById('deleteComment-'+deleteBtn.dataset.commentId));
@@ -53,9 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getAjaxResult(status, result) {
-        //const spinner = document.getElementById('ajax-progress');
-        //spinner.classList.add('d-none');
-
         if (status === 200) {
             deleteMessages();
 
@@ -120,6 +120,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('ajax-message-alert-'+idNb).scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'});
     }
 
+    /**
+      * Creates a new TinyMce editor instance for the given textarea.
+      *
+      * @param   integer idNb   The id number of the textarea item.
+      *
+      * @return  Object A TinyMce editor instance.
+     */
     function initTinyMceEditor(idNb) {
         let editor = tinymce.init({
 	    selector: '#tiny-comment-'+idNb,
