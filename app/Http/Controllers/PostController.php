@@ -59,6 +59,7 @@ class PostController extends Controller
         $post = Post::find($id);
         $post->comments()->save($comment);
 
+        $comment->author = auth()->user()->name;
         $theme = Setting::getValue('website', 'theme', 'starter');
         $timezone = Setting::getValue('app', 'timezone');
 

@@ -20,14 +20,17 @@
     </form>
 @endauth
 
+<div class="row" id="comment-counter">
+    <div class="col-12 mb-2">
+        <span class="float-end" id="nb-comments">{{ ($post->comments()->exists()) ? $post->comments->count() : 0 }}</span>
+        <span class="float-end">@lang ('labels.post.comments'):&nbsp;</span>
+    </div>
+</div>
+
 @if ($post->comments()->exists())
     @foreach ($post->comments as $comment)
         @include('themes.starter.partials.post.comment')
     @endforeach
-@else
-    <div class="alert alert-info" role="alert">
-        {{ __('messages.generic.no_item_found') }}
-    </div>
 @endif
 
 @push('scripts')

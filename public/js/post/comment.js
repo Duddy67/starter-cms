@@ -60,10 +60,14 @@ document.addEventListener('DOMContentLoaded', () => {
             deleteMessages();
 
             if (result.action == 'create') {
-                document.getElementById('createComment').insertAdjacentHTML('afterend', result.render);
+                document.getElementById('comment-counter').insertAdjacentHTML('afterend', result.render);
                 initTinyMceEditor(result.id);
                 tinyMCE.get('tiny-comment-'+result.id).setContent(result.text);
                 tinyMCE.get('tiny-comment-0').setContent('');
+                // Increase the comment counter.
+                let nbComments = parseInt(document.getElementById('nb-comments').textContent);
+                document.getElementById('nb-comments').textContent = nbComments + 1;
+
                 displayMessage('success', result.message, result.id);
             }
 
@@ -76,6 +80,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (result.action == 'delete') {
                 document.getElementById('card-comment-'+result.id).remove();
+                // Increase the comment counter.
+                let nbComments = parseInt(document.getElementById('nb-comments').textContent);
+                document.getElementById('nb-comments').textContent = nbComments - 1;
+
                 displayMessage('success', result.message, 0);
             }
 
