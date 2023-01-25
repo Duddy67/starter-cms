@@ -45,9 +45,10 @@ class PostController extends Controller
         return view('themes.'.$theme.'.index', compact('locale', 'page', 'menu', 'id', 'slug', 'post', 'segments', 'settings', 'timezone', 'metaData', 'query'));
     }
 
-    public function saveComment(StoreRequest $request, $id, $slug)
+    public function saveComment(StoreRequest $request, string $locale, int $id, string $slug)
     {
         $comment = Comment::create([
+            'locale' => $locale,
             'text' => $request->input('comment-0'),
             'owned_by' => Auth::id()
         ]);
@@ -68,7 +69,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function updateComment(UpdateRequest $request, Comment $comment)
+    public function updateComment(UpdateRequest $request, string $locale, Comment $comment)
     {
         // Make sure the user match the comment owner.
         if (auth()->user()->id != $comment->owned_by) {
@@ -90,7 +91,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function deleteComment(Request $request, Comment $comment)
+    public function deleteComment(Request $request, string $locale, Comment $comment)
     {
         // Make sure the user match the comment owner.
         if (auth()->user()->id != $comment->owned_by) {

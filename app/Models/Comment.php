@@ -23,6 +23,7 @@ class Comment extends Model
      * @var array
      */
     protected $fillable = [
+        'locale',
         'text',
         'owned_by',
     ];

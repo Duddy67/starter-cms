@@ -134,5 +134,6 @@ return [
         'no_item_found' => 'Aucun élément n\'a été trouvé',
         'no_document_to_delete' => 'Aucun document à supprimer.',
         'can_no_longer_create_item' => 'Avertissement: L\'utilisateur ":name" est actuellement le propriétaire de cet élément. Toutefois, il n\'est plus autorisé à créer ce type d\'élément. Veuillez assigner cet élément à un autre utilisateur.',
+        'form_errors' => 'Veuillez vérifier les erreurs dans le formulaire.',
     ]
 ];
