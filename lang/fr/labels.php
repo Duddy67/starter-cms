@@ -59,6 +59,7 @@ return [
 	'show_post_excerpt' => 'Montrer l\'extrait du post',
 	'show_post_categories' => 'Montrer les catégories du post',
 	'show_post_image' => 'Montrer l\'image du post',
+        'posted_by' => 'Posté par :author',
     ],
     'category' => [
 	'create_category' => 'Créer une catégorie',
