@@ -39,6 +39,10 @@ Route::prefix('{locale}')
 
     $segments = Setting::getSegments('Post');
     Route::get('/'.$segments['post'].'/{id}/{slug}', [PostController::class, 'show'])->name('post');
+    // Only authenticated users can post comments.
+    Route::post('/'.$segments['post'].'/{id}/{slug}/comment', [PostController::class, 'saveComment'])->name('post.comment')->middleware('auth');
+    Route::put('/'.$segments['post'].'/comment/{comment}', [PostController::class, 'updateComment'])->name('post.comment.update')->middleware('auth');
+    Route::delete('/'.$segments['post'].'/comment/{comment}', [PostController::class, 'deleteComment'])->name('post.comment.delete')->middleware('auth');
     Route::get('/'.$segments['plugin'].'/'.$segments['category'].'/{id}/{slug}', [PostCategoryController::class, 'index'])->name('post.category');
     Route::get('/autocomplete', [SearchController::class, 'autocomplete'])->name('autocomplete');
     Route::get('/search', [SearchController::class, 'index'])->name('search');

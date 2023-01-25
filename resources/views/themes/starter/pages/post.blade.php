@@ -33,4 +33,8 @@
             @endforeach
         </p>
     @endif
+
+    @if ($settings['allow_comments'])
+        @include('themes.starter.partials.post.comments')
+    @endif
 @endif

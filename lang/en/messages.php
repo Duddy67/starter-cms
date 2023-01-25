@@ -59,6 +59,12 @@ return [
         'delete_not_auth' => 'You are not authorised to delete posts.',
         'publish_list_success' => ':number posts have been successfully published.',
         'unpublish_list_success' => ':number posts have been successfully unpublished.',
+        'create_comment_success' => 'Comment successfully created.',
+        'update_comment_success' => 'Comment successfully updated.',
+        'delete_comment_success' => 'Comment successfully deleted.',
+        'edit_comment_not_auth' => 'You are not authorised to edit this comment.',
+        'delete_comment_not_auth' => 'You are not authorised to delete this comment.',
+        'comments_authentication_required' => 'You must be authenticated to post a comment.',
     ],
     'category' => [
         'create_success' => 'Category successfully created.',

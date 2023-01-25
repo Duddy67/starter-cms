@@ -43,3 +43,7 @@
 
     @php $count++; @endphp
 @endforeach
+
+@if ($settings['allow_comments'])
+    @include('themes.starter.partials.post.comments')
+@endif

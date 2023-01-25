@@ -46,6 +46,15 @@
     "options": [] 
   },
   {
+    "label": "labels.generic.allow_comments",
+    "type": "select",
+    "name": "allow_comments",
+    "id": "allow_comments",
+    "extra": ["yes_no"],
+    "group": "posts",
+    "options": []
+  },
+  {
     "label": "labels.generic.show_name",
     "type": "select",
     "name": "show_name",
