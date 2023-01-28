@@ -120,6 +120,7 @@ return [
 	'public_rw' => 'Public lecture / écriture',
 	'read_only' => 'Lecture Seule',
 	'read_write' => 'Lecture Ecriture',
+	'read_more' => 'En savoir plus',
 	'status' => 'Statut',
 	'published' => 'Publié',
 	'unpublished' => 'Dépublié',
@@ -199,6 +200,7 @@ return [
 	'meta_og_url' => 'Open Graph - url',
 	'meta_og_local' => 'Open Graph - langue',
         'canonical_link' => 'Lien canonique',
+        'cookies_privacy' => 'Cookies & Confidentialité',
     ],
     'filter' => [
 	'search' => 'Recherche',
@@ -224,6 +226,8 @@ return [
 	'publish' => 'Publier',
 	'unpublish' => 'Dépublier',
 	'send_test_email' => 'Envoyer un email de test',
+	'accept' => 'Accepter',
+	'reject' => 'Rejeter',
     ],
     'pagination' => [
 	'results' => 'Affiche :first à :last éléments sur :total résultats',
