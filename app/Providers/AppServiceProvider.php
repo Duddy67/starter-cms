@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Cookie;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        // Set variables related to the cookie info dialog (gdpr).
+        $cookieInfoConfig = config('cookie-info');
+        $cookieInfoAlreadyChecked = Cookie::has($cookieInfoConfig['cookie_name']);
+
+        view()->share(compact('cookieInfoAlreadyChecked', 'cookieInfoConfig'));
     }
 }

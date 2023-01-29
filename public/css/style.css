@@ -67,6 +67,15 @@ a {
   left: 40%;
 }
 
+.modal-dialog {
+   position:fixed;
+   top:auto;
+   right:auto;
+   left:auto;
+   bottom:0;
+   margin-left: 1rem;
+}
+
 /* -- Bootstrap Breakpoints -- */
 
 /* The screen size is smaller than 576px wide.*/
