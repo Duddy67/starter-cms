@@ -101,7 +101,7 @@ class RoleController extends Controller
             return redirect()->route('admin.user.roles.index', $request->query())->with('error',  __('messages.generic.access_not_auth'));
         }
 
-        if ($role->checked_out && $role->checked_out != auth()->user()->id) {
+        if ($role->checked_out && $role->checked_out != auth()->user()->id && !$role->isUserSessionTimedOut()) {
             return redirect()->route('admin.user.roles.index', $request->query())->with('error',  __('messages.generic.checked_out'));
         }
 

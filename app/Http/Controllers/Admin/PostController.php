@@ -109,7 +109,7 @@ class PostController extends Controller
             return redirect()->route('admin.posts.index')->with('error',  __('messages.generic.access_not_auth'));
         }
 
-        if ($post->checked_out && $post->checked_out != auth()->user()->id) {
+        if ($post->checked_out && $post->checked_out != auth()->user()->id && !$post->isUserSessionTimedOut()) {
             return redirect()->route('admin.posts.index')->with('error',  __('messages.generic.checked_out'));
         }
 

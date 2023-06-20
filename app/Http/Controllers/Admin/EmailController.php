@@ -92,7 +92,7 @@ class EmailController extends Controller
                                       ->leftJoin('users', 'emails.updated_by', '=', 'users.id')
                                       ->findOrFail($id);
 
-	if ($email->checked_out && $email->checked_out != auth()->user()->id) {
+	if ($email->checked_out && $email->checked_out != auth()->user()->id && !$email->isUserSessionTimedOut()) {
 	    return redirect()->route('admin.emails.index')->with('error',  __('messages.generic.checked_out'));
 	}
 

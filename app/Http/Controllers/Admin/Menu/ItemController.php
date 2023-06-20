@@ -108,7 +108,7 @@ class ItemController extends Controller
                                     ->leftJoin('users as users', 'menu_items.updated_by', '=', 'users.id')
                                     ->findOrFail($id);
 
-        if ($item->checked_out && $item->checked_out != auth()->user()->id) {
+        if ($item->checked_out && $item->checked_out != auth()->user()->id && !$item->isUserSessionTimedOut()) {
             return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.checked_out'));
         }
 

@@ -97,7 +97,7 @@ class MenuController extends Controller
             return redirect()->route('admin.menus.index')->with('error',  __('messages.generic.access_not_auth'));
         }
 
-        if ($menu->checked_out && $menu->checked_out != auth()->user()->id) {
+        if ($menu->checked_out && $menu->checked_out != auth()->user()->id && !$menu->isUserSessionTimedOut()) {
             return redirect()->route('admin.menus.index')->with('error',  __('messages.generic.checked_out'));
         }
 

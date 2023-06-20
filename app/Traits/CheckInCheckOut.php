@@ -29,11 +29,33 @@ trait CheckInCheckOut
      */
     public function checkIn(): void
     {
-        $this->checked_out = null;
-        $this->checked_out_time = null;
-        // Prevent updated_at field to be updated.
-        $this->timestamps = false;
-        $this->save();
+        // First make sure the current user is the user for whom the record is checked out.
+        if (auth()->user()->id == $this->checked_out) {
+            $this->checked_out = null;
+            $this->checked_out_time = null;
+            // Prevent updated_at field to be updated.
+            $this->timestamps = false;
+            $this->save();
+        }
+    }
+
+    /**
+     * Checks whether the user's session for whom the record is checked out is timed out.
+     *
+     * @return bool
+     */
+    public function isUserSessionTimedOut(User $user = null): bool
+    {
+        if ($this->checked_out === null) {
+            return true;
+        }
+
+        // Get the user for whom the record is checked out .
+        $user = ($user === null) ? User::findOrFail($this->checked_out) : $user;
+        $now = Carbon::parse(Carbon::now());
+        $lastAccess = Carbon::parse($user->last_access_at);
+
+        return $now->diffInMinutes($lastAccess) > env('SESSION_LIFETIME') ? true : false;
     }
 
     /**
@@ -43,11 +65,18 @@ trait CheckInCheckOut
      */
     public function canCheckIn(): bool
     {
+        if ($this->checked_out === null) {
+            return true;
+        }
+
         // Get the user for whom the record is checked out .
         $user = User::findOrFail($this->checked_out);
 
-        // Ensure the current user has a higher role level or that they are the user for whom the record is checked out. 
-        if (auth()->user()->getRoleLevel() > $user->getRoleLevel() || $this->checked_out == auth()->user()->id) {
+        // Ensure the current user has a higher role level or that they are the user for whom
+        // the record is checked out or the user's session is timed out.  
+        if (auth()->user()->getRoleLevel() > $user->getRoleLevel() ||
+            $this->checked_out == auth()->user()->id ||
+            $this->isUserSessionTimedOut($user)) {
             return true;
         }
 
@@ -70,11 +99,10 @@ trait CheckInCheckOut
         foreach ($recordIds as $id) {
             $record = $model::findOrFail($id);
 
-            if ($record->checked_out === null) {
+            if ($record->canCheckIn()) {
                 continue;
             }
-
-            if (!$record->canCheckIn()) {
+            else {
                 $messages['error'] = __('messages.generic.check_in_not_auth');
                 continue;
             }
