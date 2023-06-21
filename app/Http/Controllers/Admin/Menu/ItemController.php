@@ -117,7 +117,7 @@ class ItemController extends Controller
         $locale = ($request->query('locale', null)) ? $request->query('locale') : config('app.locale');
         $item = $this->item = Item::getItem($id, $locale);
 
-        if ($item->checked_out && $item->checked_out != auth()->user()->id) {
+        if ($item->checked_out && $item->checked_out != auth()->user()->id && !$item->isUserSessionTimedOut()) {
             return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.checked_out'));
         }
 

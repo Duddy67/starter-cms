@@ -136,5 +136,6 @@ return [
         'can_no_longer_create_item' => 'Avertissement: L\'utilisateur ":name" est actuellement le propriétaire de cet élément. Toutefois, il n\'est plus autorisé à créer ce type d\'élément. Veuillez assigner cet élément à un autre utilisateur.',
         'form_errors' => 'Veuillez vérifier les erreurs dans le formulaire.',
         'cookie_info' => 'Ce site utilise des cookies pour offrir une meilleure expérience sur notre site web.',
+        'checked_out' => 'Un utilisateur est déjà en train de consulter cet enregistrement. L\'enregistrement sera à nouveau consultable quand cet utilisateur aura terminé.',
     ]
 ];

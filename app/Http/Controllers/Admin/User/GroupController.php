@@ -96,7 +96,7 @@ class GroupController extends Controller
             return redirect()->route('admin.user.groups.index')->with('error',  __('messages.generic.access_not_auth'));
         }
 
-        if ($group->checked_out && $group->checked_out != auth()->user()->id) {
+        if ($group->checked_out && $group->checked_out != auth()->user()->id && !$group->isUserSessionTimedOut()) {
             return redirect()->route('admin.user.groups.index')->with('error',  __('messages.generic.checked_out'));
         }
 

@@ -96,7 +96,7 @@ class UserController extends Controller
             return redirect()->route('admin.users.index', array_merge($request->query(), ['user' => $id]))->with('error', __('messages.user.edit_user_not_auth'));
         }
 
-        if ($user->checked_out && $user->checked_out != auth()->user()->id) {
+        if ($user->checked_out && $user->checked_out != auth()->user()->id && !$user->isUserSessionTimedOut()) {
             return redirect()->route('admin.users.index', array_merge($request->query(), ['user' => $id]))->with('error',  __('messages.generic.checked_out'));
         }
 

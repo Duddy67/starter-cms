@@ -17,6 +17,7 @@ class AddLoginFieldsToUsersTable extends Migration
             $table->timestamp('last_logged_in_at')->after('updated_by')->nullable();
             $table->string('last_logged_in_ip')->after('last_logged_in_at')->nullable();
             $table->timestamp('last_seen_at')->after('last_logged_in_ip')->nullable();
+            $table->timestamp('last_access_at')->after('last_seen_at')->nullable();
         });
     }
 
@@ -31,6 +32,7 @@ class AddLoginFieldsToUsersTable extends Migration
             $table->dropColumn('last_logged_in_at');
             $table->dropColumn('last_logged_in_ip');
             $table->dropColumn('last_seen_at');
+            $table->dropColumn('last_access_at');
         });
     }
 }

@@ -107,7 +107,7 @@ class CategoryController extends Controller
             return redirect()->route('admin.post.categories.index')->with('error',  __('messages.generic.access_not_auth'));
         }
 
-        if ($category->checked_out && $category->checked_out != auth()->user()->id) {
+        if ($category->checked_out && $category->checked_out != auth()->user()->id && !$category->isUserSessionTimedOut()) {
             return redirect()->route('admin.post.categories.index')->with('error',  __('messages.generic.checked_out'));
         }
 

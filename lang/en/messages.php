@@ -137,5 +137,6 @@ return [
         'can_no_longer_create_item' => 'Warning: The user ":name" is currently the owner of this item. However, he or she is no longer allowed to create this item type. Please assign this item to a different user.',
         'form_errors' => 'Please check the form for errors.',
         'cookie_info' => 'This website uses cookies to ensure you get the best experience on our website.',
+        'checked_out' => 'A user is already checking out this record. This record will be available again once the user is done with it.',
     ]
 ];

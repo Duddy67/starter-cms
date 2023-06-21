@@ -92,7 +92,7 @@ class EmailController extends Controller
         $locale = ($request->query('locale', null)) ? $request->query('locale') : config('app.locale');
         $email = $this->item = Email::getItem($id, $locale);
 
-	if ($email->checked_out && $email->checked_out != auth()->user()->id) {
+	if ($email->checked_out && $email->checked_out != auth()->user()->id && !$email->isUserSessionTimedOut()) {
 	    return redirect()->route('admin.emails.index')->with('error',  __('messages.generic.checked_out'));
 	}
 
