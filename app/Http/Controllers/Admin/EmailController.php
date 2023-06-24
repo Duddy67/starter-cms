@@ -120,7 +120,7 @@ class EmailController extends Controller
     public function cancel(Request $request, Email $email = null)
     {
         if ($email) {
-	    $email->checkIn();
+	    $email->safeCheckIn();
 	}
 
 	return redirect()->route('admin.emails.index', $request->query());
@@ -161,7 +161,7 @@ class EmailController extends Controller
 	$email->save();
 
         if ($request->input('_close', null)) {
-            $email->checkIn();
+            $email->safeCheckIn();
             // Store the message to be displayed on the list view after the redirect.
             $request->session()->flash('success', __('messages.email.update_success'));
             return response()->json(['redirect' => route('admin.emails.index', $request->query())]);
@@ -189,7 +189,6 @@ class EmailController extends Controller
 				'plain_text' => $plainText,
 	]);
 
-	$email->updated_by = auth()->user()->id;
         $email->save();
 
         $request->session()->flash('success', __('messages.email.create_success'));

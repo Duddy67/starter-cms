@@ -143,7 +143,7 @@ class ItemController extends Controller
     public function cancel(Request $request, $code, Item $item = null)
     {
         if ($item) {
-            $item->checkIn();
+            $item->safeCheckIn();
         }
 
         return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]));
@@ -190,7 +190,7 @@ class ItemController extends Controller
         $item->save();
 
         if ($request->input('_close', null)) {
-            $item->checkIn();
+            $item->safeCheckIn();
             // Store the message to be displayed on the list view after the redirect.
             $request->session()->flash('success', __('messages.menuitem.update_success'));
             return response()->json(['redirect' => route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))]);
@@ -231,7 +231,6 @@ class ItemController extends Controller
 
         $parent->appendNode($item);
         $item->menu_code = $code;
-        $item->updated_by = auth()->user()->id;
 
         $item->save();
 

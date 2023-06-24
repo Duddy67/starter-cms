@@ -125,7 +125,7 @@ class UserController extends Controller
     public function cancel(Request $request, User $user = null)
     {
         if ($user) {
-            $user->checkIn();
+            $user->safeCheckIn();
         }
 
         return redirect()->route('admin.users.index', $request->query());
@@ -185,7 +185,7 @@ class UserController extends Controller
         }
 
         if ($request->input('_close', null)) {
-            $user->checkIn();
+            $user->safeCheckIn();
             // Store the message to be displayed on the list view after the redirect.
             $request->session()->flash('success', __('messages.user.update_success'));
             return response()->json(['redirect' => route('admin.users.index', $request->query())]);
@@ -208,7 +208,6 @@ class UserController extends Controller
             'password' => Hash::make($request->input('password')),
         ]);
 
-        $user->updated_by = auth()->user()->id;
         $user->save();
 
         $user->assignRole($request->input('role'));

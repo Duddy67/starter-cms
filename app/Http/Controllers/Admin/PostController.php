@@ -137,7 +137,7 @@ class PostController extends Controller
     public function cancel(Request $request, Post $post = null)
     {
         if ($post) {
-            $post->checkIn();
+            $post->safeCheckIn();
         }
 
         return redirect()->route('admin.posts.index', $request->query());
@@ -241,7 +241,7 @@ class PostController extends Controller
         }
 
         if ($request->input('_close', null)) {
-            $post->checkIn();
+            $post->safeCheckIn();
             // Store the message to be displayed on the list view after the redirect.
             $request->session()->flash('success', __('messages.post.update_success'));
             return response()->json(['redirect' => route('admin.posts.index', $request->query())]);
@@ -277,7 +277,6 @@ class PostController extends Controller
         LayoutItem::storeItems($post);
         // Prioritize layout items over regular content when storing raw content.
         $post->raw_content = ($post->layoutItems()->exists()) ? $post->getLayoutRawContent() : strip_tags($request->input('content'));
-        $post->updated_by = auth()->user()->id;
 
         $post->save();
 

@@ -39,6 +39,7 @@ class Category extends Model
         'status',
         'owned_by',
         'description',
+        'alt_img',
         'access_level',
         'parent_id',
         'extra_fields',
