@@ -201,6 +201,7 @@ return [
 	'meta_og_local' => 'Open Graph - locale',
         'canonical_link' => 'Canonical link',
         'cookies_privacy' => 'Cookies & Privacy',
+        'no_update' => 'No update yet',
     ],
     'filter' => [
 	'search' => 'Search',

@@ -67,7 +67,8 @@
     "type": "text",
     "name": "updated_by",
     "id": "updated_by",
-    "extra": ["disabled"]
+    "extra": ["disabled"],
+    "placeholder": "labels.generic.no_update"
   },
   {
     "label": "labels.generic.updated_at",

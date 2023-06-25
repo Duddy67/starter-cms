@@ -125,7 +125,7 @@ class GroupController extends Controller
     public function cancel(Request $request, Group $group = null)
     {
         if ($group) {
-            $group->checkIn();
+            $group->safeCheckIn();
         }
 
         return redirect()->route('admin.user.groups.index', $request->query());
@@ -166,7 +166,7 @@ class GroupController extends Controller
         $group->save();
 
         if ($request->input('_close', null)) {
-            $group->checkIn();
+            $group->safeCheckIn();
             // Store the message to be displayed on the list view after the redirect.
             $request->session()->flash('success', __('messages.group.update_success'));
             return response()->json(['redirect' => route('admin.user.groups.index', $request->query())]);
@@ -193,7 +193,6 @@ class GroupController extends Controller
           'owned_by' => $request->input('owned_by'),
         ]);
 
-        $group->updated_by = auth()->user()->id;
         $group->save();
 
         $request->session()->flash('success', __('messages.group.create_success'));

@@ -138,7 +138,7 @@ class PostController extends Controller
     public function cancel(Request $request, Post $post = null)
     {
         if ($post) {
-            $post->checkIn();
+            $post->safeCheckIn();
         }
 
         return redirect()->route('admin.posts.index', \Arr::except($request->query(), ['locale']));
@@ -240,7 +240,7 @@ class PostController extends Controller
         }
 
         if ($request->input('_close', null)) {
-            $post->checkIn();
+            $post->safeCheckIn();
             // Store the message to be displayed on the list view after the redirect.
             $request->session()->flash('success', __('messages.post.update_success'));
             return response()->json(['redirect' => route('admin.posts.index', \Arr::except($request->query(), ['locale']))]);

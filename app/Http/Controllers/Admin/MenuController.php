@@ -127,7 +127,7 @@ class MenuController extends Controller
     public function cancel(Request $request, Menu $menu = null)
     {
         if ($menu) {
-            $menu->checkIn();
+            $menu->safeCheckIn();
         }
 
         return redirect()->route('admin.menus.index', $request->query());
@@ -181,7 +181,7 @@ class MenuController extends Controller
         $menu->save();
 
         if ($request->input('_close', null)) {
-            $menu->checkIn();
+            $menu->safeCheckIn();
             // Store the message to be displayed on the list view after the redirect.
             $request->session()->flash('success', __('messages.menu.update_success'));
             return response()->json(['redirect' => route('admin.menus.index', $request->query())]);

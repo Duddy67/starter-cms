@@ -152,7 +152,7 @@ class ItemController extends Controller
     public function cancel(Request $request, $code, Item $item = null)
     {
         if ($item) {
-            $item->checkIn();
+            $item->safeCheckIn();
         }
 
         return redirect()->route('admin.menu.items.index', array_merge(\Arr::except($request->query(), ['locale']), ['code' => $code]));
@@ -201,7 +201,7 @@ class ItemController extends Controller
         $translation->save();
 
         if ($request->input('_close', null)) {
-            $item->checkIn();
+            $item->safeCheckIn();
             // Store the message to be displayed on the list view after the redirect.
             $request->session()->flash('success', __('messages.menuitem.update_success'));
             $query = \Arr::except($request->query(), ['locale']);
