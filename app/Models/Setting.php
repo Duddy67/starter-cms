@@ -181,6 +181,81 @@ class Setting extends Model
     }
 
     /*
+     * Returns the category list of the given model in hierarchical order.
+     *
+     * @return Array 
+     */  
+    public static function getCategoriesOptions(mixed $model): array
+    {
+        // Get the given model class name.
+        $class = get_class($model);
+        // Get the categories of the given model.
+        $nodes = "\\{$class}\\Category"::defaultOrder()->get()->toTree();
+        $options = [];
+        $userGroupIds = auth()->user()->getGroupIds();
+
+        $traverse = function ($categories, $prefix = '-') use (&$traverse, &$options, $userGroupIds) {
+            foreach ($categories as $category) {
+                // Check wether the current user groups match the category groups (if any).
+                $belongsToGroups = (!empty(array_intersect($userGroupIds, $category->getGroupIds()))) ? true : false;
+                // Set the category option accordingly.
+                $extra = ($category->access_level == 'private' && $category->owned_by != auth()->user()->id && !$belongsToGroups) ? ['disabled'] : [];
+                $options[] = ['value' => $category->id, 'text' => $prefix.' '.$category->name, 'extra' => $extra];
+
+                $traverse($category->children, $prefix.'-');
+            }
+        };
+
+        $traverse($nodes);
+
+        return $options;
+    }
+
+    /*
+     * Returns the parent category list of the given model in hierarchical order.
+     *
+     * @return Array 
+     */  
+    public static function getParentCategoryOptions(mixed $model, mixed $node = null): array
+    {
+        // Get the given category model class name.
+        $class = get_class($model);
+        $nodes = "\\{$class}"::defaultOrder()->get()->toTree();
+        $options = [];
+        // Defines the state of the current instance.
+        $isNew = ($node && $node->id) ? false : true;
+
+        $traverse = function ($categories, $prefix = '-') use (&$traverse, &$options, $isNew, $node) {
+
+            foreach ($categories as $category) {
+                if (!$isNew && $node->access_level != 'private') {
+                    // A non private category cannot be a private category's children.
+                    $extra = ($category->access_level == 'private') ? ['disabled'] : [];
+                }
+                elseif (!$isNew && $this->access_level == 'private' && $category->access_level == 'private') {
+                    // Only the category's owner can access it.
+                    $extra = ($category->owned_by == auth()->user()->id) ? [] : ['disabled'];
+                }
+                elseif ($isNew && $category->access_level == 'private') {
+                    // Only the category's owner can access it.
+                    $extra = ($category->owned_by == auth()->user()->id) ? [] : ['disabled'];
+                }
+                else {
+                    $extra = [];
+                }
+
+                $options[] = ['value' => $category->id, 'text' => $prefix.' '.$category->name, 'extra' => $extra];
+
+                $traverse($category->children, $prefix.'-');
+            }
+        };
+
+        $traverse($nodes);
+
+        return $options;
+    }
+
+    /*
      * Returns the users who own a given item model according to its access level and
      * to the current user's role level and groups.
      *

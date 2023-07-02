@@ -104,12 +104,12 @@ class Item extends Model
         return $url;
     }
 
-    public function getParentIdOptions()
+    public function getParentItemOptions()
     {
         // Get the parent menu code.
         $code = Request::route()->parameter('code');
 
-        $nodes = Item::whereIn('menu_code', ['root', $code])->get()->toTree();
+        $nodes = Item::whereIn('menu_code', ['root', $code])->defaultOrder()->get()->toTree();
         // Defines the state of the current instance.
         $isNew = ($this->id) ? false : true;
         $options = [];

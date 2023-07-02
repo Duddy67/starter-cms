@@ -18,6 +18,7 @@
     "label": "labels.category.parent_category",
     "type": "select",
     "name": "parent_id",
+    "function": "parent_category",
     "id": "parent_id",
     "blank": "labels.generic.none",
     "options": [] 

@@ -241,29 +241,6 @@ class Post extends Model
         return '/'.$segments['post'].'/'.$this->id.'/'.$this->slug;
     }
 
-    public function getCategoriesOptions()
-    {
-        $nodes = Category::get()->toTree();
-        $options = [];
-        $userGroupIds = auth()->user()->getGroupIds();
-
-        $traverse = function ($categories, $prefix = '-') use (&$traverse, &$options, $userGroupIds) {
-            foreach ($categories as $category) {
-                // Check wether the current user groups match the category groups (if any).
-                $belongsToGroups = (!empty(array_intersect($userGroupIds, $category->getGroupIds()))) ? true : false;
-                // Set the category option accordingly.
-                $extra = ($category->access_level == 'private' && $category->owned_by != auth()->user()->id && !$belongsToGroups) ? ['disabled'] : [];
-                $options[] = ['value' => $category->id, 'text' => $prefix.' '.$category->name, 'extra' => $extra];
-
-                $traverse($category->children, $prefix.'-');
-            }
-        };
-
-        $traverse($nodes);
-
-        return $options;
-    }
-
     public function getSettings()
     {
         return PostSetting::getItemSettings($this, 'posts');
