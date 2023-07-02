@@ -347,8 +347,10 @@ trait Form
             $default = null;
 
             if ($filter->type == 'select') {
+                // Check first if a function name is available or use the filter name.
+                $name = (isset($filter->function)) ? $filter->function : $filter->name;
                 // Build the function name.
-                $function = 'get'.str_replace('_', '', ucwords($filter->name, '_')).'Options';
+                $function = 'get'.str_replace('_', '', ucwords($name, '_')).'Options';
 
                 // Common filters.
 
@@ -365,6 +367,9 @@ trait Form
                 }
                 elseif ($filter->name == 'groups') {
                     $options = Setting::getGroupsFilterOptions();
+                }
+                elseif ($filter->name == 'categories') {
+                    $options = Setting::$function($this->model);
                 }
                 // Specific to the model.
                 else {
@@ -441,14 +446,22 @@ trait Form
      */  
     private function getSelectOptions(\stdClass $field, mixed $item = null): array
     {
+        // Check first if a function name is available or use the field name.
+        $name = (isset($field->function)) ? $field->function : $field->name;
         // Build the function name.
-        $function = 'get'.str_replace('_', '', ucwords($field->name, '_')).'Options';
+        $function = 'get'.str_replace('_', '', ucwords($name, '_')).'Options';
 
         // Common options.
 
         if ($field->name == 'groups') {
             // Pass the current item object if available.
             $options = Setting::$function($item);
+        }
+        elseif ($field->name == 'categories') {
+            $options = Setting::$function($this->model);
+        }
+        elseif ($field->name == 'parent_id' && !method_exists($this->model, $function)) {
+            $options = Setting::$function($this->model, $item);
         }
         elseif (in_array($field->name, ['status', 'owned_by', 'access_level', 'locale', 'page']) && !method_exists($this->model, $function)) {
             // Call the Setting method when not availabe in the model.

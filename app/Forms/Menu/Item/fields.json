@@ -24,6 +24,7 @@
     "label": "labels.menuitem.parent_item",
     "type": "select",
     "name": "parent_id",
+    "function": "parent_item",
     "id": "parent_id",
     "options": [] 
   },

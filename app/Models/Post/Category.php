@@ -289,49 +289,6 @@ class Category extends Model
         return $query;
     }
 
-    public function getParentIdOptions()
-    {
-        $nodes = Category::select('post_categories.*', 'translations.name as name')
-            ->join('translations', function($join) {
-                $join->on('post_categories.id', '=', 'translatable_id')
-                     ->where('translations.translatable_type', '=', 'App\Models\Post\Category')
-                     ->where('locale', '=', config('app.locale'));
-        })->get()->toTree();
-
-        $options = [];
-        // Defines the state of the current instance.
-        $isNew = ($this->id) ? false : true;
-
-        $traverse = function ($categories, $prefix = '-') use (&$traverse, &$options, $isNew) {
-
-            foreach ($categories as $category) {
-                if (!$isNew && $this->access_level != 'private') {
-                    // A non private category cannot be a private category's children.
-                    $extra = ($category->access_level == 'private') ? ['disabled'] : [];
-                }
-                elseif (!$isNew && $this->access_level == 'private' && $category->access_level == 'private') {
-                      // Only the category's owner can access it.
-                      $extra = ($category->owned_by == auth()->user()->id) ? [] : ['disabled'];
-                }
-                elseif ($isNew && $category->access_level == 'private') {
-                      // Only the category's owner can access it.
-                      $extra = ($category->owned_by == auth()->user()->id) ? [] : ['disabled'];
-                }
-                else {
-                    $extra = [];
-                }
-
-                $options[] = ['value' => $category->id, 'text' => $prefix.' '.$category->name, 'extra' => $extra];
-
-                $traverse($category->children, $prefix.'-');
-            }
-        };
-
-        $traverse($nodes);
-
-        return $options;
-    }
-
     public function getOwnedByOptions()
     {
         $users = auth()->user()->getAssignableUsers(['assistant', 'registered']);

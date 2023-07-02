@@ -290,35 +290,6 @@ class Post extends Model
         })->get();
     }
 
-    public function getCategoriesOptions()
-    {
-        $nodes = Category::select('post_categories.*', 'translations.name as name')
-            ->join('translations', function($join) {
-                $join->on('post_categories.id', '=', 'translatable_id')
-                     ->where('translations.translatable_type', '=', Category::class)
-                     ->where('locale', '=', config('app.locale'));
-        })->get()->toTree();
-
-        $options = [];
-        $userGroupIds = auth()->user()->getGroupIds();
-
-        $traverse = function ($categories, $prefix = '-') use (&$traverse, &$options, $userGroupIds) {
-            foreach ($categories as $category) {
-                // Check wether the current user groups match the category groups (if any).
-                $belongsToGroups = (!empty(array_intersect($userGroupIds, $category->getGroupIds()))) ? true : false;
-                // Set the category option accordingly.
-                $extra = ($category->access_level == 'private' && $category->owned_by != auth()->user()->id && !$belongsToGroups) ? ['disabled'] : [];
-                $options[] = ['value' => $category->id, 'text' => $prefix.' '.$category->name, 'extra' => $extra];
-
-                $traverse($category->children, $prefix.'-');
-            }
-        };
-
-        $traverse($nodes);
-
-        return $options;
-    }
-
     public function getLayoutItems($locale)
     {
         return $this->layoutItems()->selectRaw('layout_items.*, COALESCE(locale.text, fallback.text) as text')
