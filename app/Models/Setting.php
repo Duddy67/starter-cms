@@ -232,7 +232,7 @@ class Setting extends Model
                     // A non private category cannot be a private category's children.
                     $extra = ($category->access_level == 'private') ? ['disabled'] : [];
                 }
-                elseif (!$isNew && $this->access_level == 'private' && $category->access_level == 'private') {
+                elseif (!$isNew && $node->access_level == 'private' && $category->access_level == 'private') {
                     // Only the category's owner can access it.
                     $extra = ($category->owned_by == auth()->user()->id) ? [] : ['disabled'];
                 }

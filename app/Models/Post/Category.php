@@ -131,7 +131,8 @@ class Category extends Model
             return Category::where('name', 'like', '%'.$search.'%')->get();
         }
         else {
-            return Category::select('post_categories.*', 'users.name as owner_name')->leftJoin('users', 'post_categories.owned_by', '=', 'users.id')->defaultOrder()->get()->toTree();
+            return Category::select('post_categories.*', 'users.name as owner_name')
+                             ->leftJoin('users', 'post_categories.owned_by', '=', 'users.id')->defaultOrder()->get()->toTree();
         }
     }
 

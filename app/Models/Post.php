@@ -13,7 +13,7 @@ use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
 use App\Models\Cms\Document;
 use App\Models\LayoutItem;
-use App\Models\Comment;
+use App\Models\Post\Comment;
 use App\Support\PostCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
