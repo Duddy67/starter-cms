@@ -460,7 +460,7 @@ trait Form
         elseif ($field->name == 'categories') {
             $options = Setting::$function($this->model);
         }
-        elseif ($field->name == 'parent_id' && !method_exists($this->model, $function)) {
+        elseif (in_array($field->name, ['parent_id', 'category_id']) && !method_exists($this->model, $function)) {
             $options = Setting::$function($this->model, $item);
         }
         elseif (in_array($field->name, ['status', 'owned_by', 'access_level', 'locale', 'page']) && !method_exists($this->model, $function)) {

@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
-use App\Models\Comment;
+use App\Models\Post\Comment;
 use App\Models\Post\Setting as PostSetting;
 use App\Models\Menu;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\Comment\StoreRequest;
-use App\Http\Requests\Comment\UpdateRequest;
+use App\Http\Requests\Post\Comment\StoreRequest;
+use App\Http\Requests\Post\Comment\UpdateRequest;
 
 
 class PostController extends Controller
