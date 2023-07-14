@@ -1,6 +1,7 @@
 <div class="position-relative">
     @include('themes.starter.layouts.flash-message')
     <form action="{{ route('contact.store') }}" method="post" id="form" role="form" class="php-email-form">
+        @csrf
         <div class="row">
             <div class="col-md-6 form-group">
                 <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>

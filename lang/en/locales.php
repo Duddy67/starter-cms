@@ -15,13 +15,13 @@ return [
     'segments' => [
         'Post' => [
             'en' => [
-                'post' => 'post',
-                'category' => 'category',
+                'posts' => 'posts',
+                'categories' => 'categories',
                 'plugin' => 'blog',
             ],
             'fr' => [
-                'post' => 'article',
-                'category' => 'categorie',
+                'posts' => 'articles',
+                'categories' => 'categories',
                 'plugin' => 'blog',
             ],
         ],

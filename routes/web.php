@@ -38,12 +38,13 @@ Route::prefix('{locale}')
     ->group(function () {
 
     $segments = Setting::getSegments('Post');
-    Route::get('/'.$segments['post'].'/{id}/{slug}', [PostController::class, 'show'])->name('post');
+    Route::get('/'.$segments['posts'].'/{id}/{slug}', [PostController::class, 'show'])->name('post.show');
     // Only authenticated users can post comments.
-    Route::post('/'.$segments['post'].'/{id}/{slug}/comment', [PostController::class, 'saveComment'])->name('post.comment')->middleware('auth');
-    Route::put('/'.$segments['post'].'/comment/{comment}', [PostController::class, 'updateComment'])->name('post.comment.update')->middleware('auth');
-    Route::delete('/'.$segments['post'].'/comment/{comment}', [PostController::class, 'deleteComment'])->name('post.comment.delete')->middleware('auth');
-    Route::get('/'.$segments['plugin'].'/'.$segments['category'].'/{id}/{slug}', [PostCategoryController::class, 'index'])->name('post.category');
+    Route::post('/'.$segments['posts'].'/{id}/{slug}/comment', [PostController::class, 'saveComment'])->name('post.comment')->middleware('auth');
+    Route::put('/'.$segments['posts'].'/comment/{comment}', [PostController::class, 'updateComment'])->name('post.comment.update')->middleware('auth');
+    Route::delete('/'.$segments['posts'].'/comment/{comment}', [PostController::class, 'deleteComment'])->name('post.comment.delete')->middleware('auth');
+    Route::get('/'.$segments['plugin'].'/'.$segments['categories'].'/{id}/{slug}', [PostCategoryController::class, 'index'])->name('post.category');
+
     Route::get('/autocomplete', [SearchController::class, 'autocomplete'])->name('autocomplete');
     Route::get('/search', [SearchController::class, 'index'])->name('search');
     Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');

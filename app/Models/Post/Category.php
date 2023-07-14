@@ -179,7 +179,7 @@ class Category extends Model
         $slug = ($slug) ? $slug : $this->slug;
 
         $segments = Setting::getSegments('Post');
-        return '/'.$segments['category'].'/'.$this->id.'/'.$slug;
+        return '/'.$segments['categories'].'/'.$this->id.'/'.$slug;
     }
 
     /*
