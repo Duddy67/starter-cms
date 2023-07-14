@@ -137,6 +137,15 @@
     "options": [] 
   },
   {
+    "label": "labels.generic.show_image",
+    "type": "select",
+    "name": "show_image",
+    "id": "show_image",
+    "extra": ["yes_no", "global_setting"],
+    "group": "settings",
+    "options": [] 
+  },
+  {
     "label": "labels.generic.show_subcategories",
     "type": "select",
     "name": "show_subcategories",

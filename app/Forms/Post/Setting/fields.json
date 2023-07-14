@@ -83,6 +83,15 @@
     "options": [] 
   },
   {
+    "label": "labels.generic.show_image",
+    "type": "select",
+    "name": "show_image",
+    "id": "show_image",
+    "extra": ["yes_no"],
+    "group": "categories",
+    "options": [] 
+  },
+  {
     "label": "labels.generic.show_subcategories",
     "type": "select",
     "name": "show_subcategories",

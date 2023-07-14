@@ -6,6 +6,10 @@
     <div>{!! $category->description !!}</div>
 @endif
 
+@if ($settings['show_image'] && $category->image)
+    <img class="post-image img-fluid" src="{{ url('/').$category->image->getThumbnailUrl() }}" >
+@endif
+
 @if ($settings['show_search'])
     <div class="card">
 	<div class="card-body">
