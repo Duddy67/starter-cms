@@ -92,6 +92,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       </div>-->
 
       <!-- Sidebar Menu -->
+      @php $routeName = request()->route()->getName(); @endphp
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="true">
           <!-- Add icons to the links using the .nav-icon class
@@ -104,15 +105,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </a>
           </li>
           @allowto('create-user')
-              @php $open = (request()->is('admin/user*')) ? 'menu-open' : '' @endphp
+              @php $open = (request()->is('admin/users*')) ? 'menu-open' : '' @endphp
               <li class="nav-item {{ $open }}">
-                  @php $active = (request()->is('admin/user*')) ? 'active' : '' @endphp
+                  @php $active = (request()->is('admin/users*')) ? 'active' : '' @endphp
                   <a href="#" class="nav-link {{ $active }}">
                     <i class="nav-icon fas fa-users"></i>
                     <p>@lang ('labels.title.user_management')<i class="right fas fa-angle-left"></i></p>
                   </a>
                   <ul class="nav nav-treeview">
-                        @php $routeName = request()->route()->getName(); @endphp
                         @php $active = ($routeName == 'admin.users.index' || $routeName == 'admin.users.create' || $routeName == 'admin.users.edit') ? true : false @endphp
                         <x-menu-item href="{{ route('admin.users.index') }}" :sub=true :active="$active">
                           @lang ('labels.title.users')
@@ -148,7 +148,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <p>@lang ('labels.title.blog')<i class="right fas fa-angle-left"></i></p>
                   </a>
                   <ul class="nav nav-treeview">
-                          @php $routeName = request()->route()->getName(); @endphp
                           @php $active = ($routeName == 'admin.posts.index' || $routeName == 'admin.posts.create' || $routeName == 'admin.posts.edit') ? true : false @endphp
                           <x-menu-item href="{{ route('admin.posts.index') }}" :sub=true :active="$active">
                             @lang ('labels.title.posts')
@@ -170,26 +169,26 @@ scratch. This page gets rid of all links and provides the needed markup only.
           @endallowto
 
           @allowto('create-menu')
-              @php $open = (request()->is('admin/menu*') || request()->is('admin/*/menu*')) ? 'menu-open' : '' @endphp
+              @php $open = (request()->is('admin/menus*') || request()->is('admin/*/menus*')) ? 'menu-open' : '' @endphp
               <li class="nav-item {{ $open }}">
-                  @php $active = (request()->is('admin/menu*') || request()->is('admin/*/menu*')) ? 'active' : '' @endphp
+                  @php $active = (request()->is('admin/menus*') || request()->is('admin/*/menus*')) ? 'active' : '' @endphp
                   <a href="#" class="nav-link {{ $active }}">
                     <i class="nav-icon fas fa-bars"></i>
                     <p>@lang ('labels.title.menus')<i class="right fas fa-angle-left"></i></p>
                   </a>
                   <ul class="nav nav-treeview">
-                          @php $active = (request()->is('admin/menus*')) ? true : false @endphp
-                          <x-menu-item href="{{ route('admin.menus.index') }}" :sub=true :active="$active">
-                            @lang ('labels.title.menus')
-                          </x-menu-item>
+                      @php $active = ($routeName == 'admin.menus.index' || $routeName == 'admin.menus.create' || $routeName == 'admin.menus.edit') ? true : false @endphp
+                      <x-menu-item href="{{ route('admin.menus.index') }}" :sub=true :active="$active">
+                        @lang ('labels.title.menus')
+                      </x-menu-item>
 
-                          @inject ('menu', 'App\Models\Menu')
-                          @foreach ($menu::getMenus() as $menu)
-                              @php $active = (request()->is('admin/'.$menu->code.'/menus/items*')) ? true : false @endphp
-                              <x-menu-item href="{{ route('admin.menus.items.index', $menu->code) }}" :sub=true :active="$active">
-                                 {{ $menu->title }}
-                              </x-menu-item>
-                          @endforeach
+                      @inject ('menu', 'App\Models\Menu')
+                      @foreach ($menu::getMenus() as $menu)
+                          @php $active = ($routeName == 'admin.menus.items.index' || $routeName == 'admin.menus.items.create' || $routeName == 'admin.menus.items.edit') ? true : false @endphp
+                          <x-menu-item href="{{ route('admin.menus.items.index', $menu->code) }}" :sub=true :active="$active">
+                             {{ $menu->title }}
+                          </x-menu-item>
+                      @endforeach
                   </ul>
               </li>
           @endallowto
