@@ -144,7 +144,7 @@ trait Form
                 elseif ($column->name == 'ordering') {
                     $ordering = [];
 
-                    $upperLevelClassName = ($this->getUpperLevelClassName()) ?  '.'.strtolower($this->getUpperLevelClassName()) : '';
+                    $upperLevelClassName = ($this->getUpperLevelClassName()) ? '.'.Str::plural(strtolower($this->getUpperLevelClassName())) : '';
 
                     // Tree list type orderings.  
                     if (in_array($this->getClassName(), ['Item', 'Category'])) {

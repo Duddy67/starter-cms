@@ -40,7 +40,7 @@ class CategoryController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin.post.categories');
+        $this->middleware('admin.posts.categories');
         $this->model = new Category;
     }
 
@@ -59,7 +59,7 @@ class CategoryController extends Controller
         $items = $this->model->getItems($request);
         $rows = $this->getRowTree($columns, $items);
         $query = $request->query();
-        $url = ['route' => 'admin.post.categories', 'item_name' => 'category', 'query' => $query];
+        $url = ['route' => 'admin.posts.categories', 'item_name' => 'category', 'query' => $query];
 
         return view('admin.post.category.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
     }
@@ -97,11 +97,11 @@ class CategoryController extends Controller
                                             ->findOrFail($id);
 
         if (!$category->canAccess()) {
-            return redirect()->route('admin.post.categories.index')->with('error',  __('messages.generic.access_not_auth'));
+            return redirect()->route('admin.posts.categories.index')->with('error',  __('messages.generic.access_not_auth'));
         }
 
         if ($category->checked_out && $category->checked_out != auth()->user()->id && !$category->isUserSessionTimedOut()) {
-            return redirect()->route('admin.post.categories.index')->with('error',  __('messages.generic.checked_out'));
+            return redirect()->route('admin.posts.categories.index')->with('error',  __('messages.generic.checked_out'));
         }
 
         $category->checkOut();
@@ -135,7 +135,7 @@ class CategoryController extends Controller
             $category->safeCheckIn();
         }
 
-        return redirect()->route('admin.post.categories.index', $request->query());
+        return redirect()->route('admin.posts.categories.index', $request->query());
     }
 
     /**
@@ -149,12 +149,12 @@ class CategoryController extends Controller
     {
         if ($category->checked_out != auth()->user()->id) {
             $request->session()->flash('error', __('messages.generic.user_id_does_not_match'));
-            return response()->json(['redirect' => route('admin.post.categories.index', $request->query())]);
+            return response()->json(['redirect' => route('admin.posts.categories.index', $request->query())]);
         }
 
         if (!$category->canEdit()) {
             $request->session()->flash('error', __('messages.generic.edit_not_auth'));
-            return response()->json(['redirect' => route('admin.post.categories.index', $request->query())]);
+            return response()->json(['redirect' => route('admin.posts.categories.index', $request->query())]);
         }
 
         if ($request->input('parent_id')) {
@@ -167,7 +167,7 @@ class CategoryController extends Controller
 
             if ($parent->access_level == 'private' && $parent->owned_by != auth()->user()->id) {
                 $request->session()->flash('error', __('messages.generic.item_is_private', ['name' => $parent->name]));
-                return response()->json(['redirect' => route('admin.post.categories.index', $request->query())]);
+                return response()->json(['redirect' => route('admin.posts.categories.index', $request->query())]);
             }
         }
 
@@ -257,7 +257,7 @@ class CategoryController extends Controller
             $category->safeCheckIn();
             // Store the message to be displayed on the list view after the redirect.
             $request->session()->flash('success', __('messages.category.update_success'));
-            return response()->json(['redirect' => route('admin.post.categories.index', $request->query())]);
+            return response()->json(['redirect' => route('admin.posts.categories.index', $request->query())]);
         }
 
         return response()->json(['success' => __('messages.category.update_success'), 'refresh' => $refresh]);
@@ -316,11 +316,11 @@ class CategoryController extends Controller
         $request->session()->flash('success', __('messages.category.create_success'));
 
         if ($request->input('_close', null)) {
-            return response()->json(['redirect' => route('admin.post.categories.index', $request->query())]);
+            return response()->json(['redirect' => route('admin.posts.categories.index', $request->query())]);
         }
 
         // Redirect to the edit form.
-        return response()->json(['redirect' => route('admin.post.categories.edit', array_merge($request->query(), ['category' => $category->id]))]);
+        return response()->json(['redirect' => route('admin.posts.categories.edit', array_merge($request->query(), ['category' => $category->id]))]);
     }
 
     /**
@@ -333,7 +333,7 @@ class CategoryController extends Controller
     public function destroy(Request $request, Category $category)
     {
         if (!$category->canDelete() || !$category->canDeleteDescendants()) {
-            return redirect()->route('admin.post.categories.edit', array_merge($request->query(), ['category' => $category->id]))->with('error',  __('messages.generic.delete_not_auth'));
+            return redirect()->route('admin.posts.categories.edit', array_merge($request->query(), ['category' => $category->id]))->with('error',  __('messages.generic.delete_not_auth'));
         }
 
         $name = $category->name;
@@ -341,7 +341,7 @@ class CategoryController extends Controller
         $category->deleteDescendants();
         $category->delete();
 
-        return redirect()->route('admin.post.categories.index', $request->query())->with('success', __('messages.category.delete_success', ['name' => $name]));
+        return redirect()->route('admin.posts.categories.index', $request->query())->with('success', __('messages.category.delete_success', ['name' => $name]));
     }
 
     /**
@@ -358,7 +358,7 @@ class CategoryController extends Controller
             $category = Category::findOrFail($id);
 
             if (!$category->canDelete() || !$category->canDeleteDescendants()) {
-              return redirect()->route('admin.post.categories.index', $request->query())->with(
+              return redirect()->route('admin.posts.categories.index', $request->query())->with(
                   [
                       'error' => __('messages.generic.delete_not_auth'), 
                       'success' => __('messages.category.delete_list_success', ['number' => $deleted])
@@ -371,7 +371,7 @@ class CategoryController extends Controller
             $deleted++;
         }
 
-        return redirect()->route('admin.post.categories.index', $request->query())->with('success', __('messages.category.delete_list_success', ['number' => $deleted]));
+        return redirect()->route('admin.posts.categories.index', $request->query())->with('success', __('messages.category.delete_list_success', ['number' => $deleted]));
     }
 
     /**
@@ -384,7 +384,7 @@ class CategoryController extends Controller
     {
         $messages = CheckInCheckOut::checkInMultiple($request->input('ids'), '\\App\\Models\\Post\\Category');
 
-        return redirect()->route('admin.post.categories.index', $request->query())->with($messages);
+        return redirect()->route('admin.posts.categories.index', $request->query())->with($messages);
     }
 
     public function massPublish(Request $request)
@@ -405,7 +405,7 @@ class CategoryController extends Controller
                   $messages['success'] = __('messages.category.change_status_list_success', ['number' => $changed]);
               }
 
-              return redirect()->route('admin.post.categories.index', $request->query())->with($messages);
+              return redirect()->route('admin.posts.categories.index', $request->query())->with($messages);
             }
 
             $category->status = 'published';
@@ -414,7 +414,7 @@ class CategoryController extends Controller
             $changed++;
         }
 
-        return redirect()->route('admin.post.categories.index', $request->query())->with('success', __('messages.category.change_status_list_success', ['number' => $changed]));
+        return redirect()->route('admin.posts.categories.index', $request->query())->with('success', __('messages.category.change_status_list_success', ['number' => $changed]));
     }
 
     public function massUnpublish(Request $request)
@@ -437,7 +437,7 @@ class CategoryController extends Controller
                   $messages['success'] = __('messages.category.change_status_list_success', ['number' => $changed]);
               }
 
-              return redirect()->route('admin.post.categories.index', $request->query())->with($messages);
+              return redirect()->route('admin.posts.categories.index', $request->query())->with($messages);
             }
 
             $category->status = 'unpublished';
@@ -454,7 +454,7 @@ class CategoryController extends Controller
             }
         }
 
-        return redirect()->route('admin.post.categories.index', $request->query())->with('success', __('messages.category.change_status_list_success', ['number' => $changed]));
+        return redirect()->route('admin.posts.categories.index', $request->query())->with('success', __('messages.category.change_status_list_success', ['number' => $changed]));
     }
 
     /*
@@ -506,7 +506,7 @@ class CategoryController extends Controller
     public function up(Request $request, Category $category)
     {
         $category->up();
-        return redirect()->route('admin.post.categories.index', $request->query());
+        return redirect()->route('admin.posts.categories.index', $request->query());
     }
 
     /**
@@ -519,7 +519,7 @@ class CategoryController extends Controller
     public function down(Request $request, Category $category)
     {
         $category->down();
-        return redirect()->route('admin.post.categories.index', $request->query());
+        return redirect()->route('admin.posts.categories.index', $request->query());
     }
 
     /*

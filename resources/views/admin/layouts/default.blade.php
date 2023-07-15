@@ -139,27 +139,28 @@ scratch. This page gets rid of all links and provides the needed markup only.
           @endallowto
 
           @allowto('create-post')
-              @php $open = (request()->is('admin/post*')) ? 'menu-open' : '' @endphp
+              @php $open = (request()->is('admin/posts*')) ? 'menu-open' : '' @endphp
               <li class="nav-item {{ $open }}">
-                  @php $active = (request()->is('admin/post*')) ? 'active' : '' @endphp
+                  @php $active = (request()->is('admin/posts*')) ? 'active' : '' @endphp
                   <a href="#" class="nav-link {{ $active }}">
                     <i class="nav-icon fas fa-pencil-alt"></i>
                     <p>@lang ('labels.title.blog')<i class="right fas fa-angle-left"></i></p>
                   </a>
                   <ul class="nav nav-treeview">
-                          @php $active = (request()->is('admin/posts*')) ? true : false @endphp
+                          @php $active =
+                          (request()->is('admin/posts') || request()->is('admin/posts/create') || request()->is('admin/posts/*/edit')) ? true : false @endphp
                           <x-menu-item href="{{ route('admin.posts.index') }}" :sub=true :active="$active">
                             @lang ('labels.title.posts')
                           </x-menu-item>
                       @allowto('create-post-category')
-                          @php $active = (request()->is('admin/post/categories*')) ? true : false @endphp
-                          <x-menu-item href="{{ route('admin.post.categories.index') }}" :sub=true :active="$active">
+                          @php $active = (request()->is('admin/posts/categories*')) ? true : false @endphp
+                          <x-menu-item href="{{ route('admin.posts.categories.index') }}" :sub=true :active="$active">
                             @lang ('labels.title.categories')
                           </x-menu-item>
                       @endallowto
                       @allowto('post-settings')
-                          @php $active = (request()->is('admin/post/settings*')) ? true : false @endphp
-                          <x-menu-item href="{{ route('admin.post.settings.index') }}" :sub=true :active="$active">
+                          @php $active = (request()->is('admin/posts/settings*')) ? true : false @endphp
+                          <x-menu-item href="{{ route('admin.posts.settings.index') }}" :sub=true :active="$active">
                             @lang ('labels.title.settings')
                           </x-menu-item>
                       @endallowto
