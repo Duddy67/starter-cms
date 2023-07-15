@@ -12,7 +12,7 @@
         <strong id="ajax-message-0"></strong>
     </div>
 
-    <form method="post" id="createComment" action="{{ route('post.comment', $query) }}">
+    <form method="post" id="createComment" action="{{ route('posts.comments', $query) }}">
         @csrf
         <textarea name="comment-0" id="tiny-comment-0" data-comment-id="0" class="tinymce-texteditor"></textarea>
         <div class="text-danger mt-2" id="comment-0Error"></div>

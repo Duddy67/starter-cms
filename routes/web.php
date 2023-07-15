@@ -29,12 +29,12 @@ use App\Models\Setting;
 */
 
 $segments = Setting::getSegments('Post');
-Route::get('/'.$segments['posts'].'/{id}/{slug}', [PostController::class, 'show'])->name('post.show');
+Route::get('/'.$segments['posts'].'/{id}/{slug}', [PostController::class, 'show'])->name('posts.show');
 // Only authenticated users can post comments.
-Route::post('/'.$segments['posts'].'/{id}/{slug}/comment', [PostController::class, 'saveComment'])->name('post.comment')->middleware('auth');
-Route::put('/'.$segments['posts'].'/comment/{comment}', [PostController::class, 'updateComment'])->name('post.comment.update')->middleware('auth');
-Route::delete('/'.$segments['posts'].'/comment/{comment}', [PostController::class, 'deleteComment'])->name('post.comment.delete')->middleware('auth');
-Route::get('/'.$segments['plugin'].'/'.$segments['categories'].'/{id}/{slug}', [PostCategoryController::class, 'index'])->name('post.category');
+Route::post('/'.$segments['posts'].'/{id}/{slug}/comments', [PostController::class, 'saveComment'])->name('posts.comments')->middleware('auth');
+Route::put('/'.$segments['posts'].'/comments/{comment}', [PostController::class, 'updateComment'])->name('posts.comments.update')->middleware('auth');
+Route::delete('/'.$segments['posts'].'/comments/{comment}', [PostController::class, 'deleteComment'])->name('posts.comments.delete')->middleware('auth');
+Route::get('/'.$segments['posts'].'/'.$segments['categories'].'/{id}/{slug}', [PostCategoryController::class, 'index'])->name('posts.categories');
 
 Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
