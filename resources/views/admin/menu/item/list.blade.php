@@ -25,13 +25,13 @@
         </div>
     @endif
 
-    <input type="hidden" id="createItem" value="{{ route('admin.menu.items.create', $query) }}">
-    <input type="hidden" id="destroyItems" value="{{ route('admin.menu.items.index', $query) }}">
-    <input type="hidden" id="checkinItems" value="{{ route('admin.menu.items.massCheckIn', $query) }}">
-    <input type="hidden" id="publishItems" value="{{ route('admin.menu.items.massPublish', $query) }}">
-    <input type="hidden" id="unpublishItems" value="{{ route('admin.menu.items.massUnpublish', $query) }}">
+    <input type="hidden" id="createItem" value="{{ route('admin.menus.items.create', $query) }}">
+    <input type="hidden" id="destroyItems" value="{{ route('admin.menus.items.index', $query) }}">
+    <input type="hidden" id="checkinItems" value="{{ route('admin.menus.items.massCheckIn', $query) }}">
+    <input type="hidden" id="publishItems" value="{{ route('admin.menus.items.massPublish', $query) }}">
+    <input type="hidden" id="unpublishItems" value="{{ route('admin.menus.items.massUnpublish', $query) }}">
 
-    <form id="selectedItems" action="{{ route('admin.menu.items.index', $query) }}" method="post">
+    <form id="selectedItems" action="{{ route('admin.menus.items.index', $query) }}" method="post">
         @method('delete')
         @csrf
     </form>

@@ -27,7 +27,7 @@ class PermissionController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin.user.permissions');
+        $this->middleware('admin.users.permissions');
         $this->model = new Permission;
     }
 
@@ -54,7 +54,7 @@ class PermissionController extends Controller
     public function build(Request $request)
     {
         Permission::buildPermissions($request);
-        return redirect()->route('admin.user.permissions.index');
+        return redirect()->route('admin.users.permissions.index');
     }
 
     /*
@@ -66,7 +66,7 @@ class PermissionController extends Controller
     public function rebuild(Request $request)
     {
         Permission::buildPermissions($request, true);
-        return redirect()->route('admin.user.permissions.index');
+        return redirect()->route('admin.users.permissions.index');
     }
 
     /*

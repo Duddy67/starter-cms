@@ -24,7 +24,7 @@
         </table>
     @endforeach
 
-    <form id="updateItems" action="{{ route('admin.user.permissions.index') }}" method="post">
+    <form id="updateItems" action="{{ route('admin.users.permissions.index') }}" method="post">
         @method('patch')
         @csrf
     </form>
