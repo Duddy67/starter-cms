@@ -33,15 +33,15 @@ class AdminMenuItems
         $update = ['admin.menus.items.update', 'admin.menus.items.edit'];
         $delete = ['admin.menus.items.destroy', 'admin.menus.items.massDestroy'];
 
-        if (in_array($routeName, $create) && !auth()->user()->isAllowedTo('create-menu')) {
+        if (in_array($routeName, $create) && !auth()->user()->isAllowedTo('create-menus')) {
             return redirect()->route('admin')->with('error', __('messages.generic.access_not_auth'));
         }
 
-        if (in_array($routeName, $update) && !auth()->user()->isAllowedTo('update-menu')) {
+        if (in_array($routeName, $update) && !auth()->user()->isAllowedTo('update-menus')) {
             return redirect()->route('admin.menus.items.index')->with('error', __('messages.menu.edit_not_auth'));
         }
 
-        if (in_array($routeName, $delete) && !auth()->user()->isAllowedTo('delete-menu')) {
+        if (in_array($routeName, $delete) && !auth()->user()->isAllowedTo('delete-menus')) {
             return redirect()->route('admin.menus.items.index')->with('error', __('messages.menu.delete_not_auth'));
         }
 

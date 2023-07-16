@@ -104,7 +104,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <p>@lang ('labels.title.dashboard')</p>
               </a>
           </li>
-          @allowto('create-user')
+          @allowto('create-users')
               @php $open = (request()->is('admin/users*')) ? 'menu-open' : '' @endphp
               <li class="nav-item {{ $open }}">
                   @php $active = (request()->is('admin/users*')) ? 'active' : '' @endphp
@@ -117,13 +117,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <x-menu-item href="{{ route('admin.users.index') }}" :sub=true :active="$active">
                           @lang ('labels.title.users')
                         </x-menu-item>
-                    @allowto('create-group')
+                    @allowto('create-user-groups')
                         @php $active = (request()->is('admin/users/groups*')) ? true : false @endphp
                         <x-menu-item href="{{ route('admin.users.groups.index') }}" :sub=true :active="$active">
                           @lang ('labels.title.groups')
                         </x-menu-item>
                     @endallowto
-                    @allowto('create-role')
+                    @allowto('create-user-roles')
                         @php $active = (request()->is('admin/users/roles*')) ? true : false @endphp
                         <x-menu-item href="{{ route('admin.users.roles.index') }}" :sub=true :active="$active">
                           @lang ('labels.title.roles')
@@ -139,7 +139,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>
           @endallowto
 
-          @allowto('create-post')
+          @allowto('create-posts')
               @php $open = (request()->is('admin/posts*')) ? 'menu-open' : '' @endphp
               <li class="nav-item {{ $open }}">
                   @php $active = (request()->is('admin/posts*')) ? 'active' : '' @endphp
@@ -152,7 +152,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                           <x-menu-item href="{{ route('admin.posts.index') }}" :sub=true :active="$active">
                             @lang ('labels.title.posts')
                           </x-menu-item>
-                      @allowto('create-post-category')
+                      @allowto('create-post-categories')
                           @php $active = (request()->is('admin/posts/categories*')) ? true : false @endphp
                           <x-menu-item href="{{ route('admin.posts.categories.index') }}" :sub=true :active="$active">
                             @lang ('labels.title.categories')
@@ -168,7 +168,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>
           @endallowto
 
-          @allowto('create-menu')
+          @allowto('create-menus')
               @php $open = (request()->is('admin/menus*') || request()->is('admin/*/menus*')) ? 'menu-open' : '' @endphp
               <li class="nav-item {{ $open }}">
                   @php $active = (request()->is('admin/menus*') || request()->is('admin/*/menus*')) ? 'active' : '' @endphp
@@ -193,7 +193,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>
           @endallowto
 
-          @allowtoany(['global-settings', 'post-settings', 'update-email'])
+          @allowtoany(['global-settings', 'post-settings', 'update-emails'])
               @php $open = (request()->is('admin/settings*') || request()->is('admin/emails*')) ? 'menu-open' : '' @endphp
               <li class="nav-item {{ $open }}">
                   @php $active = (request()->is('admin/settings*') || request()->is('admin/emails*')) ? 'active' : '' @endphp
@@ -208,7 +208,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                               @lang ('labels.title.global')
                             </x-menu-item>
                         @endallowto
-                        @allowto('update-email')
+                        @allowto('update-emails')
                             @php $active = (request()->is('admin/emails*')) ? true : false @endphp
                             <x-menu-item href="{{ route('admin.emails.index') }}" :sub=true :active="$active">
                               @lang ('labels.title.emails')

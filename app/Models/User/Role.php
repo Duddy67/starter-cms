@@ -76,10 +76,10 @@ class Role extends SpatieRole
      */
     public function defineRoleType()
     {
-        if ($this->hasPermissionTo('create-role')) {
+        if ($this->hasPermissionTo('create-user-roles')) {
             return 'admin';
         }
-        elseif ($this->hasPermissionTo('create-user')) {
+        elseif ($this->hasPermissionTo('create-users')) {
             return 'manager';
         }
         elseif ($this->hasPermissionTo('access-dashboard')) {

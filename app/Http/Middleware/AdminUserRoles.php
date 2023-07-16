@@ -22,15 +22,15 @@ class AdminUserRoles
         $update = ['admin.users.roles.update', 'admin.users.roles.edit'];
         $delete = ['admin.users.roles.destroy', 'admin.users.roles.massDestroy'];
 
-        if (in_array($routeName, $create) && !auth()->user()->isAllowedTo('create-role')) {
+        if (in_array($routeName, $create) && !auth()->user()->isAllowedTo('create-user-roles')) {
             return redirect()->route('admin')->with('error', __('messages.generic.access_not_auth'));
         }
 
-        if (in_array($routeName, $update) && !auth()->user()->isAllowedTo('update-role')) {
+        if (in_array($routeName, $update) && !auth()->user()->isAllowedTo('update-user-roles')) {
             return redirect()->route('admin.users.roles.index')->with('error', __('messages.role.edit_not_auth'));
         }
 
-        if (in_array($routeName, $delete) && !auth()->user()->isAllowedTo('delete-role')) {
+        if (in_array($routeName, $delete) && !auth()->user()->isAllowedTo('delete-user-roles')) {
             return redirect()->route('admin.users.roles.index')->with('error', __('messages.role.delete_not_auth'));
         }
 

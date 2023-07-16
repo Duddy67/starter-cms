@@ -22,15 +22,15 @@ class AdminPostCategories
         $update = ['admin.posts.categories.update', 'admin.posts.categories.edit'];
         $delete = ['admin.posts.categories.destroy', 'admin.posts.categories.massDestroy'];
 
-	if (in_array($routeName, $create) && !auth()->user()->isAllowedTo('create-post-category')) {
+	if (in_array($routeName, $create) && !auth()->user()->isAllowedTo('create-post-categories')) {
 	    return redirect()->route('admin')->with('error', __('messages.generic.access_not_auth'));
 	}
 
-	if (in_array($routeName, $update) && !auth()->user()->isAllowedTo('update-post-category')) {
+	if (in_array($routeName, $update) && !auth()->user()->isAllowedTo('update-post-categories')) {
 	    return redirect()->route('admin.posts.categories.index')->with('error', __('messages.category.edit_not_auth'));
 	}
 
-	if (in_array($routeName, $delete) && !auth()->user()->isAllowedTo('delete-post-category')) {
+	if (in_array($routeName, $delete) && !auth()->user()->isAllowedTo('delete-post-categories')) {
 	    return redirect()->route('admin.posts.categories.index')->with('error', __('messages.category.delete_not_auth'));
 	}
 
