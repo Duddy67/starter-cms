@@ -22,15 +22,15 @@ class AdminMenus
         $update = ['admin.menus.update', 'admin.menus.edit'];
         $delete = ['admin.menus.destroy', 'admin.menus.massDestroy'];
 
-        if (in_array($routeName, $create) && !auth()->user()->isAllowedTo('create-menu')) {
+        if (in_array($routeName, $create) && !auth()->user()->isAllowedTo('create-menus')) {
             return redirect()->route('admin')->with('error', __('messages.generic.access_not_auth'));
         }
 
-        if (in_array($routeName, $update) && !auth()->user()->isAllowedTo('update-menu')) {
+        if (in_array($routeName, $update) && !auth()->user()->isAllowedTo('update-menus')) {
             return redirect()->route('admin.menus.index')->with('error', __('messages.menu.edit_not_auth'));
         }
 
-        if (in_array($routeName, $delete) && !auth()->user()->isAllowedTo('delete-menu')) {
+        if (in_array($routeName, $delete) && !auth()->user()->isAllowedTo('delete-menus')) {
             return redirect()->route('admin.menus.index')->with('error', __('messages.menu.delete_not_auth'));
         }
 

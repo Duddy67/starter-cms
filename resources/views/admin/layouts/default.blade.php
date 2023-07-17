@@ -93,6 +93,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
+        @php $routeName = request()->route()->getName(); @endphp
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="true">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
@@ -103,34 +104,34 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   <p>@lang ('labels.title.dashboard')</p>
               </a>
           </li>
-          @allowto('create-user')
-              @php $open = (request()->is('admin/user*')) ? 'menu-open' : '' @endphp
+          @allowto('create-users')
+              @php $open = (request()->is('admin/users*')) ? 'menu-open' : '' @endphp
               <li class="nav-item {{ $open }}">
-                  @php $active = (request()->is('admin/user*')) ? 'active' : '' @endphp
+                  @php $active = (request()->is('admin/users*')) ? 'active' : '' @endphp
                   <a href="#" class="nav-link {{ $active }}">
                     <i class="nav-icon fas fa-users"></i>
                     <p>@lang ('labels.title.user_management')<i class="right fas fa-angle-left"></i></p>
                   </a>
                   <ul class="nav nav-treeview">
-                        @php $active = (request()->is('admin/users*')) ? true : false @endphp
+                        @php $active = ($routeName == 'admin.users.index' || $routeName == 'admin.users.create' || $routeName == 'admin.users.edit') ? true : false @endphp
                         <x-menu-item href="{{ route('admin.users.index') }}" :sub=true :active="$active">
                           @lang ('labels.title.users')
                         </x-menu-item>
-                    @allowto('create-group')
-                        @php $active = (request()->is('admin/user/groups*')) ? true : false @endphp
-                        <x-menu-item href="{{ route('admin.user.groups.index') }}" :sub=true :active="$active">
+                    @allowto('create-user-groups')
+                        @php $active = (request()->is('admin/users/groups*')) ? true : false @endphp
+                        <x-menu-item href="{{ route('admin.users.groups.index') }}" :sub=true :active="$active">
                           @lang ('labels.title.groups')
                         </x-menu-item>
                     @endallowto
-                    @allowto('create-role')
-                        @php $active = (request()->is('admin/user/roles*')) ? true : false @endphp
-                        <x-menu-item href="{{ route('admin.user.roles.index') }}" :sub=true :active="$active">
+                    @allowto('create-user-roles')
+                        @php $active = (request()->is('admin/users/roles*')) ? true : false @endphp
+                        <x-menu-item href="{{ route('admin.users.roles.index') }}" :sub=true :active="$active">
                           @lang ('labels.title.roles')
                         </x-menu-item>
                     @endallowto
                     @if (auth()->user()->hasRole('super-admin'))
-                        @php $active = (request()->is('admin/user/permissions*')) ? true : false @endphp
-                        <x-menu-item href="{{ route('admin.user.permissions.index') }}" :sub=true :active="$active">
+                        @php $active = (request()->is('admin/users/permissions*')) ? true : false @endphp
+                        <x-menu-item href="{{ route('admin.users.permissions.index') }}" :sub=true :active="$active">
                           @lang ('labels.title.permissions')
                         </x-menu-item>
                     @endif
@@ -138,28 +139,28 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>
           @endallowto
 
-          @allowto('create-post')
-              @php $open = (request()->is('admin/post*')) ? 'menu-open' : '' @endphp
+          @allowto('create-posts')
+              @php $open = (request()->is('admin/posts*')) ? 'menu-open' : '' @endphp
               <li class="nav-item {{ $open }}">
-                  @php $active = (request()->is('admin/post*')) ? 'active' : '' @endphp
+                  @php $active = (request()->is('admin/posts*')) ? 'active' : '' @endphp
                   <a href="#" class="nav-link {{ $active }}">
                     <i class="nav-icon fas fa-pencil-alt"></i>
                     <p>@lang ('labels.title.blog')<i class="right fas fa-angle-left"></i></p>
                   </a>
                   <ul class="nav nav-treeview">
-                          @php $active = (request()->is('admin/posts*')) ? true : false @endphp
+                          @php $active = ($routeName == 'admin.posts.index' || $routeName == 'admin.posts.create' || $routeName == 'admin.posts.edit') ? true : false @endphp
                           <x-menu-item href="{{ route('admin.posts.index') }}" :sub=true :active="$active">
                             @lang ('labels.title.posts')
                           </x-menu-item>
-                      @allowto('create-post-category')
-                          @php $active = (request()->is('admin/post/categories*')) ? true : false @endphp
-                          <x-menu-item href="{{ route('admin.post.categories.index') }}" :sub=true :active="$active">
+                      @allowto('create-post-categories')
+                          @php $active = (request()->is('admin/posts/categories*')) ? true : false @endphp
+                          <x-menu-item href="{{ route('admin.posts.categories.index') }}" :sub=true :active="$active">
                             @lang ('labels.title.categories')
                           </x-menu-item>
                       @endallowto
                       @allowto('post-settings')
-                          @php $active = (request()->is('admin/post/settings*')) ? true : false @endphp
-                          <x-menu-item href="{{ route('admin.post.settings.index') }}" :sub=true :active="$active">
+                          @php $active = (request()->is('admin/posts/settings*')) ? true : false @endphp
+                          <x-menu-item href="{{ route('admin.posts.settings.index') }}" :sub=true :active="$active">
                             @lang ('labels.title.settings')
                           </x-menu-item>
                       @endallowto
@@ -167,24 +168,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>
           @endallowto
 
-          @allowto('create-menu')
-              @php $open = (request()->is('admin/menu*') || request()->is('admin/*/menu*')) ? 'menu-open' : '' @endphp
+          @allowto('create-menus')
+              @php $open = (request()->is('admin/menus*') || request()->is('admin/*/menus*')) ? 'menu-open' : '' @endphp
               <li class="nav-item {{ $open }}">
-                  @php $active = (request()->is('admin/menu*') || request()->is('admin/*/menu*')) ? 'active' : '' @endphp
+                  @php $active = (request()->is('admin/menus*') || request()->is('admin/*/menus*')) ? 'active' : '' @endphp
                   <a href="#" class="nav-link {{ $active }}">
                     <i class="nav-icon fas fa-bars"></i>
                     <p>@lang ('labels.title.menus')<i class="right fas fa-angle-left"></i></p>
                   </a>
                   <ul class="nav nav-treeview">
-                          @php $active = (request()->is('admin/menus*')) ? true : false @endphp
+                          @php $active = ($routeName == 'admin.menus.index' || $routeName == 'admin.menus.create' || $routeName == 'admin.menus.edit') ? true : false @endphp
                           <x-menu-item href="{{ route('admin.menus.index') }}" :sub=true :active="$active">
                             @lang ('labels.title.menus')
                           </x-menu-item>
 
                           @inject ('menu', 'App\Models\Menu')
                           @foreach ($menu::getMenus() as $menu)
-                              @php $active = (request()->is('admin/'.$menu->code.'/menu/items*')) ? true : false @endphp
-                              <x-menu-item href="{{ route('admin.menu.items.index', $menu->code) }}" :sub=true :active="$active">
+                              @php $active = ($routeName == 'admin.menus.items.index' || $routeName == 'admin.menus.items.create' || $routeName == 'admin.menus.items.edit') ? true : false @endphp
+                              <x-menu-item href="{{ route('admin.menus.items.index', $menu->code) }}" :sub=true :active="$active">
                                  {{ $menu->title }}
                               </x-menu-item>
                           @endforeach
@@ -207,7 +208,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                               @lang ('labels.title.global')
                             </x-menu-item>
                         @endallowto
-                        @allowto('update-email')
+                        @allowto('update-emails')
                             @php $active = (request()->is('admin/emails*')) ? true : false @endphp
                             <x-menu-item href="{{ route('admin.emails.index') }}" :sub=true :active="$active">
                               @lang ('labels.title.emails')

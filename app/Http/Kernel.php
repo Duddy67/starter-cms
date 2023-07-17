@@ -69,15 +69,15 @@ class Kernel extends HttpKernel
         // Backend 
         'admin' => \App\Http\Middleware\Admin::class,
         'admin.users' => \App\Http\Middleware\AdminUsers::class,
-        'admin.user.groups' => \App\Http\Middleware\AdminUserGroups::class,
-        'admin.user.roles' => \App\Http\Middleware\AdminUserRoles::class,
-        'admin.user.permissions' => \App\Http\Middleware\AdminUserPermissions::class,
+        'admin.users.groups' => \App\Http\Middleware\AdminUserGroups::class,
+        'admin.users.roles' => \App\Http\Middleware\AdminUserRoles::class,
+        'admin.users.permissions' => \App\Http\Middleware\AdminUserPermissions::class,
         'admin.settings' => \App\Http\Middleware\AdminSettings::class,
         'admin.emails' => \App\Http\Middleware\AdminEmails::class,
         'admin.posts' => \App\Http\Middleware\AdminPosts::class,
-        'admin.post.categories' => \App\Http\Middleware\AdminPostCategories::class,
-        'admin.post.settings' => \App\Http\Middleware\AdminPostSettings::class,
+        'admin.posts.categories' => \App\Http\Middleware\AdminPostCategories::class,
+        'admin.posts.settings' => \App\Http\Middleware\AdminPostSettings::class,
         'admin.menus' => \App\Http\Middleware\AdminMenus::class,
-        'admin.menu.items' => \App\Http\Middleware\AdminMenuItems::class,
+        'admin.menus.items' => \App\Http\Middleware\AdminMenuItems::class,
     ];
 }

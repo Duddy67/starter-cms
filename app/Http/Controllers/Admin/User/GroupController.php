@@ -36,7 +36,7 @@ class GroupController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin.user.groups');
+        $this->middleware('admin.users.groups');
         $this->model = new Group;
     }
 
@@ -56,7 +56,7 @@ class GroupController extends Controller
         $rows = $this->getRows($columns, $items);
         $this->setRowValues($rows, $columns, $items);
         $query = $request->query();
-        $url = ['route' => 'admin.user.groups', 'item_name' => 'group', 'query' => $query];
+        $url = ['route' => 'admin.users.groups', 'item_name' => 'group', 'query' => $query];
 
         return view('admin.user.group.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
     }
@@ -93,11 +93,11 @@ class GroupController extends Controller
                                       ->findOrFail($id);
 
         if (!$group->canAccess()) {
-            return redirect()->route('admin.user.groups.index')->with('error',  __('messages.generic.access_not_auth'));
+            return redirect()->route('admin.users.groups.index')->with('error',  __('messages.generic.access_not_auth'));
         }
 
         if ($group->checked_out && $group->checked_out != auth()->user()->id && !$group->isUserSessionTimedOut()) {
-            return redirect()->route('admin.user.groups.index')->with('error',  __('messages.generic.checked_out'));
+            return redirect()->route('admin.users.groups.index')->with('error',  __('messages.generic.checked_out'));
         }
 
         $group->checkOut();
@@ -128,7 +128,7 @@ class GroupController extends Controller
             $group->safeCheckIn();
         }
 
-        return redirect()->route('admin.user.groups.index', $request->query());
+        return redirect()->route('admin.users.groups.index', $request->query());
     }
 
     /**
@@ -142,12 +142,12 @@ class GroupController extends Controller
     {
         if ($group->checked_out != auth()->user()->id) {
             $request->session()->flash('error', __('messages.generic.user_id_does_not_match'));
-            return response()->json(['redirect' => route('admin.user.groups.index', $request->query())]);
+            return response()->json(['redirect' => route('admin.users.groups.index', $request->query())]);
         }
 
         if (!$group->canEdit()) {
             $request->session()->flash('error', __('messages.generic.edit_not_auth'));
-            return response()->json(['redirect' => route('admin.user.groups.index', $request->query())]);
+            return response()->json(['redirect' => route('admin.users.groups.index', $request->query())]);
         }
 
         $group->name = $request->input('name');
@@ -169,7 +169,7 @@ class GroupController extends Controller
             $group->safeCheckIn();
             // Store the message to be displayed on the list view after the redirect.
             $request->session()->flash('success', __('messages.group.update_success'));
-            return response()->json(['redirect' => route('admin.user.groups.index', $request->query())]);
+            return response()->json(['redirect' => route('admin.users.groups.index', $request->query())]);
         }
 
         $refresh = ['updated_at' => Setting::getFormattedDate($group->updated_at), 'updated_by' => auth()->user()->name];
@@ -198,11 +198,11 @@ class GroupController extends Controller
         $request->session()->flash('success', __('messages.group.create_success'));
 
         if ($request->input('_close', null)) {
-            return response()->json(['redirect' => route('admin.user.groups.index', $request->query())]);
+            return response()->json(['redirect' => route('admin.users.groups.index', $request->query())]);
         }
 
         // Redirect to the edit form.
-        return response()->json(['redirect' => route('admin.user.groups.edit', array_merge($request->query(), ['group' => $group->id]))]);
+        return response()->json(['redirect' => route('admin.users.groups.edit', array_merge($request->query(), ['group' => $group->id]))]);
     }
 
     /**
@@ -215,14 +215,14 @@ class GroupController extends Controller
     public function destroy(Request $request, Group $group)
     {
         if (!$group->canDelete()) {
-            return redirect()->route('admin.user.groups.edit', array_merge($request->query(), ['group' => $group->id]))->with('error',  __('messages.generic.delete_not_auth'));
+            return redirect()->route('admin.users.groups.edit', array_merge($request->query(), ['group' => $group->id]))->with('error',  __('messages.generic.delete_not_auth'));
         }
 
         $name = $group->name;
 
         $group->delete();
 
-        return redirect()->route('admin.user.groups.index', $request->query())->with('success', __('messages.group.delete_success', ['name' => $name]));
+        return redirect()->route('admin.users.groups.index', $request->query())->with('success', __('messages.group.delete_success', ['name' => $name]));
     }
 
     /**
@@ -239,7 +239,7 @@ class GroupController extends Controller
             $group = Group::findOrFail($id);
 
             if (!$group->canDelete()) {
-              return redirect()->route('admin.user.groups.index', $request->query())->with(
+              return redirect()->route('admin.users.groups.index', $request->query())->with(
                   [
                       'error' => __('messages.generic.delete_not_auth'), 
                       'success' => __('messages.group.delete_list_success', ['number' => $deleted])
@@ -251,7 +251,7 @@ class GroupController extends Controller
             $deleted++;
         }
 
-        return redirect()->route('admin.user.groups.index', $request->query())->with('success', __('messages.group.delete_list_success', ['number' => $deleted]));
+        return redirect()->route('admin.users.groups.index', $request->query())->with('success', __('messages.group.delete_list_success', ['number' => $deleted]));
     }
 
     /**
@@ -264,7 +264,7 @@ class GroupController extends Controller
     {
         $messages = CheckInCheckOut::checkInMultiple($request->input('ids'), '\\App\\Models\\User\\Group');
 
-        return redirect()->route('admin.user.groups.index', $request->query())->with($messages);
+        return redirect()->route('admin.users.groups.index', $request->query())->with($messages);
     }
 
     /**
@@ -278,7 +278,7 @@ class GroupController extends Controller
         $fields = $this->getSpecificFields(['access_level', 'owned_by']);
         $actions = $this->getActions('batch');
         $query = $request->query();
-        $route = 'admin.user.groups';
+        $route = 'admin.users.groups';
 
         return view('admin.share.batch', compact('fields', 'actions', 'query', 'route'));
     }
@@ -332,7 +332,7 @@ class GroupController extends Controller
             $messages['success'] = __('messages.generic.mass_update_success', ['number' => $updates]);
         }
 
-        return redirect()->route('admin.user.groups.index')->with($messages);
+        return redirect()->route('admin.users.groups.index')->with($messages);
     }
 
     /*

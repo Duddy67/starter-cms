@@ -27,11 +27,11 @@
 
     <x-pagination :items=$items />
 
-    <input type="hidden" id="createItem" value="{{ route('admin.user.roles.create', $query) }}">
-    <input type="hidden" id="destroyItems" value="{{ route('admin.user.roles.index', $query) }}">
-    <input type="hidden" id="checkinItems" value="{{ route('admin.user.roles.massCheckIn', $query) }}">
+    <input type="hidden" id="createItem" value="{{ route('admin.users.roles.create', $query) }}">
+    <input type="hidden" id="destroyItems" value="{{ route('admin.users.roles.index', $query) }}">
+    <input type="hidden" id="checkinItems" value="{{ route('admin.users.roles.massCheckIn', $query) }}">
 
-    <form id="selectedItems" action="{{ route('admin.user.roles.index', $query) }}" method="post">
+    <form id="selectedItems" action="{{ route('admin.users.roles.index', $query) }}" method="post">
         @method('delete')
         @csrf
     </form>
