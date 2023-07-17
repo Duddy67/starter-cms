@@ -3,7 +3,7 @@
 @section ('main')
     <h3>@php echo (isset($item)) ? __('labels.menuitem.edit_menu_item') : __('labels.menuitem.create_menu_item'); @endphp</h3>
 
-    @php $action = (isset($item)) ? route('admin.menu.items.update', $query) : route('admin.menu.items.store', $query) @endphp
+    @php $action = (isset($item)) ? route('admin.menus.items.update', $query) : route('admin.menus.items.store', $query) @endphp
     <form method="post" action="{{ $action }}" id="itemForm">
         @csrf
 
@@ -23,13 +23,13 @@
 
         <input type="hidden" id="currentLocale" value="{{ $locale }}">
         <input type="hidden" id="cancelChangeLocale" value="0">
-        <input type="hidden" id="cancelEdit" value="{{ route('admin.menu.items.cancel', $query) }}">
+        <input type="hidden" id="cancelEdit" value="{{ route('admin.menus.items.cancel', $query) }}">
         <input type="hidden" id="close" name="_close" value="0">
     </form>
     <x-toolbar :items=$actions />
 
     @if (isset($item))
-        <form id="deleteItem" action="{{ route('admin.menu.items.destroy', $query) }}" method="post">
+        <form id="deleteItem" action="{{ route('admin.menus.items.destroy', $query) }}" method="post">
             @method('delete')
             @csrf
         </form>

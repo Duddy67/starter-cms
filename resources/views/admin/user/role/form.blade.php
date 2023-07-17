@@ -3,7 +3,7 @@
 @section ('main')
     <h3>@php echo (isset($role)) ? __('labels.role.edit_role') : __('labels.role.create_role'); @endphp</h3>
 
-    @php $action = (isset($role)) ? route('admin.user.roles.update', $query) : route('admin.user.roles.store', $query) @endphp
+    @php $action = (isset($role)) ? route('admin.users.roles.update', $query) : route('admin.users.roles.store', $query) @endphp
     <form method="post" action="{{ $action }}" id="itemForm">
         @csrf
 
@@ -44,7 +44,7 @@
             </table>
         @endforeach
 
-        <input type="hidden" id="cancelEdit" value="{{ route('admin.user.roles.cancel', $query) }}">
+        <input type="hidden" id="cancelEdit" value="{{ route('admin.users.roles.cancel', $query) }}">
         <input type="hidden" id="close" name="_close" value="0">
         <input type="hidden" id="reloaded" value="{{ is_array(old('permissions')) ? 1 : 0 }}">
 
@@ -58,7 +58,7 @@
     </div>
 
     @if (isset($role))
-        <form id="deleteItem" action="{{ route('admin.user.roles.destroy', $query) }}" method="post">
+        <form id="deleteItem" action="{{ route('admin.users.roles.destroy', $query) }}" method="post">
             @method('delete')
             @csrf
         </form>

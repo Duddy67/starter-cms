@@ -18,7 +18,7 @@
                 <strong id="ajax-message-{{ $comment->id }}"></strong>
             </div>
 
-            <form id="updateComment-{{ $comment->id }}" action="{{ route('post.comment.update', ['comment' => $comment]) }}" style="display:none;" method="post">
+            <form id="updateComment-{{ $comment->id }}" action="{{ route('posts.comments.update', ['comment' => $comment]) }}" style="display:none;" method="post">
                 @method('put')
                 @csrf
 
@@ -28,7 +28,7 @@
                 <div class="text-danger mt-2" id="comment-{{ $comment->id }}Error"></div>
             </form>
 
-            <form id="deleteComment-{{ $comment->id }}" action="{{ route('post.comment.delete', ['comment' => $comment]) }}" method="post">
+            <form id="deleteComment-{{ $comment->id }}" action="{{ route('posts.comments.delete', ['comment' => $comment]) }}" method="post">
                 @method('delete')
                 @csrf
             </form>

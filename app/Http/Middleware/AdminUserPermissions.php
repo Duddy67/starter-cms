@@ -18,7 +18,7 @@ class AdminUserPermissions
     public function handle(Request $request, Closure $next)
     {
         $routeName = $request->route()->getName();
-        $access = ['admin.user.permissions.index', 'admin.user.permissions.build', 'admin.user.permissions.rebuild'];
+        $access = ['admin.users.permissions.index', 'admin.users.permissions.build', 'admin.users.permissions.rebuild'];
 
         if (in_array($routeName, $access) && auth()->user()->getRoleType() != 'super-admin') {
             return redirect()->route('admin')->with('error', __('messages.generic.access_not_auth'));

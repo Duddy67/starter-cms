@@ -38,7 +38,7 @@ class RoleController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin.user.roles');
+        $this->middleware('admin.users.roles');
         $this->model = new Role;
     }
 
@@ -58,7 +58,7 @@ class RoleController extends Controller
         $rows = $this->getRows($columns, $items);
         $this->setRowValues($rows, $columns, $items);
 
-        $url = ['route' => 'admin.user.roles', 'item_name' => 'role', 'query' => $request->query()];
+        $url = ['route' => 'admin.users.roles', 'item_name' => 'role', 'query' => $request->query()];
         $query = $request->query();
 
         return view('admin.user.role.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
@@ -98,11 +98,11 @@ class RoleController extends Controller
                                     ->findOrFail($id);
 
         if (!$role->canAccess()) {
-            return redirect()->route('admin.user.roles.index', $request->query())->with('error',  __('messages.generic.access_not_auth'));
+            return redirect()->route('admin.users.roles.index', $request->query())->with('error',  __('messages.generic.access_not_auth'));
         }
 
         if ($role->checked_out && $role->checked_out != auth()->user()->id && !$role->isUserSessionTimedOut()) {
-            return redirect()->route('admin.user.roles.index', $request->query())->with('error',  __('messages.generic.checked_out'));
+            return redirect()->route('admin.users.roles.index', $request->query())->with('error',  __('messages.generic.checked_out'));
         }
 
         if (in_array($role->name, Role::getDefaultRoles())) {
@@ -143,7 +143,7 @@ class RoleController extends Controller
             $role->safeCheckIn();
         }
 
-        return redirect()->route('admin.user.roles.index', $request->query());
+        return redirect()->route('admin.users.roles.index', $request->query());
     }
 
     /**
@@ -157,12 +157,12 @@ class RoleController extends Controller
     {
         if (in_array($role->id, Role::getDefaultRoleIds())) {
             $request->session()->flash('error', __('messages.role.cannot_update_default_roles'));
-            return response()->json(['redirect' => route('admin.user.roles.index', $request->query())]);
+            return response()->json(['redirect' => route('admin.users.roles.index', $request->query())]);
         }
 
         if (!$role->canEdit()) {
             $request->session()->flash('error', __('messages.generic.edit_not_auth'));
-            return response()->json(['redirect' => route('admin.user.roles.index', $request->query())]);
+            return response()->json(['redirect' => route('admin.users.roles.index', $request->query())]);
         }
 
         $role->name = $request->input('name');
@@ -199,7 +199,7 @@ class RoleController extends Controller
             $role->safeCheckIn();
             // Store the message to be displayed on the list view after the redirect.
             $request->session()->flash('success', __('messages.role.update_success'));
-            return response()->json(['redirect' => route('admin.user.roles.index', $request->query())]);
+            return response()->json(['redirect' => route('admin.users.roles.index', $request->query())]);
         }
 
         $refresh = ['updated_at' => Setting::getFormattedDate($role->updated_at), 'updated_by' => auth()->user()->name];
@@ -221,7 +221,7 @@ class RoleController extends Controller
 
         if (auth()->user()->getRoleType() == 'admin' && $count) {
             $request->session()->flash('error', __('messages.role.permission_not_auth'));
-            return response()->json(['redirect' => route('admin.user.roles.index', $request->query())]);
+            return response()->json(['redirect' => route('admin.users.roles.index', $request->query())]);
         }
 
         $permissions = Permission::getPermissionsWithoutSections();
@@ -259,11 +259,11 @@ class RoleController extends Controller
         $request->session()->flash('success', __('messages.role.create_success'));
 
         if ($request->input('_close', null)) {
-            return response()->json(['redirect' => route('admin.user.roles.index', $request->query())]);
+            return response()->json(['redirect' => route('admin.users.roles.index', $request->query())]);
         }
 
         // Reload the page.
-        return response()->json(['redirect' => route('admin.user.roles.edit', array_merge($request->query(), ['role' => $role->id]))]);
+        return response()->json(['redirect' => route('admin.users.roles.edit', array_merge($request->query(), ['role' => $role->id]))]);
     }
 
     /**
@@ -276,21 +276,21 @@ class RoleController extends Controller
     public function destroy(Request $request, Role $role)
     {
         if (!$role->canDelete()) {
-            return redirect()->route('admin.user.roles.edit', array_merge($request->query(), ['role' => $role->id]))->with('error',  __('messages.generic.delete_not_auth'));
+            return redirect()->route('admin.users.roles.edit', array_merge($request->query(), ['role' => $role->id]))->with('error',  __('messages.generic.delete_not_auth'));
         }
 
         if (in_array($role->name, Role::getDefaultRoles())) {
-            return redirect()->route('admin.user.roles.edit', array_merge($request->query(), ['role' => $role->id]))->with('error', __('messages.role.cannot_delete_default_roles'));
+            return redirect()->route('admin.users.roles.edit', array_merge($request->query(), ['role' => $role->id]))->with('error', __('messages.role.cannot_delete_default_roles'));
         }
 
         if (User::role($role->name)->count()) {
-            return redirect()->route('admin.user.roles.edit', array_merge($request->query(), ['role' => $role->id]))->with('error', __('messages.role.user_assigned_to_roles', ['name' => $role->name]));
+            return redirect()->route('admin.users.roles.edit', array_merge($request->query(), ['role' => $role->id]))->with('error', __('messages.role.user_assigned_to_roles', ['name' => $role->name]));
         }
 
         $name = $role->name;
         $role->delete();
 
-        return redirect()->route('admin.user.roles.index', $request->query())->with('success', __('messages.role.delete_success', ['name' => $name]));
+        return redirect()->route('admin.users.roles.index', $request->query())->with('success', __('messages.role.delete_success', ['name' => $name]));
     }
 
     /**
@@ -306,7 +306,7 @@ class RoleController extends Controller
         $result = array_intersect($roles, Role::getDefaultRoles());
 
         if (!empty($result)) {
-            return redirect()->route('admin.user.roles.index', $request->query())->with('error',  __('messages.role.cannot_delete_roles', ['roles' => implode(',', $result)]));
+            return redirect()->route('admin.users.roles.index', $request->query())->with('error',  __('messages.role.cannot_delete_roles', ['roles' => implode(',', $result)]));
         }
 
         $roles = [];
@@ -317,11 +317,11 @@ class RoleController extends Controller
 
             if ($role->users->count()) {
                 // Some users are already assigned to this role.
-                return redirect()->route('admin.user.roles.index', $request->query())->with('error', __('messages.role.users_assigned_to_roles', ['name' => $role->name]));
+                return redirect()->route('admin.users.roles.index', $request->query())->with('error', __('messages.role.users_assigned_to_roles', ['name' => $role->name]));
             }
 
             if (!$role->canDelete()) {
-                return redirect()->route('admin.user.roles.edit', array_merge($request->query(), ['role' => $id]))->with('error',  __('messages.generic.delete_not_auth'));
+                return redirect()->route('admin.users.roles.edit', array_merge($request->query(), ['role' => $id]))->with('error',  __('messages.generic.delete_not_auth'));
             }
 
             $roles[] = $role;
@@ -331,7 +331,7 @@ class RoleController extends Controller
             $role->delete();
         }
 
-        return redirect()->route('admin.user.roles.index', $request->query())->with('success', __('messages.role.delete_list_success', ['number' => count($request->input('ids'))]));
+        return redirect()->route('admin.users.roles.index', $request->query())->with('success', __('messages.role.delete_list_success', ['number' => count($request->input('ids'))]));
     }
 
     /**
@@ -344,7 +344,7 @@ class RoleController extends Controller
     {
         $messages = CheckInCheckOut::checkInMultiple($request->input('ids'), '\\App\\Models\\User\\Role');
 
-        return redirect()->route('admin.user.roles.index', $request->query())->with($messages);
+        return redirect()->route('admin.users.roles.index', $request->query())->with($messages);
     }
 
     /*

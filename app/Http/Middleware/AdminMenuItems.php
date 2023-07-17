@@ -29,20 +29,20 @@ class AdminMenuItems
             return redirect()->route('admin')->with('error', __('messages.generic.access_not_auth'));
         }
 
-        $create = ['admin.menu.items.index', 'admin.menu.items.create', 'admin.menu.items.store'];
-        $update = ['admin.menu.items.update', 'admin.menu.items.edit'];
-        $delete = ['admin.menu.items.destroy', 'admin.menu.items.massDestroy'];
+        $create = ['admin.menus.items.index', 'admin.menus.items.create', 'admin.menus.items.store'];
+        $update = ['admin.menus.items.update', 'admin.menus.items.edit'];
+        $delete = ['admin.menus.items.destroy', 'admin.menus.items.massDestroy'];
 
-        if (in_array($routeName, $create) && !auth()->user()->isAllowedTo('create-menu')) {
+        if (in_array($routeName, $create) && !auth()->user()->isAllowedTo('create-menus')) {
             return redirect()->route('admin')->with('error', __('messages.generic.access_not_auth'));
         }
 
-        if (in_array($routeName, $update) && !auth()->user()->isAllowedTo('update-menu')) {
-            return redirect()->route('admin.menu.items.index')->with('error', __('messages.menu.edit_not_auth'));
+        if (in_array($routeName, $update) && !auth()->user()->isAllowedTo('update-menus')) {
+            return redirect()->route('admin.menus.items.index')->with('error', __('messages.menu.edit_not_auth'));
         }
 
-        if (in_array($routeName, $delete) && !auth()->user()->isAllowedTo('delete-menu')) {
-            return redirect()->route('admin.menu.items.index')->with('error', __('messages.menu.delete_not_auth'));
+        if (in_array($routeName, $delete) && !auth()->user()->isAllowedTo('delete-menus')) {
+            return redirect()->route('admin.menus.items.index')->with('error', __('messages.menu.delete_not_auth'));
         }
 
         return $next($request);

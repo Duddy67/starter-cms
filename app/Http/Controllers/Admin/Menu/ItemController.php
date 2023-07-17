@@ -42,7 +42,7 @@ class ItemController extends Controller
     public function __construct(Request $request)
     {
         $this->middleware('auth');
-        $this->middleware('admin.menu.items');
+        $this->middleware('admin.menus.items');
         $this->model = new Item;
         // Rely on the parent menu for authorisations (NB: A valid menu code is checked in advance in the middleware).
         $this->menu = ($request->route()) ? Menu::where('code', $request->route()->parameter('code'))->first() : null; 
@@ -81,7 +81,7 @@ class ItemController extends Controller
         $query = $request->query();
         $query['code'] = $code;
 
-        $url = ['route' => 'admin.menu.items', 'item_name' => 'item', 'query' => $query];
+        $url = ['route' => 'admin.menus.items', 'item_name' => 'item', 'query' => $query];
 
         return view('admin.menu.item.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
     }
@@ -118,7 +118,7 @@ class ItemController extends Controller
         $item = $this->item = Item::getItem($id, $locale);
 
         if ($item->checked_out && $item->checked_out != auth()->user()->id && !$item->isUserSessionTimedOut()) {
-            return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.checked_out'));
+            return redirect()->route('admin.menus.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.checked_out'));
         }
 
         $item->checkOut();
@@ -155,7 +155,7 @@ class ItemController extends Controller
             $item->safeCheckIn();
         }
 
-        return redirect()->route('admin.menu.items.index', array_merge(\Arr::except($request->query(), ['locale']), ['code' => $code]));
+        return redirect()->route('admin.menus.items.index', array_merge(\Arr::except($request->query(), ['locale']), ['code' => $code]));
     }
 
     /**
@@ -170,12 +170,12 @@ class ItemController extends Controller
     {
         if ($item->checked_out != auth()->user()->id) {
             $request->session()->flash('error', __('messages.generic.user_id_does_not_match'));
-            return response()->json(['redirect' => route('admin.menu.items.index', $request->query(), ['code' => $code])]);
+            return response()->json(['redirect' => route('admin.menus.items.index', $request->query(), ['code' => $code])]);
         }
 
         if (!$this->menu->canEdit()) {
             $request->session()->flash('error', __('messages.generic.edit_not_auth'));
-            return response()->json(['redirect' => route('admin.menu.items.index', $request->query(), ['code' => $code])]);
+            return response()->json(['redirect' => route('admin.menus.items.index', $request->query(), ['code' => $code])]);
         }
 
         $query = array_merge($request->query(), ['code' => $code, 'item' => $item->id]);
@@ -205,7 +205,7 @@ class ItemController extends Controller
             // Store the message to be displayed on the list view after the redirect.
             $request->session()->flash('success', __('messages.menuitem.update_success'));
             $query = \Arr::except($request->query(), ['locale']);
-            return response()->json(['redirect' => route('admin.menu.items.index', array_merge($query, ['code' => $code]))]);
+            return response()->json(['redirect' => route('admin.menus.items.index', array_merge($query, ['code' => $code]))]);
         }
 
         $refresh = ['updated_at' => Setting::getFormattedDate($item->updated_at), 'updated_by' => auth()->user()->name];
@@ -225,7 +225,7 @@ class ItemController extends Controller
         // The user cannot create an item if he cannot edit it.
         if (!$this->menu->canEdit()) {
             $request->session()->flash('error', __('messages.generic.edit_not_auth'));
-            return response()->json(['redirect' => route('admin.menu.items.index', $request->query(), ['code' => $code])]);
+            return response()->json(['redirect' => route('admin.menus.items.index', $request->query(), ['code' => $code])]);
         }
 
         // Check first for parent id. (N.B: menu items cannot be null as they have a root parent id by default).
@@ -253,11 +253,11 @@ class ItemController extends Controller
         $request->session()->flash('success', __('messages.menuitem.create_success'));
 
         if ($request->input('_close', null)) {
-            return response()->json(['redirect' => route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))]);
+            return response()->json(['redirect' => route('admin.menus.items.index', array_merge($request->query(), ['code' => $code]))]);
         }
 
         // Redirect to the edit form.
-        return response()->json(['redirect' => route('admin.menu.items.edit', array_merge($request->query(), ['code' => $code, 'item' => $item->id]))]);
+        return response()->json(['redirect' => route('admin.menus.items.edit', array_merge($request->query(), ['code' => $code, 'item' => $item->id]))]);
     }
 
     /**
@@ -271,7 +271,7 @@ class ItemController extends Controller
     public function destroy(Request $request, $code, Item $item)
     {
         if (!$this->menu->canDelete()) {
-            return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.delete_not_auth'));
+            return redirect()->route('admin.menus.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.delete_not_auth'));
         }
 
         $title = $item->getTranslation(config('app.locale'))->title;
@@ -279,7 +279,7 @@ class ItemController extends Controller
         $item->deleteDescendants();
         $item->delete();
 
-        return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitem.delete_success', ['title' => $title]));
+        return redirect()->route('admin.menus.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitem.delete_success', ['title' => $title]));
     }
 
     /**
@@ -292,7 +292,7 @@ class ItemController extends Controller
     public function massDestroy(Request $request, $code)
     {
         if (!$this->menu->canDelete()) {
-            return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.delete_not_auth'));
+            return redirect()->route('admin.menus.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.delete_not_auth'));
         }
 
         $deleted = 0;
@@ -305,7 +305,7 @@ class ItemController extends Controller
             $deleted++;
         }
 
-        return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitem.delete_list_success', ['number' => $deleted]));
+        return redirect()->route('admin.menus.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitem.delete_list_success', ['number' => $deleted]));
     }
 
     /**
@@ -319,13 +319,13 @@ class ItemController extends Controller
     {
         $messages = CheckInCheckOut::checkInMultiple($request->input('ids'), '\\App\\Models\\Menu\\Item');
 
-        return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with($messages);
+        return redirect()->route('admin.menus.items.index', array_merge($request->query(), ['code' => $code]))->with($messages);
     }
 
     public function massPublish(Request $request, $code)
     {
         if (!$this->menu->canChangeStatus()) {
-            return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.change_status_not_auth'));
+            return redirect()->route('admin.menus.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.change_status_not_auth'));
         }
 
         $changed = 0;
@@ -343,13 +343,13 @@ class ItemController extends Controller
             $changed++;
         }
 
-        return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitem.change_status_list_success', ['number' => $changed]));
+        return redirect()->route('admin.menus.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitem.change_status_list_success', ['number' => $changed]));
     }
 
     public function massUnpublish(Request $request, $code)
     {
         if (!$this->menu->canChangeStatus()) {
-            return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.change_status_not_auth'));
+            return redirect()->route('admin.menus.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.change_status_not_auth'));
         }
 
         $treated = [];
@@ -377,7 +377,7 @@ class ItemController extends Controller
             }
         }
 
-        return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitem.change_status_list_success', ['number' => $changed]));
+        return redirect()->route('admin.menus.items.index', array_merge($request->query(), ['code' => $code]))->with('success', __('messages.menuitem.change_status_list_success', ['number' => $changed]));
     }
 
     /**
@@ -390,11 +390,11 @@ class ItemController extends Controller
     public function up(Request $request, $code, Item $item)
     {
         if (!$this->menu->canChangeStatus()) {
-            return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.change_order_not_auth'));
+            return redirect()->route('admin.menus.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.change_order_not_auth'));
         }
 
         $item->up();
-        return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]));
+        return redirect()->route('admin.menus.items.index', array_merge($request->query(), ['code' => $code]));
     }
 
     /**
@@ -407,11 +407,11 @@ class ItemController extends Controller
     public function down(Request $request, $code, Item $item)
     {
         if (!$this->menu->canChangeStatus()) {
-            return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.change_order_not_auth'));
+            return redirect()->route('admin.menus.items.index', array_merge($request->query(), ['code' => $code]))->with('error',  __('messages.generic.change_order_not_auth'));
         }
 
         $item->down();
-        return redirect()->route('admin.menu.items.index', array_merge($request->query(), ['code' => $code]));
+        return redirect()->route('admin.menus.items.index', array_merge($request->query(), ['code' => $code]));
     }
 
     /*

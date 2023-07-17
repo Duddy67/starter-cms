@@ -29,7 +29,7 @@ class SettingController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin.post.settings');
+        $this->middleware('admin.posts.settings');
         $this->model = new Setting;
     }
 

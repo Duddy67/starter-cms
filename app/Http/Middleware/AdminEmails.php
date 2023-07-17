@@ -24,9 +24,9 @@ class AdminEmails
         $delete = ['admin.emails.destroy', 'admin.emails.massDestroy'];
 
 	// N.B: Some admin type users might be allowed to only update email subjects and bodies. 
-	//      To allow them to access the email list the update-email permission is used  
-	//      as the access-email permission doesn't exists. 
-	if (in_array($routeName, $access) && !auth()->user()->isAllowedTo('update-email')) {
+	//      To allow them to access the email list the update-emails permission is used  
+	//      as the access-emails permission doesn't exists. 
+	if (in_array($routeName, $access) && !auth()->user()->isAllowedTo('update-emails')) {
 	    return redirect()->route('admin')->with('error', __('messages.generic.access_not_auth'));
 	}
 
@@ -34,7 +34,7 @@ class AdminEmails
 	    return redirect()->route('admin')->with('error', __('messages.generic.access_not_auth'));
 	}
 
-	if (in_array($routeName, $update) && !auth()->user()->isAllowedTo('update-email')) {
+	if (in_array($routeName, $update) && !auth()->user()->isAllowedTo('update-emails')) {
 	    return redirect()->route('admin.emails.index')->with('error', __('messages.email.edit_not_auth'));
 	}
 
