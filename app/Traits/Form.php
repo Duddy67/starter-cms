@@ -458,7 +458,7 @@ trait Form
         elseif (in_array($field->name, ['parent_id', 'category_id']) && !method_exists($this->model, $function)) {
             $options = Setting::$function($this->model, $item);
         }
-        elseif (in_array($field->name, ['status', 'owned_by', 'access_level', 'page']) && !method_exists($this->model, $function)) {
+        elseif (in_array($field->name, ['status', 'owned_by', 'access_level', 'locale', 'page']) && !method_exists($this->model, $function)) {
             // Call the Setting method when not availabe in the model.
             $options = Setting::$function();
         }
