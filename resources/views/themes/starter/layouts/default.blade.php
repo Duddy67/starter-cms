@@ -34,7 +34,7 @@
 
 	    <!-- Content -->
 	    <section id="layout-content" class="pt-4">
-                @include('themes.starter.pages.'.$page)
+                @include('themes.starter.pages.'.$page['name'])
 	    </section>
 
 	    <!-- Footer -->

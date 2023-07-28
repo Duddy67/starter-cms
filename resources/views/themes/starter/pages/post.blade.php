@@ -4,7 +4,7 @@
     <h1 class="h2"><a href="{{ url($post->getUrl()) }}">{{ $post->title }}</a></h1>
 
     @if ($settings['show_created_at'])
-        <div>@date ($post->created_at->tz($timezone))</div>
+        <div>@date ($post->created_at->tz($page['timezone']))</div>
     @endif
 
     @if ($settings['show_owner'])

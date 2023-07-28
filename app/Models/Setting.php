@@ -412,12 +412,12 @@ class Setting extends Model
     /*
      * Returns some needed page variables.
      */
-    public static function getPage(string $view): array
+    public static function getPage(string $name): array
     {
         $data = self::getData();
         $page = [];
 
-        $page['view'] = $view;
+        $page['name'] = $name;
         $page['menu'] = Menu::getMenu('main-menu');
         $page['theme'] = $data['website']['theme'];
         $page['timezone'] = $data['app']['timezone'];

@@ -28,7 +28,7 @@
             <div class="text-danger" id="g-recaptcha-responseError"></div>
         </div>
         <div class="text-center"><button class="btn btn-success" id="submit" type="button">Send Message</button></div>
-        <input type="hidden" name="_page" value="{{ $page }}">
+        <input type="hidden" name="_page" value="{{ $page['name'] }}">
     </form>
 
     <div class="ajax-progress d-none" id="ajax-progress">

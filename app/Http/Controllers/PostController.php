@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Post\Comment;
 use App\Models\Post\Setting as PostSetting;
-use App\Models\Menu;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Post\Comment\StoreRequest;
@@ -23,30 +22,25 @@ class PostController extends Controller
 			->leftJoin('users as users2', 'posts.updated_by', '=', 'users2.id')
 			->where('posts.id', $id)->first();
 
-        $menu = Menu::getMenu('main-menu');
-        $menu->allow_registering = Setting::getValue('website', 'allow_registering', 0);
-        $theme = Setting::getValue('website', 'theme', 'starter');
+        $page = Setting::getPage('post');
 
-        if (!$post || ($post->layoutItems()->exists() && !view()->exists('themes.'.$theme.'.pages.'.$post->page))) {
-            $page = '404';
-            return view('themes.'.$theme.'.index', compact('page', 'menu'));
+        if (!$post || ($post->layoutItems()->exists() && !view()->exists('themes.'.$page['theme'].'.pages.'.$post->page))) {
+            $page['name'] = '404';
+            return view('themes.'.$page['theme'].'.index', compact('page'));
 	}
 
 	if (!$post->canAccess()) {
-            $page = '403';
-            return view('themes.'.$theme.'.index', compact('page', 'menu'));
+            $page['name'] = '403';
+            return view('themes.'.$page['theme'].'.index', compact('page'));
 	}
-
-        $page = 'post';
 
         $post->global_settings = PostSetting::getDataByGroup('posts');
 	$settings = $post->getSettings();
-        $timezone = Setting::getValue('app', 'timezone');
         $metaData = $post->meta_data;
         $segments = Setting::getSegments('Post');
 	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug]);
 
-        return view('themes.'.$theme.'.index', compact('page', 'menu', 'id', 'slug', 'post', 'segments', 'settings', 'timezone', 'metaData', 'query'));
+        return view('themes.'.$page['theme'].'.index', compact('page', 'id', 'slug', 'post', 'segments', 'settings', 'metaData', 'query'));
     }
 
     public function saveComment(StoreRequest $request, $id, $slug)

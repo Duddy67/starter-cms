@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
-use App\Models\Menu;
 use App\Models\Setting;
 use App\Models\Post\Setting as PostSetting;
 
@@ -17,10 +16,7 @@ class SearchController extends Controller
      */
     public function index(Request $request)
     {
-        $page = $request->segment(1);
-        $menu = Menu::getMenu('main-menu');
-        $menu->allow_registering = Setting::getValue('website', 'allow_registering', 0);
-        $theme = Setting::getValue('website', 'theme', 'starter');
+        $page = Setting::getPage($request->segment(1));
         $maxRows = Setting::getValue('search', 'autocomplete_max_results');
         $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $posts = collect(new Post);
@@ -42,7 +38,7 @@ class SearchController extends Controller
             }
         }
           
-        return view('themes.'.$theme.'.index', compact('page', 'posts', 'menu', 'message', 'maxRows'));
+        return view('themes.'.$page['theme'].'.index', compact('page', 'posts', 'message', 'maxRows'));
     }
 
     /**
