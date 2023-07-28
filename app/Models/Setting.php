@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use App\Models\User\Group;
 use App\Models\User;
+use App\Models\Menu;
 
 
 class Setting extends Model
@@ -406,6 +407,23 @@ class Setting extends Model
 
         // Can order if only one item is selected in the filter.
         return (request()->input($filter, null) && count(request()->input($filter)) == 1) ? true : false;
+    }
+
+    /*
+     * Returns some needed page variables.
+     */
+    public static function getPage(string $view): array
+    {
+        $data = self::getData();
+        $page = [];
+
+        $page['view'] = $view;
+        $page['menu'] = Menu::getMenu('main-menu');
+        $page['theme'] = $data['website']['theme'];
+        $page['timezone'] = $data['app']['timezone'];
+        $page['allow_registering'] = $data['website']['allow_registering'];
+
+        return $page;
     }
 
     public static function getAppSettings()

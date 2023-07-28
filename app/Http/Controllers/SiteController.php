@@ -13,6 +13,8 @@ class SiteController extends Controller
     public function index(Request $request)
     {
         $page = ($request->segment(1)) ? $request->segment(1) : 'home';
+        $test = Setting::getPage($page);
+
         $posts = null;
         $settings = $metaData = [];
         $menu = Menu::getMenu('main-menu');
