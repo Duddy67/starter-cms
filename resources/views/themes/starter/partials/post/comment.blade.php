@@ -2,7 +2,7 @@
     <div class="card-header">
         <div class="row">
             <div class="col-12">
-            {{ __('labels.post.posted_by', ['author' => $comment->author]) }} at @date ($comment->created_at->tz($timezone))
+            {{ __('labels.post.posted_by', ['author' => $comment->author]) }} at @date ($comment->created_at->tz($page['timezone']))
 
             @if (auth()->check() && Auth::user()->id == $comment->owned_by)
                 <button type="button" id="delete-btn-{{ $comment->id }}" data-comment-id="{{ $comment->id }}" class="btn btn-space btn-danger float-end deleteButton">@lang ('labels.button.delete')</button>
@@ -38,3 +38,4 @@
         {!! $comment->text !!}
     </div>
 </div>
+

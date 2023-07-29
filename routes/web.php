@@ -45,11 +45,6 @@ Route::prefix('{locale}')
     Route::delete('/'.$segments['posts'].'/comments/{comment}', [PostController::class, 'deleteComment'])->name('posts.comments.delete')->middleware('auth');
     Route::get('/'.$segments['posts'].'/'.$segments['categories'].'/{id}/{slug}', [PostCategoryController::class, 'index'])->name('posts.categories');
 
-    Route::get('/autocomplete', [SearchController::class, 'autocomplete'])->name('autocomplete');
-    Route::get('/search', [SearchController::class, 'index'])->name('search');
-    Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
-    Route::get('/{page}/{id}/{slug}', [SiteController::class, 'show'])->name('site.show');
-
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
@@ -74,7 +69,11 @@ Route::prefix('{locale}')
         Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
     });
 
+    Route::get('/autocomplete', [SearchController::class, 'autocomplete'])->name('autocomplete');
+    Route::get('/search', [SearchController::class, 'index'])->name('search');
+    Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
     Route::get('/{page?}', [SiteController::class, 'index'])->where('page', '^(?!admin).*$')->name('site.index');
+    Route::get('/{page}/{id}/{slug}', [SiteController::class, 'show'])->name('site.show');
 });
 
 /***** BACK OFFICE *****/

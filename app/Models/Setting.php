@@ -442,6 +442,23 @@ class Setting extends Model
         return (request()->input($filter, null) && count(request()->input($filter)) == 1) ? true : false;
     }
 
+    /*
+     * Returns some needed page variables.
+     */
+    public static function getPage(string $name): array
+    {
+        $data = self::getData();
+        $page = [];
+
+        $page['name'] = $name;
+        $page['menu'] = Menu::getMenu('main-menu');
+        $page['theme'] = $data['website']['theme'];
+        $page['timezone'] = $data['app']['timezone'];
+        $page['allow_registering'] = $data['website']['allow_registering'];
+
+        return $page;
+    }
+
     public static function getAppSettings()
     {
         $data = DB::table('settings')->where('group', 'app')->get();

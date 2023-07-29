@@ -11,6 +11,7 @@ return [
 	'home' => 'home',
 	'accueil' => 'home',
 	'bienvenudo' => 'home',
+	'contact' => 'contact',
     ],
     'segments' => [
         'Post' => [

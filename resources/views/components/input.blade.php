@@ -11,13 +11,6 @@
      $divider = (isset($field->extra) && in_array('divider', $field->extra)) ? true : false;
      $titleAsId = (isset($field->extra) && in_array('title_as_id', $field->extra)) ? true : false;
      $multi = ($multiple) ? '[]' : '';
-
-     $dataset = '';
-     if (isset($field->dataset)) {
-         foreach($field->dataset as $key => $val) {
-             $dataset .= 'data-'.$key.'='.$val.' ';
-         }
-     }
 @endphp
 
 @if ($field->type == 'text' || $field->type == 'password' || $field->type == 'date' || $field->type == 'file')
@@ -49,10 +42,11 @@
 	value="{{ $value }}"
     @endif
 
-    @if ($dataset)
-	{{ $dataset }}
+    @if (isset($field->dataset))
+        @foreach ($field->dataset as $key => $val) 
+            data-{{ $key }}="{{ $val }}" 
+        @endforeach
     @endif
-
     >
 @elseif ($field->type == 'select')
 
@@ -61,8 +55,10 @@
 	onchange="{{ $field->onchange }}"
     @endif
 
-    @if ($dataset)
-	{{ $dataset }}
+    @if (isset($field->dataset))
+        @foreach ($field->dataset as $key => $val) 
+            data-{{ $key }}="{{ $val }}" 
+        @endforeach
     @endif
     >
 	@if (isset($field->blank))
@@ -92,7 +88,7 @@
 	<label class="form-check-label" for="{{ $field->id }}">{{ $field->label }}</label>
     @endif
 
-    <input type="checkbox" id="{{ $field->id }}" class="form-check-input" {{ $dataset }}
+    <input type="checkbox" id="{{ $field->id }}" class="form-check-input" 
 
     @if ($name)
 	name="{{ $name }}"
@@ -110,8 +106,10 @@
 	checked
     @endif
 
-    @if ($dataset)
-	{{ $dataset }}
+    @if (isset($field->dataset))
+        @foreach ($field->dataset as $key => $val) 
+            data-{{ $key }}="{{ $val }}" 
+        @endforeach
     @endif
     >
 
@@ -133,8 +131,10 @@
         cols="{{ $field->cols}}"
     @endif
 
-    @if ($dataset)
-	{{ $dataset }}
+    @if (isset($field->dataset))
+        @foreach ($field->dataset as $key => $val) 
+            data-{{ $key }}="{{ $val }}" 
+        @endforeach
     @endif
     >{{ $value }}</textarea>
     

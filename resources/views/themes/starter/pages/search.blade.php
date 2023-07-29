@@ -27,7 +27,7 @@
                         @foreach ($posts as $post)
                         <tr>
                             <td class="text-center">{{ $post->id }}</td>
-                            <td><a href="{{ url('/').$post->getUrl() }}">{{ $post->title }}</a></td>
+                            <td><a href="{{ url($locale.$post->getUrl()) }}">{{ $post->title }}</a></td>
                             <td>
                                 @foreach ($post->search_results as $result)
                                     <span>...{{ $result }}...</span><br />

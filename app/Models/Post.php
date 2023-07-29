@@ -410,6 +410,7 @@ class Post extends Model
     {
         $query = Post::query()->select('posts.*', 'users.name as owner_name',
                                        'translations.title as title',
+                                       'translations.slug as slug',
                                        'translations.raw_content as raw_content')
                               ->leftJoin('users', 'posts.owned_by', '=', 'users.id');
 

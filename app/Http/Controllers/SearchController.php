@@ -18,10 +18,7 @@ class SearchController extends Controller
     public function index(Request $request)
     {
         $locale = $request->segment(1);
-        $page = $request->segment(2);
-        $menu = Menu::getMenu('main-menu');
-        $menu->allow_registering = Setting::getValue('website', 'allow_registering', 0);
-        $theme = Setting::getValue('website', 'theme', 'starter');
+        $page = Setting::getPage($request->segment(2));
         $maxRows = Setting::getValue('search', 'autocomplete_max_results');
         $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $posts = collect(new Post);
@@ -43,7 +40,7 @@ class SearchController extends Controller
             }
         }
           
-        return view('themes.'.$theme.'.index', compact('locale', 'page', 'posts', 'menu', 'message', 'maxRows'));
+        return view('themes.'.$page['theme'].'.index', compact('locale', 'page', 'posts', 'message', 'maxRows'));
     }
 
     /**
