@@ -243,7 +243,7 @@ class Post extends Model
 
     public function getSettings()
     {
-        return PostSetting::getItemSettings($this, 'posts');
+        return Setting::getItemSettings($this, 'posts');
     }
 
     /*

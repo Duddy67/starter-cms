@@ -262,7 +262,7 @@ class Category extends Model
 
     public function getSettings()
     {
-        return PostSetting::getItemSettings($this, 'categories');
+        return Setting::getItemSettings($this, 'categories');
     }
 
     public function getPostOrderingOptions()

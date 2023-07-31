@@ -35,7 +35,7 @@ class Setting extends Model
     public $timestamps = false;
 
 
-    public static function getData()
+    /*public static function getData()
     {
         $results = Setting::all()->toArray();
 	$data = [];
@@ -80,7 +80,7 @@ class Setting extends Model
 	}
 
 	return $settings;
-    }
+    }*/
 
     public static function getPostOrderingOptions(): array
     {

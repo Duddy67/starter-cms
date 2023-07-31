@@ -15,30 +15,27 @@ class SiteController extends Controller
         $page = Setting::getPage($name);
 
         $posts = null;
-        $settings = $metaData = [];
+        $metaData = [];
         $query = $request->query();
 
         if ($category = Category::where('slug', $page['name'])->first()) {
+            $category->settings = $category->getSettings();
+            $metaData = $category->meta_data;
             $posts = $category->getAllPosts($request);
 
-            $globalSettings = PostSetting::getDataByGroup('categories');
+            if (count($posts)) {
+                // Use the first post as model to get the global post settings.
+                $globalPostSettings = Setting::getDataByGroup('posts', $posts[0]);
 
-            foreach ($category->settings as $key => $value) {
-                if ($value == 'global_setting') {
-                    $settings[$key] = $globalSettings[$key];
+                foreach ($posts as $post) {
+                    $settings = [];
+
+                    foreach ($post->settings as $key => $value) {
+                        $settings[$key] = ($value == 'global_setting') ? $globalPostSettings[$key] : $post->settings[$key];
+                    }
+
+                    $post->settings = $settings;
                 }
-                else {
-                    $settings[$key] = $category->settings[$key];
-                }
-            }
-
-            $category->global_settings = $globalSettings;
-            $metaData = $category->meta_data;
-
-            $globalSettings = PostSetting::getDataByGroup('posts');
-
-            foreach ($posts as $post) {
-                $post->global_settings = $globalSettings;
             }
         }
         elseif ($page['name'] == 'home' || file_exists(resource_path().'/views/themes/'.$page['theme'].'/pages/'.$page['name'].'.blade.php')) {
@@ -51,7 +48,7 @@ class SiteController extends Controller
 
         $segments = Setting::getSegments('Post');
 
-        return view('themes.'.$page['theme'].'.index', compact('page', 'category', 'settings', 'posts', 'segments', 'metaData', 'query'));
+        return view('themes.'.$page['theme'].'.index', compact('page', 'category', 'posts', 'segments', 'metaData', 'query'));
     }
 
 
@@ -71,7 +68,8 @@ class SiteController extends Controller
             return view('themes.'.$page['theme'].'.index', compact('page'));
         }
 
-        $post->global_settings = PostSetting::getDataByGroup('posts');
+        //$post->global_settings = PostSetting::getDataByGroup('posts');
+        $post->settings = $post->getSettings();
         $page['name'] = $page['name'].'-details';
         $segments = Setting::getSegments('Post');
         $metaData = $post->meta_data;

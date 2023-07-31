@@ -34,8 +34,9 @@ class PostController extends Controller
             return view('themes.'.$page['theme'].'.index', compact('page'));
 	}
 
-        $post->global_settings = PostSetting::getDataByGroup('posts');
+        $post->global_settings = Setting::getDataByGroup('posts');
 	$settings = $post->getSettings();
+	$post->settings = $post->getSettings();
         $metaData = $post->meta_data;
         $segments = Setting::getSegments('Post');
 	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug]);

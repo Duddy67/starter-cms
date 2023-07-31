@@ -84,7 +84,7 @@ class PostController extends Controller
         // Gather the needed data to build the form.
 
         $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
-        $this->setFieldValues($fields);
+        $this->setFieldValues($fields, $this->model);
         $actions = $this->getActions('form', ['destroy']);
         $query = $request->query();
 
@@ -607,9 +607,9 @@ class PostController extends Controller
      * @param  \App\Models\Post $post
      * @return void
      */
-    private function setFieldValues(array &$fields, Post $post = null)
+    private function setFieldValues(array &$fields, Post $post)
     {
-        $globalSettings = PostSetting::getDataByGroup('posts');
+        $globalSettings = Setting::getDataByGroup('posts', $post);
         foreach ($globalSettings as $key => $value) {
             if (str_starts_with($key, 'alias_extra_field_')) {
                 foreach ($fields as $field) {

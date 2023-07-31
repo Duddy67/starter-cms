@@ -34,9 +34,11 @@ class Setting extends Model
     public $timestamps = false;
 
 
-    public static function getData()
+    public static function getData(mixed $model = null): array
     {
-        $results = Setting::all()->toArray();
+        $settingClassModel = ($model) ? get_class($model) : '\\App\\Models\\Setting';
+
+        $results = $settingClassModel::all()->toArray();
         $data = [];
 
         foreach ($results as $param) {
@@ -48,6 +50,62 @@ class Setting extends Model
         }
 
         return $data;
+    }
+
+    public static function getItemSettings(mixed $item, string $group): array
+    {
+        // Get the global settings of the given item.
+	$globalSettings = self::getDataByGroup($group, $item);
+	$settings = [];
+
+        // Parse the item setting values.
+	foreach ($item->settings as $key => $value) {
+	    if ($value == 'global_setting') {
+	        // Overwrite with the item global setting value. 
+	        $settings[$key] = $globalSettings[$key];
+	    }
+	    else {
+	        $settings[$key] = $item->settings[$key];
+	    }
+	}
+
+	return $settings;
+    }
+
+    public static function getDataByGroup(string $group, mixed $model = null): array
+    {
+        $settingClassModel = ($model) ? self::getSettingClassModel($model) : '\\App\\Models\\Setting';
+
+        $results = $settingClassModel::where('group', $group)->get();
+	$data = [];
+
+	foreach ($results as $param) {
+	    $data[$param->key] = $param->value;
+	}
+
+	return $data;
+    }
+
+    /*
+     *
+     */
+    public static function getSettingClassModel(mixed $model): ?string
+    {
+        $classes = explode('\\', get_class($model));
+
+        if (count($classes) < 3) {
+            return false;
+        }
+
+        $settingClassModel = '';
+
+        for ($i = 0; $i < 3; $i++) {
+            $settingClassModel .= '\\'.$classes[$i];
+        }
+
+        $settingClassModel .= '\\Setting';
+
+        return $settingClassModel;
     }
 
     /*
