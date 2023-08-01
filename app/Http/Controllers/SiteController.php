@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post\Category;
-use App\Models\Post\Setting as PostSetting;
 use App\Models\Setting;
 
 class SiteController extends Controller
@@ -27,10 +26,14 @@ class SiteController extends Controller
                 // Use the first post as model to get the global post settings.
                 $globalPostSettings = Setting::getDataByGroup('posts', $posts[0]);
 
+                // Set the setting values manually to improve performance a bit.
                 foreach ($posts as $post) {
+                    // N.B: Don't set the values directly through the object. Use an array to
+                    // prevent the "Indirect modification of overloaded property has no effect" error.
                     $settings = [];
 
                     foreach ($post->settings as $key => $value) {
+                        // Set the item setting values against the item global setting.
                         $settings[$key] = ($value == 'global_setting') ? $globalPostSettings[$key] : $post->settings[$key];
                     }
 
@@ -68,7 +71,6 @@ class SiteController extends Controller
             return view('themes.'.$page['theme'].'.index', compact('page'));
         }
 
-        //$post->global_settings = PostSetting::getDataByGroup('posts');
         $post->settings = $post->getSettings();
         $page['name'] = $page['name'].'-details';
         $segments = Setting::getSegments('Post');

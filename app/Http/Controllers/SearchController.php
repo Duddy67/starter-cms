@@ -27,10 +27,23 @@ class SearchController extends Controller
                 $posts = Post::searchInPosts($request->input('keyword'))->paginate($perPage);
                 $posts = $this->formatResults($posts, $request->input('keyword'));
 
-                $globalSettings = PostSetting::getDataByGroup('posts');
+                if (count($posts)) {
+                    // Use the first post as model to get the global post settings.
+                    $globalPostSettings = Setting::getDataByGroup('posts', $posts[0]);
 
-                foreach ($posts as $post) {
-                    $post->global_settings = $globalSettings;
+                    // Set the setting values manually to improve performance a bit.
+                    foreach ($posts as $post) {
+                        // N.B: Don't set the values directly through the object. Use an array to
+                        // prevent the "Indirect modification of overloaded property has no effect" error.
+                        $settings = [];
+
+                        foreach ($post->settings as $key => $value) {
+                            // Set the item setting values against the item global setting.
+                            $settings[$key] = ($value == 'global_setting') ? $globalPostSettings[$key] : $post->settings[$key];
+                        }
+
+                        $post->settings = $settings;
+                    }
                 }
             }
             else {

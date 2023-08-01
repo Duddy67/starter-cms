@@ -35,53 +35,6 @@ class Setting extends Model
     public $timestamps = false;
 
 
-    /*public static function getData()
-    {
-        $results = Setting::all()->toArray();
-	$data = [];
-
-	foreach ($results as $param) {
-	    if (!isset($data[$param['group']])) {
-		$data[$param['group']] = [];
-	    }
-
-	    $data[$param['group']][$param['key']] = $param['value'];
-	}
-
-	return $data;
-    }
-
-    public static function getDataByGroup($group)
-    {
-        $results = Setting::where('group', $group)->get();
-	$data = [];
-
-	foreach ($results as $param) {
-	    $data[$param->key] = $param->value;
-	}
-
-	return $data;
-    }
-
-    public static function getItemSettings($item, $group)
-    {
-        // Get the global settings of the item.
-	$globalSettings = Setting::getDataByGroup($group);
-	$settings = [];
-
-	foreach ($item->settings as $key => $value) {
-	    if ($value == 'global_setting') {
-	        // Overwrite with the item global setting value. 
-	        $settings[$key] = $globalSettings[$key];
-	    }
-	    else {
-	        $settings[$key] = $item->settings[$key];
-	    }
-	}
-
-	return $settings;
-    }*/
-
     public static function getPostOrderingOptions(): array
     {
       return [

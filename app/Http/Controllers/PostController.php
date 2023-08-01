@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Post\Comment;
-use App\Models\Post\Setting as PostSetting;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Post\Comment\StoreRequest;
@@ -34,14 +33,12 @@ class PostController extends Controller
             return view('themes.'.$page['theme'].'.index', compact('page'));
 	}
 
-        $post->global_settings = Setting::getDataByGroup('posts');
-	$settings = $post->getSettings();
 	$post->settings = $post->getSettings();
         $metaData = $post->meta_data;
         $segments = Setting::getSegments('Post');
 	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug]);
 
-        return view('themes.'.$page['theme'].'.index', compact('page', 'id', 'slug', 'post', 'segments', 'settings', 'metaData', 'query'));
+        return view('themes.'.$page['theme'].'.index', compact('page', 'id', 'slug', 'post', 'segments', 'metaData', 'query'));
     }
 
     public function saveComment(StoreRequest $request, $id, $slug)
