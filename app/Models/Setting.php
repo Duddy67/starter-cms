@@ -33,9 +33,15 @@ class Setting extends Model
     public $timestamps = false;
 
 
-    public static function getData()
+    /*
+     * Returns all the data global setting for a given model.
+     * If no model is given, returns the CMS data setting.
+     */
+    public static function getData(mixed $model = null): array
     {
-        $results = Setting::all()->toArray();
+        $settingClassModel = ($model) ? get_class($model) : '\\App\\Models\\Setting';
+
+        $results = $settingClassModel::all()->toArray();
         $data = [];
 
         foreach ($results as $param) {
@@ -47,6 +53,75 @@ class Setting extends Model
         }
 
         return $data;
+    }
+
+    /*
+     * Sets the item setting values against the item global setting then returns the result.
+     */
+    public static function getItemSettings(mixed $item, string $group): array
+    {
+        // Get the global settings of the given item.
+	$globalSettings = self::getDataByGroup($group, $item);
+	$settings = [];
+
+        // Parse the item setting values.
+	foreach ($item->settings as $key => $value) {
+	    if ($value == 'global_setting') {
+	        // Overwrite with the item global setting value.
+	        $settings[$key] = $globalSettings[$key];
+	    }
+	    else {
+	        $settings[$key] = $item->settings[$key];
+	    }
+	}
+
+	return $settings;
+    }
+
+    /*
+     * Returns the global data setting by group for a given model.
+     * If no model is given, returns the CMS data setting for the given group.
+     */
+    public static function getDataByGroup(string $group, mixed $model = null): array
+    {
+        $settingClassModel = ($model) ? self::getSettingClassModel($model) : '\\App\\Models\\Setting';
+
+        $results = $settingClassModel::where('group', $group)->get();
+	$data = [];
+
+	foreach ($results as $param) {
+	    $data[$param->key] = $param->value;
+	}
+
+	return $data;
+    }
+
+    /*
+     * Computes and returns the Setting class (with namespace) for a given model.
+     * N.B: As a rule of thumb, the Setting class of a collection must be in the
+     *      fourth position in the namespace (eg: \App\Models\Foo\Setting).
+     */
+    public static function getSettingClassModel(mixed $model): ?string
+    {
+        // Get the class names contained in the namespace.
+        $classes = explode('\\', get_class($model));
+
+        // The namespace must at least contained 3 classes (eg: App\Models\Foo).
+        if (count($classes) < 3) {
+            return false;
+        }
+
+        $settingClassModel = '';
+
+        // Build the namespace up to the third class.
+        for ($i = 0; $i < 3; $i++) {
+            $settingClassModel .= '\\'.$classes[$i];
+        }
+
+        // Add the Setting class to the namespace.
+        $settingClassModel .= '\\Setting';
+
+        return $settingClassModel;
     }
 
     /*

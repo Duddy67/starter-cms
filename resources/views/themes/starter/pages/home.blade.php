@@ -1,11 +1,11 @@
 
 @if (isset($category) && $category)
 
-    @if ($settings['show_name'])
+    @if ($category->settings['show_name'])
         <h3 class="pb-2">{{ $category->name }}</h3>
     @endif
 
-    @if ($settings['show_description'])
+    @if ($category->settings['show_description'])
         <div>{!! $category->description !!}</div>
     @endif
 

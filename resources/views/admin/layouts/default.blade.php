@@ -205,7 +205,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         @allowto('global-settings')
                             @php $active = (request()->is('admin/settings*')) ? true : false @endphp
                             <x-menu-item href="{{ route('admin.settings.index') }}" :sub=true :active="$active">
-                              @lang ('labels.title.global')
+                              @lang ('labels.title.cms')
                             </x-menu-item>
                         @endallowto
                         @allowto('update-emails')

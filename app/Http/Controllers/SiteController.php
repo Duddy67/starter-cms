@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post\Category;
-use App\Models\Post\Setting as PostSetting;
 use App\Models\Setting;
 
 class SiteController extends Controller
@@ -32,25 +31,27 @@ class SiteController extends Controller
                 return view('themes.'.$page['theme'].'.index', compact('locale', 'page'));
             }
 
+            $category->settings = $category->getSettings();
+            $metaData = json_decode($category->meta_data, true);
             $posts = $category->getAllPosts($request);
 
-            $globalSettings = PostSetting::getDataByGroup('categories');
+            if (count($posts)) {
+                // Use the first post as model to get the global post settings.
+                $globalPostSettings = Setting::getDataByGroup('posts', $posts[0]);
 
-            foreach ($category->settings as $key => $value) {
-                if ($value == 'global_setting') {
-                    $settings[$key] = $globalSettings[$key];
+                // Set the setting values manually to improve performance a bit.
+                foreach ($posts as $post) {
+                    // N.B: Don't set the values directly through the object. Use an array to
+                    // prevent the "Indirect modification of overloaded property has no effect" error.
+                    $settings = [];
+
+                    foreach ($post->settings as $key => $value) {
+                        // Set the item setting values against the item global setting.
+                        $settings[$key] = ($value == 'global_setting') ? $globalPostSettings[$key] : $post->settings[$key];
+                    }
+
+                    $post->settings = $settings;
                 }
-                else {
-                    $settings[$key] = $category->settings[$key];
-                }
-            }
-
-            $category->global_settings = $globalSettings;
-            $metaData = json_decode($category->meta_data, true);
-            $globalSettings = PostSetting::getDataByGroup('posts');
-
-            foreach ($posts as $post) {
-                $post->global_settings = $globalSettings;
             }
         }
         // Just display the page. Get the page name from the locale page mapping array.
@@ -65,7 +66,7 @@ class SiteController extends Controller
 
         $segments = Setting::getSegments('Post');
 
-        return view('themes.'.$page['theme'].'.index', compact('locale', 'page', 'category', 'settings', 'posts', 'segments', 'metaData', 'query'));
+        return view('themes.'.$page['theme'].'.index', compact('locale', 'page', 'category', 'posts', 'segments', 'metaData', 'query'));
     }
 
 
@@ -88,7 +89,7 @@ class SiteController extends Controller
             return view('themes.'.$page['theme'].'.index', compact('locale', 'page'));
         }
 
-        $post->global_settings = PostSetting::getDataByGroup('posts');
+        $post->settings = $post->getSettings();
         $page['name'] = $page['name'].'-details';
         $segments = Setting::getSegments('Post');
         $metaData = json_decode($post->meta_data, true);

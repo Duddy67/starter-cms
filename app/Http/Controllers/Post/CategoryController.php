@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Post;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post\Category;
-use App\Models\Post\Setting as PostSetting;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,13 +25,32 @@ class CategoryController extends Controller
             return view('themes.'.$page['theme'].'.index', compact('locale', 'page'));
 	}
 
-        $category->global_settings = PostSetting::getDataByGroup('categories');
-	$settings = $category->getSettings();
+        $category->settings = $category->getSettings();
 	$posts = $category->getPosts($request);
+
+        if (count($posts)) {
+            // Use the first post as model to get the global post settings.
+            $globalPostSettings = Setting::getDataByGroup('posts', $posts[0]);
+
+            // Set the setting values manually to improve performance a bit.
+            foreach ($posts as $post) {
+                // N.B: Don't set the values directly through the object. Use an array to
+                // prevent the "Indirect modification of overloaded property has no effect" error.
+                $settings = [];
+
+                foreach ($post->settings as $key => $value) {
+                    // Set the item setting values against the item global setting.
+                    $settings[$key] = ($value == 'global_setting') ? $globalPostSettings[$key] : $post->settings[$key];
+                }
+
+                $post->settings = $settings;
+            }
+        }
+
         $segments = Setting::getSegments('Post');
         $metaData = json_decode($category->meta_data, true);
 	$query = array_merge($request->query(), ['locale' => $locale, 'id' => $id, 'slug' => $slug]);
 
-        return view('themes.'.$page['theme'].'.index', compact('locale', 'page', 'category', 'segments', 'settings', 'posts', 'metaData', 'query'));
+        return view('themes.'.$page['theme'].'.index', compact('locale', 'page', 'category', 'segments', 'posts', 'metaData', 'query'));
     }
 }

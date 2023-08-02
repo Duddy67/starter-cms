@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Post\Comment;
-use App\Models\Post\Setting as PostSetting;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Post\Comment\StoreRequest;
@@ -30,13 +29,12 @@ class PostController extends Controller
             return view('themes.'.$page['theme'].'.index', compact('locale', 'page'));
 	}
 
-        $post->global_settings = PostSetting::getDataByGroup('posts');
-	$settings = $post->getSettings();
+	$post->settings = $post->getSettings();
         $metaData = json_decode($post->meta_data, true);
         $segments = Setting::getSegments('Post');
 	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug, 'locale' => $locale]);
 
-        return view('themes.'.$page['theme'].'.index', compact('locale', 'page', 'id', 'slug', 'post', 'segments', 'settings', 'metaData', 'query'));
+        return view('themes.'.$page['theme'].'.index', compact('locale', 'page', 'id', 'slug', 'post', 'segments', 'metaData', 'query'));
     }
 
     public function saveComment(StoreRequest $request, string $locale, int $id, string $slug)

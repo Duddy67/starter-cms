@@ -10,6 +10,7 @@ return [
 	'roles' => 'Rôles',
 	'permissions' => 'Permissions',
 	'general' => 'Géneral',
+        'cms' => 'CMS',
 	'settings' => 'Paramètres',
 	'emails' => 'Emails',
 	'blog' => 'Blog',

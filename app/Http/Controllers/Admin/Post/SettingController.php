@@ -45,7 +45,8 @@ class SettingController extends Controller
         $fields = $this->getFields();
         $actions = $this->getActions('form');
         $query = $request->query();
-        $data = Setting::getData();
+        // Use the CMS setting function.
+        $data = \App\Models\Setting::getData($this->model);
 
         return view('admin.post.setting.form', compact('fields', 'actions', 'data', 'query'));
     }

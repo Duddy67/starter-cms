@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Setting;
 use App\Models\Post\Category;
 use App\Models\Post\Ordering;
-use App\Models\Post\Setting as PostSetting;
 use App\Models\User\Group;
 use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
@@ -307,7 +306,7 @@ class Post extends Model
 
     public function getSettings()
     {
-        return PostSetting::getItemSettings($this, 'posts');
+        return Setting::getItemSettings($this, 'posts');
     }
 
     /*
