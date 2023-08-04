@@ -4,7 +4,7 @@ namespace App\Models\Post;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Post;
 use App\Models\Post\Setting as PostSetting;

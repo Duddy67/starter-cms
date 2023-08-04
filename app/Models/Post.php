@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 use App\Models\Post\Category;
 use App\Models\Post\Ordering;
 use App\Models\User\Group;

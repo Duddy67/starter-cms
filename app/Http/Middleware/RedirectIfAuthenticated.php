@@ -6,7 +6,7 @@ use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 
 class RedirectIfAuthenticated
 {

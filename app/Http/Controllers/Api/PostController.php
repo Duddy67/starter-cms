@@ -8,7 +8,7 @@ use App\Models\Post;
 use App\Http\Requests\Post\StoreRequest;
 use App\Http\Requests\Post\UpdateRequest;
 use Illuminate\Support\Str;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 
 
 class PostController extends Controller

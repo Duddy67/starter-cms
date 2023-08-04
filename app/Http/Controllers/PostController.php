@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Post\Comment;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Post\Comment\StoreRequest;
 use App\Http\Requests\Post\Comment\UpdateRequest;

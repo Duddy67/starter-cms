@@ -7,8 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Post\Category;
 use App\Models\User\Group;
 use App\Models\User;
-use App\Models\Setting;
-use App\Models\Post\Setting as PostSetting;
+use App\Models\Cms\Setting;
 use App\Traits\Form;
 use App\Models\Cms\Document;
 use App\Traits\CheckInCheckOut;
@@ -529,7 +528,7 @@ class CategoryController extends Controller
      * @param  \App\Models\Post\Category $category
      * @return void
      */
-    private function setFieldValues(&$fields, Category $category = null)
+    private function setFieldValues(&$fields, Category $category)
     {
         $globalSettings = Setting::getDataByGroup('categories', $category);
 

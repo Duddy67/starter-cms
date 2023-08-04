@@ -6,11 +6,11 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Menu;
 use App\Models\Menu\Item;
-use App\Models\Email;
+use App\Models\Cms\Email;
 use App\Models\User\Role;
 use App\Models\User\Permission;
 use Carbon\Carbon;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 use App\Models\Post\Setting as PostSetting;
 
 

@@ -15,7 +15,7 @@ use App\Http\Controllers\SiteController;
 use App\Http\Controllers\TokenController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ContactController;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 
 /*
 |--------------------------------------------------------------------------

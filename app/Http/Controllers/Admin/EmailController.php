@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use App\Models\Email;
+use App\Models\Cms\Email;
 use App\Models\User;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 use App\Traits\Form;
 use App\Traits\CheckInCheckOut;
 use App\Http\Requests\Email\StoreRequest;
@@ -114,7 +114,7 @@ class EmailController extends Controller
      * Checks the record back in.
      *
      * @param  Request  $request
-     * @param  \App\Models\Settings\Email  $email
+     * @param  \App\Models\Cms\Email  $email
      * @return Response
      */
     public function cancel(Request $request, Email $email = null)
@@ -142,8 +142,8 @@ class EmailController extends Controller
     /**
      * Update the specified email. (AJAX)
      *
-     * @param  \App\Http\Requests\Settings\Email\UpdateRequest  $request
-     * @param  \App\Models\Settings\Email  $email
+     * @param  \App\Http\Requests\Email\UpdateRequest  $request
+     * @param  \App\Models\Cms\Email  $email
      * @return JSON
      */
     public function update(UpdateRequest $request, Email $email)
@@ -175,7 +175,7 @@ class EmailController extends Controller
     /**
      * Store a new email.
      *
-     * @param  \App\Http\Requests\Settings\Email\StoreRequest  $request
+     * @param  \App\Http\Requests\Email\StoreRequest  $request
      * @return JSON
      */
     public function store(StoreRequest $request)
@@ -205,7 +205,7 @@ class EmailController extends Controller
      * Remove the specified email from storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Settings\Email  $email
+     * @param  \App\Models\Cms\Email  $email
      * @return Response
      */
     public function destroy(Request $request, Email $email)
@@ -253,7 +253,7 @@ class EmailController extends Controller
      * Sets field values specific to the Email model.
      *
      * @param  Array of stdClass Objects  $fields
-     * @param  \App\Models\Settings\Email  $email
+     * @param  \App\Models\Cms\Email  $email
      * @return void
      */
     private function setFieldValues(&$fields, $email)

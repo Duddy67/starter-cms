@@ -10,7 +10,7 @@ use App\Traits\CheckInCheckOut;
 use App\Models\User\Role;
 use App\Models\User\Permission;
 use App\Models\User;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 use App\Http\Requests\User\Role\StoreRequest;
 use App\Http\Requests\User\Role\UpdateRequest;
 

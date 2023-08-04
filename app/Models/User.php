@@ -10,7 +10,7 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Models\User\Role;
 use App\Models\User\Group;
 use App\Models\Cms\Document;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 use App\Traits\CheckInCheckOut;
 use Illuminate\Support\Str;
 

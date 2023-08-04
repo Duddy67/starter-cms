@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Cms;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Mail\AppMailer;
 use Illuminate\Support\Facades\Mail;
 use App\Traits\CheckInCheckOut;
+use App\Models\Cms\Setting;
 
 
 class Email extends Model

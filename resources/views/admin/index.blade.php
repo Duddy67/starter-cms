@@ -1,7 +1,7 @@
 @extends ('admin.layouts.default')
 
 @section ('main')
-  @inject ('setting', 'App\Models\Setting')
+  @inject ('setting', 'App\Models\Cms\Setting')
     <div class="row">
     <div class="col-sm-6">
       <div class="card">

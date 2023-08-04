@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Str;

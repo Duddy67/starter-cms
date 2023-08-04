@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Cms;
 use Request;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -40,7 +40,7 @@ class Setting extends Model
      */
     public static function getData(mixed $model = null): array
     {
-        $settingClassModel = ($model) ? get_class($model) : '\\App\\Models\\Setting';
+        $settingClassModel = ($model) ? get_class($model) : '\\App\\Models\\Cms\\Setting';
 
         $results = $settingClassModel::all()->toArray();
         $data = [];
@@ -85,7 +85,7 @@ class Setting extends Model
      */
     public static function getDataByGroup(string $group, mixed $model = null): array
     {
-        $settingClassModel = ($model) ? self::getSettingClassModel($model) : '\\App\\Models\\Setting';
+        $settingClassModel = ($model) ? self::getSettingClassModel($model) : '\\App\\Models\\Cms\\Setting';
 
         $results = $settingClassModel::where('group', $group)->get();
 	$data = [];

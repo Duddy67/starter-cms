@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Menu\Item;
 use App\Models\Menu;
 use App\Models\User\Group;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 use App\Traits\Form;
 use App\Traits\CheckInCheckOut;
 use App\Http\Requests\Menu\Item\StoreRequest;
