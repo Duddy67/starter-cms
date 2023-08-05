@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Setting;
-use App\Models\Email;
+use App\Models\Cms\Setting;
+use App\Models\Cms\Email;
 use App\Http\Requests\Contact\StoreRequest;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;

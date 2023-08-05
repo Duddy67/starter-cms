@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use App\Models\User\Role;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 use Cache;
 
 

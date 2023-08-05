@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Menu;
 use App\Traits\Node;
 use App\Models\User\Group;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 use App\Traits\CheckInCheckOut;
 use App\Traits\Translatable;
 use Request;

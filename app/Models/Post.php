@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 use App\Models\Post\Category;
 use App\Models\Post\Ordering;
 use App\Models\User\Group;
@@ -54,7 +54,9 @@ class Post extends Model
      * @var array
      */
     protected $casts = [
-        'settings' => 'array'
+        'settings' => 'array',
+        'meta_data' => 'array',
+        'extra_fields' => 'array'
     ];
 
     /**

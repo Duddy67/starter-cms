@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Post\Category;
 use App\Models\User\Group;
 use App\Models\User;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 use App\Models\Post\Setting as PostSetting;
 use App\Traits\Form;
 use App\Models\Cms\Document;

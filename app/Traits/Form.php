@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -197,8 +197,14 @@ trait Form
     public function getFields(array $except = []): array
     {
         $fields = $this->getData('fields');
-        // Checks for field groups (set in different json files).
-        $fields = $this->getFieldGroups($fields, ['meta_data', 'extra_fields']);
+
+        // Checks for field groups such as meta_data, extra_fields... (generally set in different json files).
+        if (isset($this->model->fieldGroups)) {
+            $fields = $this->getFieldGroups($fields, $this->model->fieldGroups);
+        }
+
+        // Check the item exists.
+        $item = (isset($this->item) && $this->item) ? $this->item : null;
 
         foreach ($fields as $key => $field) {
             // Remove unwanted fields if any.
@@ -206,8 +212,6 @@ trait Form
                 unset($fields[$key]);
                 continue;
             }
-
-            $item = (isset($this->item) && $this->item) ? $this->item : null;
 
             // Set the select field types.
             if ($field->type == 'select') {
@@ -302,9 +306,12 @@ trait Form
      */  
     public function getFieldGroups(array $fields, array $groups): array
     {
+        // Check if the model is translatable (ie: if it uses the Translatable trait).
+        $isTranslatable = (in_array('App\Traits\Translatable', class_uses('\\'.get_class($this->model)))) ? true : false;
+
         foreach ($groups as $group) {
-            // Check first that group name exists as attribute in the model.
-            if (\Schema::hasColumn($this->model->getTable(), $group)) {
+            // Check first that group name exists as attribute in the model or in the translation table.
+            if (\Schema::hasColumn($this->model->getTable(), $group) || ($isTranslatable && \Schema::hasColumn('translations', $group))) {
                 $data = $this->getData($group);
 
                 foreach ($data as $field) {

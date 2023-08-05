@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\Post;
 use App\Models\Post\Category;
 use App\Models\Menu;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
 

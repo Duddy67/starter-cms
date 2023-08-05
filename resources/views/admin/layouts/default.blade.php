@@ -5,7 +5,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 -->
 <html lang="en">
 <head>
-  @inject('setting', 'App\Models\Setting')
+  @inject('setting', 'App\Models\Cms\Setting')
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -199,13 +199,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   @php $active = (request()->is('admin/settings*') || request()->is('admin/emails*')) ? 'active' : '' @endphp
                   <a href="#" class="nav-link {{ $active }}">
                     <i class="nav-icon fas fa-cogs"></i>
-                    <p>@lang ('labels.title.settings')<i class="right fas fa-angle-left"></i></p>
+                    <p>@lang ('labels.title.cms')<i class="right fas fa-angle-left"></i></p>
                   </a>
                   <ul class="nav nav-treeview">
                         @allowto('global-settings')
                             @php $active = (request()->is('admin/settings*')) ? true : false @endphp
                             <x-menu-item href="{{ route('admin.settings.index') }}" :sub=true :active="$active">
-                              @lang ('labels.title.cms')
+                              @lang ('labels.title.settings')
                             </x-menu-item>
                         @endallowto
                         @allowto('update-emails')

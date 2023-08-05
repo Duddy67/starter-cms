@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Menu;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 
 class SearchController extends Controller
 {

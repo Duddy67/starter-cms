@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 use App\Traits\Form;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -46,7 +46,7 @@ class SettingController extends Controller
         $fields = $this->getFields();
         $actions = $this->getActions('form');
         $query = $request->query();
-        $data = $this->model->getData();
+        $data = Setting::getData();
 
         return view('admin.setting.form', compact('fields', 'actions', 'data', 'query'));
     }

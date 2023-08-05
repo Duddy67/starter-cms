@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User\Group;
 use App\Models\Menu\Item;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
 

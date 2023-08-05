@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 
 
 class BladeServiceProvider extends ServiceProvider

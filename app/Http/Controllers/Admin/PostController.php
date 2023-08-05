@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 use App\Models\Post;
 use App\Models\Post\Setting as PostSetting; 
 use App\Models\User;
-use App\Models\Setting;
+use App\Models\Cms\Setting;
 use App\Models\User\Group;
 use App\Traits\Form;
 use App\Traits\CheckInCheckOut;
