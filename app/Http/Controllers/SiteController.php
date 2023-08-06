@@ -32,7 +32,7 @@ class SiteController extends Controller
             }
 
             $category->settings = $category->getSettings();
-            $metaData = json_decode($category->meta_data, true);
+            $metaData = $category->meta_data;
             $posts = $category->getAllPosts($request);
 
             if (count($posts)) {
@@ -92,7 +92,7 @@ class SiteController extends Controller
         $post->settings = $post->getSettings();
         $page['name'] = $page['name'].'-details';
         $segments = Setting::getSegments('Post');
-        $metaData = json_decode($post->meta_data, true);
+        $metaData = $post->meta_data;
 	$query = $request->query();
 
         return view('themes.'.$page['theme'].'.index', compact('locale', 'page', 'category', 'post', 'segments', 'metaData', 'query'));

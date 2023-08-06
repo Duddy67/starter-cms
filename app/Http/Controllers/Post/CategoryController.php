@@ -48,7 +48,7 @@ class CategoryController extends Controller
         }
 
         $segments = Setting::getSegments('Post');
-        $metaData = json_decode($category->meta_data, true);
+        $metaData = $category->meta_data;
 	$query = array_merge($request->query(), ['locale' => $locale, 'id' => $id, 'slug' => $slug]);
 
         return view('themes.'.$page['theme'].'.index', compact('locale', 'page', 'category', 'segments', 'posts', 'metaData', 'query'));

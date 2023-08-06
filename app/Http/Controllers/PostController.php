@@ -30,7 +30,7 @@ class PostController extends Controller
 	}
 
 	$post->settings = $post->getSettings();
-        $metaData = json_decode($post->meta_data, true);
+        $metaData = $post->meta_data;
         $segments = Setting::getSegments('Post');
 	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug, 'locale' => $locale]);
 
