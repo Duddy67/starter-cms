@@ -70,6 +70,16 @@ class Category extends Model
     ];
 
     /**
+     * The extra group fields.
+     *
+     * @var array
+     */
+    public $fieldGroups = [
+        'meta_data',
+        'extra_fields'
+    ];
+
+    /**
      * The posts that belong to the category.
      */
     public function posts()

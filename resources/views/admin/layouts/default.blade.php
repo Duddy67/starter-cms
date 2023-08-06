@@ -194,23 +194,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
           @endallowto
 
           @allowtoany(['global-settings', 'post-settings', 'update-emails'])
-              @php $open = (request()->is('admin/settings*') || request()->is('admin/emails*')) ? 'menu-open' : '' @endphp
+              @php $open = (request()->is('admin/cms/settings*') || request()->is('admin/cms/emails*')) ? 'menu-open' : '' @endphp
               <li class="nav-item {{ $open }}">
-                  @php $active = (request()->is('admin/settings*') || request()->is('admin/emails*')) ? 'active' : '' @endphp
+                  @php $active = (request()->is('admin/cms/settings*') || request()->is('admin/cms/emails*')) ? 'active' : '' @endphp
                   <a href="#" class="nav-link {{ $active }}">
                     <i class="nav-icon fas fa-cogs"></i>
                     <p>@lang ('labels.title.cms')<i class="right fas fa-angle-left"></i></p>
                   </a>
                   <ul class="nav nav-treeview">
                         @allowto('global-settings')
-                            @php $active = (request()->is('admin/settings*')) ? true : false @endphp
-                            <x-menu-item href="{{ route('admin.settings.index') }}" :sub=true :active="$active">
+                            @php $active = (request()->is('admin/cms/settings*')) ? true : false @endphp
+                            <x-menu-item href="{{ route('admin.cms.settings.index') }}" :sub=true :active="$active">
                               @lang ('labels.title.settings')
                             </x-menu-item>
                         @endallowto
                         @allowto('update-emails')
-                            @php $active = (request()->is('admin/emails*')) ? true : false @endphp
-                            <x-menu-item href="{{ route('admin.emails.index') }}" :sub=true :active="$active">
+                            @php $active = (request()->is('admin/cms/emails*')) ? true : false @endphp
+                            <x-menu-item href="{{ route('admin.cms.emails.index') }}" :sub=true :active="$active">
                               @lang ('labels.title.emails')
                             </x-menu-item>
                         @endallowto

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\Cms;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -31,7 +31,7 @@ class SettingController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin.settings');
+        $this->middleware('admin.cms.settings');
         $this->model = new Setting;
     }
 

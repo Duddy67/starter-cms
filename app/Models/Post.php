@@ -65,6 +65,15 @@ class Post extends Model
         'settings' => 'array'
     ];
 
+    /**
+     * The extra group fields.
+     *
+     * @var array
+     */
+    public $fieldGroups = [
+        'meta_data',
+        'extra_fields'
+    ];
 
     /**
      * The categories that belong to the post.

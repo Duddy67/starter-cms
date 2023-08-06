@@ -3,7 +3,7 @@
 @section ('main')
     <h3>@php echo (isset($email)) ? __('labels.email.edit_email') : __('labels.email.create_email'); @endphp</h3>
 
-    @php $action = (isset($email)) ? route('admin.emails.update', $query) : route('admin.emails.store', $query) @endphp
+    @php $action = (isset($email)) ? route('admin.cms.emails.update', $query) : route('admin.cms.emails.store', $query) @endphp
     <form method="post" action="{{ $action }}" id="itemForm">
         @csrf
 
@@ -58,13 +58,13 @@
 	    @endif
         @endforeach
 
-	<input type="hidden" id="cancelEdit" value="{{ route('admin.emails.cancel', $query) }}">
+	<input type="hidden" id="cancelEdit" value="{{ route('admin.cms.emails.cancel', $query) }}">
 	<input type="hidden" id="close" name="_close" value="0">
     </form>
     <x-toolbar :items=$actions />
 
     @if (isset($email))
-	<form id="deleteItem" action="{{ route('admin.emails.destroy', $query) }}" method="post">
+	<form id="deleteItem" action="{{ route('admin.cms.emails.destroy', $query) }}" method="post">
 	    @method('delete')
 	    @csrf
 	</form>

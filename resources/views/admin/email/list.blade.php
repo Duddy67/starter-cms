@@ -29,17 +29,17 @@
 
     <x-pagination :items=$items />
 
-    <input type="hidden" id="createItem" value="{{ route('admin.emails.create', $query) }}">
-    <input type="hidden" id="destroyItems" value="{{ route('admin.emails.index', $query) }}">
-    <input type="hidden" id="checkinItems" value="{{ route('admin.emails.massCheckIn', $query) }}">
+    <input type="hidden" id="createItem" value="{{ route('admin.cms.emails.create', $query) }}">
+    <input type="hidden" id="destroyItems" value="{{ route('admin.cms.emails.index', $query) }}">
+    <input type="hidden" id="checkinItems" value="{{ route('admin.cms.emails.massCheckIn', $query) }}">
     <input type="hidden" id="testEmailMessage" value="{{ $message }}">
 
-    <form id="selectedItems" action="{{ route('admin.emails.index', $query) }}" method="post">
+    <form id="selectedItems" action="{{ route('admin.cms.emails.index', $query) }}" method="post">
         @method('delete')
         @csrf
     </form>
 
-    <form id="sendTestEmail" action="{{ route('admin.emails.test') }}" method="post">
+    <form id="sendTestEmail" action="{{ route('admin.cms.emails.test') }}" method="post">
         @method('get')
         @csrf
     </form>
