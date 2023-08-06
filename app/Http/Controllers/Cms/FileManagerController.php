@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Cms\Document;
 use App\Traits\Form;
-use App\Http\Requests\Document\StoreRequest;
+use App\Http\Requests\Cms\Document\StoreRequest;
 
 class FileManagerController extends Controller
 {

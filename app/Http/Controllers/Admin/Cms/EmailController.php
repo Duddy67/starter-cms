@@ -10,8 +10,8 @@ use App\Models\User;
 use App\Models\Cms\Setting;
 use App\Traits\Form;
 use App\Traits\CheckInCheckOut;
-use App\Http\Requests\Email\StoreRequest;
-use App\Http\Requests\Email\UpdateRequest;
+use App\Http\Requests\Cms\Email\StoreRequest;
+use App\Http\Requests\Cms\Email\UpdateRequest;
 
 
 class EmailController extends Controller
@@ -60,7 +60,7 @@ class EmailController extends Controller
 	$url = ['route' => 'admin.cms.emails', 'item_name' => 'email', 'query' => $query];
         $message = __('messages.email.test_email_sending', ['email' => auth()->user()->email]);
 
-        return view('admin.email.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'message', 'query'));
+        return view('admin.cms.email.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'message', 'query'));
     }
 
     /**
@@ -77,7 +77,7 @@ class EmailController extends Controller
 	$query = $request->query();
         $locale = config('app.locale');
 
-        return view('admin.email.form', compact('fields', 'actions', 'locale', 'query'));
+        return view('admin.cms.email.form', compact('fields', 'actions', 'locale', 'query'));
     }
 
     /**
@@ -107,7 +107,7 @@ class EmailController extends Controller
 	// Add the id parameter to the query.
 	$query = array_merge($request->query(), ['email' => $id]);
 
-        return view('admin.email.form', compact('email', 'fields', 'actions', 'locale', 'query'));
+        return view('admin.cms.email.form', compact('email', 'fields', 'actions', 'locale', 'query'));
     }
 
     /**
@@ -142,7 +142,7 @@ class EmailController extends Controller
     /**
      * Update the specified email. (AJAX)
      *
-     * @param  \App\Http\Requests\Email\UpdateRequest  $request
+     * @param  \App\Http\Requests\Cms\Email\UpdateRequest  $request
      * @param  \App\Models\Cms\Email  $email
      * @return JSON
      */
@@ -180,7 +180,7 @@ class EmailController extends Controller
     /**
      * Store a new email.
      *
-     * @param  \App\Http\Requests\Email\StoreRequest  $request
+     * @param  \App\Http\Requests\Cms\Email\StoreRequest  $request
      * @return JSON
      */
     public function store(StoreRequest $request)

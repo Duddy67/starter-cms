@@ -48,7 +48,7 @@ class SettingController extends Controller
         $query = $request->query();
         $data = Setting::getData();
 
-        return view('admin.setting.form', compact('fields', 'actions', 'data', 'query'));
+        return view('admin.cms.setting.form', compact('fields', 'actions', 'data', 'query'));
     }
 
     /**
