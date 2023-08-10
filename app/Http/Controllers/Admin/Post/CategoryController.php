@@ -21,12 +21,7 @@ class CategoryController extends Controller
     use Form;
 
     /*
-     * Instance of the model.
-     */
-    protected $model;
-
-    /*
-     * The item to edit in the form.
+     * Instance of the Category model, (used in the Form trait).
      */
     protected $item = null;
 
@@ -40,7 +35,7 @@ class CategoryController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('admin.posts.categories');
-        $this->model = new Category;
+        $this->item = new Category;
     }
 
     /**
@@ -55,7 +50,7 @@ class CategoryController extends Controller
         $columns = $this->getColumns();
         $actions = $this->getActions('list');
         $filters = $this->getFilters($request);
-        $items = $this->model->getItems($request);
+        $items = Category::getCategories($request);
         $rows = $this->getRowTree($columns, $items);
         $query = $request->query();
         $url = ['route' => 'admin.posts.categories', 'item_name' => 'category', 'query' => $query];
@@ -74,7 +69,7 @@ class CategoryController extends Controller
         // Gather the needed data to build the form.
 
         $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
-        $this->setFieldValues($fields, $this->model);
+        $this->setFieldValues($fields, $this->item);
         $actions = $this->getActions('form', ['destroy']);
         $query = $request->query();
 

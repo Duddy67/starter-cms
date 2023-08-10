@@ -165,7 +165,7 @@ class Post extends Model
     /*
      * Gets the post items according to the filter, sort and pagination settings.
      */
-    public function getItems(Request $request)
+    public static function getPosts(Request $request)
     {
         $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);
