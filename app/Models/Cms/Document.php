@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Cms\Setting;
 use App\Models\User;
 use App\Models\Post;
+use Illuminate\Http\Request;
 
 
 class Document extends Model
@@ -67,7 +68,7 @@ class Document extends Model
     /*
      * Gets the current user's document items according to the filter, sort and pagination settings.
      */
-    public function getFileManagerItems($request)
+    public function getFileManagerItems(Request $request)
     {
         $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);
@@ -110,7 +111,7 @@ class Document extends Model
     /*
      * Gets the document items uploaded by the all the users from the file manager.
      */
-    public function getAllFileManagerItems($request)
+    public function getAllFileManagerItems(Request $request)
     {
         $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);
