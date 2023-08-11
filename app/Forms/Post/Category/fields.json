@@ -113,7 +113,7 @@
     "type": "select",
     "name": "show_name",
     "id": "show_name",
-    "extra": ["yes_no","global_setting"],
+    "extra": ["yes_no", "global_setting"],
     "tab": "settings",
     "group": "settings",
     "options": [] 
