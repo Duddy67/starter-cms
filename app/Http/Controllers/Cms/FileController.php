@@ -40,7 +40,7 @@ class FileController extends Controller
         $columns = $this->getColumns();
         $actions = $this->getActions('list');
         $filters = $this->getFilters($request);
-	$items = $this->item->getAllFileManagerItems($request);
+	$items = Document::getAllFileManagerItems($request);
 	$rows = $this->getRows($columns, $items, ['preview']);
 	$this->setRowValues($rows, $columns, $items);
 	$query = $request->query();

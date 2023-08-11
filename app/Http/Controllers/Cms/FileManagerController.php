@@ -38,7 +38,7 @@ class FileManagerController extends Controller
     {
         $columns = $this->getColumns(['owned_by']);
         $filters = $this->getFilters($request, ['owned_by']);
-	$items = $this->item->getFileManagerItems($request);
+	$items = Document::getFileManagerItems($request);
 	$rows = $this->getRows($columns, $items);
 	$this->setRowValues($rows, $columns, $items);
 	$query = $request->query();

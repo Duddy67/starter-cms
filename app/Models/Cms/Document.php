@@ -68,7 +68,7 @@ class Document extends Model
     /*
      * Gets the current user's document items according to the filter, sort and pagination settings.
      */
-    public function getFileManagerItems(Request $request)
+    public static function getFileManagerItems(Request $request)
     {
         $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);
@@ -102,7 +102,7 @@ class Document extends Model
 		$items[$key]->thumbnail = url('/').'/storage/thumbnails/'.$item->disk_name;
 	    }
 
-	    $items[$key]->file_size = $this->formatSizeUnits($items[$key]->file_size);
+	    $items[$key]->file_size = self::formatSizeUnits($items[$key]->file_size);
 	}
 
 	return $items;
@@ -111,7 +111,7 @@ class Document extends Model
     /*
      * Gets the document items uploaded by the all the users from the file manager.
      */
-    public function getAllFileManagerItems(Request $request)
+    public static function getAllFileManagerItems(Request $request)
     {
         $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);
@@ -161,7 +161,7 @@ class Document extends Model
 		$items[$key]->thumbnail = url('/').'/storage/thumbnails/'.$item->disk_name;
 	    }
 
-	    $items[$key]->file_size = $this->formatSizeUnits($items[$key]->file_size);
+	    $items[$key]->file_size = self::formatSizeUnits($items[$key]->file_size);
 	}
 
 	return $items;
@@ -253,7 +253,7 @@ class Document extends Model
      * Returns the given bytes in the proper size format according to the byte units.
      * @return string
      */
-    public function formatSizeUnits($bytes)
+    public static function formatSizeUnits($bytes)
     {
         if ($bytes >= 1073741824) {
             $bytes = number_format($bytes / 1073741824, 2) . ' GB';
