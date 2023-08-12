@@ -19,12 +19,7 @@ class EmailController extends Controller
     use Form;
 
     /*
-     * Instance of the model.
-     */
-    protected $model;
-
-    /*
-     * The item to edit in the form.
+     * Instance of the Email model, (used in the Form trait).
      */
     protected $item = null;
 
@@ -38,7 +33,7 @@ class EmailController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('admin.cms.emails');
-	$this->model = new Email;
+	$this->item = new Email;
     }
 
     /**
@@ -53,7 +48,7 @@ class EmailController extends Controller
         $columns = $this->getColumns();
         $actions = $this->getActions('list');
         $filters = $this->getFilters($request);
-	$items = $this->model->getItems($request);
+	$items = Email::getEmails($request);
 	$rows = $this->getRows($columns, $items);
         $this->setRowValues($rows, $columns, $items);
 	$query = $request->query();
@@ -90,7 +85,7 @@ class EmailController extends Controller
     public function edit(Request $request, $id)
     {
         $locale = ($request->query('locale', null)) ? $request->query('locale') : config('app.locale');
-        $email = $this->item = Email::getItem($id, $locale);
+        $email = $this->item = Email::getEmail($id, $locale);
 
 	if ($email->checked_out && $email->checked_out != auth()->user()->id && !$email->isUserSessionTimedOut()) {
 	    return redirect()->route('admin.cms.emails.index')->with('error',  __('messages.generic.checked_out'));

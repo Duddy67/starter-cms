@@ -183,7 +183,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                           </x-menu-item>
 
                           @inject ('menu', 'App\Models\Menu')
-                          @foreach ($menu::getMenus() as $menu)
+                          @foreach ($menu::getCurrentUserMenus() as $menu)
                               @php $active = ($routeName == 'admin.menus.items.index' || $routeName == 'admin.menus.items.create' || $routeName == 'admin.menus.items.edit') ? true : false @endphp
                               <x-menu-item href="{{ route('admin.menus.items.index', $menu->code) }}" :sub=true :active="$active">
                                  {{ $menu->title }}

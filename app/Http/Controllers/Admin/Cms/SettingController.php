@@ -16,9 +16,9 @@ class SettingController extends Controller
     use Form;
 
     /*
-     * Instance of the model.
+     * Instance of the Setting model, (used in the Form trait).
      */
-    protected $model;
+    protected $item;
 
     protected $app = ['name', 'timezone', 'env', 'debug', 'local', 'fallback_locale'];
 
@@ -32,7 +32,7 @@ class SettingController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('admin.cms.settings');
-        $this->model = new Setting;
+        $this->item = new Setting;
     }
 
     /**

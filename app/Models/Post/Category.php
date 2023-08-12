@@ -129,7 +129,7 @@ class Category extends Model
     /*
      * Gets the category items as a tree.
      */
-    public function getItems(Request $request)
+    public static function getCategories(Request $request)
     {
         $search = $request->input('search', null);
 
@@ -148,7 +148,7 @@ class Category extends Model
         return $query->defaultOrder()->get()->toTree();
     }
 
-    public static function getItem(int|string $id, string $locale)
+    public static function getCategory(int|string $id, string $locale)
     {
         // Check if the $id variable is passed as a slug value (used on front-end).
         $slug = (is_string($id)) ? true : false;

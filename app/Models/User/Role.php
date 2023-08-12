@@ -9,6 +9,7 @@ use App\Models\Cms\Setting;
 use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 
 class Role extends SpatieRole 
@@ -96,7 +97,7 @@ class Role extends SpatieRole
      * @param  Request  $request
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getItems($request)
+    public static function getRoles(Request $request)
     {
         $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);

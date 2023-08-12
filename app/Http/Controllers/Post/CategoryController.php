@@ -15,7 +15,7 @@ class CategoryController extends Controller
     {
         $page = Setting::getPage('post.category');
 
-	if (!$category = Category::getItem($id, $locale)) {
+	if (!$category = Category::getCategory($id, $locale)) {
             $page['name'] = '404';
             return view('themes.'.$page['theme'].'.index', compact('locale', 'page'));
 	}

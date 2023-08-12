@@ -10,7 +10,7 @@ use App\Models\User\Group;
 use App\Models\Cms\Setting;
 use App\Traits\CheckInCheckOut;
 use App\Traits\Translatable;
-use Request;
+use Illuminate\Http\Request;
 
 
 class Item extends Model
@@ -66,7 +66,7 @@ class Item extends Model
     /*
      * Gets the menu items as a tree.
      */
-    public function getItems($request, $code)
+    public static function getItems(Request $request, string $code)
     {
         $search = $request->input('search', null);
 
@@ -138,7 +138,7 @@ class Item extends Model
     public function getParentItemOptions()
     {
         // Get the parent menu code.
-        $code = Request::route()->parameter('code');
+        $code = \Request::route()->parameter('code');
 
         $nodes = Item::select('menu_items.*', 'translations.title as title')
             ->whereIn('menu_code', ['root', $code])

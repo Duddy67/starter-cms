@@ -16,7 +16,7 @@ class PostController extends Controller
 {
     public function show(Request $request, string $locale, int $id, string $slug)
     {
-        $post = Post::getItem($id, $locale);
+        $post = Post::getPost($id, $locale);
         $page = Setting::getPage('post');
 
 	if (!$post || ($post->layoutItems()->exists() && !view()->exists('themes.'.$page['theme'].'.pages.'.$post->page))) {

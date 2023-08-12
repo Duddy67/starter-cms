@@ -8,6 +8,7 @@ use App\Mail\AppMailer;
 use Illuminate\Support\Facades\Mail;
 use App\Traits\CheckInCheckOut;
 use App\Traits\Translatable;
+use Illuminate\Http\Request;
 
 
 class Email extends Model
@@ -76,7 +77,7 @@ class Email extends Model
     /*
      * Gets the email items according to the filter, sort and pagination settings.
      */
-    public function getItems($request)
+    public static function getEmails(Request $request)
     {
         $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);
@@ -103,7 +104,7 @@ class Email extends Model
         return $query->paginate($perPage);
     }
 
-    public static function getItem($id, $locale)
+    public static function getEmail($id, $locale)
     {
         return Email::select('emails.*','users.name as modifier_name',
                              'translations.subject as subject',

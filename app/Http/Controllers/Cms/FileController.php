@@ -14,9 +14,9 @@ class FileController extends Controller
     use Form;
 
     /*
-     * Instance of the model.
+     * Instance of the Document model, (used in the Form trait).
      */
-    protected $model;
+    protected $item;
 
 
     /**
@@ -27,7 +27,7 @@ class FileController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-	$this->model = new Document;
+	$this->item = new Document;
     }
 
     /**
@@ -40,7 +40,7 @@ class FileController extends Controller
         $columns = $this->getColumns();
         $actions = $this->getActions('list');
         $filters = $this->getFilters($request);
-	$items = $this->model->getAllFileManagerItems($request);
+	$items = Document::getAllFileManagerItems($request);
 	$rows = $this->getRows($columns, $items, ['preview']);
 	$this->setRowValues($rows, $columns, $items);
 	$query = $request->query();

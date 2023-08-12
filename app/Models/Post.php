@@ -162,7 +162,7 @@ class Post extends Model
     /*
      * Gets the post items according to the filter, sort and pagination settings.
      */
-    public function getItems(Request $request)
+    public static function getPosts(Request $request)
     {
         $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);
@@ -249,7 +249,7 @@ class Post extends Model
         return $query->paginate($perPage);
     }
 
-    public static function getItem(int $id, string $locale)
+    public static function getPost(int $id, string $locale)
     {
         return Post::selectRaw('posts.*, users.name as owner_name, users2.name as modifier_name,'.
                                 Post::getFallbackCoalesce(['title', 'slug', 'content', 'excerpt',

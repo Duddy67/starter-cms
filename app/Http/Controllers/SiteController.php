@@ -19,7 +19,7 @@ class SiteController extends Controller
         $name = ($request->segment(2)) ? $request->segment(2) : __('locales.homepage.'.$locale, [], 'en');
         $page = Setting::getPage($name);
 
-        $category = Category::getItem($page['name'], $locale);
+        $category = Category::getCategory($page['name'], $locale);
 
         if ($category) {
             // Prioritize the category page over the page from the url.
@@ -75,7 +75,7 @@ class SiteController extends Controller
         $locale = $request->segment(1);
         $page = Setting::getPage($request->segment(2));
 
-        $category = Category::getItem($page['name'], $locale);
+        $category = Category::getCategory($page['name'], $locale);
 
         // First make sure the category exists.
 	if (!$category) {

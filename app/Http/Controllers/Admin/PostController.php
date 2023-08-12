@@ -26,12 +26,7 @@ class PostController extends Controller
     use Form;
 
     /*
-     * Instance of the model.
-     */
-    protected $model;
-
-    /*
-     * The item to edit in the form.
+     * Instance of the Post model, (used in the Form trait).
      */
     protected $item = null;
 
@@ -45,7 +40,7 @@ class PostController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('admin.posts');
-        $this->model = new Post;
+        $this->item = new Post;
     }
 
     /**
@@ -65,7 +60,7 @@ class PostController extends Controller
         $columns = $this->getColumns($except);
         $actions = $this->getActions('list');
         $filters = $this->getFilters($request);
-        $items = $this->model->getItems($request);
+        $items = Post::getPosts($request);
         $rows = $this->getRows($columns, $items);
         $this->setRowValues($rows, $columns, $items);
         $query = $request->query();
@@ -84,10 +79,11 @@ class PostController extends Controller
     {
         // Gather the needed data to build the form.
 
-        $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
-        $this->setFieldValues($fields, $this->model);
-        $actions = $this->getActions('form', ['destroy']);
         $locale = config('app.locale');
+        $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
+        $this->item->current_locale = $locale; 
+        $this->setFieldValues($fields, $this->item);
+        $actions = $this->getActions('form', ['destroy']);
         $query = $request->query();
 
         return view('admin.post.form', compact('fields', 'actions', 'locale', 'query'));
@@ -103,7 +99,7 @@ class PostController extends Controller
     public function edit(Request $request, int $id)
     {
         $locale = ($request->query('locale', null)) ? $request->query('locale') : config('app.locale');
-        $post = $this->item = Post::getItem($id, $locale);
+        $post = $this->item = Post::getPost($id, $locale);
                         
         if (!$post->canAccess()) {
             return redirect()->route('admin.posts.index')->with('error',  __('messages.generic.access_not_auth'));

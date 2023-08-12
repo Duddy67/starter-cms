@@ -17,9 +17,9 @@ class SettingController extends Controller
     use Form;
 
     /*
-     * Instance of the model.
+     * Instance of the Setting model, (used in the Form trait).
      */
-    protected $model;
+    protected $item;
 
     /**
      * Create a new controller instance.
@@ -30,7 +30,7 @@ class SettingController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('admin.posts.settings');
-        $this->model = new Setting;
+        $this->item = new Setting;
     }
 
 
@@ -46,7 +46,7 @@ class SettingController extends Controller
         $actions = $this->getActions('form');
         $query = $request->query();
         // Use the CMS setting function.
-        $data = \App\Models\Cms\Setting::getData($this->model);
+        $data = \App\Models\Cms\Setting::getData($this->item);
 
         return view('admin.post.setting.form', compact('fields', 'actions', 'data', 'query'));
     }

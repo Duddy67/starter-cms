@@ -14,9 +14,9 @@ class PermissionController extends Controller
     use Form;
 
     /*
-     * Instance of the model.
+     * Instance of the Permission model, (used in the Form trait).
      */
-    protected $model;
+    protected $item;
 
 
     /**
@@ -28,7 +28,7 @@ class PermissionController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('admin.users.permissions');
-        $this->model = new Permission;
+        $this->item = new Permission;
     }
 
     /**

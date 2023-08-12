@@ -22,12 +22,7 @@ class CategoryController extends Controller
     use Form;
 
     /*
-     * Instance of the model.
-     */
-    protected $model;
-
-    /*
-     * The item to edit in the form.
+     * Instance of the Category model, (used in the Form trait).
      */
     protected $item = null;
 
@@ -41,7 +36,7 @@ class CategoryController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('admin.posts.categories');
-        $this->model = new Category;
+        $this->item = new Category;
     }
 
     /**
@@ -63,7 +58,7 @@ class CategoryController extends Controller
         $columns = $this->getColumns($except);
         $actions = $this->getActions('list');
         $filters = $this->getFilters($request);
-        $items = $this->model->getItems($request);
+        $items = Category::getCategories($request);
         $rows = $this->getRowTree($columns, $items);
         $this->setRowValues($rows, $columns, $items);
         $query = $request->query();
@@ -82,10 +77,11 @@ class CategoryController extends Controller
     {
         // Gather the needed data to build the form.
 
-        $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
-        $this->setFieldValues($fields, $this->model);
-        $actions = $this->getActions('form', ['destroy']);
         $locale = config('app.locale');
+        $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
+        $this->item->current_locale = $locale; 
+        $this->setFieldValues($fields, $this->item);
+        $actions = $this->getActions('form', ['destroy']);
         $query = $request->query();
 
         return view('admin.post.category.form', compact('fields', 'actions', 'locale', 'query'));
@@ -101,7 +97,7 @@ class CategoryController extends Controller
     public function edit(Request $request, int $id)
     {
         $locale = ($request->query('locale', null)) ? $request->query('locale') : config('app.locale');
-        $category = $this->item = Category::getItem($id, $locale);
+        $category = $this->item = Category::getCategory($id, $locale);
 
         if (!$category->canAccess()) {
             return redirect()->route('admin.posts.categories.index')->with('error',  __('messages.generic.access_not_auth'));

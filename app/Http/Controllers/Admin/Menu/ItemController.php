@@ -19,12 +19,7 @@ class ItemController extends Controller
     use Form;
 
     /*
-     * Instance of the model.
-     */
-    protected $model;
-
-    /*
-     * The item to edit in the form.
+     * Instance of the Item model, (used in the Form trait).
      */
     protected $item = null;
 
@@ -43,7 +38,7 @@ class ItemController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('admin.menus.items');
-        $this->model = new Item;
+        $this->item = new Item;
         // Rely on the parent menu for authorisations (NB: A valid menu code is checked in advance in the middleware).
         $this->menu = ($request->route()) ? Menu::where('code', $request->route()->parameter('code'))->first() : null; 
     }
@@ -75,7 +70,7 @@ class ItemController extends Controller
 
         $actions = $this->getActions('list', $except);
         $filters = $this->getFilters($request);
-        $items = $this->model->getItems($request, $code);
+        $items = Item::getItems($request, $code);
         $rows = $this->getRowTree($columns, $items);
         $this->setRowValues($rows, $columns, $items);
         $query = $request->query();

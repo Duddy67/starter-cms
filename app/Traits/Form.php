@@ -199,12 +199,9 @@ trait Form
         $fields = $this->getData('fields');
 
         // Checks for field groups such as meta_data, extra_fields... (generally set in different json files).
-        if (isset($this->model->fieldGroups)) {
-            $fields = $this->getFieldGroups($fields, $this->model->fieldGroups);
+        if (isset($this->item->fieldGroups)) {
+            $fields = $this->getFieldGroups($fields, $this->item->fieldGroups);
         }
-
-        // Check the item exists.
-        $item = (isset($this->item) && $this->item) ? $this->item : null;
 
         foreach ($fields as $key => $field) {
             // Remove unwanted fields if any.
@@ -215,10 +212,12 @@ trait Form
 
             // Set the select field types.
             if ($field->type == 'select') {
-                $fields[$key]->options = $this->getSelectOptions($field, $item);
+                $fields[$key]->options = $this->getSelectOptions($field);
             }
 
-            if ($item) {
+            // Check if the object exists in database.
+            if ($this->item->exists) {
+                $item = $this->item;
 
                 if ($field->type == 'select') {
                     $fields[$key]->value = $item->getSelectedValue($field);
@@ -306,12 +305,12 @@ trait Form
      */  
     public function getFieldGroups(array $fields, array $groups): array
     {
-        // Check if the model is translatable (ie: if it uses the Translatable trait).
-        $isTranslatable = (in_array('App\Traits\Translatable', class_uses('\\'.get_class($this->model)))) ? true : false;
+        // Check if the item model is translatable (ie: if it uses the Translatable trait).
+        $isTranslatable = (in_array('App\Traits\Translatable', class_uses('\\'.get_class($this->item)))) ? true : false;
 
         foreach ($groups as $group) {
-            // Check first that group name exists as attribute in the model or in the translation table.
-            if (\Schema::hasColumn($this->model->getTable(), $group) || ($isTranslatable && \Schema::hasColumn('translations', $group))) {
+            // Check first that group name exists as attribute in the item model or in the translation table.
+            if (\Schema::hasColumn($this->item->getTable(), $group) || ($isTranslatable && \Schema::hasColumn('translations', $group))) {
                 $data = $this->getData($group);
 
                 foreach ($data as $field) {
@@ -365,17 +364,17 @@ trait Form
                     $options = Setting::$function($this->getPathToForm(), $extra);
                 }
                 elseif ($filter->name == 'owned_by' && $this->getClassName() != 'Document') {
-                    $options = Setting::getOwnedByFilterOptions($this->model);
+                    $options = Setting::getOwnedByFilterOptions($this->item);
                 }
                 elseif ($filter->name == 'groups') {
                     $options = Setting::getGroupsFilterOptions();
                 }
                 elseif ($filter->name == 'categories') {
-                    $options = Setting::$function($this->model);
+                    $options = Setting::$function($this->item);
                 }
                 // Specific to the model.
                 else {
-                    $options = $this->model->$function();
+                    $options = $this->item->$function();
                 }
 
                 $filters[$key]->options = $options;
@@ -443,10 +442,9 @@ trait Form
      * Returns the options for a given select field.
      *
      * @param stdClass $field
-     * @param mixed  $item
      * @return array
      */  
-    private function getSelectOptions(\stdClass $field, mixed $item = null): array
+    private function getSelectOptions(\stdClass $field): array
     {
         // Check first if a function name is available or use the field name.
         $name = (isset($field->function)) ? $field->function : $field->name;
@@ -455,17 +453,10 @@ trait Form
 
         // Common options.
 
-        if ($field->name == 'groups') {
-            // Pass the current item object if available.
-            $options = Setting::$function($item);
+        if (in_array($field->name, ['groups', 'categories']) || (in_array($field->name, ['parent_id', 'category_id']) && !method_exists($this->item, $function))) {
+            $options = Setting::$function($this->item);
         }
-        elseif ($field->name == 'categories') {
-            $options = Setting::$function($this->model);
-        }
-        elseif (in_array($field->name, ['parent_id', 'category_id']) && !method_exists($this->model, $function)) {
-            $options = Setting::$function($this->model, $item);
-        }
-        elseif (in_array($field->name, ['status', 'owned_by', 'access_level', 'locale', 'page']) && !method_exists($this->model, $function)) {
+        elseif (in_array($field->name, ['status', 'owned_by', 'access_level', 'locale', 'page']) && !method_exists($this->item, $function)) {
             // Call the Setting method when not availabe in the model.
             $options = Setting::$function();
         }
@@ -475,7 +466,7 @@ trait Form
         }
         else {
             // Call the model method.
-            $options = ($item) ? $item->$function() : $this->model->$function();
+             $options = $this->item->$function();
         }
 
         if (isset($field->extra) && in_array('global_setting', $field->extra)) {
@@ -508,7 +499,7 @@ trait Form
 
     public function getClassName(): string
     {
-        return class_basename(get_class($this->model));
+        return class_basename(get_class($this->item));
     }
 
     /*
@@ -518,7 +509,7 @@ trait Form
      */  
     public function getUpperLevelClassName(): string|false
     {
-        if (preg_match('#Models\\\\([A-Z][a-z0-9]*)\\\\#', get_class($this->model), $matches)) {
+        if (preg_match('#Models\\\\([A-Z][a-z0-9]*)\\\\#', get_class($this->item), $matches)) {
             return $matches[1];
         }
 

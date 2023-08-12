@@ -11,10 +11,11 @@ tinymce.init({
 	    icon: 'browse',
 	    onAction: function () {
 	        let siteUrl = document.getElementById('siteUrl').value;
+	        let locale = document.getElementById('currentLocale').value;
 
 		editor.windowManager.openUrl({
 		    title: 'File Manager',
-		    url: siteUrl+'/cms/filemanager',
+		    url: siteUrl+'/'+locale+'/cms/filemanager',
 		    buttons: [
 			{
 			    type: "cancel",
