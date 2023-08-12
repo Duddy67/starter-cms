@@ -25,12 +25,7 @@ class PostController extends Controller
     use Form;
 
     /*
-     * Instance of the model.
-     */
-    protected $model;
-
-    /*
-     * The item to edit in the form.
+     * Instance of the Category model, (used in the Form trait).
      */
     protected $item = null;
 
@@ -44,7 +39,7 @@ class PostController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('admin.posts');
-        $this->model = new Post;
+        $this->item = new Post;
     }
 
     /**
@@ -64,7 +59,7 @@ class PostController extends Controller
         $columns = $this->getColumns($except);
         $actions = $this->getActions('list');
         $filters = $this->getFilters($request);
-        $items = $this->model->getItems($request);
+        $items = Post::getPosts($request);
         $rows = $this->getRows($columns, $items);
         $query = $request->query();
         $url = ['route' => 'admin.posts', 'item_name' => 'post', 'query' => $query];
@@ -83,7 +78,7 @@ class PostController extends Controller
         // Gather the needed data to build the form.
 
         $fields = $this->getFields(['updated_by', 'created_at', 'updated_at', 'owner_name']);
-        $this->setFieldValues($fields, $this->model);
+        $this->setFieldValues($fields, $this->item);
         $actions = $this->getActions('form', ['destroy']);
         $query = $request->query();
 

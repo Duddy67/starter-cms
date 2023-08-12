@@ -8,6 +8,7 @@ use App\Mail\AppMailer;
 use Illuminate\Support\Facades\Mail;
 use App\Traits\CheckInCheckOut;
 use App\Models\Cms\Setting;
+use Illuminate\Http\Request;
 
 
 class Email extends Model
@@ -85,7 +86,7 @@ class Email extends Model
     /*
      * Gets the email items according to the filter, sort and pagination settings.
      */
-    public function getItems($request)
+    public static function getEmails($request)
     {
         $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);

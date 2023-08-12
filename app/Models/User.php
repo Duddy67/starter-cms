@@ -12,6 +12,7 @@ use App\Models\User\Group;
 use App\Models\Cms\Document;
 use App\Models\Cms\Setting;
 use App\Traits\CheckInCheckOut;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 
@@ -139,7 +140,7 @@ class User extends Authenticatable
      * @param  Request  $request
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getItems($request)
+    public static function getUsers(Request $request)
     {
         $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $sortedBy = $request->input('sorted_by', null);

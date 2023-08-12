@@ -9,6 +9,7 @@ use App\Models\Menu\Item;
 use App\Models\Cms\Setting;
 use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
+use Illuminate\Http\Request;
 
 
 class Menu extends Model
@@ -73,7 +74,7 @@ class Menu extends Model
     /*
      * Gets the menus according to the filter settings.
      */
-    public function getItems($request)
+    public static function getMenus(Request $request)
     {
         $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);
@@ -202,7 +203,7 @@ class Menu extends Model
     /*
      * Returns the menus according to the current user's role level and groups.
      */
-    public static function getMenus()
+    public static function getCurrentUserMenus()
     {
         $query = Menu::query();
         // Join the role tables to get the owner's role level.

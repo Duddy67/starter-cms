@@ -206,12 +206,12 @@ class Setting extends Model
      *
      * @return Array
      */
-    public static function getGroupsOptions($item = null)
+    public static function getGroupsOptions($item)
     {
         $groups = Group::all();
         $options = [];
         // Check whether the dropdown list is used as a filter on the item list view.
-        $isFilter = ($item && debug_backtrace()[1]['function'] == 'getFilters') ? true : false; 
+        $isFilter = ($item->exists && debug_backtrace()[1]['function'] == 'getFilters') ? true : false; 
 
         foreach ($groups as $group) {
             // Get the owner of this group.
@@ -221,7 +221,7 @@ class Setting extends Model
             // Ensure the current user can use this group.
             if ($group->access_level == 'private' && $owner->getRoleLevel() >= auth()->user()->getRoleLevel() && $group->owned_by != auth()->user()->id) {
                 // The item is part of this private group. 
-                if ($item && in_array($group->id, $item->getGroupIds())) {
+                if ($item->exists && in_array($group->id, $item->getGroupIds())) {
                     // Show the group.
                     // N.B: This option is disabled in the form field.
                     //      This option is available in the search filter (list view).
@@ -263,9 +263,8 @@ class Setting extends Model
      */  
     public static function getCategoriesOptions(mixed $model): array
     {
-        // Get the given model class name.
+        // Get all the categories (nodes) from the given model class name.
         $class = get_class($model);
-        // Get the categories of the given model.
         $nodes = "\\{$class}\\Category"::defaultOrder()->get()->toTree();
         $options = [];
         $userGroupIds = auth()->user()->getGroupIds();
@@ -288,27 +287,28 @@ class Setting extends Model
     }
 
     /*
-     * Returns the parent category list of the given model in hierarchical order.
+     * Returns the parent category list of the given category item in hierarchical order.
      *
      * @return Array 
      */  
-    public static function getParentCategoryOptions(mixed $model, mixed $node = null): array
+    public static function getParentCategoryOptions(mixed $item): array
     {
-        // Get the given category model class name.
-        $class = get_class($model);
+        // Get all the categories (nodes) from the given item class name.
+        $class = get_class($item);
         $nodes = "\\{$class}"::defaultOrder()->get()->toTree();
         $options = [];
         // Defines the state of the current instance.
-        $isNew = ($node && $node->id) ? false : true;
+        //$isNew = ($node && $node->id) ? false : true;
+        $isNew = ($item->exists) ? false : true;
 
-        $traverse = function ($categories, $prefix = '-') use (&$traverse, &$options, $isNew, $node) {
+        $traverse = function ($categories, $prefix = '-') use (&$traverse, &$options, $isNew, $item) {
 
             foreach ($categories as $category) {
-                if (!$isNew && $node->access_level != 'private') {
+                if (!$isNew && $item->access_level != 'private') {
                     // A non private category cannot be a private category's children.
                     $extra = ($category->access_level == 'private') ? ['disabled'] : [];
                 }
-                elseif (!$isNew && $node->access_level == 'private' && $category->access_level == 'private') {
+                elseif (!$isNew && $item->access_level == 'private' && $category->access_level == 'private') {
                     // Only the category's owner can access it.
                     $extra = ($category->owned_by == auth()->user()->id) ? [] : ['disabled'];
                 }
@@ -332,7 +332,7 @@ class Setting extends Model
     }
 
     /*
-     * Returns the users who own a given item model according to its access level and
+     * Returns the users who own items of a given model according to its access level and
      * to the current user's role level and groups.
      *
      * @param  Object  $model

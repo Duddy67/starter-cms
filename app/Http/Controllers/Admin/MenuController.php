@@ -20,12 +20,7 @@ class MenuController extends Controller
     use Form;
 
     /*
-     * Instance of the model.
-     */
-    protected $model;
-
-    /*
-     * The item to edit in the form.
+     * Instance of the Menu model, (used in the Form trait).
      */
     protected $item = null;
 
@@ -39,7 +34,7 @@ class MenuController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('admin.menus');
-        $this->model = new Menu;
+        $this->item = new Menu;
     }
 
     /**
@@ -54,7 +49,7 @@ class MenuController extends Controller
         $columns = $this->getColumns();
         $actions = $this->getActions('list');
         $filters = $this->getFilters($request);
-        $items = $this->model->getItems($request);
+        $items = Menu::getMenus($request);
         $rows = $this->getRows($columns, $items);
         $query = $request->query();
         $url = ['route' => 'admin.menus', 'item_name' => 'menu', 'query' => $query];

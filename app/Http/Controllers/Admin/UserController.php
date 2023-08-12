@@ -22,12 +22,7 @@ class UserController extends Controller
     use Form;
 
     /*
-     * Instance of the model.
-     */
-    protected $model;
-
-    /*
-     * The item to edit in the form.
+     * Instance of the User model, (used in the Form trait).
      */
     protected $item = null;
 
@@ -41,7 +36,7 @@ class UserController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('admin.users');
-        $this->model = new User;
+        $this->item = new User;
     }
 
     /**
@@ -56,7 +51,7 @@ class UserController extends Controller
         $columns = $this->getColumns();
         $actions = $this->getActions('list');
         $filters = $this->getFilters($request);
-        $items = $this->model->getItems($request);
+        $items = User::getUsers($request);
         $rows = $this->getRows($columns, $items, ['roles']);
         $this->setRowValues($rows, $columns, $items);
         $query = $request->query();

@@ -133,7 +133,7 @@ class Category extends Model
     /*
      * Gets the category items as a tree.
      */
-    public function getItems(Request $request)
+    public static function getCategories(Request $request)
     {
         $search = $request->input('search', null);
 

@@ -11,6 +11,7 @@ use App\Models\Menu;
 use App\Models\Cms\Setting;
 use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
+use Illuminate\Http\Request;
 
 
 class Group extends Model
@@ -96,7 +97,7 @@ class Group extends Model
     /*
      * Gets the group items according to the filter, sort and pagination settings.
      */
-    public function getItems($request)
+    public static function getGroups(Request $request)
     {
         $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);

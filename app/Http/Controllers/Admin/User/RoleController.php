@@ -20,12 +20,7 @@ class RoleController extends Controller
     use Form;
 
     /*
-     * Instance of the model.
-     */
-    protected $model;
-
-    /*
-     * The item to edit in the form.
+     * Instance of the Role model, (used in the Form trait).
      */
     protected $item = null;
 
@@ -39,7 +34,7 @@ class RoleController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('admin.users.roles');
-        $this->model = new Role;
+        $this->item = new Role;
     }
 
     /**
@@ -54,7 +49,7 @@ class RoleController extends Controller
         $columns = $this->getColumns();
         $actions = $this->getActions('list');
         $filters = $this->getFilters($request);
-        $items = $this->model->getItems($request);
+        $items = Role::getRoles($request);
         $rows = $this->getRows($columns, $items);
         $this->setRowValues($rows, $columns, $items);
 

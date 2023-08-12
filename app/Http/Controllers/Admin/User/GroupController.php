@@ -18,12 +18,7 @@ class GroupController extends Controller
     use Form;
 
     /*
-     * Instance of the model.
-     */
-    protected $model;
-
-    /*
-     * The item to edit in the form.
+     * Instance of the Group model, (used in the Form trait).
      */
     protected $item = null;
 
@@ -37,7 +32,7 @@ class GroupController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('admin.users.groups');
-        $this->model = new Group;
+        $this->item = new Group;
     }
 
     /**
@@ -52,7 +47,7 @@ class GroupController extends Controller
         $columns = $this->getColumns();
         $actions = $this->getActions('list');
         $filters = $this->getFilters($request);
-        $items = $this->model->getItems($request);
+        $items = Group::getGroups($request);
         $rows = $this->getRows($columns, $items);
         $this->setRowValues($rows, $columns, $items);
         $query = $request->query();
