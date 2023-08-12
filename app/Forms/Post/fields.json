@@ -135,8 +135,9 @@
     "label": "labels.generic.show_owner",
     "type": "select",
     "name": "show_owner",
+    "function": "yes_no",
     "id": "show_owner",
-    "extra": ["yes_no", "global_setting"],
+    "extra": ["global_setting"],
     "tab": "settings",
     "group": "settings",
     "options": [] 
@@ -145,8 +146,9 @@
     "label": "labels.generic.show_created_at",
     "type": "select",
     "name": "show_created_at",
+    "function": "yes_no",
     "id": "show_created_at",
-    "extra": ["yes_no", "global_setting"],
+    "extra": ["global_setting"],
     "group": "settings",
     "options": [] 
   },
@@ -154,8 +156,9 @@
     "label": "labels.post.show_excerpt",
     "type": "select",
     "name": "show_excerpt",
+    "function": "yes_no",
     "id": "show_excerpt",
-    "extra": ["yes_no", "global_setting"],
+    "extra": ["global_setting"],
     "group": "settings",
     "options": [] 
   },
@@ -163,8 +166,9 @@
     "label": "labels.generic.show_image",
     "type": "select",
     "name": "show_image",
+    "function": "yes_no",
     "id": "show_image",
-    "extra": ["yes_no", "global_setting"],
+    "extra": ["global_setting"],
     "group": "settings",
     "options": [] 
   },
@@ -172,8 +176,9 @@
     "label": "labels.generic.show_categories",
     "type": "select",
     "name": "show_categories",
+    "function": "yes_no",
     "id": "show_categories",
-    "extra": ["yes_no", "global_setting"],
+    "extra": ["global_setting"],
     "group": "settings",
     "options": [] 
   },
@@ -181,8 +186,9 @@
     "label": "labels.generic.allow_comments",
     "type": "select",
     "name": "allow_comments",
+    "function": "yes_no",
     "id": "allow_comments",
-    "extra": ["yes_no", "global_setting"],
+    "extra": ["global_setting"],
     "group": "settings",
     "options": [] 
   }

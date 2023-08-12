@@ -352,21 +352,25 @@ trait Form
                 // Common filters.
 
                 if ($filter->name == 'per_page') {
-                    $options = Setting::$function();
+                    //$options = Setting::$function();
+                    $options = $this->item->$function();
                     $default = Setting::getValue('pagination', 'per_page');
                 }
                 elseif ($filter->name == 'sorted_by') {
                     $extra = (isset($filter->extra)) ? $filter->extra : [];
-                    $options = Setting::$function($this->getPathToForm(), $extra);
+                    //$options = Setting::$function($this->getPathToForm(), $extra);
+                    $options = $this->item->$function($this->getPathToForm(), $extra);
                 }
                 elseif ($filter->name == 'owned_by' && $this->getClassName() != 'Document') {
                     $options = Setting::getOwnedByFilterOptions($this->item);
                 }
                 elseif ($filter->name == 'groups') {
-                    $options = Setting::getGroupsFilterOptions();
+                    //$options = Setting::getGroupsFilterOptions();
+                    $options = $this->item->$function();
                 }
                 elseif ($filter->name == 'categories') {
-                    $options = Setting::$function($this->item);
+                    //$options = Setting::$function($this->item);
+                    $options = $this->item->$function();
                 }
                 // Specific to the model.
                 else {
@@ -449,7 +453,7 @@ trait Form
 
         // Common options.
 
-        if (in_array($field->name, ['groups', 'categories']) || (in_array($field->name, ['parent_id', 'category_id']) && !method_exists($this->item, $function))) {
+        /*if (in_array($field->name, ['groups', 'categories']) || (in_array($field->name, ['parent_id', 'category_id']) && !method_exists($this->item, $function))) {
             $options = Setting::$function($this->item);
         }
         elseif (in_array($field->name, ['status', 'owned_by', 'access_level', 'page']) && !method_exists($this->item, $function)) {
@@ -463,7 +467,8 @@ trait Form
         else {
             // Call the model method.
             $options = $this->item->$function();
-        }
+        }*/
+        $options = $this->item->$function();
 
         if (isset($field->extra) && in_array('global_setting', $field->extra)) {
             $options[] = ['value' => 'global_setting', 'text' => __('labels.generic.global_setting')];
