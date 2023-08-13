@@ -11,10 +11,7 @@ use App\Models\Menu;
 use App\Models\Cms\Setting;
 use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
-<<<<<<< HEAD
-=======
 use App\Traits\OptionList;
->>>>>>> optionlist_trait
 use Illuminate\Http\Request;
 
 
