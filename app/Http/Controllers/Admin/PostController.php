@@ -25,7 +25,7 @@ class PostController extends Controller
     use Form;
 
     /*
-     * Instance of the Category model, (used in the Form trait).
+     * Instance of the Post model, (used in the Form trait).
      */
     protected $item = null;
 

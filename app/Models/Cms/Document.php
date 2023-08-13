@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\Cms\Setting;
+use App\Traits\OptionList;
 use App\Models\User;
 use App\Models\Post;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ use Illuminate\Http\Request;
 
 class Document extends Model
 {
-    use HasFactory;
+    use HasFactory, OptionList;
 
     /**
      * The attributes that are mass assignable.

@@ -26,6 +26,7 @@
     "label": "labels.filter.owned_by",
     "type": "select",
     "name": "owned_by",
+    "function": "owned_by_filter",
     "extra": ["multiple"],
     "id": "filters-ownedBy",
     "options": [] 

@@ -4,10 +4,11 @@ namespace App\Models\Post;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\OptionList;
 
 class Setting extends Model
 {
-    use HasFactory;
+    use HasFactory, OptionList;
 
     /**
      * The table associated with the model.

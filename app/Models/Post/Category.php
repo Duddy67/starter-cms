@@ -11,6 +11,7 @@ use App\Models\Post\Setting as PostSetting;
 use App\Models\Post\Ordering as PostOrdering;
 use App\Models\Cms\Document;
 use App\Traits\Node;
+use App\Traits\OptionList;
 use App\Models\User\Group;
 use App\Traits\TreeAccessLevel;
 use App\Traits\CheckInCheckOut;
@@ -19,7 +20,7 @@ use Illuminate\Http\Request;
 
 class Category extends Model
 {
-    use HasFactory, Node, TreeAccessLevel, CheckInCheckOut;
+    use HasFactory, Node, TreeAccessLevel, CheckInCheckOut, OptionList;
 
     /**
      * The table associated with the model.

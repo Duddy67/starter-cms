@@ -11,12 +11,13 @@ use App\Models\Menu;
 use App\Models\Cms\Setting;
 use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
+use App\Traits\OptionList;
 use Illuminate\Http\Request;
 
 
 class Group extends Model
 {
-    use HasFactory, AccessLevel, CheckInCheckOut;
+    use HasFactory, AccessLevel, CheckInCheckOut, OptionList;
 
     /**
      * The attributes that are mass assignable.
@@ -154,14 +155,6 @@ class Group extends Model
             ['value' => 'read_only', 'text' => __('labels.generic.read_only')],
             ['value' => 'read_write', 'text' => __('labels.generic.read_write')],
         ];
-    }
-
-    /*
-     * Generic function that returns model values which are handled by select inputs. 
-     */
-    public function getSelectedValue(\stdClass $field): mixed
-    {
-        return $this->{$field->name};
     }
 
     /*

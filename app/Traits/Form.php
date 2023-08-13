@@ -349,30 +349,14 @@ trait Form
                 // Build the function name.
                 $function = 'get'.str_replace('_', '', ucwords($name, '_')).'Options';
 
-                // Common filters.
+                $default = ($filter->name == 'per_page') ? Setting::getValue('pagination', 'per_page') : $default;
 
-                if ($filter->name == 'per_page') {
-                    //$options = Setting::$function();
-                    $options = $this->item->$function();
-                    $default = Setting::getValue('pagination', 'per_page');
-                }
-                elseif ($filter->name == 'sorted_by') {
+                if ($filter->name == 'sorted_by') {
+                    // The getSortedByOptions function requires arguments. 
                     $extra = (isset($filter->extra)) ? $filter->extra : [];
-                    //$options = Setting::$function($this->getPathToForm(), $extra);
                     $options = $this->item->$function($this->getPathToForm(), $extra);
                 }
-                elseif ($filter->name == 'owned_by' && $this->getClassName() != 'Document') {
-                    $options = Setting::getOwnedByFilterOptions($this->item);
-                }
-                elseif ($filter->name == 'groups') {
-                    //$options = Setting::getGroupsFilterOptions();
-                    $options = $this->item->$function();
-                }
-                elseif ($filter->name == 'categories') {
-                    //$options = Setting::$function($this->item);
-                    $options = $this->item->$function();
-                }
-                // Specific to the model.
+                // Call the model method.
                 else {
                     $options = $this->item->$function();
                 }
@@ -451,23 +435,7 @@ trait Form
         // Build the function name.
         $function = 'get'.str_replace('_', '', ucwords($name, '_')).'Options';
 
-        // Common options.
-
-        /*if (in_array($field->name, ['groups', 'categories']) || (in_array($field->name, ['parent_id', 'category_id']) && !method_exists($this->item, $function))) {
-            $options = Setting::$function($this->item);
-        }
-        elseif (in_array($field->name, ['status', 'owned_by', 'access_level', 'page']) && !method_exists($this->item, $function)) {
-            // Call the Setting method when not availabe in the model.
-            $options = Setting::$function();
-        }
-        // Sets the yes/no select lists.
-        elseif (isset($field->extra) && in_array('yes_no', $field->extra)) {
-            $options = Setting::getYesNoOptions();
-        }
-        else {
-            // Call the model method.
-            $options = $this->item->$function();
-        }*/
+        // Call the model method.
         $options = $this->item->$function();
 
         if (isset($field->extra) && in_array('global_setting', $field->extra)) {

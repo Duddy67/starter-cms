@@ -6,9 +6,14 @@ use App\Models\User\Group;
 use App\Models\User;
 use App\Models\Cms\Setting;
 
+/*
+ * Gathers and builds all of the common option lists used in the CMS.  
+ *
+ */
+
 trait OptionList
 {
-    public function getPerPageOptions()
+    public function getPerPageOptions(): array
     {
       return [
           ['value' => 2, 'text' => 2],
@@ -20,7 +25,7 @@ trait OptionList
       ];
     }
 
-    public function getAccessLevelOptions()
+    public function getAccessLevelOptions(): array
     {
       return [
           ['value' => 'private', 'text' => __('labels.generic.private')],
@@ -29,7 +34,7 @@ trait OptionList
       ];
     }
 
-    public function getStatusOptions()
+    public function getStatusOptions(): array
     {
         return [
             ['value' => 'published', 'text' => __('labels.generic.published')],
@@ -37,7 +42,7 @@ trait OptionList
         ];
     }
 
-    public function getYesNoOptions()
+    public function getYesNoOptions(): array
     {
         return [
             ['value' => 1, 'text' => __('labels.generic.yes')],
@@ -45,7 +50,7 @@ trait OptionList
         ];
     }
 
-    public function getSortedByOptions($pathToForm, $extra = [])
+    public function getSortedByOptions(string $pathToForm, array $extra = []): array
     {
         $json = file_get_contents($pathToForm.'/columns.json', true);
         $columns = json_decode($json);
@@ -67,17 +72,12 @@ trait OptionList
         return $options;
     }
 
-    public function getGroupsFilterOptions()
-    {
-        return $this->getGroupsOptions(true);
-    }
-
     /*
      * Builds the options for the 'groups' select field.
      *
      * @return Array
      */
-    public function getGroupsOptions($isFilter = false)
+    public function getGroupsOptions(): array
     {
         $groups = Group::all();
         $options = [];
@@ -87,14 +87,20 @@ trait OptionList
             $owner = ($group->owned_by == auth()->user()->id) ? auth()->user() : User::findOrFail($group->owned_by);
             $extra = [];
 
+            // Check whether the option list is used as a filter in the item list view.
+            // ie: Check whether this function is called by the getFilters function.
+            $listView = (debug_backtrace()[1]['function'] == 'getFilters') ? true : false;
+
             // Ensure the current user can use this group.
             if ($group->access_level == 'private' && $owner->getRoleLevel() >= auth()->user()->getRoleLevel() && $group->owned_by != auth()->user()->id) {
+                // Use the current user as item in list view.
+                $item = ($listView) ? auth()->user() : $this;
                 // The item is part of this private group. 
-                if ($this->exists && in_array($group->id, $this->getGroupIds())) {
+                if ($item->exists && in_array($group->id, $item->getGroupIds())) {
                     // Show the group.
                     // N.B: This option is disabled in the form field.
                     //      This option is available in the search filter (list view).
-                    $extra[] = ($isFilter) ? null : 'disabled';
+                    $extra[] = ($listView) ? null : 'disabled';
                 }
                 else {
                     // Don't show the group.
@@ -103,23 +109,6 @@ trait OptionList
             }
 
             $options[] = ['value' => $group->id, 'text' => $group->name, 'extra' => $extra];
-        }
-
-        return $options;
-    }
-
-    /*
-     * Returns the users that the current user is allowed to assign as owner of an item.
-     *
-     * @return Array 
-     */  
-    public function getOwnedByOptions()
-    {
-        $users = auth()->user()->getAssignableUsers();
-        $options = [];
-
-        foreach ($users as $user) {
-            $options[] = ['value' => $user->id, 'text' => $user->name];
         }
 
         return $options;
@@ -203,12 +192,29 @@ trait OptionList
     }
 
     /*
+     * Returns the users that the current user is allowed to assign as owner of an item.
+     *
+     * @return Array 
+     */  
+    public function getOwnedByOptions(): array
+    {
+        $users = auth()->user()->getAssignableUsers();
+        $options = [];
+
+        foreach ($users as $user) {
+            $options[] = ['value' => $user->id, 'text' => $user->name];
+        }
+
+        return $options;
+    }
+
+    /*
      * Returns the users who own a given item model according to its access level and
      * to the current user's role level and groups.
      *
      * @return Array 
      */  
-    public function getOwnedByFilterOptions()
+    public function getOwnedByFilterOptions(): array
     {
         $table = $this->getTable();
         $query = get_class($this)::query();
@@ -253,7 +259,12 @@ trait OptionList
         return $options;
     }
 
-    public function getPageOptions()
+    /*
+     * Returns the pages available in the view.
+     *
+     * @return Array 
+     */  
+    public function getPageOptions(): array
     {
         $theme = Setting::getValue('website', 'theme');
         $pages = @scandir(resource_path().'/views/themes/'.$theme.'/pages');
@@ -273,7 +284,7 @@ trait OptionList
         return $options;
     }
 
-    public function getTimezoneOptions()
+    public function getTimezoneOptions(): array
     {
         $timezoneIdentifiers = \DateTimeZone::listIdentifiers();
         $options = [];
@@ -283,5 +294,13 @@ trait OptionList
         }
 
         return $options;
+    }
+
+    /*
+     * Generic function that returns model values which are handled by option lists. 
+     */
+    public function getSelectedValue(\stdClass $field): mixed
+    {
+        return $this->{$field->name};
     }
 }
