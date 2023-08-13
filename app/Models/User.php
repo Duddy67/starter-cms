@@ -12,13 +12,17 @@ use App\Models\User\Group;
 use App\Models\Cms\Document;
 use App\Models\Cms\Setting;
 use App\Traits\CheckInCheckOut;
+<<<<<<< HEAD
+=======
+use App\Traits\OptionList;
+>>>>>>> optionlist_trait
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoles, CheckInCheckOut;
+    use HasFactory, Notifiable, HasRoles, CheckInCheckOut, OptionList;
 
     /**
      * The attributes that are mass assignable.

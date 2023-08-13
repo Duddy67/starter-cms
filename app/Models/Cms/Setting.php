@@ -9,11 +9,12 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User\Group;
 use App\Models\User;
 use App\Models\Menu;
+use App\Traits\OptionList;
 
 
 class Setting extends Model
 {
-    use HasFactory;
+    use HasFactory, OptionList;
 
     /**
      * The attributes that are mass assignable.
@@ -137,6 +138,7 @@ class Setting extends Model
         return ($value) ? $value : $default;
     }
 
+<<<<<<< HEAD
     public static function getPerPageOptions()
     {
       return [
@@ -382,6 +384,8 @@ class Setting extends Model
         return $options;
     }
 
+=======
+>>>>>>> optionlist_trait
     public static function getExtraFieldByAlias($item, $alias)
     {
         if (!isset($item->extra_fields) || !isset($item->global_settings)) {
@@ -399,44 +403,12 @@ class Setting extends Model
         return ($extraField) ? $item->extra_fields[$extraField] : null;
     }
 
-    public static function getPageOptions()
-    {
-        $theme = Setting::getValue('website', 'theme');
-        $pages = @scandir(resource_path().'/views/themes/'.$theme.'/pages');
-        $pages = (!$pages) ? [] : $pages;
-        $options = [];
-
-        foreach ($pages as $key => $page) {
-            // Skip the '.', and '..' directories as well as other directories and the no blade files.
-            if ($key < 2 || !is_file(resource_path().'/views/themes/'.$theme.'/pages/'.$page) || !str_ends_with($page, '.blade.php')) {
-                continue;
-            }
-
-            // Removes ".blade.php" from the end of the string.
-            $options[] = ['value' => substr($page, 0, -10), 'text' => substr($page, 0, -10)];
-        }
-
-        return $options;
-    }
-
     public static function getSegments($modelName)
     {
         // The locales.php file always lives in the "en" lang folder.
         $segments = __('locales.segments.'.$modelName, [], 'en');
 
         return (isset($segments[config('app.locale')])) ? $segments[config('app.locale')] : $segments[config('app.fallback_locale')];
-    }
-
-    public static function getTimezoneOptions()
-    {
-        $timezoneIdentifiers = \DateTimeZone::listIdentifiers();
-        $options = [];
-
-        foreach ($timezoneIdentifiers as $identifier) {
-            $options[] = ['value' => $identifier, 'text' => $identifier];
-        }
-
-        return $options;
     }
 
     public static function getFormattedDate($date, $format = '')

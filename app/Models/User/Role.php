@@ -8,13 +8,17 @@ use Spatie\Permission\Models\Role as SpatieRole;
 use App\Models\Cms\Setting;
 use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
+<<<<<<< HEAD
+=======
+use App\Traits\OptionList;
+>>>>>>> optionlist_trait
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 
 class Role extends SpatieRole 
 {
-    use HasFactory, AccessLevel, CheckInCheckOut;
+    use HasFactory, AccessLevel, CheckInCheckOut, OptionList;
 
     /**
      * The attributes that should be mutated to dates.
@@ -143,13 +147,5 @@ class Role extends SpatieRole
         }
 
         return $roles;
-    }
-
-    /*
-     * Generic function that returns model values which are handled by select inputs. 
-     */
-    public function getSelectedValue(\stdClass $field): mixed
-    {
-        return $this->{$field->name};
     }
 }

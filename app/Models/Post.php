@@ -10,6 +10,7 @@ use App\Models\Post\Ordering;
 use App\Models\User\Group;
 use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
+use App\Traits\OptionList;
 use App\Models\Cms\Document;
 use App\Models\LayoutItem;
 use App\Models\Post\Comment;
@@ -20,7 +21,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Post extends Model
 {
-    use HasFactory, AccessLevel, CheckInCheckOut;
+    use HasFactory, AccessLevel, CheckInCheckOut, OptionList;
 
     /**
      * The attributes that are mass assignable.

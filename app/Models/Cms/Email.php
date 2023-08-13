@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use App\Mail\AppMailer;
 use Illuminate\Support\Facades\Mail;
 use App\Traits\CheckInCheckOut;
+use App\Traits\OptionList;
 use App\Models\Cms\Setting;
 use Illuminate\Http\Request;
 
 
 class Email extends Model
 {
-    use HasFactory, CheckInCheckOut;
+    use HasFactory, CheckInCheckOut, OptionList;
 
     /**
      * The attributes that are mass assignable.

@@ -349,16 +349,14 @@ trait Form
                 // Build the function name.
                 $function = 'get'.str_replace('_', '', ucwords($name, '_')).'Options';
 
-                // Common filters.
+                $default = ($filter->name == 'per_page') ? Setting::getValue('pagination', 'per_page') : $default;
 
-                if ($filter->name == 'per_page') {
-                    $options = Setting::$function();
-                    $default = Setting::getValue('pagination', 'per_page');
-                }
-                elseif ($filter->name == 'sorted_by') {
+                if ($filter->name == 'sorted_by') {
+                    // The getSortedByOptions function requires arguments. 
                     $extra = (isset($filter->extra)) ? $filter->extra : [];
-                    $options = Setting::$function($this->getPathToForm(), $extra);
+                    $options = $this->item->$function($this->getPathToForm(), $extra);
                 }
+<<<<<<< HEAD
                 elseif ($filter->name == 'owned_by' && $this->getClassName() != 'Document') {
                     $options = Setting::getOwnedByFilterOptions($this->item);
                 }
@@ -369,6 +367,9 @@ trait Form
                     $options = Setting::$function($this->item);
                 }
                 // Specific to the model.
+=======
+                // Call the model method.
+>>>>>>> optionlist_trait
                 else {
                     $options = $this->item->$function();
                 }
@@ -447,6 +448,7 @@ trait Form
         // Build the function name.
         $function = 'get'.str_replace('_', '', ucwords($name, '_')).'Options';
 
+<<<<<<< HEAD
         // Common options.
 
         if (in_array($field->name, ['groups', 'categories']) || (in_array($field->name, ['parent_id', 'category_id']) && !method_exists($this->item, $function))) {
@@ -464,6 +466,10 @@ trait Form
             // Call the model method.
             $options = $this->item->$function();
         }
+=======
+        // Call the model method.
+        $options = $this->item->$function();
+>>>>>>> optionlist_trait
 
         if (isset($field->extra) && in_array('global_setting', $field->extra)) {
             $options[] = ['value' => 'global_setting', 'text' => __('labels.generic.global_setting')];

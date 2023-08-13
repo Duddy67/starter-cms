@@ -9,12 +9,16 @@ use App\Traits\Node;
 use App\Models\User\Group;
 use App\Models\Cms\Setting;
 use App\Traits\CheckInCheckOut;
+<<<<<<< HEAD
+=======
+use App\Traits\OptionList;
+>>>>>>> optionlist_trait
 use Illuminate\Http\Request;
 
 
 class Item extends Model
 {
-    use HasFactory, Node, CheckInCheckOut;
+    use HasFactory, Node, CheckInCheckOut, OptionList;
 
     /**
      * The table associated with the model.
@@ -134,13 +138,5 @@ class Item extends Model
         $menu = Menu::where('code', $this->menu_code)->first();
 
         return $menu->canChangeStatus();
-    }
-
-    /*
-     * Generic function that returns model values which are handled by select inputs. 
-     */
-    public function getSelectedValue(\stdClass $field): mixed
-    {
-        return $this->{$field->name};
     }
 }
