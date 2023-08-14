@@ -77,7 +77,7 @@ trait OptionList
      *
      * @return Array
      */
-    public function getGroupsOptions(): array
+    public function getGroupOptions(): array
     {
         $groups = Group::all();
         $options = [];
@@ -119,7 +119,7 @@ trait OptionList
      *
      * @return Array 
      */  
-    public function getCategoriesOptions(): array
+    public function getCategoryOptions(): array
     {
         // Get the model class name.
         $class = get_class($this);

@@ -211,7 +211,7 @@ trait Form
 
             // Set the select field types.
             if ($field->type == 'select') {
-                $fields[$key]->options = $this->getSelectOptions($field);
+                $fields[$key]->options = $this->getOptionList($field);
             }
 
             // Check if the object exists in database.
@@ -415,7 +415,7 @@ trait Form
 
             // Set the select field types.
             if ($field->type == 'select') {
-                $fields[$key]->options = $this->getSelectOptions($field);
+                $fields[$key]->options = $this->getOptionList($field);
             }
         }
 
@@ -428,7 +428,7 @@ trait Form
      * @param stdClass $field
      * @return array
      */  
-    private function getSelectOptions(\stdClass $field): array
+    private function getOptionList(\stdClass $field): array
     {
         // Check first if a function name is available or use the field name.
         $name = (isset($field->function)) ? $field->function : $field->name;
