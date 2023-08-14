@@ -12,7 +12,7 @@ use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
 use App\Traits\OptionList;
 use App\Models\Cms\Document;
-use App\Models\LayoutItem;
+use App\Models\Cms\LayoutItem;
 use App\Models\Post\Comment;
 use App\Support\PostCollection;
 use Illuminate\Http\Request;
