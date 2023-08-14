@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-use App\Models\Translation;
+use App\Models\Cms\Translation;
 
 
 trait Translatable

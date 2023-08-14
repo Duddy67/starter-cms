@@ -3,8 +3,8 @@
     "label": "labels.generic.show_owner",
     "type": "select",
     "name": "show_owner",
+    "function": "yes_no",
     "id": "show_owner",
-    "extra": ["yes_no"],
     "tab": "posts",
     "group": "posts",
     "options": [] 
@@ -13,8 +13,8 @@
     "label": "labels.generic.show_created_at",
     "type": "select",
     "name": "show_created_at",
+    "function": "yes_no",
     "id": "show_created_at",
-    "extra": ["yes_no"],
     "group": "posts",
     "options": [] 
   },
@@ -22,8 +22,8 @@
     "label": "labels.post.show_excerpt",
     "type": "select",
     "name": "show_excerpt",
+    "function": "yes_no",
     "id": "show_excerpt",
-    "extra": ["yes_no"],
     "group": "posts",
     "options": [] 
   },
@@ -31,8 +31,8 @@
     "label": "labels.generic.show_image",
     "type": "select",
     "name": "show_image",
+    "function": "yes_no",
     "id": "show_image",
-    "extra": ["yes_no"],
     "group": "posts",
     "options": [] 
   },
@@ -40,8 +40,8 @@
     "label": "labels.generic.show_categories",
     "type": "select",
     "name": "show_categories",
+    "function": "yes_no",
     "id": "show_categories",
-    "extra": ["yes_no"],
     "group": "posts",
     "options": [] 
   },
@@ -49,17 +49,17 @@
     "label": "labels.generic.allow_comments",
     "type": "select",
     "name": "allow_comments",
+    "function": "yes_no",
     "id": "allow_comments",
-    "extra": ["yes_no"],
     "group": "posts",
-    "options": []
+    "options": [] 
   },
   {
     "label": "labels.generic.show_name",
     "type": "select",
     "name": "show_name",
+    "function": "yes_no",
     "id": "show_name",
-    "extra": ["yes_no"],
     "tab": "categories",
     "group": "categories",
     "options": [] 
@@ -68,8 +68,8 @@
     "label": "labels.generic.show_search",
     "type": "select",
     "name": "show_search",
+    "function": "yes_no",
     "id": "show_search",
-    "extra": ["yes_no"],
     "group": "categories",
     "options": [] 
   },
@@ -77,8 +77,8 @@
     "label": "labels.generic.show_description",
     "type": "select",
     "name": "show_description",
+    "function": "yes_no",
     "id": "show_description",
-    "extra": ["yes_no"],
     "group": "categories",
     "options": [] 
   },
@@ -86,17 +86,17 @@
     "label": "labels.generic.show_image",
     "type": "select",
     "name": "show_image",
+    "function": "yes_no",
     "id": "show_image",
-    "extra": ["yes_no"],
     "group": "categories",
-    "options": []
+    "options": [] 
   },
   {
     "label": "labels.generic.show_subcategories",
     "type": "select",
     "name": "show_subcategories",
+    "function": "yes_no",
     "id": "show_subcategories",
-    "extra": ["yes_no"],
     "group": "categories",
     "options": [] 
   },
@@ -104,8 +104,8 @@
     "label": "labels.post.show_post_excerpt",
     "type": "select",
     "name": "show_post_excerpt",
+    "function": "yes_no",
     "id": "show_post_excerpt",
-    "extra": ["yes_no"],
     "group": "categories",
     "options": [] 
   },
@@ -113,8 +113,8 @@
     "label": "labels.post.show_post_image",
     "type": "select",
     "name": "show_post_image",
+    "function": "yes_no",
     "id": "show_post_image",
-    "extra": ["yes_no"],
     "group": "categories",
     "options": [] 
   },
@@ -122,8 +122,8 @@
     "label": "labels.post.show_post_categories",
     "type": "select",
     "name": "show_post_categories",
+    "function": "yes_no",
     "id": "show_post_categories",
-    "extra": ["yes_no"],
     "group": "categories",
     "options": [] 
   },

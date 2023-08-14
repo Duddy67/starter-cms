@@ -8,12 +8,13 @@ use App\Mail\AppMailer;
 use Illuminate\Support\Facades\Mail;
 use App\Traits\CheckInCheckOut;
 use App\Traits\Translatable;
+use App\Traits\OptionList;
 use Illuminate\Http\Request;
 
 
 class Email extends Model
 {
-    use HasFactory, CheckInCheckOut, Translatable;
+    use HasFactory, CheckInCheckOut, Translatable, OptionList;
 
     /**
      * The attributes that are mass assignable.

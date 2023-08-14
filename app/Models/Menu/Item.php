@@ -10,12 +10,13 @@ use App\Models\User\Group;
 use App\Models\Cms\Setting;
 use App\Traits\CheckInCheckOut;
 use App\Traits\Translatable;
+use App\Traits\OptionList;
 use Illuminate\Http\Request;
 
 
 class Item extends Model
 {
-    use HasFactory, Node, CheckInCheckOut, Translatable;
+    use HasFactory, Node, CheckInCheckOut, Translatable, OptionList;
 
     /**
      * The table associated with the model.

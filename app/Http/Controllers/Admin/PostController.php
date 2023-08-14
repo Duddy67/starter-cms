@@ -18,7 +18,7 @@ use Illuminate\Support\Str;
 use App\Models\Cms\Document;
 use Carbon\Carbon;
 use App\Models\Post\Ordering;
-use App\Models\LayoutItem;
+use App\Models\Cms\LayoutItem;
 
 
 class PostController extends Controller

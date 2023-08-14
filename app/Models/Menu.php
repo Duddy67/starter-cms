@@ -9,12 +9,13 @@ use App\Models\Menu\Item;
 use App\Models\Cms\Setting;
 use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
+use App\Traits\OptionList;
 use Illuminate\Http\Request;
 
 
 class Menu extends Model
 {
-    use HasFactory, AccessLevel, CheckInCheckOut;
+    use HasFactory, AccessLevel, CheckInCheckOut, OptionList;
 
     /**
      * The attributes that are mass assignable.

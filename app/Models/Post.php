@@ -11,8 +11,9 @@ use App\Models\User\Group;
 use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
 use App\Traits\Translatable;
+use App\Traits\OptionList;
 use App\Models\Cms\Document;
-use App\Models\LayoutItem;
+use App\Models\Cms\LayoutItem;
 use App\Models\Post\Comment;
 use App\Support\PostCollection;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Post extends Model
 {
-    use HasFactory, AccessLevel, CheckInCheckOut, Translatable;
+    use HasFactory, AccessLevel, CheckInCheckOut, Translatable, OptionList;
 
     /**
      * The attributes that are mass assignable.

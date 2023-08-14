@@ -15,12 +15,13 @@ use App\Models\User\Group;
 use App\Traits\TreeAccessLevel;
 use App\Traits\CheckInCheckOut;
 use App\Traits\Translatable;
+use App\Traits\OptionList;
 use Illuminate\Http\Request;
 
 
 class Category extends Model
 {
-    use HasFactory, Node, TreeAccessLevel, CheckInCheckOut, Translatable;
+    use HasFactory, Node, TreeAccessLevel, CheckInCheckOut, Translatable, OptionList;
 
     /**
      * The table associated with the model.

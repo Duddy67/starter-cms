@@ -10,12 +10,13 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Cms\Setting;
 use App\Models\User;
 use App\Models\Post;
+use App\Traits\OptionList;
 use Illuminate\Http\Request;
 
 
 class Document extends Model
 {
-    use HasFactory;
+    use HasFactory, OptionList;
 
     /**
      * The attributes that are mass assignable.

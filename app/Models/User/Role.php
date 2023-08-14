@@ -8,13 +8,14 @@ use Spatie\Permission\Models\Role as SpatieRole;
 use App\Models\Cms\Setting;
 use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
+use App\Traits\OptionList;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 
 class Role extends SpatieRole 
 {
-    use HasFactory, AccessLevel, CheckInCheckOut;
+    use HasFactory, AccessLevel, CheckInCheckOut, OptionList;
 
     /**
      * The attributes that should be mutated to dates.

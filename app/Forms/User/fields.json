@@ -39,6 +39,7 @@
     "label": "labels.user.groups",
     "type": "select",
     "name": "groups",
+    "function": "group",
     "extra": ["multiple","title_as_id"],
     "id": "groups",
     "class": "_locked",
