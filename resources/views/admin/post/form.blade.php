@@ -25,7 +25,10 @@
         </nav>
 
         <div class="tab-content">
-            @php $dataTab = null; @endphp
+            @php
+                    $dataTab = null;
+                    $dateFormats = [];
+            @endphp
             @foreach ($fields as $key => $field)
                 @if (isset($field->tab))
                     @php $active = ($field->tab == 'details') ? ' active' : '';
@@ -56,6 +59,10 @@
                     </div>
                 @endif
 
+                @if ($field->type == 'date' && isset($field->format))
+                     @php $dateFormats[$field->name] = $field->format; @endphp
+                @endif
+
                 @if (!next($fields) || isset($fields[$key + 1]->tab))
                     </div>
                 @endif
@@ -66,6 +73,10 @@
         <input type="hidden" id="close" name="_close" value="0">
         <input type="hidden" id="siteUrl" value="{{ url('/') }}">
         <input type="hidden" id="postLayout" value="{{ isset($post) ? route('admin.posts.layout', $query) : '' }}">
+
+        @foreach ($dateFormats as $key => $value)
+            <input type="hidden" name="_date_formats[{{ $key }}]" value="{{ $value }}">
+        @endforeach
     </form>
     <x-toolbar :items=$actions />
 

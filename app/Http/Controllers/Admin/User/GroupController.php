@@ -167,9 +167,9 @@ class GroupController extends Controller
             return response()->json(['redirect' => route('admin.users.groups.index', $request->query())]);
         }
 
-        $refresh = ['updated_at' => Setting::getFormattedDate($group->updated_at), 'updated_by' => auth()->user()->name];
+        $this->item = $group;
 
-        return response()->json(['success' => __('messages.group.update_success'), 'refresh' => $refresh]);
+        return response()->json(['success' => __('messages.group.update_success'), 'refresh' => $this->getFieldsToRefresh($request)]);
     }
 
     /**

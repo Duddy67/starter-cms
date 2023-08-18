@@ -125,7 +125,8 @@ trait Form
             if (!in_array($column->name, $except)) {
 
                 if ($column->type == 'date') {
-                    $row->{$column->name} = Setting::getFormattedDate($item->{$column->name});  
+                    $format = (isset($column->format)) ? $column->format : '';
+                    $row->{$column->name} = Setting::getFormattedDate($item->{$column->name}, $format);  
                 }
                 elseif ($column->name == 'owned_by') {
                     $row->owned_by = $item->owner_name;
@@ -416,6 +417,52 @@ trait Form
             // Set the select field types.
             if ($field->type == 'select') {
                 $fields[$key]->options = $this->getOptionList($field);
+            }
+        }
+
+        return $fields;
+    }
+
+    /*
+     * Returns the most common fields that need to be refreshed in AJAX.
+     *
+     * @param Request $request
+     * @return array
+     */  
+    public function getFieldsToRefresh(Request $request): array
+    {
+        $fields = [];
+        // The one to one relation types that need to be refreshed.
+        $relations = ['image', 'photo'];
+
+        if ($this->item->updated_at) {
+            $format = (isset($request->input('_date_formats')['updated_at'])) ? $request->input('_date_formats')['updated_at'] : '';
+            $fields['updated_at'] = Setting::getFormattedDate($this->item->updated_at, $format); 
+        }
+
+        if ($this->item->updated_by) {
+            $fields['updated_by'] = auth()->user()->name; 
+        }
+
+        if ($this->item->slug) {
+            $fields['slug'] = $this->item->slug;
+        }
+
+        foreach ($relations as $relation) {
+            if ($this->item->$relation) {
+                // The field are named after the model name (in lowercase) and the relation name.
+                $fields[strtolower($this->getClassName()).'-'.$relation] = url('/').'/storage/thumbnails/'.$this->item->$relation->disk_name;
+                $fields[$relation] = '';
+            }
+        }
+
+        if ($this->item->layoutItems) {
+            foreach ($this->item->layoutItems as $layoutItem) {
+                if ($layoutItem->type == 'image') {
+                    $fields['layout-item-thumbnail-'.$layoutItem->id_nb] = url('/').'/'.$layoutItem->image->getThumbnailUrl();
+                    $fields['layout-item-upload-'.$layoutItem->id_nb] = '';
+                    $fields['layout-item-image-status-'.$layoutItem->id_nb] = 'update';
+                }
             }
         }
 

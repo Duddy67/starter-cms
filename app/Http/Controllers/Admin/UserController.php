@@ -165,8 +165,6 @@ class UserController extends Controller
 
         $user->save();
 
-        $refresh = ['updated_at' => Setting::getFormattedDate($user->updated_at), 'updated_by' => auth()->user()->name];
-
         if ($photo = $this->uploadPhoto($request)) {
             // Delete the previous photo if any.
             if ($user->photo) {
@@ -174,9 +172,8 @@ class UserController extends Controller
             }
 
             $user->photo()->save($photo);
-
-            $refresh['user-photo'] = url('/').'/storage/thumbnails/'.$photo->disk_name;
-            $refresh['photo'] = '';
+            // Update the photo.
+            $user->photo = $photo;
         }
 
         if ($request->input('_close', null)) {
@@ -186,7 +183,9 @@ class UserController extends Controller
             return response()->json(['redirect' => route('admin.users.index', $request->query())]);
         }
 
-        return response()->json(['success' => __('messages.user.update_success'), 'refresh' => $refresh]);
+        $this->item = $user;
+
+        return response()->json(['success' => __('messages.user.update_success'), 'refresh' => $this->getFieldsToRefresh($request)]);
     }
 
     /**

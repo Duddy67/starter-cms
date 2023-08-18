@@ -67,10 +67,8 @@ class LayoutItem extends Model
         parent::delete();
     }
 
-    public static function storeItems(object $model): array
+    public static function storeItems(object $model): void
     {
-        $refresh = [];
-
         if (isset(request()->all()['layout_items'])) {
             $items = request()->all()['layout_items'];
 
@@ -103,10 +101,8 @@ class LayoutItem extends Model
                         $item->text = $items['alt_text_'.$id];
                         $item->order = $items['layout_item_ordering_'.$id];
                         $item->save();
-
-                        $refresh['layout-item-thumbnail-'.$id] = url('/').'/'.$image->getThumbnailUrl();
-                        $refresh['layout-item-upload-'.$id] = '';
-                        $refresh['layout-item-image-status-'.$id] = 'update';
+                        // Update the image.
+                        $item->image = $image;
                     }
 
                     continue;
@@ -138,8 +134,6 @@ class LayoutItem extends Model
                 }
             }
         }
-
-        return $refresh;
     }
 
     public static function hasImageFile(int $id): bool

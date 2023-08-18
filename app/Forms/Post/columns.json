@@ -35,11 +35,13 @@
   {
     "label": "labels.generic.created_at",
     "name": "created_at",
-    "type": "date"
+    "type": "date",
+    "format": "d M Y H:i"
   },
   {
     "label": "labels.generic.updated_at",
     "name": "updated_at",
-    "type": "date"
+    "type": "date",
+    "format": "d M Y H:i"
   }
 ]

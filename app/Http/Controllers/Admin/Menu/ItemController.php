@@ -191,9 +191,9 @@ class ItemController extends Controller
             return response()->json(['redirect' => route('admin.menus.items.index', array_merge($request->query(), ['code' => $code]))]);
         }
 
-        $refresh = ['updated_at' => Setting::getFormattedDate($item->updated_at), 'updated_by' => auth()->user()->name];
+        $this->item = $item;
 
-        return response()->json(['success' => __('messages.menuitem.update_success'), 'refresh' => $refresh]);
+        return response()->json(['success' => __('messages.menuitem.update_success'), 'refresh' => $this->getFieldsToRefresh($request)]);
     }
 
     /**

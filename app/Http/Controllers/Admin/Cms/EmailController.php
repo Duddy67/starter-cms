@@ -162,9 +162,9 @@ class EmailController extends Controller
             return response()->json(['redirect' => route('admin.cms.emails.index', $request->query())]);
         }
 
-        $refresh = ['updated_at' => Setting::getFormattedDate($email->updated_at), 'updated_by' => auth()->user()->name];
+        $this->item = $email;
 
-        return response()->json(['success' => __('messages.email.update_success'), 'refresh' => $refresh]);
+        return response()->json(['success' => __('messages.email.update_success'), 'refresh' => $this->getFieldsToRefresh($request)]);
     }
 
     /**

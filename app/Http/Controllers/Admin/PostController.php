@@ -166,7 +166,7 @@ class PostController extends Controller
         $post->extra_fields = $request->input('extra_fields');
         $post->settings = $request->input('settings');
         $post->updated_by = auth()->user()->id;
-        $layoutRefresh = LayoutItem::storeItems($post);
+        LayoutItem::storeItems($post);
         // Prioritize layout items over regular content when storing raw content.
         $post->raw_content = ($post->layoutItems()->exists()) ? $post->getLayoutRawContent() : strip_tags($request->input('content'));
 
@@ -216,12 +216,6 @@ class PostController extends Controller
 
         $post->save();
 
-        $refresh = ['updated_at' => Setting::getFormattedDate($post->updated_at), 'updated_by' => auth()->user()->name, 'slug' => $post->slug];
-
-        foreach ($layoutRefresh as $key => $value) {
-            $refresh[$key] = $value;
-        }
-
         if ($image = $this->uploadImage($request)) {
             // Delete the previous post image if any.
             if ($post->image) {
@@ -229,9 +223,8 @@ class PostController extends Controller
             }
 
             $post->image()->save($image);
-
-            $refresh['post-image'] = url('/').'/storage/thumbnails/'.$image->disk_name;
-            $refresh['image'] = '';
+            // Update the image.
+            $post->image = $image;
         }
 
         if ($request->input('_close', null)) {
@@ -241,7 +234,10 @@ class PostController extends Controller
             return response()->json(['redirect' => route('admin.posts.index', $request->query())]);
         }
 
-        return response()->json(['success' => __('messages.post.update_success'), 'refresh' => $refresh]);
+        // Used in the Form trait.
+        $this->item = $post;
+
+        return response()->json(['success' => __('messages.post.update_success'), 'refresh' => $this->getFieldsToRefresh($request)]);
     }
 
     /**
