@@ -182,9 +182,9 @@ class MenuController extends Controller
             return response()->json(['redirect' => route('admin.menus.index', $request->query())]);
         }
 
-        $refresh = ['updated_at' => Setting::getFormattedDate($menu->updated_at), 'updated_by' => auth()->user()->name];
+        $this->item = $menu;
 
-        return response()->json(['success' => __('messages.menu.update_success'), 'refresh' => $refresh]);
+        return response()->json(['success' => __('messages.menu.update_success'), 'refresh' => $this->getFieldsToRefresh($request)]);
     }
 
     /**

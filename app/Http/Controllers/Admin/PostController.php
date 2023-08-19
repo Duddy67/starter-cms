@@ -162,7 +162,7 @@ class PostController extends Controller
         $post->page = $request->input('page');
         $post->settings = $request->input('settings');
         $post->updated_by = auth()->user()->id;
-        $layoutRefresh = LayoutItem::storeItems($post, $request->input('locale'));
+        LayoutItem::storeItems($post, $request->input('locale'));
 
         if ($post->canChangeAccessLevel()) {
             $post->access_level = $request->input('access_level');
@@ -217,12 +217,6 @@ class PostController extends Controller
         $translation->raw_content = ($post->layoutItems()->exists()) ? $post->getLayoutRawContent($request->input('locale')) : strip_tags($request->input('content'));
         $translation->save();
 
-        $refresh = ['updated_at' => Setting::getFormattedDate($post->updated_at), 'updated_by' => auth()->user()->name, 'slug' => $translation->slug];
-
-        foreach ($layoutRefresh as $key => $value) {
-            $refresh[$key] = $value;
-        }
-
         if ($image = $this->uploadImage($request)) {
             // Delete the previous post image if any.
             if ($post->image) {
@@ -230,9 +224,8 @@ class PostController extends Controller
             }
 
             $post->image()->save($image);
-
-            $refresh['post-image'] = url('/').'/storage/thumbnails/'.$image->disk_name;
-            $refresh['image'] = '';
+            // Update the image.
+            $post->image = $image;
         }
 
         if ($request->input('_close', null)) {
@@ -242,7 +235,10 @@ class PostController extends Controller
             return response()->json(['redirect' => route('admin.posts.index', \Arr::except($request->query(), ['locale']))]);
         }
 
-        return response()->json(['success' => __('messages.post.update_success'), 'refresh' => $refresh]);
+        // Used in the Form trait.
+        $this->item = $post;
+
+        return response()->json(['success' => __('messages.post.update_success'), 'refresh' => $this->getFieldsToRefresh($request)]);
     }
 
     /**

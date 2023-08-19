@@ -83,8 +83,9 @@
     "label": "labels.generic.created_at",
     "type": "date",
     "name": "created_at",
-    "dataset": {"date":"0", "time":"0"},
+    "dataset": {"date":"0", "time":"0", "format":"D MMMM YYYY HH:mm"},
     "id": "created_at",
+    "format": "d M Y H:i",
     "extra": ["disabled"]
   },
   {
@@ -99,8 +100,9 @@
     "label": "labels.generic.updated_at",
     "type": "date",
     "name": "updated_at",
-    "dataset": {"date":"0", "time":"0"},
+    "dataset": {"date":"0", "time":"0", "format":"D MMMM YYYY HH:mm"},
     "id": "updated_at",
+    "format": "d M Y H:i",
     "extra": ["disabled"]
   },
   {

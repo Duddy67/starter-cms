@@ -197,9 +197,9 @@ class RoleController extends Controller
             return response()->json(['redirect' => route('admin.users.roles.index', $request->query())]);
         }
 
-        $refresh = ['updated_at' => Setting::getFormattedDate($role->updated_at), 'updated_by' => auth()->user()->name];
+        $this->item = $role;
 
-        return response()->json(['success' => __('messages.role.update_success'), 'refresh' => $refresh]);
+        return response()->json(['success' => __('messages.role.update_success'), 'refresh' => $this->getFieldsToRefresh($request)]);
     }
 
     /**

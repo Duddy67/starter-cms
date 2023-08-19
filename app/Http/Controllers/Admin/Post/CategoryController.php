@@ -243,8 +243,6 @@ class CategoryController extends Controller
         $translation->slug = ($request->input('slug')) ? Str::slug($request->input('slug'), '-') : Str::slug($request->input('name'), '-');
         $translation->save();
 
-        $refresh = ['updated_at' => Setting::getFormattedDate($category->updated_at), 'updated_by' => auth()->user()->name, 'slug' => $translation->slug];
-
         if ($image = $this->uploadImage($request)) {
             // Delete the previous post image if any.
             if ($category->image) {
@@ -252,9 +250,8 @@ class CategoryController extends Controller
             }
 
             $category->image()->save($image);
-
-            $refresh['category-image'] = url('/').'/storage/thumbnails/'.$image->disk_name;
-            $refresh['image'] = '';
+            // Update the image.
+            $category->image = $image;
         }
 
         if ($request->input('_close', null)) {
@@ -264,7 +261,9 @@ class CategoryController extends Controller
             return response()->json(['redirect' => route('admin.posts.categories.index', \Arr::except($request->query(), ['locale']))]);
         }
 
-        return response()->json(['success' => __('messages.category.update_success'), 'refresh' => $refresh]);
+        $this->item = $category;
+
+        return response()->json(['success' => __('messages.category.update_success'), 'refresh' => $this->getFieldsToRefresh($request)]);
     }
 
     /**
