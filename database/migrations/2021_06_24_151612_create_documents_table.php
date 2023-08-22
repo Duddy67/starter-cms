@@ -18,7 +18,7 @@ class CreateDocumentsTable extends Migration
 	    $table->string('disk_name')->nullable();
 	    $table->string('file_name')->nullable();
             $table->unsignedInteger('file_size')->nullable();
-	    $table->string('content_type', 50)->nullable();
+	    $table->string('content_type')->nullable();
 	    $table->string('field', 30)->nullable();
             $table->unsignedInteger('documentable_id')->nullable();
             $table->string('documentable_type')->nullable();
