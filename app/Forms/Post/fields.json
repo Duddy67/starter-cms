@@ -195,5 +195,15 @@
     "extra": ["global_setting"],
     "group": "settings",
     "options": [] 
+  },
+  {
+    "label": "labels.generic.comment_alert",
+    "type": "select",
+    "name": "comment_alert",
+    "function": "yes_no",
+    "id": "comment_alert",
+    "extra": ["global_setting"],
+    "group": "settings",
+    "options": [] 
   }
 ]

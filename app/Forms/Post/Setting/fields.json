@@ -55,6 +55,15 @@
     "options": [] 
   },
   {
+    "label": "labels.generic.comment_alert",
+    "type": "select",
+    "name": "comment_alert",
+    "function": "yes_no",
+    "id": "comment_alert",
+    "group": "posts",
+    "options": [] 
+  },
+  {
     "label": "labels.generic.show_name",
     "type": "select",
     "name": "show_name",

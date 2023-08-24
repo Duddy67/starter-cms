@@ -60,13 +60,20 @@ document.addEventListener('DOMContentLoaded', () => {
             deleteMessages();
 
             if (result.action == 'create') {
-                document.getElementById('comment-counter').insertAdjacentHTML('afterend', result.render);
+                document.getElementById('comment-list').insertAdjacentHTML('beforeend', result.render);
                 initTinyMceEditor(result.id);
                 tinyMCE.get('tiny-comment-'+result.id).setContent(result.text);
+                // Empty the content in the text editor. 
                 tinyMCE.get('tiny-comment-0').setContent('');
-                // Increase the comment counter.
-                let nbComments = parseInt(document.getElementById('nb-comments').textContent);
-                document.getElementById('nb-comments').textContent = nbComments + 1;
+                // Update the comment counter.
+                document.getElementById('nb-comments').textContent = result.count;
+
+                // Check if the penultimate comment is editable (ie: it's owned by the current user).
+                if (result.key > 0 && document.getElementById('edit-comment-buttons-'+(result.key - 1))) {
+                    // Remove the buttons and forms from the comment.
+                    document.getElementById('edit-comment-buttons-'+(result.key - 1)).remove();
+                    document.getElementById('edit-comment-forms-'+(result.key - 1)).remove();
+                }
 
                 displayMessage('success', result.message, result.id);
             }
@@ -80,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (result.action == 'delete') {
                 document.getElementById('card-comment-'+result.id).remove();
-                // Increase the comment counter.
+                // Decrease the comment counter.
                 let nbComments = parseInt(document.getElementById('nb-comments').textContent);
                 document.getElementById('nb-comments').textContent = nbComments - 1;
 

@@ -76,6 +76,18 @@ class DatabaseSeeder extends Seeder
 
         $email->setViewFiles();
 
+        $email = Email::create([
+          'code' => 'comment-alert',
+          'subject' => 'Comment alert',
+          'body_html' => '<p>Hello {{ $data->post_author }}<br /><br />'.
+          'The user {{ $data->comment_author }} has left a comment regarding your post {{ $data->title }}.<br />'.
+          'You can check it out here: {{ $data->post_url }}'.
+          '<br /><br />Best regard, <br />The Starter CMS team.</p>',
+          'plain_text' => 0,
+        ]);
+
+        $email->setViewFiles();
+
 	// First create the default permissions. 
 	
 	$permissions = Permission::getPermissionNameList();

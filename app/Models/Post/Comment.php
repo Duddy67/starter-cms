@@ -35,4 +35,12 @@ class Comment extends Model
     {
         return $this->belongsTo(Post::class);
     }
+
+    /**
+     * Check if the current user is allowed to edit a given comment.
+     */
+    public function canEdit(): bool
+    {
+        return (auth()->check() && auth()->user()->id == $this->owned_by);
+    }
 }

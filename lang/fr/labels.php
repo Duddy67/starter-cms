@@ -168,6 +168,7 @@ return [
 	'show_created_at' => 'Montrer la date de création',
 	'show_image' => 'Montrer l\'image',
 	'allow_comments' => 'Autoriser les commentaires',
+	'comment_alert' => 'Alerte commentaire',
 	'extra_fields' => 'Champs supplémentaires',
 	'extra_field_1' => 'Champ supplémentaire 1',
 	'extra_field_2' => 'Champ supplémentaire 2',

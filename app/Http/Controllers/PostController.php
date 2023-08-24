@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\User;
 use App\Models\Post\Comment;
 use App\Models\Cms\Setting;
+use App\Models\Cms\Email;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Post\Comment\StoreRequest;
 use App\Http\Requests\Post\Comment\UpdateRequest;
@@ -51,15 +53,29 @@ class PostController extends Controller
         $post = Post::find($id);
         $post->comments()->save($comment);
 
+        // Set variables used in the render.
         $comment->author = auth()->user()->name;
         $theme = Setting::getValue('website', 'theme', 'starter');
-        $timezone = Setting::getValue('app', 'timezone');
+        $page = Setting::getPage('post');
+        $count = $post->comments()->count();
+        $key = $count - 1;
+
+        if ($post->settings['comment_alert'] && auth()->user()->id != $post->owned_by) {
+            $author = User::find($post->owned_by);
+            $post->recipient = $author->email;
+            $post->post_author = $author->name;
+            $post->comment_author = auth()->user()->name;
+            $post->post_url = url('/').$post->getUrl();
+            Email::sendEmail('comment-alert', $post);
+        }
 
         return response()->json([
             'id' => $comment->id, 
             'action' => 'create', 
-            'render' => view('themes.'.$theme.'.partials.post.comment', compact('comment', 'timezone'))->render(),
+            'render' => view('themes.'.$theme.'.partials.post.comment', compact('comment', 'page', 'count', 'key'))->render(),
             'text' => $comment->text,
+            'count' => $count,
+            'key' => $key,
             'message' => __('messages.post.create_comment_success'),
         ]);
     }
