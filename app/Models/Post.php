@@ -116,10 +116,11 @@ class Post extends Model
      */
     public function comments()
     {
+        // Returns the post comments in ascending order (oldest on top).
         return $this->hasMany(Comment::class)
                     ->leftJoin('users', 'users.id', '=', 'post_comments.owned_by')
                     ->select('post_comments.*', 'users.name AS author')
-                    ->orderBy('post_comments.created_at', 'desc');
+                    ->orderBy('post_comments.created_at', 'asc');
     }
 
     /**

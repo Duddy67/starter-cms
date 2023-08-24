@@ -27,11 +27,13 @@
     </div>
 </div>
 
-@if ($post->comments()->exists())
-    @foreach ($post->comments as $comment)
-        @include('themes.starter.partials.post.comment')
-    @endforeach
-@endif
+<div class="row" id="comment-list">
+    @if ($count = $post->comments()->count())
+        @foreach ($post->comments as $key => $comment)
+            @include('themes.starter.partials.post.comment', ['count' => $count, 'key' => $key])
+        @endforeach
+    @endif
+</div>
 
 @push('scripts')
     <script type="text/javascript" src="{{ asset('/vendor/tinymce/tinymce.min.js') }}"></script>

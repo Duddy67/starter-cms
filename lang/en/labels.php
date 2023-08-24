@@ -168,6 +168,7 @@ return [
 	'show_created_at' => 'Show created at',
 	'show_image' => 'Show image',
         'allow_comments' => 'Allow comments',
+        'comment_alert' => 'Comment alert',
 	'extra_fields' => 'Extra fields',
 	'extra_field_1' => 'Extra field 1',
 	'extra_field_2' => 'Extra field 2',

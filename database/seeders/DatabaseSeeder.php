@@ -116,6 +116,32 @@ class DatabaseSeeder extends Seeder
 
         $email->setViewFiles('fr');
 
+        $email = Email::create([
+          'code' => 'comment-alert',
+          'updated_by' => 1,
+          'plain_text' => 0,
+        ]);
+
+        $translation = $email->getOrCreateTranslation('en');
+        $translation->subject = 'Comment alert';
+        $translation->body_html = '<p>Hello {{ $data->post_author }}<br /><br />'.
+          'The user {{ $data->comment_author }} has left a comment regarding your post {{ $data->title }}.<br />'.
+          'You can check it out here: {{ $data->post_url }}'.
+          '<br /><br />Best regard, <br />The Starter CMS team.</p>';
+        $translation->save();
+
+        $email->setViewFiles('en');
+
+        $translation = $email->getOrCreateTranslation('fr');
+        $translation->subject = 'Alerte commentaire';
+        $translation->body_html = '<p>Bonjour {{ $data->post_author }}<br /><br />'.
+          'L\'utilisateur {{ $data->comment_author }} a laissé un commentaire concernant votre article {{ $data->title }}.<br />'.
+          'Vous pouvez le lire ici: {{ $data->post_url }}'.
+          '<br /><br />Cordialement, <br />L\'équipe de Starter CMS.</p>';
+        $translation->save();
+
+        $email->setViewFiles('fr');
+
 	// First create the default permissions. 
 	
 	$permissions = Permission::getPermissionNameList();
