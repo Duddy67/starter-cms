@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\User;
-use App\Models\Post\Comment;
+use App\Models\Cms\Comment;
 use App\Models\Cms\Setting;
 use App\Models\Cms\Email;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\Post\Comment\StoreRequest;
-use App\Http\Requests\Post\Comment\UpdateRequest;
+use App\Http\Requests\Cms\Comment\StoreRequest;
+use App\Http\Requests\Cms\Comment\UpdateRequest;
 
 
 class PostController extends Controller

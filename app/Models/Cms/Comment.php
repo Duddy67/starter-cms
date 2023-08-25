@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Models\Post;
+namespace App\Models\Cms;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Post;
 
 class Comment extends Model
 {
@@ -15,7 +14,7 @@ class Comment extends Model
      *
      * @var string
      */
-    protected $table = 'post_comments';
+    protected $table = 'comments';
 
     /**
      * The attributes that are mass assignable.
@@ -29,11 +28,11 @@ class Comment extends Model
 
 
     /**
-     * Get the post that owns the comment.
+     * Get all of the owning commentable models.
      */
-    public function post()
+    public function commentable()
     {
-        return $this->belongsTo(Post::class);
+        return $this->morphTo();
     }
 
     /**

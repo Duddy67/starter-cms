@@ -13,7 +13,7 @@ use App\Traits\CheckInCheckOut;
 use App\Traits\OptionList;
 use App\Models\Cms\Document;
 use App\Models\Cms\LayoutItem;
-use App\Models\Post\Comment;
+use App\Models\Cms\Comment;
 use App\Support\PostCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -122,10 +122,10 @@ class Post extends Model
     public function comments()
     {
         // Returns the post comments in ascending order (oldest on top).
-        return $this->hasMany(Comment::class)
-                    ->leftJoin('users', 'users.id', '=', 'post_comments.owned_by')
-                    ->select('post_comments.*', 'users.name AS author')
-                    ->orderBy('post_comments.created_at', 'asc');
+        return $this->morphMany(Comment::class, 'commentable')
+                    ->leftJoin('users', 'users.id', '=', 'comments.owned_by')
+                    ->select('comments.*', 'users.name AS author')
+                    ->orderBy('comments.created_at', 'asc');
     }
 
     /**
