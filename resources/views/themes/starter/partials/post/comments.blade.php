@@ -38,6 +38,6 @@
 @push('scripts')
     <script type="text/javascript" src="{{ asset('/vendor/tinymce/tinymce.min.js') }}"></script>
     <script src="{{ asset('/vendor/codalia/c.ajax.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/js/post/comment.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/js/comment.js') }}"></script>
 @endpush
 
