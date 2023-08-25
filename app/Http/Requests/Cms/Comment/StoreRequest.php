@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Post\Comment;
+namespace App\Http\Requests\Cms\Comment;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
