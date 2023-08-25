@@ -146,6 +146,7 @@ class DatabaseSeeder extends Seeder
             ['group' => 'posts', 'key' => 'show_image', 'value' => 1],
             ['group' => 'posts', 'key' => 'show_categories', 'value' => 1],
             ['group' => 'posts', 'key' => 'allow_comments', 'value' => 0],
+            ['group' => 'posts', 'key' => 'comment_alert', 'value' => 0],
             ['group' => 'posts', 'key' => 'alias_extra_field_1', 'value' => ''],
             ['group' => 'posts', 'key' => 'alias_extra_field_2', 'value' => ''],
             ['group' => 'posts', 'key' => 'alias_extra_field_3', 'value' => ''],
