@@ -8,7 +8,7 @@ use App\Models\Cms\Setting;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Post;
 use App\Models\Post\Setting as PostSetting;
-use App\Models\Post\Ordering as PostOrdering;
+use App\Models\Cms\Order;
 use App\Models\Cms\Document;
 use App\Traits\Node;
 use App\Traits\OptionList;
@@ -97,11 +97,11 @@ class Category extends Model
     }
 
     /**
-     * The post orderings that belong to the category.
+     * The item orders that belong to the category.
      */
-    public function postOrderings()
+    public function orders()
     {
-        return $this->hasMany(Ordering::class)->orderBy('post_order');
+        return $this->hasMany(Order::class)->orderBy('item_order');
     }
 
     /**
@@ -231,10 +231,11 @@ class Category extends Model
 
             // Check for numerical sorting.
             if ($ordering[1] == 'order') {
-                $query->join('ordering_category_post', function ($join) use ($ordering) { 
-                    $join->on('posts.id', '=', 'post_id')
+                $query->join('orders', function ($join) use ($ordering) { 
+                    $join->on('posts.id', '=', 'orderable_id')
+                         ->where('orderable_type', '=', Post::class)
                          ->where('category_id', '=', $this->id);
-                })->orderBy('post_order', $ordering[2]);
+                })->orderBy('item_order', $ordering[2]);
             }
             // Regular sorting.
             else {

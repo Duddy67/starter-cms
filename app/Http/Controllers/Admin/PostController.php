@@ -16,7 +16,7 @@ use App\Http\Requests\Post\UpdateRequest;
 use Illuminate\Support\Str;
 use App\Models\Cms\Document;
 use Carbon\Carbon;
-use App\Models\Post\Ordering;
+use App\Models\Cms\Order;
 use App\Models\Cms\LayoutItem;
 
 
@@ -198,12 +198,12 @@ class PostController extends Controller
             $categories = array_merge($categories, $post->getPrivateCategories());
 
             if (!empty($categories)) {
-                Ordering::sync($post, $categories);
+                Order::sync($post, $categories);
                 $post->categories()->sync($categories);
             }
             else {
                 // Remove all orderings and categories for this post.
-                Ordering::sync($post, []);
+                Order::sync($post, []);
                 $post->categories()->sync([]);
             }
 
@@ -276,7 +276,7 @@ class PostController extends Controller
 
         if ($request->input('categories') !== null) {
             $post->categories()->attach($request->input('categories'));
-            Ordering::sync($post, $request->input('categories'));
+            Order::sync($post, $request->input('categories'));
         }
 
         if ($image = $this->uploadImage($request)) {
@@ -552,22 +552,22 @@ class PostController extends Controller
 
     public function up(Request $request, Post $post)
     {
-        $ordering = $post->orderings->first(function($ordering) use($request) {
-            return $ordering->category_id == $request->input('categories')[0];
+        $order = $post->orders->first(function($order) use($request) {
+            return $order->category_id == $request->input('categories')[0];
         });
 
-        $ordering->moveOrderUp();
+        $order->moveOrderUp();
 
         return redirect()->route('admin.posts.index', $request->query());
     }
 
     public function down(Request $request, Post $post)
     {
-        $ordering = $post->orderings->first(function($ordering) use($request) {
-            return $ordering->category_id == $request->input('categories')[0];
+        $order = $post->orders->first(function($order) use($request) {
+            return $order->category_id == $request->input('categories')[0];
         });
 
-        $ordering->moveOrderDown();
+        $order->moveOrderDown();
 
         return redirect()->route('admin.posts.index', $request->query());
     }

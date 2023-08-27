@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Models\Cms\Setting;
 use App\Models\Post\Category;
-use App\Models\Post\Ordering;
+use App\Models\Cms\Order;
 use App\Models\User\Group;
 use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
@@ -103,15 +104,15 @@ class Post extends Model
     /**
      * The orderings that belong to the post.
      */
-    public function orderings()
+    public function orders(): MorphMany
     {
-        return $this->hasMany(Ordering::class);
+        return $this->morphMany(Order::class, 'orderable');
     }
 
     /**
      * Get all of the post's layout items.
      */
-    public function layoutItems()
+    public function layoutItems(): MorphMany
     {
         return $this->morphMany(LayoutItem::class, 'layout_itemable')->orderBy('order');
     }
@@ -119,7 +120,7 @@ class Post extends Model
     /**
      * Get the comments for the blog post.
      */
-    public function comments()
+    public function comments(): MorphMany
     {
         // Returns the post comments in ascending order (oldest on top).
         return $this->morphMany(Comment::class, 'commentable')
@@ -139,6 +140,7 @@ class Post extends Model
     {
         $this->categories()->detach();
         $this->groups()->detach();
+        $this->orders()->delete();
 
         if ($this->image) {
             $this->image->delete();
@@ -148,7 +150,7 @@ class Post extends Model
             $item->delete();
         }
 
-        Ordering::where('post_id', $this->id)->delete();
+        //Ordering::where('post_id', $this->id)->delete();
 
         parent::delete();
     }
@@ -191,10 +193,11 @@ class Post extends Model
 
             // Check for numerical sorting.
             if (Setting::canOrderBy('categories', Post::getOrderByExcludedFilters()) && Setting::isSortedByOrder()) {
-                $query->join('ordering_category_post', function ($join) use($categories) { 
-                    $join->on('posts.id', '=', 'post_id')
+                $query->join('orders', function ($join) use($categories) { 
+                    $join->on('posts.id', '=', 'orderable_id')
+                         ->where('orderable_type', '=', Post::class)
                          ->where('category_id', '=', $categories[0]);
-                })->orderBy('post_order', $matches[2]);
+                })->orderBy('item_order', $matches[2]);
             }
             // Regular sorting.
             elseif ($matches[1] != 'order') {
