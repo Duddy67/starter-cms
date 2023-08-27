@@ -1,15 +1,17 @@
 <?php
 
-namespace App\Models\Post;
+namespace App\Models\Cms;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
-use App\Models\Post;
-use App\Models\Post\Category;
 
-class Ordering extends Model implements Sortable
+/*
+ * Allows a model item (post, product...) to be ordered by category.
+ */
+class Order extends Model implements Sortable
 {
     use HasFactory, SortableTrait;
 
@@ -18,7 +20,7 @@ class Ordering extends Model implements Sortable
      *
      * @var string
      */
-    protected $table = 'ordering_category_post';
+    protected $table = 'orders';
 
     /**
      * Indicates if the model should be timestamped.
@@ -33,26 +35,24 @@ class Ordering extends Model implements Sortable
      * @var array
      */
     protected $fillable = [
-        'post_id',
         'category_id',
-        'title',
     ];
 
     public $sortable = [
-        'order_column_name' => 'post_order',
+        'order_column_name' => 'item_order',
         'sort_when_creating' => true,
     ];
 
     /**
-     * Get the post that owns the ordering.
+     * Get the parent orderable model (post, product, ...).
      */
-    public function post()
+    public function orderable(): MorphTo
     {
-        return $this->belongsTo(Post::class);
+        return $this->morphTo();
     }
 
     /**
-     * Get the category that owns the ordering.
+     * Get the category that owns the order.
      */
     public function category()
     {
@@ -60,32 +60,36 @@ class Ordering extends Model implements Sortable
     }
 
     /**
-     * Synchronizes the post orderings according to the linked categories.
+     * Synchronizes the item orders according to the linked categories.
      */
-    public static function sync($post, $categories)
+    public static function sync($item, $categories)
     {
-        // Get the previous categories linked to the post.
-        $olds = $post->orderings->pluck('category_id')->toArray();
+        // Get the previous categories linked to the item.
+        $olds = $item->orders->pluck('category_id')->toArray();
 
         foreach ($categories as $category) {
             if (!in_array($category, $olds)) {
-                $ordering = Ordering::create(['post_id' => $post->id, 'category_id' => $category, 'title' => $post->title]);
-                $ordering->save();
+                $order = Order::create(['category_id' => $category]);
+                $item->orders()->save($order);
             }
         }
 
-	// Delete the previous categories that are no longer linked to the post.
+	// Delete the previous categories that are no longer linked to the item.
         $olds = array_diff($olds, $categories);
 
         foreach ($olds as $old) {
-            Ordering::where(['post_id' => $post->id, 'category_id' => $old])->delete();
+            foreach ($item->orders as $order) {
+                if ($order->category_id == $old) {
+                    $order->delete();
+                }
+            }
 
             $category = Category::find($old);
 
-            // Reorder the other posts in the category.
-            foreach ($category->postOrderings as $i => $ordering) {
-                $ordering->post_order = $i + 1;
-                $ordering->save();
+            // Reorder the other items in the category.
+            foreach ($category->orders as $i => $order) {
+                $order->item_order = $i + 1;
+                $order->save();
             }
         }
     }
