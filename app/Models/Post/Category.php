@@ -121,12 +121,8 @@ class Category extends Model
      */
     public function delete()
     {
-        PostOrdering::where('category_id', $this->id)->delete();
-
-        if ($this->image) {
-            $this->image->delete();
-        }
-
+        $this->orders()->delete();
+        $this->image()->delete();
         $this->posts()->detach();
 
         parent::delete();

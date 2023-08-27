@@ -141,16 +141,14 @@ class Post extends Model
         $this->categories()->detach();
         $this->groups()->detach();
         $this->orders()->delete();
+        $this->comments()->delete();
+        $this->image()->delete();
 
-        if ($this->image) {
-            $this->image->delete();
-        }
-
+        // Delete layout items one by one or the Document relationship in 
+        // the image item type won't be deleted. 
         foreach ($this->layoutItems as $item) {
             $item->delete();
         }
-
-        //Ordering::where('post_id', $this->id)->delete();
 
         parent::delete();
     }
