@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Post\Category;
+//use App\Models\Post\Category;
+use App\Models\Cms\Category;
 use App\Models\Cms\Setting;
 
 class SiteController extends Controller
@@ -20,7 +21,8 @@ class SiteController extends Controller
         if ($category = Category::where('slug', $page['name'])->first()) {
             $category->settings = $category->getSettings();
             $metaData = $category->meta_data;
-            $posts = $category->getAllPosts($request);
+            //$posts = $category->getAllPosts($request);
+            $posts = $category->getItems($request);
 
             if (count($posts)) {
                 // Use the first post as model to get the global post settings.

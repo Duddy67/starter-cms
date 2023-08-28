@@ -4,15 +4,16 @@ namespace App\Http\Controllers\Admin\Post;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Post\Category;
+use App\Models\Cms\Category;
+use App\Models\Post;
 use App\Models\User\Group;
 use App\Models\User;
 use App\Models\Cms\Setting;
 use App\Traits\Form;
 use App\Models\Cms\Document;
 use App\Traits\CheckInCheckOut;
-use App\Http\Requests\Post\Category\StoreRequest;
-use App\Http\Requests\Post\Category\UpdateRequest;
+use App\Http\Requests\Cms\Category\StoreRequest;
+use App\Http\Requests\Cms\Category\UpdateRequest;
 use Illuminate\Support\Str;
 
 
@@ -36,6 +37,7 @@ class CategoryController extends Controller
         $this->middleware('auth');
         $this->middleware('admin.posts.categories');
         $this->item = new Category;
+        $this->item->collection_type = 'post';
     }
 
     /**
@@ -50,12 +52,12 @@ class CategoryController extends Controller
         $columns = $this->getColumns();
         $actions = $this->getActions('list');
         $filters = $this->getFilters($request);
-        $items = Category::getCategories($request);
+        $items = Category::getCategories($request, 'post');
         $rows = $this->getRowTree($columns, $items);
         $query = $request->query();
         $url = ['route' => 'admin.posts.categories', 'item_name' => 'category', 'query' => $query];
 
-        return view('admin.post.category.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
+        return view('admin.cms.category.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
     }
 
     /**
@@ -73,7 +75,7 @@ class CategoryController extends Controller
         $actions = $this->getActions('form', ['destroy']);
         $query = $request->query();
 
-        return view('admin.post.category.form', compact('fields', 'actions', 'query'));
+        return view('admin.cms.category.form', compact('fields', 'actions', 'query'));
     }
 
     /**
@@ -85,9 +87,9 @@ class CategoryController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $category = $this->item = Category::select('post_categories.*', 'users.name as owner_name', 'users2.name as modifier_name')
-                                            ->leftJoin('users', 'post_categories.owned_by', '=', 'users.id')
-                                            ->leftJoin('users as users2', 'post_categories.updated_by', '=', 'users2.id')
+        $category = $this->item = Category::select('categories.*', 'users.name as owner_name', 'users2.name as modifier_name')
+                                            ->leftJoin('users', 'categories.owned_by', '=', 'users.id')
+                                            ->leftJoin('users as users2', 'categories.updated_by', '=', 'users2.id')
                                             ->findOrFail($id);
 
         if (!$category->canAccess()) {
@@ -113,7 +115,7 @@ class CategoryController extends Controller
         // Get the owner of the category in order to check (in the template) if they're still allowed to create categories.
         $owner = User::find($category->owned_by);
 
-        return view('admin.post.category.form', compact('category', 'owner', 'fields', 'actions', 'query'));
+        return view('admin.cms.category.form', compact('category', 'owner', 'fields', 'actions', 'query'));
     }
 
     /**
@@ -295,6 +297,8 @@ class CategoryController extends Controller
             'settings' => $request->input('settings'),
         ]);
 
+        $category->collection_type = 'post';
+
         if ($category->parent_id) {
             $parent = Category::findOrFail($category->parent_id);
             $parent->appendNode($category);
@@ -375,7 +379,7 @@ class CategoryController extends Controller
      */
     public function massCheckIn(Request $request)
     {
-        $messages = CheckInCheckOut::checkInMultiple($request->input('ids'), '\\App\\Models\\Post\\Category');
+        $messages = CheckInCheckOut::checkInMultiple($request->input('ids'), '\\App\\Models\\Cms\\Category');
 
         return redirect()->route('admin.posts.categories.index', $request->query())->with($messages);
     }
@@ -524,7 +528,9 @@ class CategoryController extends Controller
      */
     private function setFieldValues(&$fields, Category $category)
     {
-        $globalSettings = Setting::getDataByGroup('categories', $category);
+        // Pass a post object as model to get the post data setting.
+        $post = new Post;
+        $globalSettings = Setting::getDataByGroup('categories', $post);
 
         foreach ($globalSettings as $key => $value) {
             if (str_starts_with($key, 'alias_extra_field_')) {

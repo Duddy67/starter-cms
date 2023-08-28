@@ -145,7 +145,7 @@ trait Form
                 elseif ($column->name == 'ordering') {
                     $ordering = [];
 
-                    $upperLevelClassName = ($this->getUpperLevelClassName()) ? '.'.Str::plural(strtolower($this->getUpperLevelClassName())) : '';
+                    $collectionType = (isset($this->item->collection_type)) ? '.'.Str::plural($this->item->collection_type) : '.'.Str::plural(strtolower($this->getUpperLevelClassName()));
 
                     // Tree list type orderings.  
                     if (in_array($this->getClassName(), ['Item', 'Category'])) {
@@ -153,11 +153,11 @@ trait Form
                         $query = ($this->getClassName() == 'Item') ? ['code' => $item->menu_code, 'item' => $item->id] : [strtolower($this->getClassName()) => $item->id];
 
                         if ($item->getPrevSibling()) { 
-                            $ordering['up'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.up', $query);
+                            $ordering['up'] = route('admin'.$collectionType.'.'.Str::plural(strtolower($this->getClassName())).'.up', $query);
                         }
 
                         if ($item->getNextSibling()) { 
-                            $ordering['down'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.down', $query);
+                            $ordering['down'] = route('admin'.$collectionType.'.'.Str::plural(strtolower($this->getClassName())).'.down', $query);
                         }
                     }
                     // Normal orderings
@@ -167,11 +167,11 @@ trait Form
                         $pagination = $item->_row_pagination;
 
                         if ($pagination['rowPosition'] != 1 || $pagination['currentPage'] != 1) {
-                            $ordering['up'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.up', $query);
+                            $ordering['up'] = route('admin'.$collectionType.'.'.Str::plural(strtolower($this->getClassName())).'.up', $query);
                         }
 
                         if ($pagination['hasMorePages'] || $pagination['count'] != $pagination['rowPosition']) {
-                            $ordering['down'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.down', $query);
+                            $ordering['down'] = route('admin'.$collectionType.'.'.Str::plural(strtolower($this->getClassName())).'.down', $query);
                         }
                     }
 

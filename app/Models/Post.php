@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Models\Cms\Setting;
-use App\Models\Post\Category;
+//use App\Models\Post\Category;
+use App\Models\Cms\Category;
 use App\Models\Cms\Order;
 use App\Models\User\Group;
 use App\Traits\AccessLevel;
@@ -80,9 +82,10 @@ class Post extends Model
     /**
      * The categories that belong to the post.
      */
-    public function categories()
+    public function categories(): MorphToMany
     {
-        return $this->belongsToMany(Category::class);
+        //return $this->belongsToMany(Category::class);
+        return $this->morphToMany(Category::class, 'categorizable');
     }
 
     /**
@@ -118,7 +121,7 @@ class Post extends Model
     }
 
     /**
-     * Get the comments for the blog post.
+     * Get the comments for the post.
      */
     public function comments(): MorphMany
     {
@@ -314,6 +317,87 @@ class Post extends Model
         }
 
         return $rawContent;
+    }
+
+    /*
+     * Builds the Post query.
+     */
+    public static function getCategorizables(Request $request, Category $category, array $options = [])
+    {
+        //$categoryId  = $request->segment(2);
+        $query = Post::query();
+        $query->select('posts.*', 'users.name as owner_name')->leftJoin('users', 'posts.owned_by', '=', 'users.id');
+        // Join the role tables to get the owner's role level.
+        $query->join('model_has_roles', 'posts.owned_by', '=', 'model_id')->join('roles', 'roles.id', '=', 'role_id');
+
+        // Get only the posts related to this category. 
+        $query->whereHas('categories', function ($query) {
+            $query->where('id', $category->id);
+        });
+
+        if (Auth::check()) {
+
+            // N.B: Put the following part of the query into brackets.
+            $query->where(function($query) {
+
+                // Check for access levels.
+                $query->where(function($query) {
+                    $query->where('roles.role_level', '<', auth()->user()->getRoleLevel())
+                          ->orWhereIn('posts.access_level', ['public_ro', 'public_rw'])
+                          ->orWhere('posts.owned_by', auth()->user()->id);
+                });
+
+                $groupIds = auth()->user()->getGroupIds();
+
+                if (!empty($groupIds)) {
+                    // Check for access through groups.
+                    $query->orWhereHas('groups', function ($query)  use ($groupIds) {
+                        $query->whereIn('id', $groupIds);
+                    });
+                }
+            });
+        }
+        else {
+            $query->whereIn('posts.access_level', ['public_ro', 'public_rw']);
+        }
+ 
+        // Do not show unpublished posts on front-end.
+        $query->where('posts.status', 'published');
+
+        // Set post ordering.
+        $settings = $category->getSettings();
+
+        if ($settings['post_ordering'] != 'no_ordering') {
+            // Extract the ordering name and direction from the setting value.
+            preg_match('#^([a-z-0-9_]+)_(asc|desc)$#', $settings['post_ordering'], $ordering);
+
+            // Check for numerical sorting.
+            if ($ordering[1] == 'order') {
+                $query->join('orders', function ($join) use ($ordering) { 
+                    $join->on('posts.id', '=', 'orderable_id')
+                         ->where('orderable_type', '=', Post::class)
+                         ->where('category_id', '=', $this->id);
+                })->orderBy('item_order', $ordering[2]);
+            }
+            // Regular sorting.
+            else {
+                $query->orderBy($ordering[1], $ordering[2]);
+            }
+        }
+
+        $search = $request->input('search', null);
+
+        if ($search !== null) {
+            $query->where('posts.title', 'like', '%'.$search.'%');
+        }
+
+        if (in_array('paginate', $options)) {
+            $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
+
+            return $query->paginate($perPage);
+        }
+
+        return $query->get();
     }
 
     public static function filterQueryByAuth($query)

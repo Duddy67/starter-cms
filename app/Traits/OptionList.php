@@ -154,7 +154,7 @@ trait OptionList
     {
         // Get the given category model class name.
         $class = get_class($this);
-        $nodes = "\\{$class}"::defaultOrder()->get()->toTree();
+        $nodes = "\\{$class}"::where('collection_type', $this->collection_type)->defaultOrder()->get()->toTree();
         $options = [];
         // Defines the state of the current instance.
         //$isNew = ($node && $node->id) ? false : true;

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Post;
-use App\Models\Post\Category;
+use App\Models\Cms\Category;
 use App\Models\Menu;
 use App\Models\Cms\Setting;
 use App\Traits\AccessLevel;
@@ -71,7 +71,7 @@ class Group extends Model
      */
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'post_category_group');
+        return $this->belongsToMany(Category::class, 'category_group');
     }
 
     /**

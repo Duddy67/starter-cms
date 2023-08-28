@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Models\Post;
+namespace App\Models\Cms;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use App\Models\Cms\Setting;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Post;
@@ -27,7 +28,7 @@ class Category extends Model
      *
      * @var string
      */
-    protected $table = 'post_categories';
+    protected $table = 'categories';
 
     /**
      * The attributes that are mass assignable.
@@ -70,6 +71,10 @@ class Category extends Model
         'settings' => 'array'
     ];
 
+    protected $categorizableTypes = [
+        'post' => Post::class,
+    ];
+
     /**
      * The extra group fields.
      *
@@ -81,11 +86,11 @@ class Category extends Model
     ];
 
     /**
-     * The posts that belong to the category.
+     * Get all of the posts that are assigned this category.
      */
-    public function posts()
+    public function posts(): MorphToMany
     {
-        return $this->belongsToMany(Post::class);
+        return $this->morphedByMany(Post::class, 'categorizable');
     }
 
     /**
@@ -93,7 +98,7 @@ class Category extends Model
      */
     public function groups()
     {
-        return $this->belongsToMany(Group::class, 'post_category_group');
+        return $this->belongsToMany(Group::class, 'category_group');
     }
 
     /**
@@ -130,38 +135,54 @@ class Category extends Model
     /*
      * Gets the category items as a tree.
      */
-    public static function getCategories(Request $request)
+    public static function getCategories(Request $request, $collectionType)
     {
         $search = $request->input('search', null);
 
         if ($search !== null) {
-            return Category::where('name', 'like', '%'.$search.'%')->get();
+            return Category::where('name', 'like', '%'.$search.'%')->where('collection_type', $collectionType)->get();
         }
         else {
-            return Category::select('post_categories.*', 'users.name as owner_name')
-                             ->leftJoin('users', 'post_categories.owned_by', '=', 'users.id')->defaultOrder()->get()->toTree();
+            return Category::select('categories.*', 'users.name as owner_name')
+                             ->leftJoin('users', 'categories.owned_by', '=', 'users.id')
+                             ->where('collection_type', $collectionType)
+                             ->defaultOrder()->get()->toTree();
         }
     }
 
     public function getUrl()
     {
-        $segments = Setting::getSegments('Post');
+        $segments = Setting::getSegments(ucfirst($this->collection_type));
         return '/'.$segments['categories'].'/'.$this->id.'/'.$this->slug;
+    }
+
+    /*public function getAllItems(Request $request, string $itemType)
+    {
+        $query = $this->categorizableTypes[$itemType]::getCategorizableQuery($request);
+        return $query->get();
+    }*/
+
+    public function getItems(Request $request, array $options = [])
+    {
+        //$perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
+        return $this->categorizableTypes[$this->collection_type]::getCategorizables($request, $this, $options);
+
+        //return $query->paginate($perPage);
     }
 
     /*
      * Returns posts without pagination.
      */
-    public function getAllPosts(Request $request)
+    /*public function getAllPosts(Request $request)
     {
         $query = $this->getQuery($request);
         return $query->get();
-    }
+    }*/
 
     /*
      * Returns filtered and paginated posts.
      */
-    public function getPosts(Request $request)
+    /*public function getPosts(Request $request)
     {
         $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
         $search = $request->input('search', null);
@@ -172,12 +193,12 @@ class Category extends Model
         }
 
         return $query->paginate($perPage);
-    }
+    }*/
 
     /*
      * Builds the Post query.
      */
-    private function getQuery(Request $request)
+    /*private function getQuery(Request $request)
     {
         $query = Post::query();
         $query->select('posts.*', 'users.name as owner_name')->leftJoin('users', 'posts.owned_by', '=', 'users.id');
@@ -240,7 +261,7 @@ class Category extends Model
         }
 
         return $query;
-    }
+    }*/
 
     public function getOwnedByOptions()
     {
@@ -251,7 +272,7 @@ class Category extends Model
             $extra = [];
 
             // The user is a manager who doesn't or no longer have the create-post-category permission.
-            if ($user->getRoleType() == 'manager' && !$user->can('create-post-category')) {
+            if ($user->getRoleType() == 'manager' && !$user->can('create-'.$this->collection_type.'-category')) {
                 // The user owns this category.
                 // N.B: A new owner will be required when updating this category. 
                 if ($this->id && $this->access_level != 'private') {
