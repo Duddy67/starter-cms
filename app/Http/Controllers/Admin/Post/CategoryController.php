@@ -122,7 +122,7 @@ class CategoryController extends Controller
      * Checks the record back in.
      *
      * @param  Request  $request
-     * @param  \App\Models\Post\Category  $category (optional)
+     * @param  \App\Models\Cms\Category  $category (optional)
      * @return Response
      */
     public function cancel(Request $request, Category $category = null)
@@ -137,8 +137,8 @@ class CategoryController extends Controller
     /**
      * Update the specified category. (AJAX)
      *
-     * @param  \App\Http\Requests\Post\Category\UpdateRequest  $request
-     * @param  \App\Models\Post\Category $category
+     * @param  \App\Http\Requests\Cms\Category\UpdateRequest  $request
+     * @param  \App\Models\Cms\Category $category
      * @return Response
      */
     public function update(UpdateRequest $request, Category $category)
@@ -261,7 +261,7 @@ class CategoryController extends Controller
     /**
      * Store a new category.
      *
-     * @param  \App\Http\Requests\Post\Category\StoreRequest  $request
+     * @param  \App\Http\Requests\Cms\Category\StoreRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)
@@ -306,6 +306,10 @@ class CategoryController extends Controller
 
         $category->save();
 
+        if ($request->input('groups') !== null) {
+            $category->groups()->attach($request->input('groups'));
+        }
+
         if ($image = $this->uploadImage($request)) {
             $category->image()->save($image);
         }
@@ -324,7 +328,7 @@ class CategoryController extends Controller
      * Remove the specified category from storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Post\Category $category
+     * @param  \App\Models\Cms\Category $category
      * @return Response
      */
     public function destroy(Request $request, Category $category)
@@ -458,7 +462,7 @@ class CategoryController extends Controller
      * Delete the image Document linked to the item.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Post\Category $category
+     * @param  \App\Models\Cms\Category $category
      * @return JSON
      */
     public function deleteImage(Request $request, Category $category)
@@ -497,7 +501,7 @@ class CategoryController extends Controller
      * Reorders a given category a level above.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Post\Category $category
+     * @param  \App\Models\Cms\Category $category
      * @return Response
      */
     public function up(Request $request, Category $category)
@@ -510,7 +514,7 @@ class CategoryController extends Controller
      * Reorders a given category a level below.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Post\Category $category
+     * @param  \App\Models\Cms\Category $category
      * @return Response
      */
     public function down(Request $request, Category $category)
@@ -523,7 +527,7 @@ class CategoryController extends Controller
      * Sets field values specific to the Category model.
      *
      * @param  Array of stdClass Objects  $fields
-     * @param  \App\Models\Post\Category $category
+     * @param  \App\Models\Cms\Category $category
      * @return void
      */
     private function setFieldValues(&$fields, Category $category)

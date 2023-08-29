@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Models\Cms\Setting;
-//use App\Models\Post\Category;
 use App\Models\Cms\Category;
 use App\Models\Cms\Order;
 use App\Models\User\Group;
@@ -84,8 +83,7 @@ class Post extends Model
      */
     public function categories(): MorphToMany
     {
-        //return $this->belongsToMany(Category::class);
-        return $this->morphToMany(Category::class, 'categorizable');
+        return $this->morphToMany(Category::class, 'categorizable')->where('collection_type', 'post');
     }
 
     /**
@@ -291,9 +289,10 @@ class Post extends Model
     public function getPrivateCategories()
     {
         return $this->categories()->where([
-            ['post_categories.access_level', '=', 'private'], 
-            ['post_categories.owned_by', '!=', auth()->user()->id]
-        ])->pluck('post_categories.id')->toArray();
+            ['categories.collection_type', '=', 'post'], 
+            ['categories.access_level', '=', 'private'], 
+            ['categories.owned_by', '!=', auth()->user()->id]
+        ])->pluck('categories.id')->toArray();
     }
 
     public function getExtraFieldByAlias($alias)
@@ -320,18 +319,17 @@ class Post extends Model
     }
 
     /*
-     * Builds the Post query.
+     * Returns the posts that belong to the given category.
      */
-    public static function getCategorizables(Request $request, Category $category, array $options = [])
+    public static function getCategoryItems(Request $request, Category $category, array $options = [])
     {
-        //$categoryId  = $request->segment(2);
         $query = Post::query();
         $query->select('posts.*', 'users.name as owner_name')->leftJoin('users', 'posts.owned_by', '=', 'users.id');
         // Join the role tables to get the owner's role level.
         $query->join('model_has_roles', 'posts.owned_by', '=', 'model_id')->join('roles', 'roles.id', '=', 'role_id');
 
         // Get only the posts related to this category. 
-        $query->whereHas('categories', function ($query) {
+        $query->whereHas('categories', function($query) use($category) {
             $query->where('id', $category->id);
         });
 
@@ -351,7 +349,7 @@ class Post extends Model
 
                 if (!empty($groupIds)) {
                     // Check for access through groups.
-                    $query->orWhereHas('groups', function ($query)  use ($groupIds) {
+                    $query->orWhereHas('groups', function($query)  use($groupIds) {
                         $query->whereIn('id', $groupIds);
                     });
                 }
@@ -373,7 +371,7 @@ class Post extends Model
 
             // Check for numerical sorting.
             if ($ordering[1] == 'order') {
-                $query->join('orders', function ($join) use ($ordering) { 
+                $query->join('orders', function($join) use($ordering) { 
                     $join->on('posts.id', '=', 'orderable_id')
                          ->where('orderable_type', '=', Post::class)
                          ->where('category_id', '=', $this->id);
@@ -391,7 +389,7 @@ class Post extends Model
             $query->where('posts.title', 'like', '%'.$search.'%');
         }
 
-        if (in_array('paginate', $options)) {
+        if (in_array('pagination', $options)) {
             $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
 
             return $query->paginate($perPage);
@@ -421,7 +419,7 @@ class Post extends Model
 
                 if (!empty($groupIds)) {
                     // Check for access through groups.
-                    $query->orWhereHas('groups', function ($query)  use ($groupIds) {
+                    $query->orWhereHas('groups', function($query)  use($groupIds) {
                         $query->whereIn('id', $groupIds);
                     });
                 }

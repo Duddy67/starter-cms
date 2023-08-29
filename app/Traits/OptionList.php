@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Models\User\Group;
 use App\Models\User;
 use App\Models\Cms\Setting;
+use App\Models\Cms\Category;
 
 /*
  * Gathers and builds all of the common option lists used in the CMS.  
@@ -121,10 +122,9 @@ trait OptionList
      */  
     public function getCategoryOptions(): array
     {
-        // Get the model class name.
-        $class = get_class($this);
-        // Get the categories of the model.
-        $nodes = "\\{$class}\\Category"::defaultOrder()->get()->toTree();
+        // Get the categorizable model class name.
+        $class = class_basename(get_class($this));
+        $nodes = Category::where('collection_type', lcfirst($class))->defaultOrder()->get()->toTree();
         $options = [];
         $userGroupIds = auth()->user()->getGroupIds();
 
@@ -152,9 +152,7 @@ trait OptionList
      */  
     public function getParentCategoryOptions(): array
     {
-        // Get the given category model class name.
-        $class = get_class($this);
-        $nodes = "\\{$class}"::where('collection_type', $this->collection_type)->defaultOrder()->get()->toTree();
+        $nodes = Category::where('collection_type', $this->collection_type)->defaultOrder()->get()->toTree();
         $options = [];
         // Defines the state of the current instance.
         //$isNew = ($node && $node->id) ? false : true;

@@ -42,6 +42,15 @@
     @php $count++; @endphp
 @endforeach
 
+@if ($post->settings['show_categories'] && count($post->categories))
+    <p class="categories">
+        <h6>Categories</h6>
+        @foreach ($post->categories as $category)
+            <a href="{{ url('/'.$segments['posts'].$category->getUrl()) }}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">{{ $category->name }}</a>
+        @endforeach
+    </p>
+@endif
+
 @if ($post->settings['allow_comments'])
     @include('themes.starter.partials.post.comments')
 @endif

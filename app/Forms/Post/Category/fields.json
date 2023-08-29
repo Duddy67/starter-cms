@@ -159,5 +159,45 @@
     "extra": ["global_setting"],
     "group": "settings",
     "options": [] 
+  },
+  {
+    "label": "labels.post.show_post_excerpt",
+    "type": "select",
+    "name": "show_post_excerpt",
+    "function": "yes_no",
+    "id": "show_post_excerpt",
+    "extra": ["global_setting"],
+    "group": "settings",
+    "options": [] 
+  },
+  {
+    "label": "labels.post.show_post_image",
+    "type": "select",
+    "name": "show_post_image",
+    "function": "yes_no",
+    "id": "show_post_image",
+    "extra": ["global_setting"],
+    "group": "settings",
+    "options": [] 
+  },
+  {
+    "label": "labels.post.show_post_categories",
+    "type": "select",
+    "name": "show_post_categories",
+    "function": "yes_no",
+    "id": "show_post_categories",
+    "extra": ["global_setting"],
+    "group": "settings",
+    "options": [] 
+  },
+  {
+    "label": "labels.post.post_ordering",
+    "type": "select",
+    "name": "post_ordering",
+    "function": "item_ordering",
+    "id": "post_ordering",
+    "extra": ["global_setting"],
+    "group": "settings",
+    "options": [] 
   }
 ]
