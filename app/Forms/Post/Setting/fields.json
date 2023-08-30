@@ -140,6 +140,7 @@
     "label": "labels.post.post_ordering",
     "type": "select",
     "name": "post_ordering",
+    "function": "item_ordering",
     "id": "post_ordering",
     "group": "categories",
     "options": [] 

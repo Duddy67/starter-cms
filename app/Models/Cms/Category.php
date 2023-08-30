@@ -135,6 +135,7 @@ class Category extends Model
         $this->orders()->delete();
         $this->image()->delete();
         $this->posts()->detach();
+        $this->groups()->detach();
 
         parent::delete();
     }

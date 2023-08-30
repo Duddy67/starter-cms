@@ -371,10 +371,10 @@ class Post extends Model
 
             // Check for numerical sorting.
             if ($ordering[1] == 'order') {
-                $query->join('orders', function($join) use($ordering) { 
+                $query->join('orders', function($join) use($ordering, $category) { 
                     $join->on('posts.id', '=', 'orderable_id')
                          ->where('orderable_type', '=', Post::class)
-                         ->where('category_id', '=', $this->id);
+                         ->where('category_id', '=', $category->id);
                 })->orderBy('item_order', $ordering[2]);
             }
             // Regular sorting.
