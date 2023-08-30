@@ -422,7 +422,7 @@ class User extends Authenticatable
     {
         $dependencies = [
             'posts' => '\\App\\Models\\Post',
-            'categories' => '\\App\\Models\\Post\\Category',
+            'categories' => '\\App\\Models\\Cms\\Category',
             'roles' => '\\App\\Models\\User\\Role',
             'groups' => '\\App\\Models\\User\\Group',
             'menus' => '\\App\\Models\\Menu',
