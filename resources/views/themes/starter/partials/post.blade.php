@@ -16,7 +16,7 @@
     @if ($category->settings['show_post_categories'])
 	<p class="categories">
 	    <h6>Categories</h6>
-            @php $categories = $post->getCategories($locale); @endphp
+            @php $categories = $post->getCategories('post', $locale); @endphp
 	    @foreach ($categories as $category)
 		<a href="{{ url('/'.$locale.'/'.$segments['posts'].$category->getUrl()) }}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">{{ $category->name }}</a>
 	    @endforeach

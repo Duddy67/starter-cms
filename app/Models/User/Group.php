@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Post;
-use App\Models\Post\Category;
+use App\Models\Cms\Category;
 use App\Models\Menu;
 use App\Models\Cms\Setting;
 use App\Traits\AccessLevel;
@@ -71,7 +71,7 @@ class Group extends Model
      */
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'post_category_group');
+        return $this->belongsToMany(Category::class, 'category_group');
     }
 
     /**
@@ -155,14 +155,6 @@ class Group extends Model
             ['value' => 'read_only', 'text' => __('labels.generic.read_only')],
             ['value' => 'read_write', 'text' => __('labels.generic.read_write')],
         ];
-    }
-
-    /*
-     * Generic function that returns model values which are handled by select inputs. 
-     */
-    public function getSelectedValue(\stdClass $field): mixed
-    {
-        return $this->{$field->name};
     }
 
     /*

@@ -1,0 +1,178 @@
+[
+  {
+    "label": "labels.generic.name",
+    "type": "text",
+    "name": "name",
+    "id": "name",
+    "placeholder": "labels.generic.name"
+  },
+  {
+    "label": "labels.generic.slug",
+    "type": "text",
+    "name": "slug",
+    "id": "slug",
+    "tab": "details",
+    "placeholder": "labels.generic.slug"
+  },
+  {
+    "label": "labels.category.parent_category",
+    "type": "select",
+    "name": "parent_id",
+    "function": "parent_category",
+    "id": "parent_id",
+    "blank": "labels.generic.none",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.locale",
+    "type": "select",
+    "name": "locale",
+    "id": "locale",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.page",
+    "type": "select",
+    "name": "page",
+    "id": "page",
+    "blank": "labels.generic.none",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.status",
+    "type": "select",
+    "name": "status",
+    "id": "status",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.access_level",
+    "type": "select",
+    "name": "access_level",
+    "id": "access_level",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.owned_by",
+    "type": "select",
+    "name": "owned_by",
+    "id": "owned_by",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.owned_by",
+    "type": "text",
+    "name": "owner_name",
+    "id": "owner_name",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.user.groups",
+    "type": "select",
+    "name": "groups",
+    "function": "group",
+    "extra": ["multiple","title_as_id"],
+    "id": "groups",
+    "class": "_locked",
+    "blank": "labels.generic.select_option",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.created_at",
+    "type": "date",
+    "name": "created_at",
+    "dataset": {"date":"0", "time":"0"},
+    "id": "created_at",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.generic.updated_by",
+    "type": "text",
+    "name": "updated_by",
+    "id": "updated_by",
+    "extra": ["disabled"],
+    "placeholder": "labels.generic.no_update"
+  },
+  {
+    "label": "labels.generic.updated_at",
+    "type": "date",
+    "name": "updated_at",
+    "dataset": {"date":"0", "time":"0"},
+    "id": "updated_at",
+    "extra": ["disabled"]
+  },
+  {
+    "label": "labels.generic.description",
+    "type": "textarea",
+    "name": "description",
+    "class": "tinymce-texteditor",
+    "id": "description"
+  },
+  {
+    "label": "labels.generic.image",
+    "type": "file",
+    "name": "image",
+    "id": "image"
+  },
+  {
+    "label": "labels.generic.alt_img",
+    "type": "text",
+    "name": "alt_img",
+    "id": "alt_img",
+    "placeholder": "labels.generic.alt_img"
+  },
+  {
+    "label": "labels.generic.show_name",
+    "type": "select",
+    "name": "show_name",
+    "function": "yes_no",
+    "id": "show_name",
+    "extra": ["global_setting"],
+    "tab": "settings",
+    "group": "settings",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.show_search",
+    "type": "select",
+    "name": "show_search",
+    "function": "yes_no",
+    "id": "show_search",
+    "extra": ["global_setting"],
+    "group": "settings",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.show_description",
+    "type": "select",
+    "name": "show_description",
+    "function": "yes_no",
+    "id": "show_description",
+    "extra": ["global_setting"],
+    "group": "settings",
+    "options": [] 
+  },
+  {
+    "label": "labels.generic.show_image",
+    "type": "select",
+    "name": "show_image",
+    "function": "yes_no",
+    "id": "show_image",
+    "extra": ["global_setting"],
+    "group": "settings",
+    "options": []
+  },
+  {
+    "label": "labels.generic.show_subcategories",
+    "type": "select",
+    "name": "show_subcategories",
+    "function": "yes_no",
+    "id": "show_subcategories",
+    "extra": ["global_setting"],
+    "group": "settings",
+    "options": [] 
+  }
+]

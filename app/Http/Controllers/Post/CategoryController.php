@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Post;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Post\Category;
+use App\Models\Cms\Category;
 use App\Models\Cms\Setting;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,7 +15,7 @@ class CategoryController extends Controller
     {
         $page = Setting::getPage('post.category');
 
-	if (!$category = Category::getCategory($id, $locale)) {
+	if (!$category = Category::getCategory($id, 'post', $locale)) {
             $page['name'] = '404';
             return view('themes.'.$page['theme'].'.index', compact('locale', 'page'));
 	}
@@ -26,7 +26,7 @@ class CategoryController extends Controller
 	}
 
         $category->settings = $category->getSettings();
-	$posts = $category->getPosts($request);
+        $posts = $category->getItemCollection($request, ['pagination']);
 
         if (count($posts)) {
             // Use the first post as model to get the global post settings.

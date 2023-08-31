@@ -36,7 +36,10 @@ class Setting extends Model
     public $timestamps = false;
 
 
-    public static function getPostOrderingOptions(): array
+    /**
+     * Function shared with all the categorizable models.
+     */
+    public static function getItemOrderingOptions(): array
     {
       return [
 	  ['value' => 'no_ordering', 'text' => __('labels.generic.no_ordering')],

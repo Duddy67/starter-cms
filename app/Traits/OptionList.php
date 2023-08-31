@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Models\User\Group;
 use App\Models\User;
 use App\Models\Cms\Setting;
+use App\Models\Cms\Category;
 
 /*
  * Gathers and builds all of the common option lists used in the CMS.  
@@ -121,15 +122,16 @@ trait OptionList
      */  
     public function getCategoryOptions(): array
     {
-        // Get the model class name.
-        $class = get_class($this);
+        // Get the categorizable model class name.
+        $class = class_basename(get_class($this));
+
         // Get the categories of the model.
-        $nodes = "\\{$class}\\Category"::select('post_categories.*', 'translations.name as name')
-            ->join('translations', function($join) use($class) {
-                $join->on('post_categories.id', '=', 'translatable_id')
-                     ->where('translations.translatable_type', '=', $class.'\Category')
+        $nodes = Category::select('categories.*', 'translations.name as name')
+            ->join('translations', function($join) {
+                $join->on('categories.id', '=', 'translatable_id')
+                     ->where('translations.translatable_type', '=', Category::class)
                      ->where('locale', '=', config('app.locale'));
-        })->defaultOrder()->get()->toTree();
+        })->where('categories.collection_type', lcfirst($class))->defaultOrder()->get()->toTree();
 
         $options = [];
         $userGroupIds = auth()->user()->getGroupIds();
@@ -160,12 +162,12 @@ trait OptionList
     {
         // Get the given category model class name.
         $class = get_class($this);
-        $nodes = "\\{$class}"::select('post_categories.*', 'translations.name as name')
-            ->join('translations', function($join) use($class) {
-                $join->on('post_categories.id', '=', 'translatable_id')
-                     ->where('translations.translatable_type', '=', $class)
+        $nodes = Category::select('categories.*', 'translations.name as name')
+            ->join('translations', function($join) {
+                $join->on('categories.id', '=', 'translatable_id')
+                     ->where('translations.translatable_type', '=', Category::class)
                      ->where('locale', '=', config('app.locale'));
-        })->defaultOrder()->get()->toTree();
+        })->where('categories.collection_type', $this->collection_type)->defaultOrder()->get()->toTree();
 
         $options = [];
         // Defines the state of the current instance.

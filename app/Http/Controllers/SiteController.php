@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Post\Category;
+use App\Models\Cms\Category;
 use App\Models\Cms\Setting;
 
 class SiteController extends Controller
@@ -19,7 +19,7 @@ class SiteController extends Controller
         $name = ($request->segment(2)) ? $request->segment(2) : __('locales.homepage.'.$locale, [], 'en');
         $page = Setting::getPage($name);
 
-        $category = Category::getCategory($page['name'], $locale);
+        $category = Category::getCategory($page['name'], 'post', $locale);
 
         if ($category) {
             // Prioritize the category page over the page from the url.
@@ -33,7 +33,7 @@ class SiteController extends Controller
 
             $category->settings = $category->getSettings();
             $metaData = $category->meta_data;
-            $posts = $category->getAllPosts($request);
+            $posts = $category->getItemCollection($request);
 
             if (count($posts)) {
                 // Use the first post as model to get the global post settings.
@@ -75,7 +75,7 @@ class SiteController extends Controller
         $locale = $request->segment(1);
         $page = Setting::getPage($request->segment(2));
 
-        $category = Category::getCategory($page['name'], $locale);
+        $category = Category::getCategory($page['name'], 'post', $locale);
 
         // First make sure the category exists.
 	if (!$category) {

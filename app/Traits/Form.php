@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\Cms\Setting;
+use App\Models\Cms\Category;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -145,7 +146,10 @@ trait Form
                 elseif ($column->name == 'ordering') {
                     $ordering = [];
 
-                    $upperLevelClassName = ($this->getUpperLevelClassName()) ? '.'.Str::plural(strtolower($this->getUpperLevelClassName())) : '';
+                    // Look for a possible collection type to use with the ordering routes.
+                    $collectionType = (isset($this->item->collection_type)) ? '.'.Str::plural($this->item->collection_type) : '.'.Str::plural(strtolower($this->getUpperLevelClassName()));
+                    // In case no type is found, set it as an empty string.
+                    $collectionType = ($collectionType == '.') ? '' : $collectionType;
 
                     // Tree list type orderings.  
                     if (in_array($this->getClassName(), ['Item', 'Category'])) {
@@ -153,11 +157,11 @@ trait Form
                         $query = ($this->getClassName() == 'Item') ? ['code' => $item->menu_code, 'item' => $item->id] : [strtolower($this->getClassName()) => $item->id];
 
                         if ($item->getPrevSibling()) { 
-                            $ordering['up'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.up', $query);
+                            $ordering['up'] = route('admin'.$collectionType.'.'.Str::plural(strtolower($this->getClassName())).'.up', $query);
                         }
 
                         if ($item->getNextSibling()) { 
-                            $ordering['down'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.down', $query);
+                            $ordering['down'] = route('admin'.$collectionType.'.'.Str::plural(strtolower($this->getClassName())).'.down', $query);
                         }
                     }
                     // Normal orderings
@@ -167,11 +171,11 @@ trait Form
                         $pagination = $item->_row_pagination;
 
                         if ($pagination['rowPosition'] != 1 || $pagination['currentPage'] != 1) {
-                            $ordering['up'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.up', $query);
+                            $ordering['up'] = route('admin'.$collectionType.'.'.Str::plural(strtolower($this->getClassName())).'.up', $query);
                         }
 
                         if ($pagination['hasMorePages'] || $pagination['count'] != $pagination['rowPosition']) {
-                            $ordering['down'] = route('admin'.$upperLevelClassName.'.'.Str::plural(strtolower($this->getClassName())).'.down', $query);
+                            $ordering['down'] = route('admin'.$collectionType.'.'.Str::plural(strtolower($this->getClassName())).'.down', $query);
                         }
                     }
 
@@ -551,7 +555,14 @@ trait Form
      */  
     private function getData(string $type): mixed
     {
-        $json = file_get_contents($this->getPathToForm().'/'.$type.'.json', true);
+        // Check if a categorizable model overwrite the initial category file.
+        // The overwritten file must live in: app/Form/ModelName/Category∕overwritten_file.json
+        if (get_class($this->item) == Category::class && file_exists(app_path().'/Forms/'.ucfirst($this->item->collection_type).'/Category/'.$type.'.json')) {
+            $json = file_get_contents(app_path().'/Forms/'.ucfirst($this->item->collection_type).'/Category/'.$type.'.json', true);
+        }
+        else {
+            $json = file_get_contents($this->getPathToForm().'/'.$type.'.json', true);
+        }
 
         if ($json === false) {
            throw new Exception('Load Failed');    

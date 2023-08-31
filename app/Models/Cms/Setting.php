@@ -105,6 +105,11 @@ class Setting extends Model
      */
     public static function getSettingClassModel(mixed $model): ?string
     {
+        // In case of category, use the setting class of the categorizable model
+        if (isset($model->collection_type)) {
+            return '\\App\\Models\\'.ucfirst($model->collection_type).'\\Setting';
+        }
+
         // Get the class names contained in the namespace.
         $classes = explode('\\', get_class($model));
 

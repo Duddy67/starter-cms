@@ -4,16 +4,16 @@ namespace App\Http\Controllers\Admin\Post;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Post\Category;
+use App\Models\Cms\Category;
+use App\Models\Post;
 use App\Models\User\Group;
 use App\Models\User;
 use App\Models\Cms\Setting;
-use App\Models\Post\Setting as PostSetting;
 use App\Traits\Form;
 use App\Models\Cms\Document;
 use App\Traits\CheckInCheckOut;
-use App\Http\Requests\Post\Category\StoreRequest;
-use App\Http\Requests\Post\Category\UpdateRequest;
+use App\Http\Requests\Cms\Category\StoreRequest;
+use App\Http\Requests\Cms\Category\UpdateRequest;
 use Illuminate\Support\Str;
 
 
@@ -37,6 +37,7 @@ class CategoryController extends Controller
         $this->middleware('auth');
         $this->middleware('admin.posts.categories');
         $this->item = new Category;
+        $this->item->collection_type = 'post';
     }
 
     /**
@@ -58,13 +59,13 @@ class CategoryController extends Controller
         $columns = $this->getColumns($except);
         $actions = $this->getActions('list');
         $filters = $this->getFilters($request);
-        $items = Category::getCategories($request);
+        $items = Category::getCategories($request, 'post');
         $rows = $this->getRowTree($columns, $items);
         $this->setRowValues($rows, $columns, $items);
         $query = $request->query();
         $url = ['route' => 'admin.posts.categories', 'item_name' => 'category', 'query' => $query];
 
-        return view('admin.post.category.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
+        return view('admin.cms.category.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
     }
 
     /**
@@ -84,7 +85,7 @@ class CategoryController extends Controller
         $actions = $this->getActions('form', ['destroy']);
         $query = $request->query();
 
-        return view('admin.post.category.form', compact('fields', 'actions', 'locale', 'query'));
+        return view('admin.cms.category.form', compact('fields', 'actions', 'locale', 'query'));
     }
 
     /**
@@ -97,7 +98,7 @@ class CategoryController extends Controller
     public function edit(Request $request, int $id)
     {
         $locale = ($request->query('locale', null)) ? $request->query('locale') : config('app.locale');
-        $category = $this->item = Category::getCategory($id, $locale);
+        $category = $this->item = Category::getCategory($id, 'post', $locale);
 
         if (!$category->canAccess()) {
             return redirect()->route('admin.posts.categories.index')->with('error',  __('messages.generic.access_not_auth'));
@@ -123,14 +124,14 @@ class CategoryController extends Controller
         // Get the owner of the category in order to check (in the template) if they're still allowed to create categories.
         $owner = User::find($category->owned_by);
 
-        return view('admin.post.category.form', compact('category', 'owner', 'fields', 'locale', 'actions', 'query'));
+        return view('admin.cms.category.form', compact('category', 'owner', 'fields', 'locale', 'actions', 'query'));
     }
 
     /**
      * Checks the record back in.
      *
      * @param  Request  $request
-     * @param  \App\Models\Post\Category  $category (optional)
+     * @param  \App\Models\Cms\Category  $category (optional)
      * @return Response
      */
     public function cancel(Request $request, Category $category = null)
@@ -145,8 +146,8 @@ class CategoryController extends Controller
     /**
      * Update the specified category. (AJAX)
      *
-     * @param  \App\Http\Requests\Post\Category\UpdateRequest  $request
-     * @param  \App\Models\Post\Category $category
+     * @param  \App\Http\Requests\Cms\Category\UpdateRequest  $request
+     * @param  \App\Models\Cms\Category $category
      * @return Response
      */
     public function update(UpdateRequest $request, Category $category)
@@ -269,7 +270,7 @@ class CategoryController extends Controller
     /**
      * Store a new category.
      *
-     * @param  \App\Http\Requests\Post\Category\StoreRequest  $request
+     * @param  \App\Http\Requests\Cms\Category\StoreRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRequest $request)
@@ -306,7 +307,13 @@ class CategoryController extends Controller
         }
 
         $category->updated_by = auth()->user()->id;
+        $category->collection_type = 'post';
+
         $category->save();
+
+        if ($request->input('groups') !== null) {
+            $category->groups()->attach($request->input('groups'));
+        }
 
         // Store the very first translation as the default locale.
         $translation = $category->getOrCreateTranslation(config('app.locale'));
@@ -332,7 +339,7 @@ class CategoryController extends Controller
      * Remove the specified category from storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Post\Category $category
+     * @param  \App\Models\Cms\Category $category
      * @return Response
      */
     public function destroy(Request $request, Category $category)
@@ -387,7 +394,7 @@ class CategoryController extends Controller
      */
     public function massCheckIn(Request $request)
     {
-        $messages = CheckInCheckOut::checkInMultiple($request->input('ids'), '\\App\\Models\\Post\\Category');
+        $messages = CheckInCheckOut::checkInMultiple($request->input('ids'), '\\App\\Models\\Cms\\Category');
 
         return redirect()->route('admin.posts.categories.index', $request->query())->with($messages);
     }
@@ -466,7 +473,7 @@ class CategoryController extends Controller
      * Delete the image Document linked to the item.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Post\Category $category
+     * @param  \App\Models\Cms\Category $category
      * @return JSON
      */
     public function deleteImage(Request $request, Category $category)
@@ -505,7 +512,7 @@ class CategoryController extends Controller
      * Reorders a given category a level above.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Post\Category $category
+     * @param  \App\Models\Cms\Category $category
      * @return Response
      */
     public function up(Request $request, Category $category)
@@ -518,7 +525,7 @@ class CategoryController extends Controller
      * Reorders a given category a level below.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Post\Category $category
+     * @param  \App\Models\Cms\Category $category
      * @return Response
      */
     public function down(Request $request, Category $category)
@@ -569,12 +576,14 @@ class CategoryController extends Controller
      * Sets field values specific to the Category model.
      *
      * @param  Array of stdClass Objects  $fields
-     * @param  \App\Models\Post\Category $category
+     * @param  \App\Models\Cms\Category $category
      * @return void
      */
     private function setFieldValues(&$fields, Category $category)
     {
-        $globalSettings = Setting::getDataByGroup('categories', $category);
+        // Pass a Post object as model to get the post data setting.
+        $post = new Post;
+        $globalSettings = Setting::getDataByGroup('categories', $post);
 
         foreach ($globalSettings as $key => $value) {
             if (str_starts_with($key, 'alias_extra_field_')) {
