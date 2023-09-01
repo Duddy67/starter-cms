@@ -279,7 +279,7 @@ class Post extends Model
         return '/'.$segments['posts'].'/'.$this->id.'/'.$this->slug;
     }
 
-    public function getCategories($collectionType, $locale)
+    public function getCategories($locale)
     {
         return $this->categories()->selectRaw('categories.*,'.Post::getFallbackCoalesce(['name', 'slug']))
                     ->leftJoin('translations AS locale', function ($join) use($locale) { 

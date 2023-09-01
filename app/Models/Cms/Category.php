@@ -181,7 +181,9 @@ class Category extends Model
         });
 
         if ($slug) {
-            $query->where('locale.slug', $id)->orWhere('fallback.slug', $id);
+            $query->where(function($query) use($id) { 
+                $query->where('locale.slug', $id)->orWhere('fallback.slug', $id);
+            });
         }
 
         $query->where('categories.collection_type', $collectionType);
