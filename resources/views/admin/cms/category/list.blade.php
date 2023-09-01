@@ -25,13 +25,13 @@
         </div>
     @endif
 
-    <input type="hidden" id="createItem" value="{{ route('admin.posts.categories.create', $query) }}">
-    <input type="hidden" id="destroyItems" value="{{ route('admin.posts.categories.index', $query) }}">
-    <input type="hidden" id="checkinItems" value="{{ route('admin.posts.categories.massCheckIn', $query) }}">
-    <input type="hidden" id="publishItems" value="{{ route('admin.posts.categories.massPublish', $query) }}">
-    <input type="hidden" id="unpublishItems" value="{{ route('admin.posts.categories.massUnpublish', $query) }}">
+    <input type="hidden" id="createItem" value="{{ route('admin.'.$collection.'.categories.create', $query) }}">
+    <input type="hidden" id="destroyItems" value="{{ route('admin.'.$collection.'.categories.index', $query) }}">
+    <input type="hidden" id="checkinItems" value="{{ route('admin.'.$collection.'.categories.massCheckIn', $query) }}">
+    <input type="hidden" id="publishItems" value="{{ route('admin.'.$collection.'.categories.massPublish', $query) }}">
+    <input type="hidden" id="unpublishItems" value="{{ route('admin.'.$collection.'.categories.massUnpublish', $query) }}">
 
-    <form id="selectedItems" action="{{ route('admin.posts.categories.index', $query) }}" method="post">
+    <form id="selectedItems" action="{{ route('admin.'.$collection.'.categories.index', $query) }}" method="post">
         @method('delete')
         @csrf
     </form>
