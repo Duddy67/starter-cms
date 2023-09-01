@@ -3,14 +3,14 @@
 @section ('main')
     <h3>@php echo (isset($category)) ? __('labels.category.edit_category') : __('labels.category.create_category'); @endphp</h3>
 
-    @if (isset($category) && $owner->getRoleType() != 'super-admin' && !$owner->hasPermissionTo('create-post-categories'))
+    @if (isset($category) && $owner->getRoleType() != 'super-admin' && !$owner->hasPermissionTo('create-'.$category->collection_type.'-categories'))
         <div class="alert alert-warning alert-block">
         <button type="button" class="close" data-dismiss="alert">×</button>        
         <strong>{{ __('messages.generic.can_no_longer_create_item', ['name' => $owner->name]) }}</strong>
         </div>
     @endif
 
-    @php $action = (isset($category)) ? route('admin.posts.categories.update', $query) : route('admin.posts.categories.store', $query) @endphp
+    @php $action = (isset($category)) ? route('admin.'.$collection.'.categories.update', $query) : route('admin.'.$collection.'.categories.store', $query) @endphp
     <form method="post" action="{{ $action }}" id="itemForm">
         @csrf
 
@@ -69,7 +69,7 @@
 
         <input type="hidden" id="currentLocale" value="{{ $locale }}">
         <input type="hidden" id="cancelChangeLocale" value="0">
-        <input type="hidden" id="cancelEdit" value="{{ route('admin.posts.categories.cancel', $query) }}">
+        <input type="hidden" id="cancelEdit" value="{{ route('admin.'.$collection.'.categories.cancel', $query) }}">
         <input type="hidden" id="siteUrl" value="{{ url('/') }}">
         <input type="hidden" id="close" name="_close" value="0">
 
@@ -80,12 +80,12 @@
     <x-toolbar :items=$actions />
 
     @if (isset($category))
-        <form id="deleteItem" action="{{ route('admin.posts.categories.destroy', $query) }}" method="post">
+        <form id="deleteItem" action="{{ route('admin.'.$collection.'.categories.destroy', $query) }}" method="post">
             @method('delete')
             @csrf
         </form>
 
-        <form id="deleteImage" action="{{ route('admin.posts.categories.deleteImage', $query) }}" method="post">
+        <form id="deleteImage" action="{{ route('admin.'.$collection.'.categories.deleteImage', $query) }}" method="post">
             @method('delete')
             @csrf
         </form>

@@ -64,8 +64,9 @@ class CategoryController extends Controller
         $this->setRowValues($rows, $columns, $items);
         $query = $request->query();
         $url = ['route' => 'admin.posts.categories', 'item_name' => 'category', 'query' => $query];
+        $collection = 'posts';
 
-        return view('admin.cms.category.list', compact('items', 'columns', 'rows', 'actions', 'filters', 'url', 'query'));
+        return view('admin.cms.category.list', compact('items', 'columns', 'collection', 'rows', 'actions', 'filters', 'url', 'query'));
     }
 
     /**
@@ -84,8 +85,9 @@ class CategoryController extends Controller
         $this->setFieldValues($fields, $this->item);
         $actions = $this->getActions('form', ['destroy']);
         $query = $request->query();
+        $collection = 'posts';
 
-        return view('admin.cms.category.form', compact('fields', 'actions', 'locale', 'query'));
+        return view('admin.cms.category.form', compact('fields', 'collection', 'actions', 'locale', 'query'));
     }
 
     /**
@@ -123,8 +125,9 @@ class CategoryController extends Controller
         $query = array_merge($request->query(), ['category' => $id]);
         // Get the owner of the category in order to check (in the template) if they're still allowed to create categories.
         $owner = User::find($category->owned_by);
+        $collection = 'posts';
 
-        return view('admin.cms.category.form', compact('category', 'owner', 'fields', 'locale', 'actions', 'query'));
+        return view('admin.cms.category.form', compact('category', 'owner', 'collection', 'fields', 'locale', 'actions', 'query'));
     }
 
     /**
