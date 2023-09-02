@@ -17,7 +17,6 @@ trait OptionList
     public function getPerPageOptions(): array
     {
       return [
-          ['value' => 2, 'text' => 2],
           ['value' => 5, 'text' => 5],
           ['value' => 10, 'text' => 10],
           ['value' => 15, 'text' => 15],
