@@ -12,7 +12,9 @@
               <p class="card-text">{{ __('messages.dashboard.last_connection', ['date' => $setting::getFormattedDate(Auth::user()->last_seen_at)]) }}</p>
           @endif
 
-          <a href="#" class="btn btn-primary">Go somewhere</a>
+          @allowto('create-posts')
+              <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">{{ __('labels.post.create_post') }}</a>
+          @endallowto
         </div>
       </div>
     </div>

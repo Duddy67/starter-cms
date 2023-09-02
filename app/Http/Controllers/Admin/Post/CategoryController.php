@@ -49,7 +49,10 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         // Gather the needed data to build the item list.
-        $columns = $this->getColumns();
+
+        // Don't show ordering while searching.
+        $except = ($request->input('search', null)) ? ['ordering'] : [];
+        $columns = $this->getColumns($except);
         $actions = $this->getActions('list');
         $filters = $this->getFilters($request);
         $items = Category::getCategories($request, 'post');

@@ -144,17 +144,17 @@ class Category extends Model
      */
     public static function getCategories(Request $request, string $collectionType)
     {
-        $search = $request->input('search', null);
+        $query = Category::query();
+        $query->select('categories.*', 'users.name as owner_name')
+              ->leftJoin('users', 'categories.owned_by', '=', 'users.id')
+              ->where('collection_type', $collectionType);
 
-        if ($search !== null) {
-            return Category::where('name', 'like', '%'.$search.'%')->where('collection_type', $collectionType)->get();
+        if ($search = $request->input('search', null)) {
+            // No tree display while searching.
+            return $query->where('categories.name', 'like', '%'.$search.'%')->get();
         }
-        else {
-            return Category::select('categories.*', 'users.name as owner_name')
-                             ->leftJoin('users', 'categories.owned_by', '=', 'users.id')
-                             ->where('collection_type', $collectionType)
-                             ->defaultOrder()->get()->toTree();
-        }
+
+        return $query->defaultOrder()->get()->toTree();
     }
 
     public function getUrl()
