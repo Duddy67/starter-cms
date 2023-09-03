@@ -78,7 +78,10 @@
             <input type="hidden" name="_date_formats[{{ $key }}]" value="{{ $value }}">
         @endforeach
     </form>
-    <x-toolbar :items=$actions />
+
+    <div class="x-toolbar" id="x-toolbar">
+        <x-toolbar :items=$actions />
+    </div>
 
     @if (isset($post))
         <form id="deleteItem" action="{{ route('admin.posts.destroy', $query) }}" method="post">
