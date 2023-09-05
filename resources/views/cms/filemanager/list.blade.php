@@ -19,7 +19,7 @@
     <body>
 
     <div class="container-fluid">
-	@include ('admin.layouts.flash-message')
+	@include ('admin.partials.flash-message')
 
 	<div class="card">
 	    <div class="card-body">

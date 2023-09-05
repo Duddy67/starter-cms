@@ -3,6 +3,8 @@
 @section ('main')
     <h3>@php echo (isset($category)) ? __('labels.category.edit_category') : __('labels.category.create_category'); @endphp</h3>
 
+    @include('admin.partials.x-toolbar')
+
     @if (isset($category) && $owner->getRoleType() != 'super-admin' && !$owner->hasPermissionTo('create-'.$category->collection_type.'-categories'))
         <div class="alert alert-warning alert-block">
         <button type="button" class="close" data-dismiss="alert">×</button>        
@@ -70,7 +72,6 @@
             <input type="hidden" id="canEdit" value="{{ $category->canEdit() }}">
         @endif
     </form>
-    <x-toolbar :items=$actions />
 
     @if (isset($category))
         <form id="deleteItem" action="{{ route('admin.'.$collection.'.categories.destroy', $query) }}" method="post">

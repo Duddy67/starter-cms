@@ -3,6 +3,8 @@
 @section ('main')
     <h3>@php echo (isset($role)) ? __('labels.role.edit_role') : __('labels.role.create_role'); @endphp</h3>
 
+    @include('admin.partials.x-toolbar')
+
     @php $action = (isset($role)) ? route('admin.users.roles.update', $query) : route('admin.users.roles.store', $query) @endphp
     <form method="post" action="{{ $action }}" id="itemForm">
         @csrf
@@ -52,10 +54,6 @@
             <input type="hidden" id="permissions" name="_permissions" value="{{ $permissions }}">
         @endif
     </form>
-
-    <div class="form-group">
-        <x-toolbar :items=$actions />
-    </div>
 
     @if (isset($role))
         <form id="deleteItem" action="{{ route('admin.users.roles.destroy', $query) }}" method="post">

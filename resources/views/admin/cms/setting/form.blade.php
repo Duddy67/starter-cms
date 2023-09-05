@@ -1,6 +1,10 @@
 @extends ('admin.layouts.default')
 
 @section ('main')
+    <h3>@php echo __('labels.title.settings'); @endphp</h3>
+
+    @include('admin.partials.x-toolbar')
+
     <form method="post" action="{{ route('admin.cms.settings.update', $query ) }}" id="itemForm">
         @csrf
 	@method('patch')
@@ -16,10 +20,6 @@
 	    <x-input :field="$field" :value="$value" />
         @endforeach
     </form>
-
-    <div class="form-group">
-	<x-toolbar :items=$actions />
-    </div>
 @endsection
 
 @push ('style')
@@ -29,6 +29,5 @@
 @push ('scripts')
     <script type="text/javascript" src="{{ asset('/vendor/adminlte/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/codalia/c.ajax.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/js/admin/datepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/form.js') }}"></script>
 @endpush

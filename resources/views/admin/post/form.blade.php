@@ -3,6 +3,8 @@
 @section ('main')
     <h3>@php echo (isset($post)) ? __('labels.post.edit_post') : __('labels.post.create_post'); @endphp</h3>
 
+    @include('admin.partials.x-toolbar')
+
     @php $action = (isset($post)) ? route('admin.posts.update', $query) : route('admin.posts.store', $query) @endphp
     <form method="post" action="{{ $action }}" id="itemForm" enctype="multipart/form-data">
         @csrf
@@ -78,10 +80,6 @@
             <input type="hidden" name="_date_formats[{{ $key }}]" value="{{ $value }}">
         @endforeach
     </form>
-
-    <div class="x-toolbar" id="x-toolbar">
-        <x-toolbar :items=$actions />
-    </div>
 
     @if (isset($post))
         <form id="deleteItem" action="{{ route('admin.posts.destroy', $query) }}" method="post">
