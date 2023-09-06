@@ -3,6 +3,8 @@
 @section ('main')
     <h3>@php echo (isset($group)) ? __('labels.group.edit_group') : __('labels.group.create_group'); @endphp</h3>
 
+    @include('admin.partials.x-toolbar')
+
     @php $action = (isset($group)) ? route('admin.users.groups.update', $query) : route('admin.users.groups.store', $query) @endphp
     <form method="post" action="{{ $action }}" id="itemForm">
         @csrf
@@ -19,7 +21,6 @@
         <input type="hidden" id="cancelEdit" value="{{ route('admin.users.groups.cancel', $query) }}">
         <input type="hidden" name="_close" id="close" value="0">
     </form>
-    <x-toolbar :items=$actions />
 
     @if (isset($group))
         <form id="deleteItem" action="{{ route('admin.users.groups.destroy', $query) }}" method="post">

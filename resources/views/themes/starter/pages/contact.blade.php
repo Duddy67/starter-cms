@@ -1,5 +1,5 @@
 <div class="position-relative">
-    @include('themes.starter.layouts.flash-message')
+    @include('themes.starter.partials.flash-message')
     <form action="{{ route('contact.store') }}" method="post" id="form" role="form" class="php-email-form">
         @csrf
         <div class="row">

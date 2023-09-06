@@ -3,6 +3,8 @@
 @section ('main')
     <h3>@php echo __('labels.post.blog_global_settings'); @endphp</h3>
 
+    @include('admin.partials.x-toolbar')
+
     <form method="post" action="{{ route('admin.posts.settings.update', $query ) }}" id="itemForm">
         @csrf
         @method('patch')
@@ -50,10 +52,6 @@
         </div>
 
     </form>
-
-    <div class="form-group">
-        <x-toolbar :items=$actions />
-    </div>
 @endsection
 
 @push ('style')

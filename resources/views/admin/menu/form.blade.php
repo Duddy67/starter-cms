@@ -3,6 +3,8 @@
 @section ('main')
     <h3>@php echo (isset($menu)) ? __('labels.menu.edit_menu') : __('labels.menu.create_menu'); @endphp</h3>
 
+    @include('admin.partials.x-toolbar')
+
     @php $action = (isset($menu)) ? route('admin.menus.update', $query) : route('admin.menus.store', $query) @endphp
     <form method="post" action="{{ $action }}" id="itemForm">
         @csrf
@@ -19,7 +21,6 @@
         <input type="hidden" id="cancelEdit" value="{{ route('admin.menus.cancel', $query) }}">
         <input type="hidden" id="close" name="_close" value="0">
     </form>
-    <x-toolbar :items=$actions />
 
     @if (isset($menu))
         <form id="deleteItem" action="{{ route('admin.menus.destroy', $query) }}" method="post">

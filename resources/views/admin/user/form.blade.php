@@ -4,6 +4,8 @@
 
     <h3>@php echo (isset($user)) ? __('labels.user.edit_user') : __('labels.user.create_user'); @endphp</h3>
 
+    @include('admin.partials.x-toolbar')
+
     @php $action = (isset($user)) ? route('admin.users.update', $query) : route('admin.users.store', $query) @endphp
 
     <form method="post" action="{{ $action }}" id="itemForm" enctype="multipart/form-data">
@@ -46,10 +48,6 @@
         <input type="hidden" id="cancelEdit" value="{{ route('admin.users.cancel', $query) }}">
         <input type="hidden" id="close" name="_close" value="0">
     </form>
-
-    <div class="form-group">
-        <x-toolbar :items=$actions />
-    </div>
 
     @if (isset($user))
         <form id="deleteItem" action="{{ route('admin.users.destroy', $query) }}" method="post">

@@ -1,6 +1,9 @@
 @extends ('admin.layouts.default')
 
 @section ('main')
+
+    @include('admin.partials.x-toolbar')
+
     <form method="post" action="{{ route('admin.cms.settings.update', $query ) }}" id="itemForm">
         @csrf
 	@method('patch')
@@ -16,10 +19,6 @@
 	    <x-input :field="$field" :value="$value" />
         @endforeach
     </form>
-
-    <div class="form-group">
-	<x-toolbar :items=$actions />
-    </div>
 @endsection
 
 @push ('style')
