@@ -26,11 +26,11 @@ class AdminPosts
             return redirect()->route('admin')->with('error', __('messages.generic.access_not_auth'));
         }
 
-        if (in_array($routeName, $update) && !auth()->user()->isAllowedTo('update-posts') && !auth()->user()->isAllowedTo('update-own-posts')) {
+        if (in_array($routeName, $update) && !auth()->user()->isAllowedTo('update-posts')) {
             return redirect()->route('admin.posts.index')->with('error', __('messages.post.edit_not_auth'));
         }
 
-        if (in_array($routeName, $delete) && !auth()->user()->isAllowedTo('delete-posts') && !auth()->user()->isAllowedTo('delete-own-posts')) {
+        if (in_array($routeName, $delete) && !auth()->user()->isAllowedTo('delete-posts')) {
             return redirect()->route('admin.posts.index')->with('error', __('messages.post.delete_not_auth'));
         }
 
