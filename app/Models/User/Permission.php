@@ -27,8 +27,6 @@ class Permission extends SpatiePermission
             'update-[0-9-a-z\-]+',
             'delete-[0-9-a-z\-]+',
             'access-[0-9-a-z\-]+',
-            'update-own-[0-9-a-z\-]+',
-            'delete-own-[0-9-a-z\-]+',
             '[0-9-a-z\-]+-settings',
         ];
     }

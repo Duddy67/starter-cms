@@ -26,11 +26,11 @@ class AdminUserGroups
             return redirect()->route('admin')->with('error', __('messages.generic.access_not_auth'));
         }
 
-        if (in_array($routeName, $update) && !auth()->user()->isAllowedTo('update-user-groups') && !auth()->user()->isAllowedTo('update-own-user-groups')) {
+        if (in_array($routeName, $update) && !auth()->user()->isAllowedTo('update-user-groups')) {
             return redirect()->route('admin.users.groups.index')->with('error', __('messages.group.edit_not_auth'));
         }
 
-        if (in_array($routeName, $delete) && !auth()->user()->isAllowedTo('delete-user-groups') && !auth()->user()->isAllowedTo('delete-own-user-groups')) {
+        if (in_array($routeName, $delete) && !auth()->user()->isAllowedTo('delete-user-groups')) {
             return redirect()->route('admin.users.groups.index')->with('error', __('messages.group.delete_not_auth'));
         }
 
