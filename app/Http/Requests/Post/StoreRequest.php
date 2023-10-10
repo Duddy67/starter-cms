@@ -23,7 +23,7 @@ class StoreRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'title' => 'required',
             'access_level' => 'required',
             'image' => ['nullable', 'image', 'mimes:jpg,png,jpeg,gif,svg', 'max:2048', 'dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000'],
@@ -35,5 +35,7 @@ class StoreRequest extends FormRequest
         if (!isset($this->request->all()['layout_items'])) {
             $rules['content'] = 'required';
         }
+
+        return $rules;
     }
 }
