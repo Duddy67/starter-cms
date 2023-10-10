@@ -261,7 +261,7 @@ class CategoryController extends Controller
 
         $this->item = $category;
 
-        return response()->json(['success' => __('messages.category.update_success'), 'refresh' => $this->getFieldsToRefresh($request)]);
+        return response()->json(['success' => __('messages.category.update_success'), 'updates' => $this->getFieldValuesToUpdate($request)]);
     }
 
     /**
@@ -480,9 +480,9 @@ class CategoryController extends Controller
             return response()->json(['info' => __('messages.generic.no_document_to_delete')]);
         }
 
-        $refresh = ['category-image' => asset('/images/camera.png'), 'image' => ''];
+        $updates = ['category-image' => asset('/images/camera.png'), 'image' => ''];
 
-        return response()->json(['success' => __('messages.generic.image_deleted'), 'refresh' => $refresh]);
+        return response()->json(['success' => __('messages.generic.image_deleted'), 'updates' => $updates]);
     }
 
     /*

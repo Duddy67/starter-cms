@@ -428,15 +428,15 @@ trait Form
     }
 
     /*
-     * Returns the most common fields that need to be refreshed in AJAX.
+     * Returns the most common field values that need to be updated after an AJAX query.
      *
      * @param Request $request
      * @return array
      */  
-    public function getFieldsToRefresh(Request $request): array
+    public function getFieldValuesToUpdate(Request $request): array
     {
         $fields = [];
-        // The one to one relation types that need to be refreshed.
+        // The one to one relation types that need to be updated.
         $relations = ['image', 'photo'];
 
         if ($this->item->updated_at) {

@@ -184,7 +184,7 @@ class MenuController extends Controller
 
         $this->item = $menu;
 
-        return response()->json(['success' => __('messages.menu.update_success'), 'refresh' => $this->getFieldsToRefresh($request)]);
+        return response()->json(['success' => __('messages.menu.update_success'), 'updates' => $this->getFieldValuesToUpdate($request)]);
     }
 
     /**

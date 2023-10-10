@@ -237,7 +237,7 @@ class PostController extends Controller
         // Used in the Form trait.
         $this->item = $post;
 
-        return response()->json(['success' => __('messages.post.update_success'), 'refresh' => $this->getFieldsToRefresh($request)]);
+        return response()->json(['success' => __('messages.post.update_success'), 'updates' => $this->getFieldValuesToUpdate($request)]);
     }
 
     /**
@@ -524,9 +524,9 @@ class PostController extends Controller
             return response()->json(['info' => __('messages.generic.no_document_to_delete')]);
         }
 
-        $refresh = ['post-image' => asset('/images/camera.png'), 'image' => ''];
+        $updates = ['post-image' => asset('/images/camera.png'), 'image' => ''];
 
-        return response()->json(['success' => __('messages.generic.image_deleted'), 'refresh' => $refresh]);
+        return response()->json(['success' => __('messages.generic.image_deleted'), 'updates' => $updates]);
     }
 
     /*

@@ -199,7 +199,7 @@ class RoleController extends Controller
 
         $this->item = $role;
 
-        return response()->json(['success' => __('messages.role.update_success'), 'refresh' => $this->getFieldsToRefresh($request)]);
+        return response()->json(['success' => __('messages.role.update_success'), 'updates' => $this->getFieldValuesToUpdate($request)]);
     }
 
     /**
