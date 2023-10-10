@@ -169,7 +169,7 @@ class EmailController extends Controller
 
         $this->item = $email;
 
-        return response()->json(['success' => __('messages.email.update_success'), 'refresh' => $this->getFieldsToRefresh($request)]);
+        return response()->json(['success' => __('messages.email.update_success'), 'updates' => $this->getFieldValuesToUpdate($request)]);
     }
 
     /**

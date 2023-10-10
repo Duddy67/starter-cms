@@ -185,7 +185,7 @@ class UserController extends Controller
 
         $this->item = $user;
 
-        return response()->json(['success' => __('messages.user.update_success'), 'refresh' => $this->getFieldsToRefresh($request)]);
+        return response()->json(['success' => __('messages.user.update_success'), 'updates' => $this->getFieldValuesToUpdate($request)]);
     }
 
     /**
@@ -393,9 +393,9 @@ class UserController extends Controller
             return response()->json(['info' => __('messages.generic.no_document_to_delete')]);
         }
 
-        $refresh = ['user-photo' => asset('/images/user.png'), 'photo' => ''];
+        $updates = ['user-photo' => asset('/images/user.png'), 'photo' => ''];
 
-        return response()->json(['success' => __('messages.generic.photo_deleted'), 'refresh' => $refresh]);
+        return response()->json(['success' => __('messages.generic.photo_deleted'), 'updates' => $updates]);
     }
 
     /*

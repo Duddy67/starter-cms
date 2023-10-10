@@ -169,7 +169,7 @@ class GroupController extends Controller
 
         $this->item = $group;
 
-        return response()->json(['success' => __('messages.group.update_success'), 'refresh' => $this->getFieldsToRefresh($request)]);
+        return response()->json(['success' => __('messages.group.update_success'), 'updates' => $this->getFieldValuesToUpdate($request)]);
     }
 
     /**

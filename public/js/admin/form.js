@@ -89,8 +89,8 @@
                 if (key == 'redirect') {
                     window.location.href = result.redirect;
                 }
-                else if (key == 'refresh') {
-                    refreshFieldValues(result.refresh);
+                else if (key == 'updates') {
+                    updateFieldValues(result.updates);
                 }
                 // messages
                 else if (['success', 'warning', 'info'].includes(key)) {
@@ -110,13 +110,16 @@
         }
     }
 
-    function refreshFieldValues(values) {
-        for (const [index, value] of Object.entries(values)) {
-            if (document.getElementById(index).tagName == 'IMG') {
-                document.getElementById(index).setAttribute('src', value);
+    function updateFieldValues(updates) {
+        for (const [id, value] of Object.entries(updates)) {
+            if (document.getElementById(id).tagName == 'IMG') {
+                document.getElementById(id).setAttribute('src', value);
+            }
+            else if (document.getElementById(id).tagName == 'A') {
+                document.getElementById(id).setAttribute('href', value);
             }
             else {
-                document.getElementById(index).value = value;
+                document.getElementById(id).value = value;
             }
         }
     }
