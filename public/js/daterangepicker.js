@@ -53,7 +53,7 @@
               // First check for the possible default format coming from the CMS settings or use a basic slash format.
               let defaultFormat = (document.getElementById('_dateFormat')) ? $.fn.phpToMoment(document.getElementById('_dateFormat').value) : 'DD/MM/YYYY HH:mm';
               // Then check if a specific date format is available through a format dataset attribute or set it to the default format.
-              let format = document.getElementById(fields[i].id).hasAttribute('data-format') ? $('#'+fields[i].id).data('format') : defaultFormat;
+              let format = document.getElementById(fields[i].id).hasAttribute('data-format') ? $('input[id="'+fields[i].id+'"]').data('format') : defaultFormat;
 
               // Change the locale date format of that picker. 
               $('input[id="'+fields[i].id+'"]').data('daterangepicker').locale.format = format;
