@@ -99,10 +99,11 @@ class EmailController extends Controller
 	$this->setFieldValues($fields, $email);
 	$except = (!auth()->user()->isSuperAdmin()) ? ['destroy'] : [];
         $actions = $this->getActions('form', $except);
+        $dateFormat = Setting::getValue('app', 'date_format');
 	// Add the id parameter to the query.
 	$query = array_merge($request->query(), ['email' => $id]);
 
-        return view('admin.cms.email.form', compact('email', 'fields', 'actions', 'query'));
+        return view('admin.cms.email.form', compact('email', 'fields', 'actions', 'dateFormat', 'query'));
     }
 
     /**

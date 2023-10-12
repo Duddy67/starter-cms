@@ -104,10 +104,11 @@ class GroupController extends Controller
         $fields = $this->getFields($except);
         $except = (!$group->canEdit()) ? ['destroy', 'save', 'saveClose'] : [];
         $actions = $this->getActions('form', $except);
+        $dateFormat = Setting::getValue('app', 'date_format');
         // Add the id parameter to the query.
         $query = array_merge($request->query(), ['group' => $id]);
 
-        return view('admin.user.group.form', compact('group', 'fields', 'actions', 'query'));
+        return view('admin.user.group.form', compact('group', 'fields', 'actions', 'dateFormat', 'query'));
     }
 
     /**

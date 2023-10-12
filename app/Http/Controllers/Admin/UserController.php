@@ -104,10 +104,11 @@ class UserController extends Controller
         // Users cannot delete their own account.
         $except = (auth()->user()->id == $user->id) ? ['destroy'] : [];
         $actions = $this->getActions('form', $except);
+        $dateFormat = Setting::getValue('app', 'date_format');
         // Add the id parameter to the query.
         $query = array_merge($request->query(), ['user' => $id]);
 
-        return view('admin.user.form', compact('user', 'fields', 'actions', 'query'));
+        return view('admin.user.form', compact('user', 'fields', 'actions', 'dateFormat', 'query'));
     }
 
     /**

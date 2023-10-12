@@ -20,6 +20,10 @@
 
         <input type="hidden" id="cancelEdit" value="{{ route('admin.users.groups.cancel', $query) }}">
         <input type="hidden" name="_close" id="close" value="0">
+
+        @if (isset($group))
+            <input type="hidden" id="_dateFormat" value="{{ $dateFormat }}">
+        @endif
     </form>
 
     @if (isset($group))
@@ -39,7 +43,7 @@
     <script type="text/javascript" src="{{ asset('/vendor/adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/tinymce/tinymce.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/codalia/c.ajax.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/js/admin/daterangepicker.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/js/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/form.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/disable.toolbars.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/tinymce/filemanager.js') }}"></script>

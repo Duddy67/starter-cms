@@ -50,6 +50,10 @@
         <input type="hidden" id="close" name="_close" value="0">
         <input type="hidden" id="reloaded" value="{{ is_array(old('permissions')) ? 1 : 0 }}">
 
+        @if (isset($role))
+            <input type="hidden" id="_dateFormat" value="{{ $dateFormat }}">
+        @endif
+
         @if (!isset($role))
             <input type="hidden" id="permissions" name="_permissions" value="{{ $permissions }}">
         @endif
@@ -71,7 +75,7 @@
     <script type="text/javascript" src="{{ asset('/vendor/adminlte/plugins/moment/moment.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/codalia/c.ajax.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/js/admin/daterangepicker.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/js/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/form.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/disable.toolbars.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/user/role/settings.js') }}"></script>

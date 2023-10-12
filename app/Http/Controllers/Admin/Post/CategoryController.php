@@ -115,13 +115,14 @@ class CategoryController extends Controller
         $this->setFieldValues($fields, $category);
         $except = (!$category->canEdit()) ? ['destroy', 'save', 'saveClose'] : [];
         $actions = $this->getActions('form', $except);
+        $dateFormat = Setting::getValue('app', 'date_format');
         // Add the id parameter to the query.
         $query = array_merge($request->query(), ['category' => $id]);
         // Get the owner of the category in order to check (in the template) if they're still allowed to create categories.
         $owner = User::find($category->owned_by);
         $collection = 'posts';
 
-        return view('admin.cms.category.form', compact('category', 'collection', 'owner', 'fields', 'actions', 'query'));
+        return view('admin.cms.category.form', compact('category', 'collection', 'owner', 'fields', 'actions', 'dateFormat', 'query'));
     }
 
     /**
