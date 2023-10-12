@@ -229,8 +229,7 @@ trait Form
                 }
                 elseif ($field->type == 'date') {
                     $datetime = $item->{$field->name}->tz(Setting::getValue('app', 'timezone'))->toDateTimeString();
-		    // For whatever reason Daterangepicker prevent the field value to be
-		    // set. So do not use it !
+                    // Do not set any date value as it is handled by Daterangepicker after the page is loaded.
                     $fields[$key]->value = null;
 
 		    // Set date and time values through datasets.

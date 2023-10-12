@@ -119,10 +119,11 @@ class RoleController extends Controller
         $board = $this->getPermissionBoard($role);
         $except = (in_array($role->name, Role::getDefaultRoles()) || !$role->canEdit()) ? ['save', 'saveClose', 'destroy'] : [];
         $actions = $this->getActions('form', $except);
+        $dateFormat = Setting::getValue('app', 'date_format');
         // Add the id parameter to the query.
         $query = array_merge($request->query(), ['role' => $id]);
 
-        return view('admin.user.role.form', compact('role', 'fields', 'actions', 'board', 'query'));
+        return view('admin.user.role.form', compact('role', 'fields', 'actions', 'board', 'dateFormat', 'query'));
     }
 
     /**

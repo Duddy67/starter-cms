@@ -106,10 +106,11 @@ class MenuController extends Controller
         $this->setFieldValues($fields, $menu);
         $except = (!$menu->canEdit()) ? ['destroy', 'save', 'saveClose'] : [];
         $actions = $this->getActions('form', $except);
+        $dateFormat = Setting::getValue('app', 'date_format');
         // Add the id parameter to the query.
         $query = array_merge($request->query(), ['menu' => $id]);
 
-        return view('admin.menu.form', compact('menu', 'fields', 'actions', 'query'));
+        return view('admin.menu.form', compact('menu', 'fields', 'actions', 'dateFormat', 'query'));
     }
 
     /**

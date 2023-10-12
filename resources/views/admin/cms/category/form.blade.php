@@ -77,6 +77,7 @@
 
         @if (isset($category))
             <input type="hidden" id="canEdit" value="{{ $category->canEdit() }}">
+            <input type="hidden" id="_dateFormat" value="{{ $dateFormat }}">
         @endif
     </form>
 
@@ -102,7 +103,7 @@
     <script type="text/javascript" src="{{ asset('/vendor/adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/tinymce/tinymce.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/codalia/c.ajax.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/js/admin/daterangepicker.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/js/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/locale.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/form.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/set.private.groups.js') }}"></script>

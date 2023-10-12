@@ -83,6 +83,10 @@
         <input type="hidden" id="siteUrl" value="{{ url('/') }}">
         <input type="hidden" id="postLayout" value="{{ isset($post) ? route('admin.posts.layout', $query) : '' }}">
 
+        @if (isset($post))
+            <input type="hidden" id="_dateFormat" value="{{ $dateFormat }}">
+        @endif
+
         @foreach ($dateFormats as $key => $value)
             <input type="hidden" name="_date_formats[{{ $key }}]" value="{{ $value }}">
         @endforeach
@@ -116,7 +120,7 @@
     <script type="text/javascript" src="{{ asset('/vendor/adminlte/plugins/moment/moment.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/tinymce/tinymce.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/js/admin/daterangepicker.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/js/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/locale.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/codalia/c.ajax.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/codalia/lang/en.js') }}"></script>

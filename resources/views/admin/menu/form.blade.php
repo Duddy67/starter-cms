@@ -20,6 +20,10 @@
 
         <input type="hidden" id="cancelEdit" value="{{ route('admin.menus.cancel', $query) }}">
         <input type="hidden" id="close" name="_close" value="0">
+
+        @if (isset($menu))
+            <input type="hidden" id="_dateFormat" value="{{ $dateFormat }}">
+        @endif
     </form>
 
     @if (isset($menu))
@@ -38,7 +42,7 @@
     <script type="text/javascript" src="{{ asset('/vendor/adminlte/plugins/moment/moment.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/codalia/c.ajax.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/js/admin/daterangepicker.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/js/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/form.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/set.private.groups.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/disable.toolbars.js') }}"></script>

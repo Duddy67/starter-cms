@@ -118,10 +118,11 @@ class PostController extends Controller
         $this->setFieldValues($fields, $post);
         $except = (!$post->canEdit()) ? ['destroy', 'save', 'saveClose'] : [];
         $actions = $this->getActions('form', $except);
+        $dateFormat = Setting::getValue('app', 'date_format');
         // Add the id parameter to the query.
         $query = array_merge($request->query(), ['post' => $id]);
 
-        return view('admin.post.form', compact('post', 'fields', 'actions', 'locale', 'query'));
+        return view('admin.post.form', compact('post', 'fields', 'actions', 'locale', 'dateFormat', 'query'));
     }
 
     /**
