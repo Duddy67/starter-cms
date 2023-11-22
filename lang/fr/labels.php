@@ -204,6 +204,7 @@ return [
         'canonical_link' => 'Lien canonique',
         'cookies_privacy' => 'Cookies & Confidentialité',
         'no_update' => 'Pas encore mis à jour',
+        'structured_data' => 'Données structurées',
     ],
     'filter' => [
 	'search' => 'Recherche',

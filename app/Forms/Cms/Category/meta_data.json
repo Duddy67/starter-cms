@@ -64,6 +64,13 @@
     "group": "meta_data"
   },
   {
+    "label": "labels.generic.structured_data",
+    "type": "textarea",
+    "name": "structured_data",
+    "id": "structured_data",
+    "group": "meta_data"
+  },
+  {
     "label": "labels.generic.canonical_link",
     "type": "text",
     "name": "canonical_link",
