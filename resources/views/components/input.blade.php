@@ -4,6 +4,7 @@
 @endif
 
 @php $disabled = (isset($field->extra) && in_array('disabled', $field->extra)) ? 'disabled' : '';
+     $readonly = (isset($field->extra) && in_array('readonly', $field->extra)) ? 'readonly' : '';
      $class = (isset($field->class)) ? $field->class : '';
      $name = (isset($field->name)) ? $field->name : null;
      $name = ($name && isset($field->group)) ? $field->group.'['.$name.']' : $name;
@@ -14,7 +15,7 @@
 @endphp
 
 @if ($field->type == 'text' || $field->type == 'password' || $field->type == 'date' || $field->type == 'file')
-    <input  id="{{ $field->id }}" {{ $disabled }} 
+    <input  id="{{ $field->id }}"
 
     @if ($field->type == 'date')
 	type="text" class="form-control date {{ $class }}"
@@ -30,10 +31,6 @@
 	placeholder="@lang ($field->placeholder)"
     @endif
 
-    @if ($disabled)
-	readonly
-    @endif
-
     @if (isset($field->autocomplete))
 	autocomplete="{{ $field->autocomplete }}"
     @endif
@@ -47,7 +44,9 @@
             data-{{ $key }}="{{ $val }}" 
         @endforeach
     @endif
-    >
+
+     {{ $disabled }} {{ $readonly }}>
+
 @elseif ($field->type == 'select')
 
     <select id="{{ $field->id }}" class="form-control select2 {{ $class }}" {{ $multiple }} {{ $disabled }} name="{{ $name.$multi }}"
@@ -117,7 +116,7 @@
 	<label class="form-check-label" for="{{ $field->id }}">{{ $field->label }}</label>
     @endif
 @elseif ($field->type == 'textarea')
-    <textarea id="{{ $field->id }}" class="form-control {{ $class }}"
+    <textarea id="{{ $field->id }}" class="form-control {{ $class }}"  
 
     @if ($name)
 	name="{{ $name }}"
@@ -136,7 +135,8 @@
             data-{{ $key }}="{{ $val }}" 
         @endforeach
     @endif
-    >{{ $value }}</textarea>
+
+     {{ $disabled }}>{{ $value }}</textarea>
     
 @elseif ($field->type == 'hidden')
     <input type="hidden" name="{{ $name }}" id="{{ $field->id }}" value="{{ $value }}"> 

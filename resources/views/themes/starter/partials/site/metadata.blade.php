@@ -6,5 +6,9 @@
         <meta property="{{ str_replace('_', ':', $key) }}" content="{{ $value }}">   
     @elseif (!empty($value) && $key == 'canonical_link')
         <link rel="canonical" href="{{ $value }}">
+    @elseif (!empty($value) && $key == 'structured_data')
+        <script type="application/ld+json">
+            {!! $value !!}
+        </script>
     @endif
 @endforeach 
