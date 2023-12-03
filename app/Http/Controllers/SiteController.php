@@ -32,6 +32,8 @@ class SiteController extends Controller
             }
 
             $category->settings = $category->getSettings();
+            // Required in case of category extra fields.
+            $category->global_settings = Setting::getDataByGroup('categories', $category);
             $metaData = $category->meta_data;
             $posts = $category->getItemCollection($request);
 
@@ -51,6 +53,8 @@ class SiteController extends Controller
                     }
 
                     $post->settings = $settings;
+                    // Required in case of extra fields.
+                    $post->global_settings = $globalPostSettings;
                 }
             }
         }
@@ -89,7 +93,12 @@ class SiteController extends Controller
             return view('themes.'.$page['theme'].'.index', compact('locale', 'page'));
         }
 
+        // Required in case of category extra fields.
+        $category->global_settings = Setting::getDataByGroup('categories', $category);
+
         $post->settings = $post->getSettings();
+        // Required in case of extra fields.
+        $post->global_settings = Setting::getDataByGroup('posts', $post);
         $page['name'] = $page['name'].'-details';
         $segments = Setting::getSegments('Post');
         $metaData = $post->meta_data;

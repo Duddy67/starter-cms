@@ -26,6 +26,8 @@ class CategoryController extends Controller
 	}
 
         $category->settings = $category->getSettings();
+        // Required in case of category extra fields.
+        $category->global_settings = Setting::getDataByGroup('categories', $category);
         $posts = $category->getItemCollection($request, ['pagination']);
 
         if (count($posts)) {
@@ -44,6 +46,8 @@ class CategoryController extends Controller
                 }
 
                 $post->settings = $settings;
+                // Required in case of extra fields.
+                $post->global_settings = $globalPostSettings;
             }
         }
 
