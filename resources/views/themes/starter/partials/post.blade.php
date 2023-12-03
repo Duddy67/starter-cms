@@ -11,6 +11,10 @@
 	@else
 	    {!! $post->content !!}
 	@endif
+
+        @if ($post->getExtraFieldByAlias('translations'))
+            <span>Translations: </span>{{ $post->getExtraFieldByAlias('translations') }}
+	@endif
     </div>
 
     @if ($category->settings['show_post_categories'])

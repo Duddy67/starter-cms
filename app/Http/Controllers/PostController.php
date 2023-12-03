@@ -36,6 +36,8 @@ class PostController extends Controller
 	}
 
 	$post->settings = $post->getSettings();
+        // Required in case of extra fields.
+        $post->global_settings = Setting::getDataByGroup('posts', $post);
         $metaData = $post->meta_data;
         $segments = Setting::getSegments('Post');
 	$query = array_merge($request->query(), ['id' => $id, 'slug' => $slug]);

@@ -22,6 +22,10 @@
             <img class="post-image img-fluid" src="{{ url('/').$post->image->getThumbnailUrl() }}" >
         @endif
         {!! $post->content !!}
+
+        @if ($post->getExtraFieldByAlias('translations'))
+            <span>Translations: </span>{{ $post->getExtraFieldByAlias('translations') }}
+	@endif
     </div>
 
     @if ($post->settings['show_categories'] && count($post->categories))

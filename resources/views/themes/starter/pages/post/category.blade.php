@@ -30,6 +30,11 @@
 
 <x-pagination :items=$posts />
 
+
+@if ($category->getExtraFieldByAlias('library'))
+    <span>Library: </span>{{ $category->getExtraFieldByAlias('library') }}
+@endif
+
 @if ($category->settings['show_subcategories'])
     @include ('themes.starter.partials.post.subcategories')
 @endif

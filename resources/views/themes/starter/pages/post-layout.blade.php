@@ -42,6 +42,10 @@
     @php $count++; @endphp
 @endforeach
 
+@if ($post->getExtraFieldByAlias('translations'))
+    <span>Translations: </span>{{ $post->getExtraFieldByAlias('translations') }}
+@endif
+
 @if ($post->settings['show_categories'] && count($post->categories))
     <p class="categories">
         <h6>Categories</h6>
