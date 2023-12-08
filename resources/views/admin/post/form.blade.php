@@ -85,6 +85,7 @@
 
         @if (isset($post))
             <input type="hidden" id="_dateFormat" value="{{ $dateFormat }}">
+            <input type="hidden" id="_locale" value="{{ config('app.locale') }}">
         @endif
 
         @foreach ($dateFormats as $key => $value)
@@ -112,18 +113,20 @@
 @endsection
 
 @push ('style')
-    <link rel="stylesheet" href="{{ asset('/vendor/adminlte/plugins/daterangepicker/daterangepicker.css') }}">
+    <link rel="stylesheet" href="{{ asset('/vendor/codalia/css/c.datepicker.css') }}">
     <link rel="stylesheet" href="{{ asset('/vendor/codalia/css/c.layout.css') }}">
 @endpush
 
 @push ('scripts')
-    <script type="text/javascript" src="{{ asset('/vendor/adminlte/plugins/moment/moment.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/vendor/adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/localeData.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/locale/{{ config('app.locale') }}.js"></script>
+    <script type="text/javascript" src="{{ asset('/vendor/codalia/lang/'.config('app.locale').'.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/vendor/codalia/c.datepicker.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/js/datepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/tinymce/tinymce.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/js/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/locale.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/codalia/c.ajax.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/vendor/codalia/lang/en.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/codalia/c.layout.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/post/layout.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/form.js') }}"></script>

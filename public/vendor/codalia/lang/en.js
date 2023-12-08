@@ -16,5 +16,6 @@ var CodaliaLang = {
   },
   "layout" : { "title":"Title", "text_block":"Text block", "image":"Image", "alt":"Alt",
                "group":"Group", "group_start":"Group start","group_end":"Group end",
-  }
+  },
+  "datepicker" : {'today': 'Today', 'clear': 'Clear', 'cancel': 'Cancel'}
 }
