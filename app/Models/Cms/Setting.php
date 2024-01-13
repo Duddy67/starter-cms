@@ -110,8 +110,9 @@ class Setting extends Model
             return '\\App\\Models\\'.ucfirst($model->collection_type).'\\Setting';
         }
 
+        $model = (gettype($model) == 'string') ? $model : get_class($model);
         // Get the class names contained in the namespace.
-        $classes = explode('\\', get_class($model));
+        $classes = explode('\\', $model);
 
         // The namespace must at least contained 3 classes (eg: App\Models\Foo).
         if (count($classes) < 3) {
@@ -137,9 +138,12 @@ class Setting extends Model
      * @param  string  $key
      * @return string
      */
-    public static function getValue(string $group, string $key, ?string $default = null): ?string
+    public static function getValue(string $group, string $key, ?string $default = null, ?string $model = null): ?string
     {
-        $value = Setting::where(['group' => $group, 'key' => $key])->pluck('value')->first();
+        // Get the CMS setting model by default.
+        $model = ($model) ? self::getSettingClassModel($model) : '\\App\\Models\\Cms\\Setting';
+        $value = $model::where(['group' => $group, 'key' => $key])->pluck('value')->first();
+
         return ($value) ? $value : $default;
     }
 

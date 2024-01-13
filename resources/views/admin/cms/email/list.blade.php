@@ -33,6 +33,7 @@
     <input type="hidden" id="destroyItems" value="{{ route('admin.cms.emails.index', $query) }}">
     <input type="hidden" id="checkinItems" value="{{ route('admin.cms.emails.massCheckIn', $query) }}">
     <input type="hidden" id="testEmailMessage" value="{{ $message }}">
+    <x-js-messages />
 
     <form id="selectedItems" action="{{ route('admin.cms.emails.index', $query) }}" method="post">
         @method('delete')

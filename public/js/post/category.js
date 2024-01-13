@@ -1,39 +1,34 @@
-(function($) {
-    // Run a function when the page is fully loaded including graphics.
-    $(window).on('load', function() {
+document.addEventListener('DOMContentLoaded', () => {
 
-	$('#search-btn').click(function() {
-	    if ($('#search').val() !== '') {
-		$.fn.checkEmptyFilters();
-		$('#item-filters').submit();
-	    }
-	});
-
-	$('#clear-search-btn').click(function() {
-	    $('#search').val('');
-	    $.fn.checkEmptyFilters();
-	    $('#item-filters').submit();
-	});
+    document.getElementById('search-btn').addEventListener('click', function(e) {
+        if (document.getElementById('search').value !== '') {
+            checkEmptyFilters();
+            document.getElementById('item-filters').submit();
+        }
     });
 
-    /*
-     * Prevents the parameters with empty value to be send in the url query.
-     */
-    $.fn.checkEmptyFilters = function() {
-	$('select[id^="filters-"]').each(function(index) {
-	    if($(this).val() === null || $(this).val() === '') {
-		$(this).prop('disabled', true);
-	    }
+    document.getElementById('clear-search-btn').addEventListener('click', function(e) {
+        document.getElementById('search').value = '';
+        checkEmptyFilters();
+        document.getElementById('item-filters').submit();
+    });
+
+    function checkEmptyFilters() {
+        document.querySelectorAll('select[id^="filters-"]').forEach(function(elem) { 
+            if (elem.value === null || elem.value === '') {
+                elem.disabled = true;
+            }
 
 	    // Reinitialize pagination on each request.
-	    if ($('#filters-pagination').length) {
-		$('#filters-pagination').prop('disabled', true);
-	    }
+            if (document.getElementById('filters-pagination').length) {
+                document.getElementById('filters-pagination').disabled = true;
+            }
 
-	    if ($('#search').val() === '') {
-		$('#search').prop('disabled', true);
-	    }
-	});
+            if (document.getElementById('search').value === '') {
+                document.getElementById('search').disabled = true;
+            }
+        });
     }
+});
 
-})(jQuery);
+

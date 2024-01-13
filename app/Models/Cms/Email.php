@@ -161,8 +161,17 @@ class Email extends Model
 
 	$data->subject = self::parseSubject($email->subject, $data);
 
-	// Use the email attribute as recipient in case the recipient attribute doesn't exist.
-	$recipient = (!isset($data->recipient) && isset($data->email)) ? $data->email : $data->recipient;
+        $recipients = [];
+
+        // Check for a recipient email array.
+        if (isset($data->recipients)) {
+            $recipients = $data->recipients;
+        }
+        else {
+            // Use the email attribute as recipient in case the recipient attribute doesn't exist.
+            $recipients[] = (!isset($data->recipient) && isset($data->email)) ? $data->email : $data->recipient;
+        }
+
 	$data->view = 'emails.'.$code;
 
         if (!file_exists(resource_path().'/views/emails/'.$code.'.blade.php')) {
@@ -171,7 +180,7 @@ class Email extends Model
         }
 
         try {
-            Mail::to($recipient)->send(new AppMailer($data));
+            Mail::to($recipients)->send(new AppMailer($data));
             return true;
         }
         catch (\Throwable $e) {

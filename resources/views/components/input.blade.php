@@ -146,7 +146,7 @@
     <input type="hidden" id="_{{ $field->name }}" name="_{{ $field->name }}" value="" />
 @endif
 
-@if ($name && isset($field->id) && !$disabled)
+@if ($name && isset($field->id) && !$disabled && $field->type != 'hidden')
     <div class="text-danger" id="{{ $field->id }}Error"></div>
 @endif
 

@@ -49,6 +49,7 @@
         <input type="hidden" id="cancelEdit" value="{{ route('admin.users.roles.cancel', $query) }}">
         <input type="hidden" id="close" name="_close" value="0">
         <input type="hidden" id="reloaded" value="{{ is_array(old('permissions')) ? 1 : 0 }}">
+        <x-js-messages />
 
         @if (isset($role))
             <input type="hidden" id="_dateFormat" value="{{ $dateFormat }}">

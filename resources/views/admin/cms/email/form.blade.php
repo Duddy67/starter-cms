@@ -62,6 +62,7 @@
 
 	<input type="hidden" id="cancelEdit" value="{{ route('admin.cms.emails.cancel', $query) }}">
 	<input type="hidden" id="close" name="_close" value="0">
+        <x-js-messages />
 
         @if (isset($email))
             <input type="hidden" id="_dateFormat" value="{{ $dateFormat }}">

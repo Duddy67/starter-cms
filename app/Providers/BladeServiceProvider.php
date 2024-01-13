@@ -66,6 +66,14 @@ class BladeServiceProvider extends ServiceProvider
             return "<?php endif; ?>";
         });
 
+        Blade::directive('isingroup', function ($expression) {
+	    return "<?php if (auth()->user()->isingroup($expression)) : ?>";
+        });
+
+	Blade::directive('endisingroup', function () {
+            return "<?php endif; ?>";
+        });
+
 	/**
 	 * @date blade directive
 	 * use as @date($object->datefield)

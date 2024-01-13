@@ -20,6 +20,7 @@
 
         <input type="hidden" id="cancelEdit" value="{{ route('admin.users.groups.cancel', $query) }}">
         <input type="hidden" name="_close" id="close" value="0">
+        <x-js-messages />
 
         @if (isset($group))
             <input type="hidden" id="_dateFormat" value="{{ $dateFormat }}">
