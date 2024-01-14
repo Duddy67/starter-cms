@@ -138,5 +138,10 @@ return [
         'form_errors' => 'Please check the form for errors.',
         'cookie_info' => 'This website uses cookies to ensure you get the best experience on our website.',
         'checked_out' => 'A user is already checking out this record. This record will be available again once the user is done with it.',
+    ],
+    'js_messages' => [
+        'confirm_item_deletion' => 'An item is about to be deleted. Are you sure ?',
+        'confirm_multiple_item_deletion' => 'One or several items are about to be deleted. Are you sure ?',
+        'no_item_selected' => 'No item selected.',
     ]
 ];

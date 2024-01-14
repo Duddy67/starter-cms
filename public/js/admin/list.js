@@ -1,4 +1,6 @@
 (function($) {
+    const messages = (document.getElementById('JsMessages')) ? JSON.parse(document.getElementById('JsMessages').value) : {};
+
     // Run a function when the page is fully loaded including graphics.
     $(window).on('load', function() {
 	let actions = ['create', 'massDestroy', 'batch', 'checkin', 'publish', 'unpublish'];
@@ -102,7 +104,7 @@
 	});
 
 	if (ids.length === 0) {
-	    alert('no item selected');
+	    alert(messages.no_item_selected);
 	    return false;
 	}
 
@@ -136,7 +138,7 @@
     }
 
     $.fn.massDestroy = function() {
-	if ($.fn.setSelectedItems() && window.confirm('Are you sure ?')) {
+	if ($.fn.setSelectedItems() && window.confirm(messages.confirm_multiple_item_deletion)) {
 	    $('#selectedItems input[name="_method"]').val('delete');
 	    $('#selectedItems').attr('action', $('#destroyItems').val());
 	    $('#selectedItems').submit();

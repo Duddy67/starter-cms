@@ -39,7 +39,10 @@
     }
 
     function destroy() {
-        if (window.confirm('Are you sure ?')) {
+        // Set a default message in case Js messages are not available.
+        const messages = Object.keys(localNamespace['messages']).length > 0 ? localNamespace['messages'] : {'confirm_item_deletion': 'Are you sure ?'};
+
+        if (window.confirm(messages.confirm_item_deletion)) {
             document.getElementById('deleteItem').submit();
         }
     }
@@ -49,6 +52,7 @@
     localNamespace['saveClose'] = saveClose;
     localNamespace['cancel'] = cancel;
     localNamespace['destroy'] = destroy;
+    localNamespace['messages'] = (document.getElementById('JsMessages')) ? JSON.parse(document.getElementById('JsMessages').value) : {};
 
     function runAjax(formId) {
         let form = document.getElementById(formId);

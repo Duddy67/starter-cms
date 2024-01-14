@@ -30,6 +30,7 @@
     <input type="hidden" id="createItem" value="{{ route('admin.users.create', $query) }}">
     <input type="hidden" id="destroyItems" value="{{ route('admin.users.index', $query) }}">
     <input type="hidden" id="checkinItems" value="{{ route('admin.users.massCheckIn', $query) }}">
+    <x-js-messages />
 
     <form id="selectedItems" action="{{ route('admin.users.index', $query) }}" method="post">
         @method('delete')

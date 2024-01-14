@@ -30,6 +30,7 @@
     <input type="hidden" id="checkinItems" value="{{ route('admin.'.$collection.'.categories.massCheckIn', $query) }}">
     <input type="hidden" id="publishItems" value="{{ route('admin.'.$collection.'.categories.massPublish', $query) }}">
     <input type="hidden" id="unpublishItems" value="{{ route('admin.'.$collection.'.categories.massUnpublish', $query) }}">
+    <x-js-messages />
 
     <form id="selectedItems" action="{{ route('admin.'.$collection.'.categories.index', $query) }}" method="post">
         @method('delete')

@@ -20,6 +20,7 @@
 
         <input type="hidden" id="cancelEdit" value="{{ route('admin.menus.cancel', $query) }}">
         <input type="hidden" id="close" name="_close" value="0">
+        <x-js-messages />
 
         @if (isset($menu))
             <input type="hidden" id="_dateFormat" value="{{ $dateFormat }}">

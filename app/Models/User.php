@@ -465,6 +465,16 @@ class User extends Authenticatable
         return $token;
     }
 
+    /**
+     * Blade directive
+     *
+     * Checks if the user is part of a given group.
+     */
+    public function isInGroup(string $group): bool
+    {
+        return ($this->groups->where('name', $group)->first()) ? true : false;
+    }
+
     /*
      * Blade directive
      *

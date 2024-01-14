@@ -27,6 +27,7 @@
         <input type="hidden" id="cancelChangeLocale" value="0">
         <input type="hidden" id="cancelEdit" value="{{ route('admin.menus.items.cancel', $query) }}">
         <input type="hidden" id="close" name="_close" value="0">
+        <x-js-messages />
 
         @if (isset($item))
             <input type="hidden" id="_dateFormat" value="{{ $dateFormat }}">

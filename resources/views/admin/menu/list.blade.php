@@ -32,6 +32,7 @@
     <input type="hidden" id="checkinItems" value="{{ route('admin.menus.massCheckIn', $query) }}">
     <input type="hidden" id="publishItems" value="{{ route('admin.menus.massPublish', $query) }}">
     <input type="hidden" id="unpublishItems" value="{{ route('admin.menus.massUnpublish', $query) }}">
+    <x-js-messages />
 
     <form id="selectedItems" action="{{ route('admin.menus.index', $query) }}" method="post">
         @method('delete')

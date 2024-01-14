@@ -82,6 +82,7 @@
         <input type="hidden" id="close" name="_close" value="0">
         <input type="hidden" id="siteUrl" value="{{ url('/') }}">
         <input type="hidden" id="postLayout" value="{{ isset($post) ? route('admin.posts.layout', $query) : '' }}">
+        <x-js-messages />
 
         @if (isset($post))
             <input type="hidden" id="_dateFormat" value="{{ $dateFormat }}">

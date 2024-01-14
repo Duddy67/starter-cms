@@ -33,6 +33,7 @@
     <input type="hidden" id="publishItems" value="{{ route('admin.posts.massPublish', $query) }}">
     <input type="hidden" id="unpublishItems" value="{{ route('admin.posts.massUnpublish', $query) }}">
     <input type="hidden" id="canOrderBy" value="{{ $canOrderBy }}">
+    <x-js-messages />
 
     <form id="selectedItems" action="{{ route('admin.posts.index', $query) }}" method="post">
         @method('delete')
