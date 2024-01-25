@@ -2,7 +2,7 @@
     <div class="row">
         @php $total = count($filters) @endphp
 	@foreach ($filters as $key => $filter)
-	    <div class="col-sm mr-4">
+	    <div class="col-sm">
 		<x-input :field="$filter" :value="$filter->value" />
 
 		@if ($filter->name == 'search') 
