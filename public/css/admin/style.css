@@ -176,6 +176,20 @@ tr.clickable-row {
   color: #4d4d4d !important;
 }
 
+.select2-container--default .select2-selection--single, 
+.select2-container--default .select2-selection--multiple, 
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+  border: 1px solid #dee2e6 !important;
+}
+
+/*.select2-container--default .select2-selection--multiple {
+  border: 1px solid #dee2e6 !important;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+  border: 1px solid #dee2e6 !important;
+}*/
+
 .select2-container .select2-selection--single {
   height: calc(2.25rem + 2px) !important;
 }
@@ -188,13 +202,15 @@ tr.clickable-row {
   position: absolute;
   z-index: 100;
   opacity: 0.5;
-  width: 100%;
+  max-width: 264px;
+  min-width: 264px;
   height: 100%;
   background-color: white;
 }
 
 .top-panel {
-  width: 99% !important;
+  max-width: 99% !important;
+  min-width: 99% !important;
 }
 
 /** Batch modal window **/

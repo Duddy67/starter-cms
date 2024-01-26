@@ -1,16 +1,17 @@
 [
   {
+    "label": "labels.email.subject",
+    "type": "text",
+    "name": "subject",
+    "class": "form-control-lg",
+    "id": "subject"
+  },
+  {
     "label": "labels.generic.code",
     "type": "text",
     "name": "code",
     "id": "code",
     "placeholder": "labels.generic.code"
-  },
-  {
-    "label": "labels.email.subject",
-    "type": "text",
-    "name": "subject",
-    "id": "subject"
   },
   {
     "label": "labels.generic.format",

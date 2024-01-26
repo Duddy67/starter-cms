@@ -5,13 +5,13 @@
 @endsection
 
 @section ('main')
-    <div class="card">
+    <div class="card shadow-sm">
         <div class="card-body">
             <x-toolbar :items=$actions />
         </div>
     </div>
 
-    <div class="card">
+    <div class="card shadow-sm">
         <div class="card-body">
             <x-filters :filters="$filters" :url="$url" />
         </div>

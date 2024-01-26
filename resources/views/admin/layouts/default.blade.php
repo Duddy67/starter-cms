@@ -24,7 +24,7 @@
     @php $appName = ($setting::getValue('app', 'name')) ? $setting::getValue('app', 'name') : config('app.name', 'Starter CMS'); @endphp
     @php $routeName = request()->route()->getName(); @endphp
     <div class="wrapper">
-        <aside id="sidebar" class="js-sidebar">
+        <aside id="sidebar" class="js-sidebar sidebar-disabled">
             <!-- Content For Sidebar -->
             <div class="h-100">
                 <div class="sidebar-logo">
@@ -173,11 +173,11 @@
             </div>
         </aside>
         <div class="main">
-            <nav class="navbar navbar-expand px-3 border-bottom">
+            <nav class="navbar navbar-expand px-3 border-bottom navbar-disabled">
                 <button class="btn" id="sidebar-toggle" type="button">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse navbar">
+                <div class="navbar-collapse navbar" id="navbar">
                     <ul class="navbar-nav">
                         <li class="nav-item dropdown">
                             <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
@@ -200,9 +200,12 @@
             </nav>
             <main class="content px-3 py-2">
                 <div class="container-fluid">
-                @include('admin.partials.flash-message')
-                @yield('main')
+                    @include('admin.partials.flash-message')
+                    @yield('main')
 
+                    <div class="ajax-progress d-none" id="ajax-progress">
+                        <img src="{{ asset('/images/progress-icon.gif') }}" class="progress-icon" />
+                    </div>
                 </div>
             </main>
             <footer class="footer border-top">
