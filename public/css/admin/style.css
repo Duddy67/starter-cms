@@ -30,6 +30,7 @@ body {
 }
 
 #sidebar {
+    position: relative;
     max-width: 264px;
     min-width: 264px;
     transition: all 0.35s ease-in-out;
@@ -174,6 +175,10 @@ tr.clickable-row {
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
   color: #4d4d4d !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+  border: 1px solid #dee2e6 !important;
 }
 
 .select2-container--default .select2-selection--single, 

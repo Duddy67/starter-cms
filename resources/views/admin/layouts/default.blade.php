@@ -27,8 +27,16 @@
         <aside id="sidebar" class="js-sidebar sidebar-disabled">
             <!-- Content For Sidebar -->
             <div class="h-100">
-                <div class="sidebar-logo">
+                <div class="sidebar-logo border-bottom">
                     <a href="#">{{ $appName }}</a>
+                </div>
+                <div class="row p-3 mb-2 border-bottom">
+                    <div class="col-2">
+                        <img src="{{ asset(Auth::user()->getThumbnail()) }}" class="avatar rounded" alt="User Image">
+                    </div>
+                    <div class="col ms-2 pt-1">
+                        <span class="text-light">{{ Auth::user()->name }}</span>
+                    </div>
                 </div>
                 <ul class="sidebar-nav">
                     @php $active = (request()->is('admin')) ? 'active' : '' @endphp
