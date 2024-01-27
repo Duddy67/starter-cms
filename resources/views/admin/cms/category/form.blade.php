@@ -7,8 +7,8 @@
 
     @if (isset($category) && $owner->getRoleType() != 'super-admin' && !$owner->hasPermissionTo('create-'.$category->collection_type.'-categories'))
         <div class="alert alert-warning alert-block">
-        <button type="button" class="close" data-dismiss="alert">×</button>        
         <strong>{{ __('messages.generic.can_no_longer_create_item', ['name' => $owner->name]) }}</strong>
+        <button type="button" class="btn-close float-end" data-dismiss="alert"></button>        
         </div>
     @endif
 

@@ -1,13 +1,13 @@
 {
   "list": [
       {
-	"id": "massDestroy",
-	"label": "labels.button.delete",
+	"id": "batch",
+	"label": "labels.button.batch",
 	"type": "button"
       },
       {
-	"id": "batch",
-	"label": "labels.button.batch",
+	"id": "massDestroy",
+	"label": "labels.button.delete",
 	"type": "button"
       }
   ],

@@ -6,11 +6,6 @@
 	"type": "button"
       },
       {
-	"id": "massDestroy",
-	"label": "labels.button.delete",
-	"type": "button"
-      },
-      {
 	"id": "batch",
 	"label": "labels.button.batch",
 	"type": "button"
@@ -18,6 +13,11 @@
       {
 	"id": "checkin",
 	"label": "labels.button.checkin",
+	"type": "button"
+      },
+      {
+	"id": "massDestroy",
+	"label": "labels.button.delete",
 	"type": "button"
       }
   ],

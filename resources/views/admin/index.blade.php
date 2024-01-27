@@ -25,7 +25,7 @@
         <ul class="list-group list-group-flush">
             @foreach ($users as $user)
                 @if ($user->last_logged_in_at)
-                    <li class="list-group-item"><span class="font-weight-bold mr-4">{{ $user->name }}</span> {{ $setting::getFormattedDate($user->last_logged_in_at) }}</li>
+                    <li class="list-group-item"><span class="fw-bold me-4">{{ $user->name }}</span> {{ $setting::getFormattedDate($user->last_logged_in_at) }}</li>
                 @endif
             @endforeach
         </ul>

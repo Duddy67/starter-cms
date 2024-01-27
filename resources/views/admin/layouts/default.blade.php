@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     @inject('setting', 'App\Models\Cms\Setting')
@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css">
     <script src="https://kit.fontawesome.com/ae360af17e.js" crossorigin="anonymous"></script>
     <!-- Select2 plugin style -->
-    <link rel="stylesheet" href="{{ asset('/vendor/adminlte/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
     <!-- Custom style -->
     <link rel="stylesheet" href="{{ asset('/css/admin/style.css') }}">
     <!-- Favicon -->
@@ -27,15 +27,17 @@
         <aside id="sidebar" class="js-sidebar sidebar-disabled">
             <!-- Content For Sidebar -->
             <div class="h-100">
-                <div class="sidebar-logo border-bottom">
+                <div class="sidebar-logo">
                     <a href="#">{{ $appName }}</a>
                 </div>
-                <div class="row p-3 mb-2 border-bottom">
-                    <div class="col-2">
-                        <img src="{{ asset(Auth::user()->getThumbnail()) }}" class="avatar rounded" alt="User Image">
-                    </div>
-                    <div class="col ms-2 pt-1">
-                        <span class="text-light">{{ Auth::user()->name }}</span>
+                <div class="sidebar-user p-3 mb-2">
+                    <div class="row">
+                        <div class="col-2">
+                            <img src="{{ asset(Auth::user()->getThumbnail()) }}" class="avatar rounded" alt="User Image">
+                        </div>
+                        <div class="col ms-2 pt-1">
+                            <span class="text-light">{{ Auth::user()->name }}</span>
+                        </div>
                     </div>
                 </div>
                 <ul class="sidebar-nav">
@@ -181,29 +183,21 @@
             </div>
         </aside>
         <div class="main">
-            <nav class="navbar navbar-expand px-3 border-bottom navbar-disabled">
+            <nav class="navbar navbar-expand px-3 border-bottom navbar-disabled shadow-sm mb-3 top-navbar">
                 <button class="btn" id="sidebar-toggle" type="button">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse navbar" id="navbar">
-                    <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
-                                <img src="{{ asset(Auth::user()->getThumbnail()) }}" class="avatar img-fluid rounded" alt="User Image">
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end">
-                                <a href="#" class="dropdown-item">Profile</a>
-                                <a href="#" class="dropdown-item">Setting</a>
-                                <a class="dropdown-item" href="{{ route('logout') }}"
-                                   onclick="event.preventDefault();
-                                                 document.getElementById('logout-form').submit();">
-                                 {{ __('Logout') }}</a>
-                            </div>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                @csrf
-                            </form>
-                        </li>
-                    </ul>
+                   <div class="col ms-4">
+                        <a class="text-secondary me-4" href="{{ route('logout') }}"
+                           onclick="event.preventDefault();
+                                         document.getElementById('logout-form').submit();"><i class="fa-solid fa-right-from-bracket"></i>
+                         {{ __('labels.user.logout') }}</a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                        <a class="text-secondary" href="{{ route('site.index') }}" target="_blank"><i class="fa-solid fa-globe pe-1"></i>{{ __('labels.generic.website') }}</a>
+                   <div>
                 </div>
             </nav>
             <main class="content px-3 py-2">
@@ -221,26 +215,8 @@
                     <div class="row text-muted">
                         <div class="col-6 text-start mt-2">
                             <p class="mb-0">
-                                <a href="#" class="text-muted">
-                                    <strong>CodzSwod</strong>
-                                </a>
+                                <strong>{{ $appName }}</strong> is powered by <strong><a href="https://codalia.fr" target="_blank" class="text-muted">Codalia</a></strong>
                             </p>
-                        </div>
-                        <div class="col-6 text-end">
-                            <ul class="list-inline">
-                                <li class="list-inline-item">
-                                    <a href="#" class="text-muted">Contact</a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a href="#" class="text-muted">About Us</a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a href="#" class="text-muted">Terms</a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a href="#" class="text-muted">Booking</a>
-                                </li>
-                            </ul>
                         </div>
                     </div>
                 </div>
@@ -248,11 +224,16 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- jQuery -->
+    <!-- jQuery (required for the Select2 plugin) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <!-- Select2 Plugin -->
-    <script type="text/javascript" src="{{ asset('/vendor/adminlte/plugins/select2/js/select2.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/js/admin/script.js') }}"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script type="text/javascript">
+        const sidebarToggle = document.querySelector("#sidebar-toggle");
+        sidebarToggle.addEventListener("click",function(){
+            document.querySelector("#sidebar").classList.toggle("collapsed");
+        });
+    </script>
     <!-- Additional js scripts -->
     @stack('scripts')
 </body>

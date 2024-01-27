@@ -28,6 +28,7 @@
     <x-pagination :items=$items />
 
     <input type="hidden" id="destroyItems" value="{{ route('admin.files.index', $query) }}">
+    <x-js-messages />
 
     <form id="selectedItems" action="{{ route('admin.files.index', $query) }}" method="post">
 	@method('delete')
