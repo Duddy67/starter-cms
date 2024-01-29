@@ -2,7 +2,7 @@
     <thead class="table-success">
         @if ($checkable)
             <th scope="col">
-                <input type="checkbox" id="toggle-select">
+                <input type="checkbox" id="toggle-select" class="form-check-input">
             </th>
         @endif
 

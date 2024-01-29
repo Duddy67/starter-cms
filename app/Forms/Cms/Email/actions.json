@@ -6,11 +6,6 @@
 	"type": "button"
       },
       {
-	"id": "massDestroy",
-	"label": "labels.button.delete",
-	"type": "button"
-      },
-      {
 	"id": "checkin",
 	"label": "labels.button.checkin",
 	"type": "button"
@@ -20,6 +15,11 @@
 	"label": "labels.button.send_test_email",
 	"type": "button",
 	"icon": "fa fa-envelope"
+      },
+      {
+	"id": "massDestroy",
+	"label": "labels.button.delete",
+	"type": "button"
       }
   ],
   "form": [

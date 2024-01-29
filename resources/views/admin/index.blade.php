@@ -4,7 +4,7 @@
   @inject ('setting', 'App\Models\Cms\Setting')
     <div class="row">
     <div class="col-sm-6">
-      <div class="card">
+      <div class="card shadow-sm">
         <div class="card-body">
           <p class="h3">{{ __('messages.dashboard.welcome', ['name' => Auth::user()->name]) }}</p>
 
@@ -18,14 +18,14 @@
         </div>
       </div>
     </div>
-    <div class="card col-sm-6 p-0" style="width: 18rem;">
+    <div class="card col-sm-6 p-0 shadow-sm">
         <div class="card-header bg-primary">
-          <span class="h3">{{ __('messages.dashboard.last_users_logged_in') }}</span>
+          <span class="h3 text-light">{{ __('messages.dashboard.last_users_logged_in') }}</span>
         </div>
         <ul class="list-group list-group-flush">
             @foreach ($users as $user)
                 @if ($user->last_logged_in_at)
-                    <li class="list-group-item"><span class="font-weight-bold mr-4">{{ $user->name }}</span> {{ $setting::getFormattedDate($user->last_logged_in_at) }}</li>
+                    <li class="list-group-item"><span class="fw-bold me-4">{{ $user->name }}</span> {{ $setting::getFormattedDate($user->last_logged_in_at) }}</li>
                 @endif
             @endforeach
         </ul>

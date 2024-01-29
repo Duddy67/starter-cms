@@ -37,10 +37,10 @@
             </div>
 
             @if ($field->name == 'photo')
-                <div class="col post-image">
+                <div class="col post-image mt-4">
                     @php $path = (isset($user) && $user->photo) ?  url('/').$user->photo->getThumbnailUrl() : asset('/images/user.png'); @endphp
                     <img src="{{ $path }}" id="user-photo" />
-                    <button type="button" id="deleteDocumentBtn" data-form-id="deletePhoto" class="btn btn-danger float-right">Delete photo</button>
+                    <button type="button" id="deleteDocumentBtn" data-form-id="deletePhoto" class="btn btn-danger float-end">Delete photo</button>
                 </div>
             @endif
         @endforeach

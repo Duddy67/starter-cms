@@ -30,6 +30,7 @@ return [
 	'confirm_password' => 'Confirmation du mot de passe',
 	'create_user' => 'Créer un utilisateur',
 	'edit_user' => 'Editer un utilisateur',
+        'logout' => 'Déconnexion',
     ],
     'role' => [
 	'super-admin' => 'Super Administrator',
@@ -205,6 +206,8 @@ return [
         'cookies_privacy' => 'Cookies & Confidentialité',
         'no_update' => 'Pas encore mis à jour',
         'structured_data' => 'Données structurées',
+        'website' => 'Site Web',
+        'photo_deleted' => 'Photo supprimée',
     ],
     'filter' => [
 	'search' => 'Recherche',

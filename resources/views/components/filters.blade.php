@@ -2,16 +2,16 @@
     <div class="row">
         @php $total = count($filters) @endphp
 	@foreach ($filters as $key => $filter)
-	    <div class="col-sm mr-4">
+	    <div class="col-sm">
 		<x-input :field="$filter" :value="$filter->value" />
 
 		@if ($filter->name == 'search') 
-		    <button type="button" id="search-btn" class="btn btn-space btn-secondary">@lang ($filter->label)</button>
-		    <button type="button" id="clear-search-btn" class="btn btn-space btn-secondary">@lang ('labels.button.clear')</button>
+		    <button type="button" id="search-btn" class="btn btn-space btn-secondary mt-2">@lang ($filter->label)</button>
+		    <button type="button" id="clear-search-btn" class="btn btn-space btn-secondary mt-2">@lang ('labels.button.clear')</button>
 		@endif
 
 		@if ($total == ($key + 1) && $key > 1) 
-		    <button type="button" id="clear-all-btn" class="btn btn-space btn-secondary">@lang ('labels.button.clear_all')</button>
+		    <button type="button" id="clear-all-btn" class="btn btn-space btn-secondary mt-2">@lang ('labels.button.clear_all')</button>
 		@endif
 	    </div>
 	@endforeach

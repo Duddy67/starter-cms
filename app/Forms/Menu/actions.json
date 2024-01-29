@@ -16,13 +16,13 @@
 	"type": "button"
       },
       {
-	"id": "massDestroy",
-	"label": "labels.button.delete",
+	"id": "checkin",
+	"label": "labels.button.checkin",
 	"type": "button"
       },
       {
-	"id": "checkin",
-	"label": "labels.button.checkin",
+	"id": "massDestroy",
+	"label": "labels.button.delete",
 	"type": "button"
       }
   ],

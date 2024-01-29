@@ -30,6 +30,7 @@ return [
 	'confirm_password' => 'Confirm password',
 	'create_user' => 'Create a user',
 	'edit_user' => 'Edit a user',
+        'logout' => 'Logout',
     ],
     'role' => [
 	'super-admin' => 'Super Administrator',
@@ -205,6 +206,8 @@ return [
         'cookies_privacy' => 'Cookies & Privacy',
         'no_update' => 'No update yet',
         'structured_data' => 'Structured data',
+        'website' => 'Website',
+        'photo_deleted' => 'Photo deleted',
     ],
     'filter' => [
 	'search' => 'Search',

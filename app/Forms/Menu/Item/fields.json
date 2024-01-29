@@ -4,6 +4,7 @@
     "type": "text",
     "name": "title",
     "id": "title",
+    "class": "form-control-lg",
     "placeholder": "labels.generic.title"
   },
   {

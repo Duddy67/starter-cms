@@ -31,21 +31,21 @@
 	    @endphp
 
 	    @if ($field->name == 'body_html')
-	        <ul class="nav nav-tabs" id="myTab" role="tablist">
-		    <li class="nav-item">
-			<a  class="nav-link active" id="html-tab" href="#html" data-toggle="tab" aria-controls="html" aria-selected="true">HTML</a>
-		    </li>
-		    <li class="nav-item">
-                        <a class="nav-link" id="text-tab" href="#text" data-toggle="tab" aria-controls="text" aria-selected="false">Plain text</a>
+                <ul class="nav nav-tabs mt-4" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="html-tab" data-bs-toggle="tab" data-bs-target="#html-tab-pane" type="button" role="tab" aria-controls="html-tab-pane" aria-selected="true">HTML</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="text-tab" data-bs-toggle="tab" data-bs-target="#text-tab-pane" type="button" role="tab" aria-controls="text-tab-pane" aria-selected="true">Plain text</button>
                     </li>
                 </ul>
 
 		<div class="tab-content" id="myTabContent">
-		    <div class="tab-pane active" id="html" role="tabpanel" aria-labelledby="html-tab">
+                    <div class="tab-pane fade show active" id="html-tab-pane" role="tab-panel" aria-labelledby="html-tab" tabindex="0">
 	    @endif
 
 	    @if ($field->name == 'body_text')
-	        <div class="tab-pane" id="text" role="tabpanel" aria-labelledby="text-tab">
+                <div class="tab-pane fade" id="text-tab-pane" role="tab-panel" aria-labelledby="text-tab" tabindex="0">
 	    @endif
 
             @if ($field->name == 'locale')

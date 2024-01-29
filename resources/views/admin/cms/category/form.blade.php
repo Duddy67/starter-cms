@@ -24,20 +24,28 @@
          <x-input :field="$fields[0]" :value="$value" />
          @php array_shift($fields); // Remove the very first field (ie: name) from the array. @endphp
 
-        <nav class="nav nav-tabs">
-            <a class="nav-item nav-link active" href="#details" data-toggle="tab">@php echo __('labels.generic.details'); @endphp</a>
-            <a class="nav-item nav-link" href="#settings" data-toggle="tab">@php echo __('labels.title.settings'); @endphp</a>
-            <a class="nav-item nav-link" href="#meta_data" data-toggle="tab">@php echo __('labels.generic.meta_data'); @endphp</a>
-            <a class="nav-item nav-link" href="#extra_fields" data-toggle="tab">@php echo __('labels.generic.extra_fields'); @endphp</a>
-        </nav>
+         <ul class="nav nav-tabs mt-4" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details-tab-pane" type="button" role="tab" aria-controls="details-tab-pane" aria-selected="true">@php echo __('labels.generic.details'); @endphp</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings-tab-pane" type="button" role="tab" aria-controls="settings-tab-pane" aria-selected="false">@php echo __('labels.title.settings'); @endphp</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="meta_data-tab" data-bs-toggle="tab" data-bs-target="#meta_data-tab-pane" type="button" role="tab" aria-controls="meta_data-tab-pane" aria-selected="false">@php echo __('labels.generic.meta_data'); @endphp</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="extra_fields-tab" data-bs-toggle="tab" data-bs-target="#extra_fields-tab-pane" type="button" role="tab" aria-controls="extra_fields-tab-pane" aria-selected="false">@php echo __('labels.generic.extra_fields'); @endphp</button>
+            </li>
+        </ul>
 
-        <div class="tab-content">
+        <div class="tab-content" id="myTabContent">
             @php $dataTab = null; @endphp
             @foreach ($fields as $key => $field)
                 @if (isset($field->tab))
-                    @php $active = ($field->tab == 'details') ? ' active' : '';
+                    @php $active = ($field->tab == 'details') ? 'show active' : '';
                          $dataTab = $field->tab; @endphp
-                    <div class="tab-pane{{ $active }}" id="{{ $field->tab }}">
+                    <div class="tab-pane fade {{ $active }}" id="{{ $field->tab }}-tab-pane" role="tab-panel" aria-labelledby="{{ $field->tab }}-tab" tabindex="0">
                 @endif
 
                 @if (isset($field->dataset))
@@ -56,10 +64,10 @@
                 <x-input :field="$field" :value="$value" />
 
                 @if ($field->name == 'image')
-                    <div class="col category-image">
+                    <div class="col category-image mt-4">
                         @php $path = (isset($category) && $category->image) ? url('/').$category->image->getThumbnailUrl() : asset('/images/camera.png'); @endphp
                         <img src="{{ $path }}" id="category-image" />
-                        <button type="button" id="deleteDocumentBtn" data-form-id="deleteImage" class="btn btn-danger float-right">Delete image</button>
+                        <button type="button" id="deleteDocumentBtn" data-form-id="deleteImage" class="btn btn-danger float-end">Delete image</button>
                     </div>
                 @endif
 
