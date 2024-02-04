@@ -10,7 +10,8 @@ use App\Traits\CheckInCheckOut;
 use App\Traits\OptionList;
 use App\Models\Cms\Setting;
 use Illuminate\Http\Request;
-
+use App\Jobs\SendEmail;
+use App\Jobs\SendTestEmail;
 
 class Email extends Model
 {
@@ -130,35 +131,56 @@ class Email extends Model
         return $this->{$field->name};
     }
 
-    public static function sendTestEmail()
+    public static function sendTestEmail(): bool
     {
-        $data = auth()->user();
+        // Get the current user.
+        $user = auth()->user();
+        // Prepare the email data.
+        $data = new \stdClass;
         $data->subject = 'Starter CMS - Test email';
 	$data->view = 'emails.user-registration';
+        $data->email = $user->email;
+        $data->name = $user->name;
 
-        try {
-            Mail::to($data->email)->send(new AppMailer($data));
-            return true;
+        if (Setting::getValue('website', 'email_sending_method') == 'synchronous') {
+            try {
+                Mail::to($data->email)->send(new AppMailer($data));
+            }
+            catch (\Throwable $e) {
+                report($e);
+                return false;
+            }
         }
-        catch (\Throwable $e) {
-            report($e);
-            return false;
+        // asynchronous
+        else {
+            // Send job to queue.
+            SendTestEmail::dispatch($data);
         }
+
+        return true;
     }
 
     /*
-     * Send an email through a given email template.
+     * Send one or more emails through a given email template.
      * @param  string  $code
-     * @param  mixed  data$
+     * @param  object  $data
      * @return boolean
      */
-    public static function sendEmail(string $code, mixed $data): bool
+    public static function sendEmail(string $code, object $data): bool
     {
+        // Check first for code and view.
+
 	if(!$email = Email::where('code', $code)->first()) {
             report('Warning: Email object with code: "'.$code.'" not found.');
             return false;
         }
 
+        if (!file_exists(resource_path().'/views/emails/'.$code.'.blade.php')) {
+            report('Warning: Email view: "'.$code.'" not found.');
+            return false;
+        }
+
+	$data->view = 'emails.'.$code;
 	$data->subject = self::parseSubject($email->subject, $data);
 
         $recipients = [];
@@ -172,26 +194,24 @@ class Email extends Model
             $recipients[] = (!isset($data->recipient) && isset($data->email)) ? $data->email : $data->recipient;
         }
 
-	$data->view = 'emails.'.$code;
-
-        if (!file_exists(resource_path().'/views/emails/'.$code.'.blade.php')) {
-            report('Warning: Email view: "'.$code.'" not found.');
-            return false;
+        if (Setting::getValue('website', 'email_sending_method') == 'synchronous') {
+            foreach ($recipients as $recipient) {
+                try {
+                    Mail::to($recipient)->send(new AppMailer($data));
+                }
+                catch (\Throwable $e) {
+                    report($e);
+                    return false;
+                }
+            }
+        }
+        // asynchronous
+        else {
+            // Send job to queue.
+            SendEmail::dispatch($data, $recipients);
         }
 
-        try {
-            Mail::to($recipients)->send(new AppMailer($data));
-            return true;
-        }
-        catch (\Throwable $e) {
-            report($e);
-            return false;
-        }
-
-        // Alternative possibility
-        /*dispatch(function() use($recipient, $data) {
-            Mail::to($recipient)->send(new AppMailer($data));
-        })->afterResponse();*/
+        return true;
     }
 
     /*
@@ -200,7 +220,7 @@ class Email extends Model
      * @param  mixed  data$
      * @return string
      */
-    public static function parseSubject(string $subject, mixed $data): string
+    private static function parseSubject(string $subject, mixed $data): string
     {
         // Looks for Blade variables (eg: {{ $data->email }}).
         if (preg_match_all('#{{\s?[\$a-zA-Z0-9\-\>]+\s?}}#U', $subject, $matches)) {

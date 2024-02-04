@@ -100,6 +100,9 @@ return [
 	'theme' => 'Thème utilisé pour le site',
 	'allow_registering' => 'Permettre aux invités de s\'enregistrer sur le site',
 	'redirect_to_admin' => 'Rediriger les utilisateurs autorisés vers l\'administration une fois connectés.',
+	'email_sending_method' => 'Méthode d\'envoi des emails',
+	'synchronous' => 'Synchrone',
+	'asynchronous' => 'Asynchrone',
     ],
     'generic' => [
 	'title' => 'Titre',

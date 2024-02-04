@@ -100,6 +100,9 @@ return [
 	'theme' => 'The theme to use for the website',
 	'allow_registering' => 'Allow guests registering on the front-end',
 	'redirect_to_admin' => 'Redirect authorized users to admin after logged in.',
+	'email_sending_method' => 'Email sending method',
+	'synchronous' => 'Synchronous',
+	'asynchronous' => 'Asynchronous',
     ],
     'generic' => [
 	'title' => 'Title',

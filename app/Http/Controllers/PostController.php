@@ -63,12 +63,16 @@ class PostController extends Controller
         $key = $count - 1;
 
         if ($post->settings['comment_alert'] && auth()->user()->id != $post->owned_by) {
+            // Get the post's author.
             $author = User::find($post->owned_by);
-            $post->recipient = $author->email;
-            $post->post_author = $author->name;
-            $post->comment_author = auth()->user()->name;
-            $post->post_url = url('/').$post->getUrl();
-            Email::sendEmail('comment-alert', $post);
+            // Prepare the email data.
+            $data = new \stdClass;
+            $data->recipient = $author->email;
+            $data->post_author = $author->name;
+            $data->comment_author = auth()->user()->name;
+            $data->post_url = url('/').$post->getUrl();
+            $data->title = $post->title;
+            Email::sendEmail('comment-alert', $data);
         }
 
         return response()->json([
