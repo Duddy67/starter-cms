@@ -266,6 +266,14 @@ class Setting extends Model
         return $settings;
     }
 
+    public function getEmailSendingMethodOptions(): array
+    {
+        return [
+            ['value' => 'synchronous', 'text' => __('labels.settings.synchronous')],
+            ['value' => 'asynchronous', 'text' => __('labels.settings.asynchronous')]
+        ];
+    }
+
     /*
      * Utility function that displays PHP data through the JS console.log method.
      */

@@ -53,6 +53,14 @@
     "group": "website"
   },
   {
+    "label": "labels.settings.email_sending_method",
+    "type": "select",
+    "name": "email_sending_method",
+    "id": "email_sending_method",
+    "group": "website",
+    "options": [] 
+  },
+  {
     "label": "labels.settings.allow_registering",
     "type": "select",
     "name": "allow_registering",

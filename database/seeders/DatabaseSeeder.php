@@ -186,6 +186,7 @@ class DatabaseSeeder extends Seeder
             ['group' => 'app', 'key' => 'date_format', 'value' => 'd/m/Y H:i'],
             ['group' => 'pagination', 'key' => 'per_page', 'value' => '5'],
             ['group' => 'website', 'key' => 'admin_email', 'value' => 'admin@domain.com'],
+            ['group' => 'website', 'key' => 'email_sending_method', 'value' => 'synchronous'],
             ['group' => 'website', 'key' => 'allow_registering', 'value' => 1],
             ['group' => 'website', 'key' => 'redirect_to_admin', 'value' => 0],
             ['group' => 'website', 'key' => 'theme', 'value' => 'starter']
