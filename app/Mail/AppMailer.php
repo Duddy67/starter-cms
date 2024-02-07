@@ -38,6 +38,12 @@ class AppMailer extends Mailable
 	    $this->subject($this->data->subject);
 	}
 
+        if (isset($this->data->attachments)) {
+            foreach ($this->data->attachments as $attachment) {
+                $this->attach($attachment['file'], $attachment['options']);
+            }
+	}
+
         return $this->view($this->data->view);
     }
 }

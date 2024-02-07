@@ -223,7 +223,7 @@ class Email extends Model
     private static function parseSubject(string $subject, mixed $data): string
     {
         // Looks for Blade variables (eg: {{ $data->email }}).
-        if (preg_match_all('#{{\s?[\$a-zA-Z0-9\-\>]+\s?}}#U', $subject, $matches)) {
+        if (preg_match_all('#{{\s?[\$a-zA-Z0-9_\-\>]+\s?}}#U', $subject, $matches)) {
 	    $results = $matches[0];
 	    $patterns = $replacements = [];
 

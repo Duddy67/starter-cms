@@ -82,11 +82,12 @@ class BladeServiceProvider extends ServiceProvider
 	Blade::directive('date', function ($expression) {
 	    // Set default format if not present in $expression
 	    $default = "'".Setting::getValue('app', 'date_format')."'";
+            $timezone = "'".Setting::getValue('app', 'timezone')."'";
 
 	    $parts = str_getcsv($expression);
-	    $parts[1] = (isset($parts[1]))?$parts[1]:$default;
+	    $parts[1] = (isset($parts[1])) ? $parts[1] : $default;
 
-	    return '<?php if(' . $parts[0] . '){ echo e(' . $parts[0] . '->format(' . $parts[1] . ')); } ?>';
+            return '<?php if('.$parts[0].'){ echo e('.$parts[0].'->tz('.$timezone.')->format('.$parts[1].')); } ?>';
 	});
     }
 }
