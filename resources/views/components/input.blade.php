@@ -49,7 +49,7 @@
 
 @elseif ($field->type == 'select')
 
-    <select id="{{ $field->id }}" class="form-control select2 {{ $class }}" {{ $multiple }} {{ $disabled }} name="{{ $name.$multi }}"
+    <select id="{{ $field->id }}" class="form-control cselect {{ $class }}" {{ $multiple }} {{ $disabled }} name="{{ $name.$multi }}"
     @if (isset($field->onchange))
 	onchange="{{ $field->onchange }}"
     @endif
