@@ -66,7 +66,6 @@
                         $(this).prop('disabled', true);
                         if ($('#filters-sortedBy option:selected').val() == 'order_asc' || $('#filters-sortedBy option:selected').val() == 'order_desc') {
                             $('option:selected').removeAttr('selected');
-                            $('#filters-sortedBy').trigger('change.select2');
                         }
                     }
                 }
@@ -173,10 +172,6 @@
 	if ($.fn.setSelectedItems()) {
 	    $('#batch-window').css('display', 'block');
 	}
-    }
-
-    if (jQuery.fn.select2) {
-	$('.select2').select2();
     }
 
 })(jQuery);

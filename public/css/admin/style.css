@@ -268,4 +268,8 @@ tr.clickable-row {
   padding-bottom: 30px;
 }
 
+.cselect-button {
+    padding: 4px !important;
+}
+
 
