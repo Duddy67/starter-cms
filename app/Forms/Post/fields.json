@@ -30,7 +30,6 @@
     "function": "category",
     "extra": ["multiple","title_as_id"],
     "id": "categories",
-    "class": "_locked",
     "blank": "labels.generic.select_option",
     "options": []
   },
@@ -69,7 +68,6 @@
     "function": "group",
     "extra": ["multiple","title_as_id"],
     "id": "groups",
-    "class": "_locked",
     "blank": "labels.generic.select_option",
     "options": [] 
   },

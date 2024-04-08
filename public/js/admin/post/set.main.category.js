@@ -1,121 +1,124 @@
-(function($) {
+document.addEventListener('DOMContentLoaded', () => {
+    /*
+     * Sets and manages a main category in the category drop down list with multiple selections.
+     */
 
-  // Run a function when the page is fully loaded including graphics.
-  $(window).on('load', function() {
+    // Get the current value of the main category id.
+    let mainCatId = document.getElementById('main-cat-id').value;
+    // Retrieve the cselect id set as data attribute in the actual select.
+    const cselectId = document.getElementById('categories').dataset.cselectId;
 
-      if ($('#main-cat-id').val()) {
-	  $.fn.refreshMainCategoryBox();
-      }
+    // Get the selection area which is the first child of the CSelect item container.
+    const selection = document.getElementById(cselectId).firstChild;
 
-      $.fn.setLockedCategories();
+    // Loop through the buttons, if any (ie: the selected option items).
+    for (const button of selection.children) {
+        // Set the corresponding button as the main category.
+        if (button.dataset.value == mainCatId) {
+            button.classList.add('cselect-main-item');
+        }
+    }
 
-      // The main category can't be selected if the dropdown list is disabled.
-      if ($('#categories').attr('disabled') === undefined) {
+    document.addEventListener('click', function(evt) {
 
-	  $('#categories').on('select2:unselect', function(e) {
-	      let nbSelectedOptions = $(this).select2('data').length;
+        // A label button has been clicked.
+        if (evt.target.tagName == 'SPAN' && evt.target.classList.contains('cselect-button-label')) {
+            const clickedButton = evt.target.parentElement;
 
-	      if (nbSelectedOptions == 0) {
-		  $('#main-cat-id').val('');
-		  // Prevents the dropdown from opening.
-		  e.params.originalEvent.stopPropagation();
+            // Do not set a disabled item as main category.
+            if (clickedButton.classList.contains('cselect-button-disabled')) {
+                return;
+            }
 
-		  return;
-	      }
+            const cselect = document.getElementById(clickedButton.dataset.cselectId);
 
-	      let data = e.params.data;
-		
-	      // The unselected option is the current main category. 
-	      if (data.id == $('#main-cat-id').val()) {
-		  // Set the first selected category as the main category.
-		  $.fn.selectAsMainCategory($(this).select2('data')[0].id);
-	      }
+            // Make sure the option item is part of the CSelect shake drop down list.
+            if (cselect.dataset.selectName == 'categories[]') {
+                const selection = cselect.firstChild;
 
-	      $.fn.setLockedCategories();
-	      $.fn.refreshMainCategoryBox();
-	      // Prevents the dropdown from opening.
-	      e.params.originalEvent.stopPropagation();
-	  });
+                // Loop through the selected items (buttons) in the selection area.
+                for (const button of selection.children) {
+                    // Set the clicked button as the main category.
+                    if (button.dataset.value == clickedButton.dataset.value) {
+                        button.classList.add('cselect-main-item');
+                        document.getElementById('main-cat-id').value = clickedButton.dataset.value;
+                    }
+                    else {
+                        // Reset the button previously set as main category.
+                        button.classList.remove('cselect-main-item');
+                    }
+                }
+            }
+        }
 
-	  $('#categories').on('select2:select', function(e) {
+        // A button has been closed.
+        if (evt.target.tagName == 'SPAN' && evt.target.classList.contains('cselect-button-close')) {
+            const closedButton = evt.target.parentElement;
+            const cselect = document.getElementById(closedButton.dataset.cselectId);
 
-	      let nbSelectedOptions = $(this).select2('data').length;
-	      let data = e.params.data;
+            // Make sure the option item is part of the CSelect shake drop down list.
+            if (cselect.dataset.selectName == 'categories[]') {
+                const selection = cselect.firstChild;
 
-	      if (nbSelectedOptions == 1) {
-		  $.fn.selectAsMainCategory(data.id);
+                // There is no more button in the selection area.
+                if (selection.children.length == 0) {
+                    // Set the main category id value as empty.
+                    document.getElementById('main-cat-id').value = '';
+                    return;
+                }
 
-		  return;
-	      }
+                // The closed button was set as main category.
+                if (closedButton.classList.contains('cselect-main-item')) {
+                    // Set the next button in the selection area as main category.
+                    for (let i = 0; i < selection.childNodes.length; i++) {
+                        // Make sure a disabled item is not set as main category.
+                        if (!selection.childNodes[i].classList.contains('cselect-button-disabled')) {
+                            document.getElementById('main-cat-id').value = selection.childNodes[i].dataset.value;
+                            selection.childNodes[i].classList.add('cselect-main-item');
+                            // Quit as only one button must be set as main category.
+                            return;
+                        }
 
-	      $.fn.setLockedCategories();
-	      $.fn.refreshMainCategoryBox();
-	  });
+                    }
+                }
+            }
+        }
 
-	  $('#categories').next('span').find('ul').on('click', '.select2-selection__choice', function (e) {
-	     // Get the correspondig category id from the title attribut (ie: categories-[0-9]+).
-	     let catId = $(this).attr('title').substr(11);
+        // A new option item has been selected.
+        if (evt.target.tagName == 'DIV' && evt.target.classList.contains('cselect-item')) {
+            const optionItem = evt.target;
+            // Get the CSelect dropdownlist (ie: the parent's parent of the option item).
+            const cselect = optionItem.parentElement.parentElement;
 
-	     // Check target is actually a li tag, not an embedded span tag (used for unselect boxes).
-	     if (e.target == this) {
-		 $.fn.selectAsMainCategory(catId);
-		 // Prevents the dropdown from opening.
-		 e.stopPropagation();
-	     }
-	  });
-      }
-  });
+            // Make sure the option item is part of the CSelect shake drop down list.
+            if (cselect.dataset.selectName == 'categories[]') {
+                const selection = cselect.firstChild;
 
-  $.fn.selectAsMainCategory = function(catId) {
-      let oldCatId = $('#main-cat-id').val();
+                let button = null;
+                let isMainItem = true;
 
-      if (oldCatId == catId) {
-	  return;
-      }
+                // Loop through the buttons in the selection area.
+                for (let i = 0; i < selection.childNodes.length; i++) {
+                    // Get the button corresponding to the newly selected option item.
+                    if (selection.childNodes[i].dataset.value == optionItem.dataset.value) {
+                        button = selection.childNodes[i];
+                        continue;
+                    }
 
-      // Set the new main category for this post.
-      $('#main-cat-id').val(catId);
+                    // Another option item is already set as main category.
+                    if (selection.childNodes[i].classList.contains('cselect-main-item')) {
+                        isMainItem = false;
+                    }
+                }
 
-      // Loop through the selected boxes.
-      $('#categories').next('span').find('ul li').each(function() {
-	  // Unselect the previous main category.
-	  if ($(this).attr('title') !== undefined && $(this).attr('title').substr(11) == oldCatId) {
-	      $(this).css('background-color', '#e4e4e4');
-	  }
+                if (isMainItem) {
+                    // Set the selected option as the main category.
+                    button.classList.add('cselect-main-item');
+                    document.getElementById('main-cat-id').value = button.dataset.value;
+                }
+            }
+        }
 
-	  // Select the new main category.
-	  if ($(this).attr('title') !== undefined && $(this).attr('title').substr(11) == catId) {
-	      $(this).css('background-color', '#aedef4');
-	  }
-      });
-  }
+    }, false);
+});
 
-  $.fn.refreshMainCategoryBox = function() {
-      let catId = $('#main-cat-id').val();
-
-      // Loop through the selected boxes.
-      $('#categories').next('span').find('ul li').each(function() {
-	    if ($(this).attr('title') !== undefined && $(this).attr('title').substr(11) == catId) {
-		$(this).css('background-color', '#aedef4');
-	    }
-      });
-  }
-
-  $.fn.setLockedCategories = function() {
-      // Get the selected options.
-      let categories = $('#categories').select2('data');
-
-      for (let i = 0; i < categories.length; i++) {
-	  // The options that are selected and disabled cannot be unselected (ie: removed).
-	  if (categories[i].disabled) {
-	      $('#categories').next('span').find('ul li').each(function() {
-		  if ($(this).attr('title') !== undefined && $(this).attr('title') == categories[i].title) {
-		      // Add the 'locked-tag' class to be able to style element in select.
-		      $(this).addClass('locked-tag');
-		  }
-	      });
-	  }
-      }
-  }
-
-})(jQuery);

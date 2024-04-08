@@ -81,7 +81,6 @@
     <script type="text/javascript" src="{{ asset('/js/datepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/vendor/codalia/c.ajax.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/form.js') }}"></script>
-    <!--<script type="text/javascript" src="{{ asset('/js/admin/set.private.groups.js') }}"></script>-->
     <script type="text/javascript" src="{{ asset('/js/admin/disable.toolbars.js') }}"></script>
 @endpush
 
