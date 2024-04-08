@@ -154,16 +154,3 @@
 
 })();
 
-
-/* Used for the Select2 jQuery plugin. */
-(function($) {
-
-    if (jQuery.fn.select2) {
-        $('.select2').select2();
-    }
-
-    // Fixes Select2 bug with Bootstrap tabs: https://github.com/select2/select2/issues/4220
-    $('.select2-container--default').attr('style', 'width: 100%');
-
-})(jQuery);
-

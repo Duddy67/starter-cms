@@ -144,7 +144,6 @@
     <script type="text/javascript" src="{{ asset('/js/admin/post/layout.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/form.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/post/set.main.category.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('/js/admin/set.private.groups.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/disable.toolbars.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/tinymce/filemanager.js') }}"></script>
 @endpush

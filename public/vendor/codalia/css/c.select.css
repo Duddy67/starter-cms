@@ -1,0 +1,123 @@
+
+.cselect {
+    display: none !important;
+}
+
+.cselect-container {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.cselect-disabled .cselect-selection {
+    color: #999999;
+    background-color: #f1f1f1;
+}
+
+.cselect-disabled .cselect-selection {
+    cursor: default !important;
+}
+
+.cselect-disabled .cselect-button {
+    cursor: default !important;
+}
+
+.cselect-button-disabled {
+    color: #999999;
+    background-color: #f1f1f1;
+    cursor: default !important;
+}
+
+.cselect-button-disabled .cselect-button-close {
+    border-right: 1px solid #999999;
+}
+
+.cselect-disabled .cselect-button-close {
+    border-right: 1px solid #999999;
+}
+
+.cselect-disabled .cselect-selector:after {
+    border-top-color: #878787 !important;
+}
+
+.cselect-item-disabled {
+    color: #999999;
+    background-color: #efefef;
+    cursor: default !important;
+}
+
+.cselect-selection {
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cselect-multiple {
+    min-height: 40px;
+}
+
+.cselect-selector:after {
+    content: '';
+    float: right;
+    margin-top: 15px;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-top-color: #000;
+}
+
+.cselect-search {
+    width: -webkit-fill-available;
+    margin: 5px;
+    border: 1px solid #b0b6bb;
+    border-radius: 4px;
+}
+
+.cselect-item-container {
+    border-top: 1px solid #ced4da;
+    display: none;
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+.cselect-item-container div {
+    cursor: pointer;
+    padding: 8px 16px;
+}
+
+.cselect-item:hover {
+    background-color: #0260fa;
+    color: white;
+}
+
+.cselect-item-selected {
+    background-color: #ddd;
+    cursor: default !important;
+}
+
+.cselect-button {
+    display: inline-block;
+    background: #d6d6d6;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+    width: fit-content;
+    margin-right: 4px;
+    padding: 2px;
+}
+
+.cselect-button-label {
+    padding: 5px;
+
+}
+
+.cselect-button-close {
+    padding: 5px;
+    border-right: 1px solid black;
+}
+
+.cselect-main-item {
+    background: #aeecff;
+}
+

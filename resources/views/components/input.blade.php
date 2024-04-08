@@ -49,7 +49,7 @@
 
 @elseif ($field->type == 'select')
 
-    <select id="{{ $field->id }}" class="form-control select2 {{ $class }}" {{ $multiple }} {{ $disabled }} name="{{ $name.$multi }}"
+    <select id="{{ $field->id }}" class="form-control cselect {{ $class }}" {{ $multiple }} {{ $disabled }} name="{{ $name.$multi }}"
     @if (isset($field->onchange))
 	onchange="{{ $field->onchange }}"
     @endif
@@ -71,7 +71,7 @@
 		@php $selected = ($value !== null && $option['value'] == $value) ? 'selected=selected' : '' @endphp
 	    @endif
 
-	    @php $disabled = (isset($option['extra']) && in_array('disabled', $option['extra'])) ? 'disabled=disabled locked=locked' : '' @endphp
+	    @php $disabled = (isset($option['extra']) && in_array('disabled', $option['extra'])) ? 'disabled=disabled' : '' @endphp
 
 	    <option
 	    @if ($titleAsId)

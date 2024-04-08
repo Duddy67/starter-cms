@@ -1,18 +1,14 @@
-(function($) {
-    // Run a function when the page is fully loaded including graphics.
-    $(window).on('load', function() {
+document.addEventListener('DOMContentLoaded', () => {
 
-	$('#cancel').click (function () {
-	    $('#batch-window', parent.document).css('display', 'none');
-	});
-
-	$('#massUpdate').click (function () {
-	    $('#batchForm').submit();
-	});
+    // Hide the batch window.
+    document.getElementById('cancel').addEventListener('click', function(e) {
+        const modalWindow = window.parent.document.getElementById('batch-window');
+        modalWindow.style.display = 'none';
     });
 
-    if (jQuery.fn.select2) {
-	$('.select2').select2();
-    }
-
-})(jQuery);
+    // Submit the batch form.
+    document.getElementById('massUpdate').addEventListener('click', function(e) {
+          const batchForm = document.getElementById('batchForm');
+          batchForm.submit();
+    });
+});
