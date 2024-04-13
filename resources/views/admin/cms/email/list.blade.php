@@ -48,5 +48,4 @@
 
 @push ('scripts')
     <script src="{{ asset('/js/admin/list.js') }}"></script>
-    <script src="{{ asset('/js/admin/email/send.test.email.js') }}"></script>
 @endpush

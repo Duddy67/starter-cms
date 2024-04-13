@@ -2,9 +2,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const messages = (document.getElementById('JsMessages')) ? JSON.parse(document.getElementById('JsMessages').value) : {};
     const cselect = new C_Select.init();
 
-    const actions = ['create', 'massDestroy', 'batch', 'checkin', 'publish', 'unpublish'];
+    // The action buttons available in the CMS.
+    const actions = ['create', 'massDestroy', 'batch', 'checkin', 'publish', 'unpublish', 'testEmail'];
 
     actions.forEach(function (action) {
+        // Check the action button exists in the form.
         if (document.getElementById(action)) {
             document.getElementById(action).addEventListener('click', function() {
                 window[action]();
@@ -188,5 +190,11 @@ document.addEventListener('DOMContentLoaded', () => {
 	    document.getElementById('batch-window').style.display = 'block';
 	}
     }
+
+    testEmail = function() {
+        if (window.confirm(document.getElementById('testEmailMessage').value)) {
+            document.getElementById('sendTestEmail').submit();
+        }
+    } 
 });
 

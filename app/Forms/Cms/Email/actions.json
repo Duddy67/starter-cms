@@ -11,7 +11,7 @@
 	"type": "button"
       },
       {
-	"id": "test",
+	"id": "testEmail",
 	"label": "labels.button.send_test_email",
 	"type": "button",
 	"icon": "fa fa-envelope"
