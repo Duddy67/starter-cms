@@ -31,5 +31,5 @@
 @endsection
 
 @push ('scripts')
-    <script src="{{ asset('/js/admin/user/permission/list.js') }}"></script>
+    <script src="{{ asset('/js/admin/list.js') }}"></script>
 @endpush

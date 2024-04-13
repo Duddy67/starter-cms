@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cselect = new C_Select.init();
 
     // The action buttons available in the CMS.
-    const actions = ['create', 'massDestroy', 'batch', 'checkin', 'publish', 'unpublish', 'testEmail'];
+    const actions = ['create', 'massDestroy', 'batch', 'checkin', 'publish', 'unpublish', 'testEmail', 'update', 'rebuild'];
 
     actions.forEach(function (action) {
         // Check the action button exists in the form.
@@ -25,18 +25,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    document.getElementById('search-btn').addEventListener('click', function() {
-        if (document.getElementById('search').value !== '') {
+    // Check first the filter exists in the form.
+    if (document.getElementById('search-btn')) {
+        document.getElementById('search-btn').addEventListener('click', function() {
+            if (document.getElementById('search').value !== '') {
+                checkEmptyFilters();
+                document.getElementById('item-filters').submit();
+            }
+        });
+    }
+
+    if (document.getElementById('clear-search-btn')) {
+        document.getElementById('clear-search-btn').addEventListener('click', function() {
+            document.getElementById('search').value = '';
             checkEmptyFilters();
             document.getElementById('item-filters').submit();
-        }
-    });
-
-    document.getElementById('clear-search-btn').addEventListener('click', function() {
-        document.getElementById('search').value = '';
-        checkEmptyFilters();
-        document.getElementById('item-filters').submit();
-    });
+        });
+    }
 
     if (document.getElementById('clear-all-btn')) {
         document.getElementById('clear-all-btn').addEventListener('click', function() {
@@ -196,5 +201,15 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('sendTestEmail').submit();
         }
     } 
+
+    update = function() {
+        document.getElementById('updateItems').submit();
+    }
+
+    rebuild = function() {
+        const updateItemsForm = document.getElementById('updateItems');
+        updateItemsForm.querySelector('input[name="_method"]').value = 'put';
+        updateItemsForm.submit();
+    }
 });
 
