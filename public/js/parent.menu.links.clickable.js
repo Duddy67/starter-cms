@@ -1,18 +1,9 @@
-jQuery(function($) {
+document.addEventListener('DOMContentLoaded', () => {
+    const dropdownLinks = document.querySelectorAll('.navbar .dropdown > a');
 
-  if ($(window).width() > 769) {
-    $('.navbar .dropdown').hover(function() {
-	$(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
-
-    }, function() {
-	  $(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp();
-
-    });
-
-    $('.navbar .dropdown > a').click(function() {
-	location.href = this.href;
-    });
-
-  }
+    for (let i = 0; i < dropdownLinks.length; i++) {
+        dropdownLinks[i].addEventListener('click', function() {
+            location.href = dropdownLinks[i].href;
+        });
+    }
 });
-
