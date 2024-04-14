@@ -49,6 +49,8 @@
 <x-pagination :items=$posts />
 
 @push ('scripts')
+    <!-- jQuery is required for the bootstrap3-typehead feature.  -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js"></script>
     <script type="text/javascript" src="{{ $public }}/js/post/category.js"></script>
     <script type="text/javascript">
