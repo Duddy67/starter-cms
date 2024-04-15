@@ -1,104 +1,106 @@
-(function($) {
+document.addEventListener('DOMContentLoaded', () => {
+    // A new role is being created.
+    if (document.getElementById('permissions')) {
+        document.getElementById('role_type').addEventListener('change', function() {
+            setCheckboxes(true);
+        });
 
-  // Run a function when the page is fully loaded including graphics.
-  $(window).on('load', function() {
+        setCheckboxes();
+    }
 
-      // A new role is being created.
-      if ($('#permissions').length) {
-	  $('#role_type').change( function() {
-	      $.fn.setCheckboxes(true);
-	  });
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
 
-	  $.fn.setCheckboxes();
-      }
+    for (let i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].addEventListener('change', function() {
+            if (checkboxes[i].checked) {
+                permissionChecked(checkboxes[i].value);
+            }
+            else {
+                permissionUnchecked(checkboxes[i].value);
+            }
+        });
+    }
 
-      $('input[type="checkbox"]').change( function() {
-          if ($(this).prop('checked')) {
-	      $.fn.permissionChecked($(this).val());
-	  }
-	  else {
-	      $.fn.permissionUnchecked($(this).val());
-	  }
-      });
-  });
+    function permissionChecked(name) {
+        let item = name.match(/-([a-z0-9]+)$/)[1];
+        
+        if (item == 'category') {
+            item = name.match(/-([a-z0-9]+-[a-z0-9]+)$/)[1];
+        }
 
-  $.fn.permissionChecked = function(name) {
-      let item = name.match(/-([a-z0-9]+)$/)[1];
-      
-      if (item == 'category') {
-	  item = name.match(/-([a-z0-9]+-[a-z0-9]+)$/)[1];
-      }
+        // A user able to update an item is also able to create one.
+        if (/^update-/.test(name)) {
+            document.getElementById('create-' + item).checked = true;
+            document.getElementById('update-own-' + item).checked = false;
+            document.getElementById('delete-own-' + item).checked = false;
 
-      // A user able to update an item is also able to create one.
-      if (/^update-/.test(name)) {
-	  $('#create-'+item).prop('checked', true);
-	  $('#update-own-'+item).prop('checked', false);
-	  $('#delete-own-'+item).prop('checked', false);
-	  return;
-      }
+            return;
+        }
 
-      // A user able to delete an item is also able to update and create one.
-      if (/^delete-/.test(name)) {
-	  $('#create-'+item).prop('checked', true);
-	  $('#update-'+item).prop('checked', true);
-	  return;
-      }
-  }
+        // A user able to delete an item is also able to update and create one.
+        if (/^delete-/.test(name)) {
+            document.getElementById('create-' + item).checked = true;
+            document.getElementById('update-' + item).checked = true;
 
-  $.fn.permissionUnchecked = function(name) {
-      let item = name.match(/-([a-z0-9]+)$/)[1];
+            return;
+        }
+    }
 
-      if (item == 'category') {
-	  item = name.match(/-([a-z0-9]+-[a-z0-9]+)$/)[1];
-      }
+    function permissionUnchecked(name) {
+        let item = name.match(/-([a-z0-9]+)$/)[1];
 
-      // A user not able to create an item is also not able to update or delete one.
-      if (/^create-/.test(name)) {
-	  $('#update-'+item).prop('checked', false);
-	  $('#delete-'+item).prop('checked', false);
-      }
-  }
+        if (item == 'category') {
+            item = name.match(/-([a-z0-9]+-[a-z0-9]+)$/)[1];
+        }
 
-  /*
-   * Sets the role permissions according to the permission list.
-   */
-  $.fn.setCheckboxes = function(hasChanged) {
-      let permissions = JSON.parse($('#permissions').val());
-      let reloaded = $('#reloaded').val();
-      let regex = new RegExp($('#role_type').val());
+        // A user not able to create an item is also not able to update or delete one.
+        if (/^create-/.test(name)) {
+            document.getElementById('update-' + item).checked = false;
+            document.getElementById('delete-' + item).checked = false;
+        }
+    }
 
-      $('input[type="checkbox"]').each( function() {
-	  let name = $(this).prop('id');
-	  let section = $(this).data('section');
+    /*
+     * Sets the role permissions according to the permission list.
+     */
+    function setCheckboxes(hasChanged) {
+        let permissions = JSON.parse(document.getElementById('permissions').value);
+        let reloaded = document.getElementById('reloaded').value;
+        let regex = new RegExp(document.getElementById('role_type').value);
 
-	  for (let i = 0; i < permissions[section].length; i++) {
-	      if (permissions[section][i].name == name) {
-		 
-		  if (permissions[section][i].optional !== undefined && regex.test(permissions[section][i].optional)) {
-		      $('#'+name).prop('disabled', false);
-		  }
-		  else {
-		      $('#'+name).prop('disabled', true);
-		  }
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
 
-		  // The page has been reloaded due to a validation error.
-		  if (permissions[section][i].optional !== undefined && reloaded && hasChanged === undefined) {
-		      // Let the old() function handle the checked and unchecked values of the optional checkboxes.
-		      break;
-		  }
+        for (let i = 0; i < checkboxes.length; i++) {
+            let name = checkboxes[i].id;
+            let section = checkboxes[i].dataset.section;
 
-		  if (regex.test(permissions[section][i].roles)) {
-		      $('#'+name).prop('checked', true);
-		  }
-		  else {
-		      $('#'+name).prop('checked', false);
-		  }
+            for (let j = 0; i < permissions[section].length; j++) {
+                if (permissions[section][j].name == name) {
+                   
+                    if (permissions[section][j].optional !== undefined && regex.test(permissions[section][j].optional)) {
+                        document.getElementById(name).disabled = false;
+                    }
+                    else {
+                        document.getElementById(name).disabled = true;
+                    }
 
-		  break;
-	      }
-	  }
-      });
-  }
+                    // The page has been reloaded due to a validation error.
+                    if (permissions[section][j].optional !== undefined && reloaded && hasChanged === undefined) {
+                        // Let the old() function handle the checked and unchecked values of the optional checkboxes.
+                        break;
+                    }
 
-})(jQuery);
+                    if (regex.test(permissions[section][j].roles)) {
+                        document.getElementById(name).checked = true;
+                    }
+                    else {
+                        document.getElementById(name).checked = false;
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
+});
 

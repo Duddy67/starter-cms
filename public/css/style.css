@@ -76,6 +76,12 @@ a {
    margin-left: 1rem;
 }
 
+/* Dropdown menus are shown when the parent menu link is hovered. */
+.dropdown:hover > .dropdown-menu {
+    display: block;
+    margin-top: 0;
+}
+
 /* -- Bootstrap Breakpoints -- */
 
 /* The screen size is smaller than 576px wide.*/

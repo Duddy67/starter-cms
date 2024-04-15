@@ -1,106 +1,119 @@
-(function($) {
+document.addEventListener('DOMContentLoaded', () => {
     const messages = (document.getElementById('JsMessages')) ? JSON.parse(document.getElementById('JsMessages').value) : {};
+    const cselect = new C_Select.init();
 
-    // Run a function when the page is fully loaded including graphics.
-    $(window).on('load', function() {
-	let actions = ['create', 'massDestroy', 'batch', 'checkin', 'publish', 'unpublish'];
+    // The action buttons available in the CMS.
+    const actions = ['create', 'massDestroy', 'batch', 'checkin', 'publish', 'unpublish', 'testEmail', 'update', 'rebuild'];
 
-	actions.forEach(function (action) {
-	    $('#'+action).click( function() { $.fn[action](); });
-	});
+    actions.forEach(function (action) {
+        // Check the action button exists in the form.
+        if (document.getElementById(action)) {
+            document.getElementById(action).addEventListener('click', function() {
+                window[action]();
+            });
+        }
+    });
 
-	$('.clickable-row').click(function(event) {
-	    if(!$(event.target).hasClass('form-check-input')) {
-		$(this).addClass('active').siblings().removeClass('active');
-		window.location = $(this).data('href');
-	    }
-	});
+    /** Filters **/
 
-	$('#toggle-select').click (function () {
-	     var checkedStatus = this.checked;
-	    $('#item-list tbody tr').find('td:first :checkbox').each(function () {
-		$(this).prop('checked', checkedStatus);
-	     });
-	});
+    const filters = document.querySelectorAll('select[id^="filters-"]');
 
-        /** Filters **/
+    for (let i = 0; i < filters.length; i++) {
+        filters[i].addEventListener('change', function() {
+            checkEmptyFilters();
+            document.getElementById('item-filters').submit();
+        });
+    }
 
-	$('select[id^="filters-"]').change(function() {
-	    $.fn.checkEmptyFilters();
-	    $('#item-filters').submit();
-	});
+    // Check first the filter exists in the form.
+    if (document.getElementById('search-btn')) {
+        document.getElementById('search-btn').addEventListener('click', function() {
+            if (document.getElementById('search').value !== '') {
+                checkEmptyFilters();
+                document.getElementById('item-filters').submit();
+            }
+        });
+    }
 
-	$('#search-btn').click(function() {
-	    if ($('#search').val() !== '') {
-		$.fn.checkEmptyFilters();
-		$('#item-filters').submit();
-	    }
-	});
+    if (document.getElementById('clear-search-btn')) {
+        document.getElementById('clear-search-btn').addEventListener('click', function() {
+            document.getElementById('search').value = '';
+            checkEmptyFilters();
+            document.getElementById('item-filters').submit();
+        });
+    }
 
-	$('#clear-search-btn').click(function() {
-	    $('#search').val('');
-	    $.fn.checkEmptyFilters();
-	    $('#item-filters').submit();
-	});
-
-	$('#clear-all-btn').click(function() {
-	    $('select[id^="filters-"]').each(function(index) {
-		$(this).empty();
-	    });
-
-	    $('#search').val('');
-	    $.fn.checkEmptyFilters();
-
-	    $('#item-filters').submit();
-	});
-
-        /* Numerical order (if any) */
-        if ($('#canOrderBy').length) {
-            // Enable or disable the order options accordingly.
-            $('#filters-sortedBy option').each(function(index) {
-                if ($(this).val() == 'order_asc' || $(this).val() == 'order_desc') {
-                    if ($('#canOrderBy').val()) {
-                        $(this).prop('disabled', false);
-                    }
-                    else {
-                        $(this).prop('disabled', true);
-                        if ($('#filters-sortedBy option:selected').val() == 'order_asc' || $('#filters-sortedBy option:selected').val() == 'order_desc') {
-                            $('option:selected').removeAttr('selected');
-                        }
-                    }
+    if (document.getElementById('clear-all-btn')) {
+        document.getElementById('clear-all-btn').addEventListener('click', function() {
+            document.querySelectorAll('select[id^="filters-"]').forEach(function(elem) {
+                while (elem.firstChild) {
+                    elem.removeChild(elem.firstChild);
                 }
             });
 
+            document.getElementById('search').value = '';
+
+            checkEmptyFilters();
+
+            document.getElementById('item-filters').submit();
+        });
+    }
+
+    /* Numerical order (if any) */
+    if (document.getElementById('canOrderBy')) {
+        // Enable or disable the order options accordingly.
+        const filterSelect = document.getElementById('filters-sortedBy');
+        for (let i = 0; i < filterSelect.options.length; i++) {
+            if (filterSelect.options[i].value == 'order_asc' || filterSelect.options[i].value == 'order_desc') {
+                if (document.getElementById('canOrderBy').value) {
+                    filterSelect.options[i].disabled = false;
+                }
+                else {
+                    filterSelect.options[i].disabled = true;
+
+                    if (filterSelect.selectedIndex != -1 && (filterSelect.value == 'order_asc' || filterSelect.value == 'order_desc')) {
+                        filterSelect.options[filterSelect.selectedIndex].removeAttribute('selected');
+                    }
+                }
+
+                cselect.rebuildCSelect(filterSelect);
+            }
         }
-    });
+    }
 
     /*
      * Prevents the parameters with empty value to be send in the url query.
      */
-    $.fn.checkEmptyFilters = function() {
-	$('select[id^="filters-"]').each(function(index) {
-	    if($(this).val() === null || $(this).val() === '') {
-		$(this).prop('disabled', true);
+    function checkEmptyFilters() {
+        const filters = document.querySelectorAll('select[id^="filters-"]');
+
+        for (let i = 0; i < filters.length; i++) {
+	    if(filters[i].value === null || filters[i].value === '') {
+		filters[i].disabled = true;
 	    }
 
 	    // Reinitialize pagination on each request.
-	    if ($('#filters-pagination').length) {
-		$('#filters-pagination').prop('disabled', true);
+	    if (document.getElementById('filters-pagination')) {
+		document.getElementById('filters-pagination').disabled = true;
 	    }
 
-	    if ($('#search').val() === '') {
-		$('#search').prop('disabled', true);
+	    if (document.getElementById('search').value === '') {
+		document.getElementById('search').disabled = true;
 	    }
-	});
+        }
     }
 
-    $.fn.setSelectedItems = function() {
+    function setSelectedItems() {
 	let ids = [];
 	let inputs = '';
 
-	$('.form-check-input:checkbox:checked').each(function () {
-	    ids.push($(this).data('item-id'));
-	});
+        const checkBoxes = document.querySelectorAll('.form-check-input');
+
+        for (let i = 0; i < checkBoxes.length; i++) {
+            if (checkBoxes[i].checked) {
+                ids.push(checkBoxes[i].dataset.itemId);
+            }
+        }
 
 	if (ids.length === 0) {
 	    alert(messages.no_item_selected);
@@ -108,70 +121,95 @@
 	}
 
         // Remove a possible previous selection from the selectedItems form.
-	$('input[name="ids\\[\\]"]').each(function () {
-	    $(this).remove();
-	});
+        let oldInputs = document.querySelectorAll('input[name="ids\\[\\]"]');
+
+        for (let i = 0; i < oldInputs.length; i++) {
+            oldInputs[i].remove();
+        }
 
 	for (let i = 0; i < ids.length; i++) {
 	    inputs += '<input type="hidden" name="ids[]" value="'+ids[i]+'">';
 	}
 	
-	$('#selectedItems').append(inputs);
+        document.getElementById('selectedItems').insertAdjacentHTML('beforeend', inputs);
 
         // Check for batch iframe.
-        let iframe = $('iframe[name="batch"]');
-	if (iframe.length) {
-	    // Remove a possible previous selection from the batchForm form.
-	    $('input[name="ids\\[\\]"]', iframe.contents()).each(function () {
-		$(this).remove();
-	    });
+        const iframe = document.querySelector('iframe[name="batch"]');
 
-	    $('#batchForm', iframe.contents()).append(inputs);
+	if (iframe) {
+	    // Remove a possible previous selection from the batchForm form.
+            oldInputs = iframe.querySelectorAll('input[name="ids\\[\\]"]');
+
+            for (let i = 0; i < oldInputs.length; i++) {
+                oldInputs[i].remove();
+            }
+
+            iframe.contentWindow.document.getElementById('batchForm').insertAdjacentHTML('beforeend', inputs);
 	}
 
 	return true;
     }
 
-    $.fn.create = function() {
-	window.location.replace($('#createItem').val());
+    create = function() {
+	window.location.replace(document.getElementById('createItem').value);
     }
 
-    $.fn.massDestroy = function() {
-	if ($.fn.setSelectedItems() && window.confirm(messages.confirm_multiple_item_deletion)) {
-	    $('#selectedItems input[name="_method"]').val('delete');
-	    $('#selectedItems').attr('action', $('#destroyItems').val());
-	    $('#selectedItems').submit();
+    massDestroy = function() {
+	if (setSelectedItems() && window.confirm(messages.confirm_multiple_item_deletion)) {
+            const selectedItemForm = document.getElementById('selectedItems');
+            selectedItemForm.querySelector('input[name="_method"]').value = 'delete';
+            selectedItemForm.setAttribute('action', document.getElementById('destroyItems').value);
+	    selectedItemForm.submit();
 	}
     }
 
-    $.fn.checkin = function() {
-	if ($.fn.setSelectedItems()) {
-	    $('#selectedItems input[name="_method"]').val('put');
-	    $('#selectedItems').attr('action', $('#checkinItems').val());
-	    $('#selectedItems').submit();
+    checkin = function() {
+	if (setSelectedItems()) {
+            const selectedItemForm = document.getElementById('selectedItems');
+            selectedItemForm.querySelector('input[name="_method"]').value = 'put';
+            selectedItemForm.setAttribute('action', document.getElementById('checkinItems').value);
+	    selectedItemForm.submit();
 	}
     }
 
-    $.fn.publish = function() {
-	if ($.fn.setSelectedItems()) {
-	    $('#selectedItems input[name="_method"]').val('put');
-	    $('#selectedItems').attr('action', $('#publishItems').val());
-	    $('#selectedItems').submit();
+    publish = function() {
+	if (setSelectedItems()) {
+            const selectedItemForm = document.getElementById('selectedItems');
+            selectedItemForm.querySelector('input[name="_method"]').value = 'put';
+            selectedItemForm.setAttribute('action', document.getElementById('publishItems').value);
+	    selectedItemForm.submit();
 	}
     }
 
-    $.fn.unpublish = function() {
-	if ($.fn.setSelectedItems()) {
-	    $('#selectedItems input[name="_method"]').val('put');
-	    $('#selectedItems').attr('action', $('#unpublishItems').val());
-	    $('#selectedItems').submit();
+    unpublish = function() {
+	if (setSelectedItems()) {
+            const selectedItemForm = document.getElementById('selectedItems');
+            selectedItemForm.querySelector('input[name="_method"]').value = 'put';
+            selectedItemForm.setAttribute('action', document.getElementById('unpublishItems').value);
+	    selectedItemForm.submit();
 	}
     }
 
-    $.fn.batch = function() {
-	if ($.fn.setSelectedItems()) {
-	    $('#batch-window').css('display', 'block');
+    batch = function() {
+	if (setSelectedItems()) {
+	    document.getElementById('batch-window').style.display = 'block';
 	}
     }
 
-})(jQuery);
+    testEmail = function() {
+        if (window.confirm(document.getElementById('testEmailMessage').value)) {
+            document.getElementById('sendTestEmail').submit();
+        }
+    } 
+
+    update = function() {
+        document.getElementById('updateItems').submit();
+    }
+
+    rebuild = function() {
+        const updateItemsForm = document.getElementById('updateItems');
+        updateItemsForm.querySelector('input[name="_method"]').value = 'put';
+        updateItemsForm.submit();
+    }
+});
+

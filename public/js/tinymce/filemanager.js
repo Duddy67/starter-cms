@@ -46,7 +46,7 @@ tinymce.init({
 	    }
 	});
 
-        if ($('#canEdit').val() !== undefined && !$('#canEdit').val()) {
+        if (document.getElementById('canEdit') && !document.getElementById('canEdit').value) {
 	    editor.settings.menubar = false;
 	    editor.settings.toolbar = false;
 	    editor.settings.readonly = 1;

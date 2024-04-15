@@ -51,7 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!layout.validateFields()) {
             // Switch to the layout tab.
-            $('.nav-tabs a[href="#layout"]').tab('show');
+            const tab = document.getElementById('layout_items-tab');
+            bootstrap.Tab.getOrCreateInstance(tab).show();
 
             return false;
         }
