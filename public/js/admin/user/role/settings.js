@@ -24,15 +24,21 @@ document.addEventListener('DOMContentLoaded', () => {
     function permissionChecked(name) {
         let item = name.match(/-([a-z0-9]+)$/)[1];
         
-        if (item == 'category') {
+        if (item == 'categories') {
             item = name.match(/-([a-z0-9]+-[a-z0-9]+)$/)[1];
         }
 
         // A user able to update an item is also able to create one.
         if (/^update-/.test(name)) {
             document.getElementById('create-' + item).checked = true;
-            document.getElementById('update-own-' + item).checked = false;
-            document.getElementById('delete-own-' + item).checked = false;
+
+            if (document.getElementById('update-own-' + item)) {
+                document.getElementById('update-own-' + item).checked = false;
+            }
+
+            if (document.getElementById('delete-own-' + item)) {
+                document.getElementById('delete-own-' + item).checked = false;
+            }
 
             return;
         }
@@ -49,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function permissionUnchecked(name) {
         let item = name.match(/-([a-z0-9]+)$/)[1];
 
-        if (item == 'category') {
+        if (item == 'categories') {
             item = name.match(/-([a-z0-9]+-[a-z0-9]+)$/)[1];
         }
 
@@ -74,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let name = checkboxes[i].id;
             let section = checkboxes[i].dataset.section;
 
-            for (let j = 0; i < permissions[section].length; j++) {
+            for (let j = 0; j < permissions[section].length; j++) {
                 if (permissions[section][j].name == name) {
                    
                     if (permissions[section][j].optional !== undefined && regex.test(permissions[section][j].optional)) {
