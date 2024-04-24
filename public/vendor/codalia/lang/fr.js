@@ -14,7 +14,7 @@ var CodaliaLang = {
   },
   "pagination" : { "beginning":"Début", "end":"Fin", "previous":"Précedent", "next":"Suivant"
   },
-  "layout" : { "title":"Titre", "text_block_":"Bloc de texte", "image":"Image", "alt":"Alt",
+  "layout" : { "title":"Titre", "text_block":"Bloc de texte", "image":"Image", "alt":"Alt",
                "group":"Groupe", "group_start":"Groupe début","group_end":"Groupe fin",
   },
   "datepicker" : {'today': 'Aujourd\'hui', 'clear': 'Effacer', 'cancel': 'Annuler'}
