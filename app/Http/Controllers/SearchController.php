@@ -99,17 +99,23 @@ class SearchController extends Controller
                 $data[] = $post->title;
             }
 
+            if (count($data) > $maxRows - 1) {
+                break;
+            }
+
             if (preg_match('#.{0,10}'.$request->get('query').'.{0,10}#i', $post->raw_content, $matches)) {
                 // Skip possible duplicates.
                 if (in_array($matches[0], $data)) {
                     continue;
                 }
 
-                $data[] = $matches[0];
-            }
+                foreach ($matches as $match) {
+                    $data[] = $match;
 
-            if ($key > $maxRows - 1) {
-                break;
+                    if (count($data) > $maxRows - 1) {
+                        break 2;
+                    }
+                }
             }
         }
 

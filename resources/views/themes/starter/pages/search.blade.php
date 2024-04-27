@@ -5,6 +5,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <input id="search" type="text" autocomplete="off" class="form-control" value="{{ request('keyword', '') }}" name="keyword" placeholder="Search by name">
+                <div id="autocomplete-list" class="autocomplete-list"></div>
 
                 <button type="button" id="search-btn" class="btn btn-space btn-secondary mt-2">@lang ('labels.button.search')</button>
                 <button type="button" id="clear-search-btn" class="btn btn-space btn-secondary mt-2">@lang ('labels.button.clear')</button>
@@ -46,26 +47,11 @@
     </div>
 </div>
 
+<input type="hidden" id="autocompleteUrl" value="{{ route('autocomplete') }}">
+
 <x-pagination :items=$posts />
 
 @push ('scripts')
-    <!-- jQuery is required for the bootstrap3-typehead feature.  -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js"></script>
     <script type="text/javascript" src="{{ $public }}/js/post/category.js"></script>
-    <script type="text/javascript">
-        var path = "{{ route('autocomplete') }}";
-
-        $('#search').typeahead({
-            minLength: 3,
-            limit: {{ $maxRows }},
-            source: function (query, process) {
-                return $.get(path, {
-                    query: query
-                }, function (data) {
-                    return process(data);
-                });
-            }
-        });
-    </script>
+    <script type="text/javascript" src="{{ $public }}/js/search.js"></script>
 @endpush
