@@ -91,8 +91,13 @@ a {
 }
 
 .autocomplete-list div:hover {
-  background-color: #f8f9fa;
-  cursor: pointer;
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+.autocomplete-list .highlight {
+    color: #52baff;
+    font-weight: 500;
 }
 
 /* -- Bootstrap Breakpoints -- */

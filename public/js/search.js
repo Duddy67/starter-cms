@@ -31,8 +31,10 @@ function displaySuggestions(suggestions, input) {
     suggestions.forEach(suggestion => {
         const suggestionElement = document.createElement('div');
         suggestionElement.setAttribute('class', 'suggestion');
-        suggestionElement.textContent = suggestion;
-        //highlightInput(suggestion, input);
+        // Highlight the user's input.
+        const regex = new RegExp(`(${input})`, 'gi');
+        const highlightedContent = suggestion.replace( regex, '<span class="highlight">$1</span>');
+        suggestionElement.innerHTML = highlightedContent;
 
         suggestionElement.addEventListener('click', () => {
             // Handle selection of suggestion
@@ -47,22 +49,12 @@ function displaySuggestions(suggestions, input) {
     });
 }
 
-function highlightInput(suggestion, input) {
-    for (let i = 0; i < suggestion.length; i++) {
-        console.log(suggestion.charAt(i));
-        if (suggestion.charAt(i) == input[0]) {
-
-        }
-    }
-
-}
-
 // Event listener for input field to fetch and display suggestions
 inputField.addEventListener('input', () => {
     const input = inputField.value;
 
-    // Don't treat inputs starting with a space character.
-    if (input.startsWith(' ')) {
+    // Don't treat inputs starting or ending with a space character.
+    if (input.startsWith(' ') || input.endsWith(' ')) {
         return;
     }
 
