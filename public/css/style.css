@@ -82,6 +82,28 @@ a {
     margin-top: 0;
 }
 
+.autocomplete-list {
+    border: 0.1rem solid #ced4da;
+    display: none;
+    border-radius: 5px;
+}
+
+.autocomplete-list div {
+    color: #212529;
+    font-weight: 400;
+    padding: 5px;
+}
+
+.autocomplete-list div:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+.autocomplete-list .highlight {
+    color: #52baff;
+    font-weight: 500;
+}
+
 /* -- Bootstrap Breakpoints -- */
 
 /* The screen size is smaller than 576px wide.*/
