@@ -28,8 +28,11 @@ class UpdateRequest extends FormRequest
             'title' => 'required', 
             'url' => 'required',
             'model_name' => Rule::requiredIf(\Str::contains($this->url, ['{', '}'])),
-            'status' => 'required',
         ];
+
+        if ($this->item->canChangeStatus()) {
+            $rules['status'] = 'required';
+        }
 
         return $rules;
     }

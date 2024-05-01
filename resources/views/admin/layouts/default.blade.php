@@ -134,7 +134,7 @@
 
                             @inject ('menu', 'App\Models\Menu')
                             @foreach ($menu::getCurrentUserMenus() as $menu)
-                                @php $active = ($routeName == 'admin.menus.items.index' || $routeName == 'admin.menus.items.create' || $routeName == 'admin.menus.items.edit') ? 'active' : '' @endphp
+                                @php $active = (request()->route('code') == $menu->code && ($routeName == 'admin.menus.items.index' || $routeName == 'admin.menus.items.create' || $routeName == 'admin.menus.items.edit')) ? 'active' : '' @endphp
                                 <li class="list-group-item list-group-item-action {{ $active }}">
                                     <a href="{{ route('admin.menus.items.index', $menu->code) }}" class="sidebar-link">{{ $menu->title }}</a>
                                 </li>
