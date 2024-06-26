@@ -25,7 +25,9 @@ class SearchController extends Controller
 
         if ($request->filled('keyword')) {
             if (strlen($request->input('keyword')) > 3) {
-                $posts = Post::searchInPosts($request->input('keyword'), $locale)->paginate($perPage);
+                $query = Post::searchInPosts($request->input('keyword'));
+                // Get all of the results or the paginated result according to the $perPage value.
+                $posts = ($perPage == -1) ? $query->paginate($query->count()) : $query->paginate($perPage);
                 $posts = $this->formatResults($posts, $request->input('keyword'));
 
                 if (count($posts)) {

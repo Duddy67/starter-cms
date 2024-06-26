@@ -170,7 +170,8 @@ class User extends Authenticatable
             $query->orderBy($matches[1], $matches[2]);
         }
 
-        return $query->paginate($perPage);
+        // Return all of the results or the paginated result according to the $perPage value.
+        return ($perPage == -1) ? $query->paginate($query->count()) : $query->paginate($perPage);
     }
 
     /*
@@ -422,7 +423,7 @@ class User extends Authenticatable
     {
         $dependencies = [
             'posts' => '\\App\\Models\\Post',
-            'categories' => '\\App\\Models\\Post\\Category',
+            'categories' => '\\App\\Models\\Cms\\Category',
             'roles' => '\\App\\Models\\User\\Role',
             'groups' => '\\App\\Models\\User\\Group',
             'menus' => '\\App\\Models\\Menu',

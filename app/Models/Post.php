@@ -250,7 +250,8 @@ class Post extends Model
             }
         });
 
-        return $query->paginate($perPage);
+        // Return all of the results or the paginated result according to the $perPage value.
+        return ($perPage == -1) ? $query->paginate($query->count()) : $query->paginate($perPage);
     }
 
     public static function getPost(int $id, string $locale)
@@ -462,7 +463,8 @@ class Post extends Model
         if (in_array('pagination', $options)) {
             $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
 
-            return $query->paginate($perPage);
+            // Return all of the results or the paginated result according to the $perPage value.
+            return ($perPage == -1) ? $query->paginate($query->count()) : $query->paginate($perPage);
         }
 
         return $query->get();

@@ -162,6 +162,7 @@ return [
 	'order_desc' => 'Order descendant',
 	'yes' => 'Yes',
 	'no' => 'No',
+	'all' => 'All',
 	'show_title' => 'Show title',
 	'show_name' => 'Show name',
 	'show_search' => 'Show search',

@@ -75,7 +75,10 @@ class PostController extends Controller
             $query->whereIn('posts.access_level', ['public_ro', 'public_rw']);
         }
 
-        return response()->json($query->get());
+        $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
+
+        // Return all of the results or the paginated result according to the $perPage value.
+        return ($perPage == -1) ? response()->json($query->paginate($query->count())) : response()->json($query->paginate($perPage));
     }
 
     public function show($locale, $post)

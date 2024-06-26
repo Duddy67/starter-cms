@@ -9,8 +9,8 @@ use App\Models\Cms\Setting;
 use App\Traits\AccessLevel;
 use App\Traits\CheckInCheckOut;
 use App\Traits\OptionList;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 
 class Role extends SpatieRole 
@@ -110,7 +110,8 @@ class Role extends SpatieRole
             $query->where('roles.name', 'like', '%'.$search.'%');
         }
 
-        return $query->paginate($perPage);
+        // Return all of the results or the paginated result according to the $perPage value.
+        return ($perPage == -1) ? $query->paginate($query->count()) : $query->paginate($perPage);
     }
 
     /*
@@ -144,13 +145,5 @@ class Role extends SpatieRole
         }
 
         return $roles;
-    }
-
-    /*
-     * Generic function that returns model values which are handled by select inputs. 
-     */
-    public function getSelectedValue(\stdClass $field): mixed
-    {
-        return $this->{$field->name};
     }
 }

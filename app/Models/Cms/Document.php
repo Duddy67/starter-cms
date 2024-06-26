@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\Cms\Setting;
+use App\Traits\OptionList;
 use App\Models\User;
 use App\Models\Post;
-use App\Traits\OptionList;
 use Illuminate\Http\Request;
 
 
@@ -92,7 +92,8 @@ class Document extends Model
 	    $query->orderBy($matches[1], $matches[2]);
 	}
 
-        $items = $query->paginate($perPage);
+        // Get all of the results or the paginated result according to the $perPage value.
+        $items = ($perPage == -1) ? $query->paginate($query->count()) : $query->paginate($perPage);
 
 	foreach ($items as $key => $item) {
 	    // Set the file url.
@@ -151,7 +152,8 @@ class Document extends Model
 	    $query->orderBy($matches[1], $matches[2]);
 	}
 
-        $items = $query->paginate($perPage);
+        // Get all of the results or the paginated result according to the $perPage value.
+        $items = ($perPage == -1) ? $query->paginate($query->count()) : $query->paginate($perPage);
 
 	foreach ($items as $key => $item) {
 	    // Set the file url.
