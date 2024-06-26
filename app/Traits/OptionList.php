@@ -22,6 +22,11 @@ trait OptionList
           ['value' => 15, 'text' => 15],
           ['value' => 20, 'text' => 20],
           ['value' => 25, 'text' => 25],
+          ['value' => 30, 'text' => 30],
+          ['value' => 50, 'text' => 50],
+          ['value' => 100, 'text' => 100],
+          ['value' => 200, 'text' => 200],
+          ['value' => -1, 'text' => __('labels.generic.all')],
       ];
     }
 

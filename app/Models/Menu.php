@@ -121,7 +121,8 @@ class Menu extends Model
             });
         }
 
-        return $query->paginate($perPage);
+        // Return all of the results or the paginated result according to the $perPage value.
+        return ($perPage == -1) ? $query->paginate($query->count()) : $query->paginate($perPage);
     }
 
     private function getMenuItemChildren($menuItems, $item, $node)

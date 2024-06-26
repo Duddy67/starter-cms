@@ -110,7 +110,8 @@ class Role extends SpatieRole
             $query->where('roles.name', 'like', '%'.$search.'%');
         }
 
-        return $query->paginate($perPage);
+        // Return all of the results or the paginated result according to the $perPage value.
+        return ($perPage == -1) ? $query->paginate($query->count()) : $query->paginate($perPage);
     }
 
     /*

@@ -62,7 +62,8 @@ class PostController extends Controller
 
         $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
 
-        return response()->json($query->paginate($perPage));
+        // Return all of the results or the paginated result according to the $perPage value.
+        return ($perPage == -1) ? response()->json($query->paginate($query->count())) : response()->json($query->paginate($perPage));
     }
 
     public function show($post)

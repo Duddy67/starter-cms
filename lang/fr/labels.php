@@ -162,6 +162,7 @@ return [
 	'order_desc' => 'Ordre descendant',
 	'yes' => 'Oui',
 	'no' => 'Non',
+	'all' => 'Tous',
 	'show_title' => 'Montrer le titre',
 	'show_name' => 'Montrer le nom',
 	'show_search' => 'Montrer la recherche',

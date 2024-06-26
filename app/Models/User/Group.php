@@ -134,7 +134,8 @@ class Group extends Model
                   ->orWhere('groups.owned_by', auth()->user()->id);
         });
 
-        return $query->paginate($perPage);
+        // Return all of the results or the paginated result according to the $perPage value.
+        return ($perPage == -1) ? $query->paginate($query->count()) : $query->paginate($perPage);
     }
 
     public function getOwnedByOptions()
