@@ -43,7 +43,7 @@ class LoginController extends Controller
 
     /**
      * Show the application's login form.
-     * Info: Overwrites AuthenticatesUsers trait method.
+     * Info: Overrides the AuthenticatesUsers trait method.
      *
      * @return \Illuminate\View\View
      */
