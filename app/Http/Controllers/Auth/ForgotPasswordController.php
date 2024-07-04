@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use App\Models\Cms\Setting;
 
 class ForgotPasswordController extends Controller
 {
@@ -19,4 +20,17 @@ class ForgotPasswordController extends Controller
     */
 
     use SendsPasswordResetEmails;
+
+    /**
+     * Display the form to request a password reset link.
+     * Info: Overrides the SendsPasswordResetEmails trait method.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showLinkRequestForm()
+    {
+        $theme = Setting::getValue('website', 'theme', 'starter');
+
+        return view('themes.'.$theme.'.auth.passwords.email');
+    }
 }

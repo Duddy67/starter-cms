@@ -40,7 +40,7 @@
                             <li class="nav-item">
                                 <a class="dropdown-item text-secondary" href="{{ route('login') }}">{{ __('Login') }}</a>
                             </li>
-                            @if (Route::has('register') && $allowRegistering)
+                            @if (Route::has('register') && $setting::getValue('website', 'allow_registering', 0))
                                 <li class="nav-item">
                                     <a class="dropdown-item text-secondary" href="{{ route('register') }}">{{ __('Register') }}</a>
                                 </li>

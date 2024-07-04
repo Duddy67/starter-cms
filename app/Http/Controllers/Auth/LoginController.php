@@ -58,7 +58,7 @@ class LoginController extends Controller
 
     /**
      * The user has been authenticated.
-     * Info: Overwrites AuthenticatesUsers trait method.
+     * Info: Overrides the AuthenticatesUsers trait method.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  mixed  $user
