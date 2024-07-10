@@ -81,6 +81,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    if (document.getElementById('toggle-select')) {
+        document.getElementById('toggle-select').addEventListener('click', function(e) {
+            const toggle = (e.target.checked) ? true : false;
+            const checkBoxes = document.querySelectorAll('.item-checkbox');
+
+            for (let i = 0; i < checkBoxes.length; i++) {
+                checkBoxes[i].checked = toggle;
+            }
+        });
+    }
+
     /*
      * Prevents the parameters with empty value to be send in the url query.
      */
@@ -107,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	let ids = [];
 	let inputs = '';
 
-        const checkBoxes = document.querySelectorAll('.form-check-input');
+        const checkBoxes = document.querySelectorAll('.item-checkbox');
 
         for (let i = 0; i < checkBoxes.length; i++) {
             if (checkBoxes[i].checked) {
