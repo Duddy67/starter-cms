@@ -22,7 +22,7 @@
                 @if ($checkable)
                     <td>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" data-item-id={{ $row->item_id }} data-index="{{ $i }}">
+                            <input type="checkbox" class="form-check-input item-checkbox" data-item-id={{ $row->item_id }} data-index="{{ $i }}">
 
                             @if (isset($row->checked_out))
                                 <div class="checked-out">
