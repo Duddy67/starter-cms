@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Cms\Category;
 use App\Models\Cms\Setting;
+use App\Models\Post;
 
 class SiteController extends Controller
 {
@@ -88,7 +89,7 @@ class SiteController extends Controller
         }
 
         // Then make sure the post exists and is part of the category.
-	if (!$post = $category->posts->where('id', $request->segment(3))->first()) {
+        if (!$post = Post::getPost($request->segment(3), $locale)) {
             $page['name'] = '404';
             return view('themes.'.$page['theme'].'.index', compact('locale', 'page'));
         }
@@ -99,10 +100,11 @@ class SiteController extends Controller
         $post->settings = $post->getSettings();
         // Required in case of extra fields.
         $post->global_settings = Setting::getDataByGroup('posts', $post);
-        $page['name'] = $page['name'].'-details';
         $segments = Setting::getSegments('Post');
         $metaData = $post->meta_data;
 	$query = $request->query();
+        // To display the post as a sub-page called 'details' by default.
+        $page['sub-page'] = 'details';
 
         return view('themes.'.$page['theme'].'.index', compact('locale', 'page', 'category', 'post', 'segments', 'metaData', 'query'));
     }

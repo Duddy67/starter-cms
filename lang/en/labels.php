@@ -61,6 +61,7 @@ return [
 	'show_post_excerpt' => 'Show post excerpt',
 	'show_post_categories' => 'Show post categories',
 	'show_post_image' => 'Show post image',
+        'posts_per_page' => 'Posts per page',
         'posted_by' => 'Posted by :author',
     ],
     'category' => [
