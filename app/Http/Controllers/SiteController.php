@@ -81,10 +81,11 @@ class SiteController extends Controller
         $post->settings = $post->getSettings();
         // Required in case of extra fields.
         $post->global_settings = Setting::getDataByGroup('posts', $post);
-        $page['name'] = $page['name'].'-details';
         $segments = Setting::getSegments('Post');
         $metaData = $post->meta_data;
 	$query = $request->query();
+        // To display the post as a sub-page called 'details' by default.
+        $page['sub-page'] = 'details';
 
         return view('themes.'.$page['theme'].'.index', compact('page', 'category', 'post', 'segments', 'metaData', 'query'));
     }

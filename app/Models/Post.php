@@ -390,13 +390,13 @@ class Post extends Model
             $query->where('posts.title', 'like', '%'.$search.'%');
         }
 
-        if (in_array('pagination', $options)) {
-            $perPage = $request->input('per_page', Setting::getValue('pagination', 'per_page'));
-
-            // Return all of the results or the paginated result according to the $perPage value.
-            return ($perPage == -1) ? $query->paginate($query->count()) : $query->paginate($perPage);
+        // Check for post pagination.
+        if (!empty($settings['posts_per_page'])) {
+            // Return all of the results or the paginated result according to the $posts_per_page value.
+            return ($settings['posts_per_page'] == -1) ? $query->paginate($query->count()) : $query->paginate($settings['posts_per_page']);
         }
 
+        // If no pagination, return all the results.
         return $query->get();
     }
 

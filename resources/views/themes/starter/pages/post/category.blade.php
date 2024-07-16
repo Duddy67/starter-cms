@@ -28,7 +28,9 @@
     @endif
 </ul>
 
-<x-pagination :items=$posts />
+@if (!empty($category->settings['posts_per_page']))
+    <x-pagination :items=$posts />
+@endif
 
 
 @if ($category->getExtraFieldByAlias('library'))

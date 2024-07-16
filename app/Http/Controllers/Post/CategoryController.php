@@ -28,7 +28,7 @@ class CategoryController extends Controller
         $category->settings = $category->getSettings();
         // Required in case of category extra fields.
         $category->global_settings = Setting::getDataByGroup('categories', $category);
-	$posts = $category->getItemCollection($request, ['pagination']);
+	$posts = $category->getItemCollection($request);
 
         if (count($posts)) {
             // Use the first post as model to get the global post settings.
