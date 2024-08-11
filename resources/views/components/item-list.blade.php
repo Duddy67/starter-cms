@@ -37,9 +37,9 @@
                     @if ($column->name == 'ordering')
                         <td>
                             @if (isset($row->ordering['up']))
-                                <a href="{{ $row->ordering['up'] }}"><i class="fa fa-angle-double-up mr-3"></i></a>
+                                <a href="{{ $row->ordering['up'] }}"><i class="fa fa-angle-double-up me-2"></i></a>
                             @else
-                                <i class="mr-4">&nbsp;</i>
+                                <i class="me-3">&nbsp;</i>
                             @endif
 
                             @if (isset($row->ordering['down']))

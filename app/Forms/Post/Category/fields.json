@@ -196,6 +196,7 @@
     "name": "post_ordering",
     "function": "item_ordering",
     "id": "post_ordering",
+    "class": "cselect-upward",
     "extra": ["global_setting"],
     "group": "settings",
     "options": [] 
@@ -206,6 +207,7 @@
     "name": "posts_per_page",
     "function": "per_page",
     "id": "posts_per_page",
+    "class": "cselect-upward",
     "blank": "labels.generic.none",
     "group": "settings",
     "options": []

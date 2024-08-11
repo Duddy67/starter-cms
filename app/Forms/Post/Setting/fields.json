@@ -133,6 +133,7 @@
     "name": "show_post_categories",
     "function": "yes_no",
     "id": "show_post_categories",
+    "class": "cselect-upward",
     "group": "categories",
     "options": [] 
   },
@@ -142,6 +143,7 @@
     "name": "post_ordering",
     "function": "item_ordering",
     "id": "post_ordering",
+    "class": "cselect-upward",
     "group": "categories",
     "options": [] 
   },
