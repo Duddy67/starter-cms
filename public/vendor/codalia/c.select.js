@@ -222,6 +222,13 @@ const C_Select = (function() {
 
             // Insert the newly created CSelect after the actual select.
             select.insertAdjacentElement('afterend', cselect);
+
+            if (select.classList.contains('cselect-upward')) {
+                // Swap the 2 children elements of the CSelect element so that the droplist is now in first position.
+                cselect.insertBefore(cselect.lastChild, cselect.firstChild);
+                // Add the cselect-upward class to the CSelect element.
+                cselect.firstChild.classList.add('cselect-upward');
+            }
         }
     }
 

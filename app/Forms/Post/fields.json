@@ -198,6 +198,7 @@
     "name": "allow_comments",
     "function": "yes_no",
     "id": "allow_comments",
+    "class": "cselect-upward",
     "extra": ["global_setting"],
     "group": "settings",
     "options": []
@@ -208,6 +209,7 @@
     "name": "comment_alert",
     "function": "yes_no",
     "id": "comment_alert",
+    "class": "cselect-upward",
     "extra": ["global_setting"],
     "group": "settings",
     "options": [] 
