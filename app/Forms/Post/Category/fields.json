@@ -205,11 +205,18 @@
     "label": "labels.post.posts_per_page",
     "type": "select",
     "name": "posts_per_page",
-    "function": "per_page",
+    "function": "items_per_page",
     "id": "posts_per_page",
     "class": "cselect-upward",
     "blank": "labels.generic.none",
     "group": "settings",
     "options": []
+  },
+  {
+    "label": "labels.post.customized_posts_per_page",
+    "type": "text",
+    "name": "customized_posts_per_page",
+    "id": "customized_posts_per_page",
+    "group": "settings"
   }
 ]

@@ -209,6 +209,12 @@ class Category extends Model
         return $this->categorizableTypes[$this->collection_type.'_setting']::getItemOrderingOptions();
     }
 
+    public function getItemsPerPageOptions(): array
+    {
+        // Invoke the getItemsPerPageOptions function shared by all the categorizable item models.
+        return $this->categorizableTypes[$this->collection_type.'_setting']::getItemsPerPageOptions();
+    }
+
     /*
      * Generic function that returns model values which are handled by select inputs. 
      */

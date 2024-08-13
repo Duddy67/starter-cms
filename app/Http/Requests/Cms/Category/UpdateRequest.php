@@ -32,6 +32,7 @@ class UpdateRequest extends FormRequest
 		'required',
                 'image' => ['nullable', 'image', 'mimes:jpg,png,jpeg,gif,svg', 'max:2048', 'dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000'],
 	    ],
+            'settings.customized_posts_per_page' => ['nullable', 'required_if:settings.posts_per_page,-2', 'integer'],
         ];
 
 	// It's a parent private category.

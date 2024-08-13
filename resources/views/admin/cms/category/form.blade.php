@@ -75,6 +75,7 @@
         <input type="hidden" id="cancelEdit" value="{{ route('admin.'.$collection.'.categories.cancel', $query) }}">
         <input type="hidden" id="siteUrl" value="{{ url('/') }}">
         <input type="hidden" id="close" name="_close" value="0">
+        <input type="hidden" id="collectionType" value="{{ Str::plural($category->collection_type) }}">
         <x-js-messages />
 
         @if (isset($category))
@@ -112,5 +113,6 @@
     <script type="text/javascript" src="{{ asset('/vendor/codalia/c.ajax.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/form.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/admin/disable.toolbars.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/js/admin/category/customized.items.per.page.js') }}"></script>
     <script type="text/javascript" src="{{ asset('/js/tinymce/filemanager.js') }}"></script>
 @endpush

@@ -37,8 +37,9 @@ class Setting extends Model
 
 
     /**
-     * Function shared with all the categorizable models.
+     * Functions shared with all the categorizable models.
      */
+
     public static function getItemOrderingOptions(): array
     {
       return [
@@ -52,5 +53,22 @@ class Setting extends Model
 	  ['value' => 'order_asc', 'text' => __('labels.generic.order_asc')],
 	  ['value' => 'order_desc', 'text' => __('labels.generic.order_desc')],
       ];
+    }
+
+    public static function getItemsPerPageOptions(): array
+    {
+        return [
+            ['value' => 5, 'text' => 5],
+            ['value' => 10, 'text' => 10],
+            ['value' => 15, 'text' => 15],
+            ['value' => 20, 'text' => 20],
+            ['value' => 25, 'text' => 25],
+            ['value' => 30, 'text' => 30],
+            ['value' => 50, 'text' => 50],
+            ['value' => 100, 'text' => 100],
+            ['value' => 200, 'text' => 200],
+            ['value' => -1, 'text' => __('labels.generic.all')],
+            ['value' => -2, 'text' => __('labels.generic.customized')],
+        ];
     }
 }
