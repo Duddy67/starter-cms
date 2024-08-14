@@ -462,8 +462,10 @@ class Post extends Model
 
         // Check for post pagination.
         if (!empty($settings['posts_per_page'])) {
+            // Check for custom value.
+            $perPage = ($settings['posts_per_page'] == -2) ? $settings['customized_posts_per_page'] : $settings['posts_per_page'];
             // Return all of the results or the paginated result according to the $posts_per_page value.
-            return ($settings['posts_per_page'] == -1) ? $query->paginate($query->count()) : $query->paginate($settings['posts_per_page']);
+            return ($settings['posts_per_page'] == -1) ? $query->paginate($query->count()) : $query->paginate($perPage);
         }
 
         // If no pagination, return all the results.

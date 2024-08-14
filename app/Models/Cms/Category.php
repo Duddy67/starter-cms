@@ -239,10 +239,16 @@ class Category extends Model
         return Setting::getItemSettings($this, 'categories');
     }
 
-    public function getPostOrderingOptions()
+    public function getItemOrderingOptions(): array
     {
         // Invoke the getItemOrderingOptions function shared by all the categorizable item models.
         return $this->categorizableTypes[$this->collection_type.'_setting']::getItemOrderingOptions();
+    }
+
+    public function getItemsPerPageOptions(): array
+    {
+        // Invoke the getItemsPerPageOptions function shared by all the categorizable item models.
+        return $this->categorizableTypes[$this->collection_type.'_setting']::getItemsPerPageOptions();
     }
 
     /*
