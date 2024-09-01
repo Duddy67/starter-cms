@@ -250,13 +250,12 @@ class CategoryController extends Controller
 
         if ($image = $this->uploadImage($request)) {
             // Delete the previous post image if any.
-            if ($category->image) {
-                $category->image->delete();
+            if ($category->image()->count()) {
+                $category->image()->delete();
             }
 
-            $category->image()->save($image);
             // Update the image.
-            $category->image = $image;
+            $category->image()->save($image);
         }
 
         if ($request->input('_close', null)) {

@@ -168,13 +168,12 @@ class UserController extends Controller
 
         if ($photo = $this->uploadPhoto($request)) {
             // Delete the previous photo if any.
-            if ($user->photo) {
-                $user->photo->delete();
+            if ($user->photo()->count()) {
+                $user->photo()->delete();
             }
 
-            $user->photo()->save($photo);
             // Update the photo.
-            $user->photo = $photo;
+            $user->photo()->save($photo);
         }
 
         if ($request->input('_close', null)) {

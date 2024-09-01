@@ -220,13 +220,12 @@ class PostController extends Controller
 
         if ($image = $this->uploadImage($request)) {
             // Delete the previous post image if any.
-            if ($post->image) {
-                $post->image->delete();
+            if ($post->image()->count()) {
+                $post->image()->delete();
             }
 
-            $post->image()->save($image);
             // Update the image.
-            $post->image = $image;
+            $post->image()->save($image);
         }
 
         if ($request->input('_close', null)) {
