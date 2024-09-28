@@ -680,6 +680,19 @@ const C_Layout = (function() {
                     }
                 }
 
+                if (itemType == 'group_start') {
+                    if (_isEmpty(document.getElementById('group_start-'+_idNbList[i]).value)) {
+                        document.getElementById('group_start-'+_idNbList[i]).classList.add('mandatory');
+                        alert(CodaliaLang.message['empty_group_class']);
+
+                        return false;
+                    }
+                    else {
+                        // Remove possible previous alert. 
+                        document.getElementById('group_start-'+_idNbList[i]).classList.remove('mandatory');
+                    }
+                }
+
                 if (itemType == 'text_block') {
                     if (_isEmpty(tinymce.get('text_block-'+_idNbList[i]).getContent())) {
                         document.getElementById('layout-item-row-1-cell-1-'+_idNbList[i]).classList.add('mandatory');
