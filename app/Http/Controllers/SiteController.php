@@ -102,7 +102,7 @@ class SiteController extends Controller
         $post->global_settings = Setting::getDataByGroup('posts', $post);
         $segments = Setting::getSegments('Post');
         $metaData = $post->meta_data;
-	$query = $request->query();
+        $query = array_merge($request->query(), ['id' => $post->id, 'slug' => $post->slug]);
         // To display the post as a sub-page called 'details' by default.
         $page['sub-page'] = 'details';
 
