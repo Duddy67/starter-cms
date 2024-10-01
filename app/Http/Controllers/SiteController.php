@@ -106,6 +106,12 @@ class SiteController extends Controller
         // To display the post as a sub-page called 'details' by default.
         $page['sub-page'] = 'details';
 
+        // The post has a layout and the name of the selected page ends by '-layout'.
+        if ($post->layoutItems()->exists() && preg_match('#^[a-z0-9\-]+\-layout$#', $post->page)) {
+            // Set the layout page name.
+            $page['name'] = $post->page;
+        }
+
         return view('themes.'.$page['theme'].'.index', compact('locale', 'page', 'category', 'post', 'segments', 'metaData', 'query'));
     }
 }
