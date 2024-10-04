@@ -1,4 +1,4 @@
-@if ($items->count())
+@if ($items->count() && method_exists($items, 'appends'))
     <div class="d-flex justify-content-center pt-5">
 	{{ $items->appends(request()->except(['page']))->links('pagination::bootstrap-4') }}
     </div>

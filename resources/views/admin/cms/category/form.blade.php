@@ -75,7 +75,7 @@
         <input type="hidden" id="cancelEdit" value="{{ route('admin.'.$collection.'.categories.cancel', $query) }}">
         <input type="hidden" id="siteUrl" value="{{ url('/') }}">
         <input type="hidden" id="close" name="_close" value="0">
-        <input type="hidden" id="collectionType" value="{{ Str::plural($category->collection_type) }}">
+        <input type="hidden" id="collectionType" value="{{ $collection }}">
         <x-js-messages />
 
         @if (isset($category))
