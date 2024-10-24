@@ -1,5 +1,15 @@
 <div class="position-relative">
     @include('themes.starter.partials.flash-message')
+
+    @if (isset($category))
+        <div class="row">
+            <p class="h3">{{ $category->name }}</p>
+            <div class="col-6">
+                {!! $category->description !!}
+            </div>
+        </div>
+    @endif
+
     <form action="{{ route('contact.store') }}" method="post" id="form" role="form" class="php-email-form">
         @csrf
         <div class="row">
