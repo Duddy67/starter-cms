@@ -71,6 +71,7 @@ Route::prefix('{locale}')
 
     Route::get('/autocomplete', [SearchController::class, 'autocomplete'])->name('autocomplete');
     Route::get('/search', [SearchController::class, 'index'])->name('search');
+    Route::get('/contact', [ContactController::class, 'show'])->name('contact');
     Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
     Route::get('/{pages?}', [SiteController::class, 'index'])->where('page', '^(?!admin).*$')->name('site.index');
     Route::get('/{pages}/{id}/{slug}', [SiteController::class, 'show'])->name('site.show');
