@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Cms\Category;
 use App\Models\Cms\Setting;
 use App\Models\Cms\Email;
 use App\Http\Requests\Contact\StoreRequest;
@@ -12,22 +11,6 @@ use Carbon\Carbon;
 
 class ContactController extends Controller
 {
-    public function show(Request $request, string $locale)
-    {
-        $page = Setting::getPage('contact');
-
-        // Check if a 'contact' category exists.
-	if (!$category = Category::getCategory('contact', 'post', $locale)) {
-            // If no 'contact' category is found, just display the contact page.
-            return view('themes.'.$page['theme'].'.index', compact('page', 'locale'));
-        }
-
-        // Collect some extra data.
-        $metaData = $category->meta_data;
-        $query = $request->query();
-
-        return view('themes.'.$page['theme'].'.index', compact('page', 'locale', 'category', 'metaData', 'query'));
-    }
 
     /**
      * Store a newly sent message through the contact form. (AJAX)
