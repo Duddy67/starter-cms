@@ -144,7 +144,7 @@ class Menu extends Model
 
     public function getMenuItems()
     {
-        $nodes = Item::where('menu_code', $this->code)->defaultOrder()->get()->toTree();
+        $nodes = Item::where('menu_code', $this->code)->where('status', 'published')->defaultOrder()->get()->toTree();
         $menuItems = [];
 
         $traverse = function ($nodes, $level = 0) use (&$traverse, &$menuItems) {
@@ -236,7 +236,7 @@ class Menu extends Model
      */
     public static function getMenu($code)
     {
-        if ($menu = Menu::where(['code' => $code, 'status' => 'published'])->first()) {
+        if ($menu = Menu::where('code', $code)->where('status', 'published')->first()) {
 
             if ($menu->canAccess()) {
                 return $menu;
