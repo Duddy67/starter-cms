@@ -249,7 +249,7 @@ class Menu extends Model
      */
     public static function getMenu($code)
     {
-        if ($menu = Menu::where(['code' => $code, 'status' => 'published'])->first()) {
+        if ($menu = Menu::where('code', $code)->where('status', 'published')->first()) {
 
             if ($menu->canAccess()) {
                 return $menu;
