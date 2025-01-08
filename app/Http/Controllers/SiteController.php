@@ -69,8 +69,8 @@ class SiteController extends Controller
             return view('themes.'.$page['theme'].'.index', compact('page'));
         }
 
-        // Then make sure the post exists and is part of the category.
-	if (!$post = $category->posts->where('id', $request->segment(2))->first()) {
+        // Then make sure the post exists, is published and is part of the category.
+	if (!$post = $category->posts->where('id', $request->segment(2))->where('status', 'published')->first()) {
             $page['name'] = '404';
             return view('themes.'.$page['theme'].'.index', compact('page'));
         }

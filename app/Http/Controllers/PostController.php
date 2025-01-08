@@ -21,7 +21,7 @@ class PostController extends Controller
         $post = Post::select('posts.*', 'users.name as owner_name', 'users2.name as modifier_name')
 			->leftJoin('users', 'posts.owned_by', '=', 'users.id')
 			->leftJoin('users as users2', 'posts.updated_by', '=', 'users2.id')
-			->where('posts.id', $id)->first();
+			->where('posts.id', $id)->where('status', 'published')->first();
 
         $page = Setting::getPage('post');
 
