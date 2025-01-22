@@ -271,7 +271,7 @@ class Post extends Model
                 $join->on('posts.id', '=', 'fallback.translatable_id')
                      ->where('fallback.translatable_type', Post::class)
                      ->where('fallback.locale', config('app.fallback_locale'));
-        })->findOrFail($id);
+        })->where('posts.status', 'published')->findOrFail($id);
     }
 
     public function getUrl()

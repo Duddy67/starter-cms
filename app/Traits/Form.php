@@ -501,7 +501,9 @@ trait Form
         $options = $this->item->$function();
 
         if (isset($field->extra) && in_array('global_setting', $field->extra)) {
-            $options[] = ['value' => 'global_setting', 'text' => __('labels.generic.global_setting')];
+            // Insert the global_setting option at the beginning of the $options array to
+            // make it the default option.
+            array_unshift($options, ['value' => 'global_setting', 'text' => __('labels.generic.global_setting')]);
         }
 
         return $options;

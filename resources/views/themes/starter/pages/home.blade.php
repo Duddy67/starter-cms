@@ -10,7 +10,7 @@
     @endif
 
     <ul class="post-list">
-	@if (count($posts))
+	@if (isset($posts) && count($posts))
 	    @foreach ($posts as $post)
 		@include ('themes.starter.partials.post')
 	    @endforeach

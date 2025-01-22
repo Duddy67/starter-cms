@@ -213,6 +213,7 @@ class DatabaseSeeder extends Seeder
             ['group' => 'categories', 'key' => 'show_name', 'value' => 1],
             ['group' => 'categories', 'key' => 'show_search', 'value' => 1],
             ['group' => 'categories', 'key' => 'show_description', 'value' => 1],
+            ['group' => 'categories', 'key' => 'show_image', 'value' => 1],
             ['group' => 'categories', 'key' => 'show_subcategories', 'value' => 1],
             ['group' => 'categories', 'key' => 'show_post_excerpt', 'value' => 1],
             ['group' => 'categories', 'key' => 'show_post_image', 'value' => 1],
