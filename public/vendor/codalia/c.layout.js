@@ -65,6 +65,15 @@ const C_Layout = (function() {
     };
 
     /**
+      * Returns the type of the given item. 
+      *
+      * @return  string   The item type.
+     */
+    function _getItemType(idNb) {
+        return document.getElementById('layout-item-' + idNb).dataset.type;
+    }
+
+    /**
       * Creates a new TinyMce editor instance for the given textarea.
       *
       * @param   integer idNb   The id number of the textarea item.
@@ -173,39 +182,45 @@ const C_Layout = (function() {
 	attribs = {type: 'hidden', name: 'layout_items[layout_item_ordering_'+idNb+']', id: 'layout-item-ordering-'+idNb};
 	document.getElementById('layout-item-ordering-div-'+idNb).appendChild(_createElement('input', attribs));
 
-	// Creates the link allowing the item to go down the item ordering.
-	attribs = {
-	    href: 'javascript:void(0);',
-	    id: 'layout-item-down-ordering-'+idNb,
-	    class: 'down-ordering'
-	};
+        // group_start item types can't go down.
+        if (_getItemType(idNb) != 'group_start') {
+            // Creates the link allowing the item to go down the item ordering.
+            attribs = {
+                href: 'javascript:void(0);',
+                id: 'layout-item-down-ordering-'+idNb,
+                class: 'down-ordering'
+            };
 
-        let link = _createElement('a', attribs);
+            let link = _createElement('a', attribs);
 
-	attribs = {class: 'fa fa-angle-double-down'};
+            attribs = {class: 'fa fa-angle-double-down'};
 
-	link.appendChild(_createElement('i', attribs));
-	document.getElementById('layout-item-ordering-div-'+idNb).appendChild(link);
+            link.appendChild(_createElement('i', attribs));
+            document.getElementById('layout-item-ordering-div-'+idNb).appendChild(link);
+        }
 
 	// Creates fake element to display the order number.
 	attribs = {type: 'text', disabled: 'disabled', id: 'layout-item-order-number-'+idNb, class: 'layout-item-order-number'};
 	document.getElementById('layout-item-ordering-div-'+idNb).appendChild(_createElement('input', attribs));
 
-	// Creates the link allowing the item to go up the item ordering.
-	attribs = {
-	     href: 'javascript:void(0);',
-	     id: 'layout-item-up-ordering-'+idNb,
-	     class: 'up-ordering'
-	};
+        // group_end item types can't go up.
+        if (_getItemType(idNb) != 'group_end') {
+            // Creates the link allowing the item to go up the item ordering.
+            attribs = {
+                 href: 'javascript:void(0);',
+                 id: 'layout-item-up-ordering-'+idNb,
+                 class: 'up-ordering'
+            };
 
-	link = _createElement('a', attribs);
+            link = _createElement('a', attribs);
 
-	attribs = {class: 'fa fa-angle-double-up'};
+            attribs = {class: 'fa fa-angle-double-up'};
 
-	link.appendChild(_createElement('i', attribs));
-	document.getElementById('layout-item-ordering-div-'+idNb).appendChild(link);
+            link.appendChild(_createElement('i', attribs));
+            document.getElementById('layout-item-ordering-div-'+idNb).appendChild(link);
+        }
 
-	_assignOrderingElements(idNb);
+        _assignOrderingElements(idNb);
 
 	_itemReordering();
     }
@@ -221,6 +236,11 @@ const C_Layout = (function() {
         let directions = ['up', 'down'];
 
         for (let i = 0; i < directions.length; ++i){
+            // _reverseOrder function is partialy needed in group item types.
+            if ((directions[i] == 'up' && _getItemType(idNb) == 'group_end') || (directions[i] == 'down' && _getItemType(idNb) == 'group_start')) {
+                continue;
+            } 
+
             // Assign the _reverseOrder function to the newly created up and down elements.
             document.getElementById('layout-item-'+directions[i]+'-ordering-'+idNb).addEventListener('click', function() {
                 _reverseOrder(directions[i], idNb);
@@ -237,38 +257,65 @@ const C_Layout = (function() {
      * @return  void
     */
     function _reverseOrder(direction, idNb) {
+        // 
+        const referenceItem = document.getElementById('layout-item-' + idNb);
+
+        if (referenceItem.dataset.type.startsWith('group_')) {
+            _reverseGroup(referenceItem);
+            return;
+        }
+
         // Loops through the item id number order.
         for (let i = 0; i < _idNbList.length; i++) {
-            // Checks for the which order has to be reversed.
+            // Checks in which order the 2 items have to be reversed.
             if (_idNbList[i] == idNb) {
-              // Sets the item indexes according to the direction.
-              let index1 = i;
-              let index2 = i + 1;
+                const index = (direction == 'up') ? i - 1 : i + 1;
+                // Momentarily withdraws the item to switch from the DOM.
+                const itemToSwitch = _container.removeChild(document.getElementById('layout-item-' + _idNbList[index]));
+                const position = (direction == 'up') ? 'afterend' : 'beforebegin';
+                // Switch the item according to the position.
+                referenceItem.insertAdjacentElement(position, itemToSwitch);
 
-              if (direction == 'up') {
-                  index1 = i - 1;
-                  index2 = i;
-              }
+                if (itemToSwitch.dataset.type == 'text_block') {
+                    // Remove then reinstanciate a brand new TinyMce editor.
+                    tinymce.get('text_block-'+_idNbList[index]).remove();
+                    _initTinyMceEditor(_idNbList[index]);
+                }
 
-              if (!_checkGroupItemOverlapping(index1, index2)) {
-                  return;
-              }
+                /*
+                // Sets the item indexes according to the direction.
+                // Proceed the down direction by default.
 
-              // Gets the reference item before which the other item will be inserted.
-              let refItem = document.getElementById('layout-item-'+_idNbList[index1]);
-              // Momentarily withdraws the other items from the DOM.
-              let oldChild = _container.removeChild(document.getElementById('layout-item-'+_idNbList[index2]));
+                // Switch the selected item with the item below.
+                let index1 = i; 
+                let index2 = i + 1;
 
-              // Switches the 2 items.
-              _container.insertBefore(oldChild, refItem);
+                if (direction == 'up') {
+                    // Switch the selected item with the item above.
+                    index1 = i - 1;  
+                    index2 = i; 
+                }
 
-              if (oldChild.dataset.type === 'text_block') {
-                  // Remove then reinstanciate a brand new TinyMce editor.
-                  tinymce.get('text_block-'+_idNbList[index2]).remove();
-                  _initTinyMceEditor(_idNbList[index2]);
-              }
+                if (!_checkGroupItemOverlapping(index1, index2)) {
+                    return;
+                }
 
-              break;
+                // Gets the reference item before which the other item will be inserted.
+                let refItem = document.getElementById('layout-item-'+_idNbList[index1]);
+                // Momentarily withdraws the other item from the DOM.
+                let oldChild = _container.removeChild(document.getElementById('layout-item-'+_idNbList[index2]));
+
+
+                // Switches the 2 items.
+                _container.insertBefore(oldChild, refItem);
+
+                if (oldChild.dataset.type === 'text_block') {
+                    // Remove then reinstanciate a brand new TinyMce editor.
+                    tinymce.get('text_block-'+_idNbList[index2]).remove();
+                    _initTinyMceEditor(_idNbList[index2]);
+                }*/
+
+                break;
             }
         }
 
@@ -296,26 +343,34 @@ const C_Layout = (function() {
 	    let idNb = parseInt(divs[i].id.replace(/.+-(\d+)$/, '$1'));
 	    // Updates the ordering of the id number.
 	    _idNbList.push(idNb);
+            const itemType = _getItemType(idNb);
 
 	    // Updates the item ordering.
 	    document.getElementById('layout-item-ordering-'+idNb).value = ordering;
 	    document.getElementById('layout-item-order-number-'+idNb).value = ordering;
-	    // Displays the up/down links of the item.
-	    document.getElementById('layout-item-up-ordering-'+idNb).style.display = 'inline';
-	    document.getElementById('layout-item-down-ordering-'+idNb).style.display = 'inline';
+
+            if (itemType != 'group_end') {
+                // Displays the up/down links of the item.
+                document.getElementById('layout-item-up-ordering-'+idNb).style.display = 'inline';
+            }
+
+            if (itemType != 'group_start') {
+                document.getElementById('layout-item-down-ordering-'+idNb).style.display = 'inline';
+            }
+
 	    // Resets first and last item classes.
 	    document.getElementById('layout-item-order-number-'+idNb).classList.remove('first-item', 'last-item');
 
-	    if (ordering == 1) {
-	      // The first item cannot go any higher.
-	      document.getElementById('layout-item-up-ordering-'+idNb).style.display = 'none';
-	      document.getElementById('layout-item-order-number-'+idNb).classList.add('first-item');
+	    if (ordering == 1 && itemType != 'group_end') {
+                // The first item cannot go any higher.
+                document.getElementById('layout-item-up-ordering-'+idNb).style.display = 'none';
+                document.getElementById('layout-item-order-number-'+idNb).classList.add('first-item');
 	    }
 
-	    if (ordering == divs.length) {
-	      // The last item cannot go any lower.
-	      document.getElementById('layout-item-down-ordering-'+idNb).style.display = 'none';
-	      document.getElementById('layout-item-order-number-'+idNb).classList.add('last-item');
+	    if (ordering == divs.length && itemType != 'group_start') {
+                // The last item cannot go any lower.
+                document.getElementById('layout-item-down-ordering-'+idNb).style.display = 'none';
+                document.getElementById('layout-item-order-number-'+idNb).classList.add('last-item');
 	    }
         }
     }
@@ -329,8 +384,12 @@ const C_Layout = (function() {
       * @return  boolean
      */
     function _checkGroupItemOverlapping(index1, index2) {
-        let item1Type = document.getElementById('layout-item-'+_idNbList[index1]).dataset.type;
-        let item2Type = document.getElementById('layout-item-'+_idNbList[index2]).dataset.type;
+        const item1Type = _getItemType(_idNbList[index1]);
+        const item2Type = _getItemType(_idNbList[index2]);
+
+        if (item1Type == 'group_start') {
+//console.log(_idNbList);
+        }
 
         if (item2Type == 'group_start' && item1Type == 'group_end' || item2Type == 'group_end' && item1Type == 'group_start') {
             alert(CodaliaLang.message['alert_overlapping']);
@@ -338,6 +397,10 @@ const C_Layout = (function() {
         }
 
         return true;
+    }
+
+    function _reverseGroup(item) {
+
     }
 
     /**
