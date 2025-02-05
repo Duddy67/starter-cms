@@ -73,6 +73,44 @@ const C_Layout = (function() {
         return document.getElementById('layout-item-' + idNb).dataset.type;
     }
 
+    function _getAdjacentItem(referenceItem, direction) {
+        // Loops through the item id number order.
+        for (let i = 0; i < _idNbList.length; i++) {
+            // Checks in which order the 2 items have to be reversed.
+            if (_idNbList[i] == referenceItem.dataset.idNumber) {
+                // Compute the list index of the item to switch according to the direction.
+                const index = (direction == 'up') ? i - 1 : i + 1;
+
+                // Returns the adjacent item.
+                return document.getElementById('layout-item-' + _idNbList[index]);
+            }
+        }
+
+        return null;
+    }
+
+    function _getPartnerItem(item) {
+        const idNb = parseInt(item.dataset.idNumber);
+        const partnerIdNb = item.dataset.type == 'group_start' ? idNb + 1 : idNb - 1;
+
+        return document.getElementById('layout-item-' + partnerIdNb);
+    }
+
+    function _switchItems(direction, referenceItem, itemToSwitch) {
+        // Momentarily withdraws from the DOM the item to switch.
+        _container.removeChild(itemToSwitch);
+        // Set the new position of the item (ie: below or above the reference item).
+        const position = (direction == 'up') ? 'afterend' : 'beforebegin';
+        // Switch the item according to the position.
+        referenceItem.insertAdjacentElement(position, itemToSwitch);
+
+        if (itemToSwitch.dataset.type == 'text_block') {
+            // Remove then reinstanciate a brand new TinyMce editor.
+            tinymce.get('text_block-' + itemToSwitch.dataset.idNumber).remove();
+            _initTinyMceEditor(itemToSwitch.dataset.idNumber);
+        }
+    }
+
     /**
       * Creates a new TinyMce editor instance for the given textarea.
       *
@@ -121,7 +159,7 @@ const C_Layout = (function() {
         // A new group item actually starts with a group_start item.
         itemType = (itemType == 'group') ? 'group_start' : itemType;
         // Creates the item div then its inner structure.
-        let attribs = {id: 'layout-item-'+idNb, class: 'layout-item', 'data-type': itemType};
+        let attribs = {id: 'layout-item-'+idNb, class: 'layout-item', 'data-type': itemType, 'data-id-number': idNb};
         let itemContainer = _createElement('div', attribs);
 
         for (let i = 0; i < 3; i++) {
@@ -257,67 +295,17 @@ const C_Layout = (function() {
      * @return  void
     */
     function _reverseOrder(direction, idNb) {
-        // 
+        // Get the item intended to move upward or downward.
         const referenceItem = document.getElementById('layout-item-' + idNb);
 
+        // Check for group items.
         if (referenceItem.dataset.type.startsWith('group_')) {
-            _reverseGroup(referenceItem);
+            _reverseGroupOrder(referenceItem);
             return;
         }
 
-        // Loops through the item id number order.
-        for (let i = 0; i < _idNbList.length; i++) {
-            // Checks in which order the 2 items have to be reversed.
-            if (_idNbList[i] == idNb) {
-                const index = (direction == 'up') ? i - 1 : i + 1;
-                // Momentarily withdraws the item to switch from the DOM.
-                const itemToSwitch = _container.removeChild(document.getElementById('layout-item-' + _idNbList[index]));
-                const position = (direction == 'up') ? 'afterend' : 'beforebegin';
-                // Switch the item according to the position.
-                referenceItem.insertAdjacentElement(position, itemToSwitch);
-
-                if (itemToSwitch.dataset.type == 'text_block') {
-                    // Remove then reinstanciate a brand new TinyMce editor.
-                    tinymce.get('text_block-'+_idNbList[index]).remove();
-                    _initTinyMceEditor(_idNbList[index]);
-                }
-
-                /*
-                // Sets the item indexes according to the direction.
-                // Proceed the down direction by default.
-
-                // Switch the selected item with the item below.
-                let index1 = i; 
-                let index2 = i + 1;
-
-                if (direction == 'up') {
-                    // Switch the selected item with the item above.
-                    index1 = i - 1;  
-                    index2 = i; 
-                }
-
-                if (!_checkGroupItemOverlapping(index1, index2)) {
-                    return;
-                }
-
-                // Gets the reference item before which the other item will be inserted.
-                let refItem = document.getElementById('layout-item-'+_idNbList[index1]);
-                // Momentarily withdraws the other item from the DOM.
-                let oldChild = _container.removeChild(document.getElementById('layout-item-'+_idNbList[index2]));
-
-
-                // Switches the 2 items.
-                _container.insertBefore(oldChild, refItem);
-
-                if (oldChild.dataset.type === 'text_block') {
-                    // Remove then reinstanciate a brand new TinyMce editor.
-                    tinymce.get('text_block-'+_idNbList[index2]).remove();
-                    _initTinyMceEditor(_idNbList[index2]);
-                }*/
-
-                break;
-            }
-        }
+        const adjacentItem = _getAdjacentItem(referenceItem, direction);
+        _switchItems(direction, referenceItem, adjacentItem);
 
         _itemReordering();
         // The "odd" and "even" classes need to be reset.
@@ -340,7 +328,7 @@ const C_Layout = (function() {
         for (let i = 0; i < divs.length; i++) {
 	    let ordering = i + 1;
 	    // Extracts the id number of the item from the end of its id value and convert it into an integer.
-	    let idNb = parseInt(divs[i].id.replace(/.+-(\d+)$/, '$1'));
+	    const idNb = parseInt(divs[i].id.replace(/.+-(\d+)$/, '$1'));
 	    // Updates the ordering of the id number.
 	    _idNbList.push(idNb);
             const itemType = _getItemType(idNb);
@@ -375,33 +363,60 @@ const C_Layout = (function() {
         }
     }
 
-    /**
-      * Make sure the couples of group items don't overlap each others when reversing the item order.
-      *
-      * @param   integer index1   The first item id number 
-      * @param   integer index2   The second item id number 
-      *
-      * @return  boolean
-     */
-    function _checkGroupItemOverlapping(index1, index2) {
-        const item1Type = _getItemType(_idNbList[index1]);
-        const item2Type = _getItemType(_idNbList[index2]);
+    function _reverseGroupOrder(item) {
+        // Starting groups can only go upward and ending groups can only go downward.
+        let direction = item.dataset.type == 'group_start' ? 'up' : 'down';
+        const adjacentItem = _getAdjacentItem(item, direction);
+        const partnerItem = _getPartnerItem(item);
 
-        if (item1Type == 'group_start') {
-//console.log(_idNbList);
+        if (adjacentItem.dataset.type.startsWith('group_')) {
+            const partnerAdjacentItem = _getPartnerItem(adjacentItem);
+
+            const startingGroupIdNb = adjacentItem.dataset.type == 'group_start' ? parseInt(adjacentItem.dataset.idNumber) : parseInt(partnerAdjacentItem.dataset.idNumber);
+            const endingGroupIdNb = adjacentItem.dataset.type == 'group_end' ? parseInt(adjacentItem.dataset.idNumber) : parseInt(partnerAdjacentItem.dataset.idNumber);
+
+            let intoGroup = false;
+            let referenceItem = null;
+            let itemToSwitch = null;
+
+            for (let i = 0; i < _idNbList.length; i++) {
+                if (_idNbList[i] == startingGroupIdNb) {
+console.log('startingGroup ' + direction);
+                    itemToSwitch = document.getElementById('layout-item-' + startingGroupIdNb);
+                    _switchItems(direction, partnerItem, itemToSwitch);
+                    // 
+                    referenceItem = document.getElementById('layout-item-' + startingGroupIdNb);
+                    intoGroup = true;
+                    //
+                    direction = 'up';
+                    continue;
+                }
+
+                if (_idNbList[i] == endingGroupIdNb) {
+console.log('endingGroup' + direction);
+                    itemToSwitch = document.getElementById('layout-item-' + endingGroupIdNb);
+                    _switchItems(direction, referenceItem, itemToSwitch);
+                    break;
+                }
+
+                if (intoGroup) {
+console.log('intoGroup ' + direction);
+                    itemToSwitch = document.getElementById('layout-item-' + _idNbList[i]);
+                    _switchItems(direction, referenceItem, itemToSwitch);
+                    referenceItem = document.getElementById('layout-item-' + _idNbList[i]);
+                }
+            }
+        }
+        // Regular item.
+        else {
+            _switchItems(direction, partnerItem, adjacentItem);
         }
 
-        if (item2Type == 'group_start' && item1Type == 'group_end' || item2Type == 'group_end' && item1Type == 'group_start') {
-            alert(CodaliaLang.message['alert_overlapping']);
-            return false;
-        }
-
-        return true;
+        _itemReordering();
+        // The "odd" and "even" classes need to be reset.
+        _setOddEven();
     }
 
-    function _reverseGroup(item) {
-
-    }
 
     /**
       * Creates a button then binds it to a function according to the action.
