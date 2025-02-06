@@ -73,12 +73,20 @@ const C_Layout = (function() {
         return document.getElementById('layout-item-' + idNb).dataset.type;
     }
 
-    function _getAdjacentItem(referenceItem, direction) {
+    /**
+      * Returns the item adjacent to the given item according to the given direction (ie: up / down).
+      *
+      * @param   Object item       The item intended to go upward or backard on the list. 
+      * @param   string direction  The item direction.
+      *
+      * @return  Object The adjacent item.
+     */
+    function _getAdjacentItem(item, direction) {
         // Loops through the item id number order.
         for (let i = 0; i < _idNbList.length; i++) {
-            // Checks in which order the 2 items have to be reversed.
-            if (_idNbList[i] == referenceItem.dataset.idNumber) {
-                // Compute the list index of the item to switch according to the direction.
+            // Get the position (index) of the reference item on the list.
+            if (_idNbList[i] == item.dataset.idNumber) {
+                // Compute the position (index) of the adjacent item on the list according to the direction.
                 const index = (direction == 'up') ? i - 1 : i + 1;
 
                 // Returns the adjacent item.
@@ -89,19 +97,37 @@ const C_Layout = (function() {
         return null;
     }
 
-    function _getPartnerItem(item) {
-        const idNb = parseInt(item.dataset.idNumber);
-        const partnerIdNb = item.dataset.type == 'group_start' ? idNb + 1 : idNb - 1;
+    /**
+      * Returns the partner item of the given group item (group_start <=> group_end)
+      *
+      * @param   Object groupItem   A single group item (ie: group_start or group_end type).
+      *
+      * @return  Object The partner group item.
+     */
+    function _getPartnerItem(groupItem) {
+        const idNb = parseInt(groupItem.dataset.idNumber);
+        // Get the partner id number according to the given group item type.
+        // Note: Group item pairs have consecutive id numbers (eg: group_start:5 group_end:6). 
+        const partnerIdNb = groupItem.dataset.type == 'group_start' ? idNb + 1 : idNb - 1;
 
         return document.getElementById('layout-item-' + partnerIdNb);
     }
 
+    /**
+      * Switches two items in a given direction.
+      *
+      * @param   string direction      The direction in which the item is switched to.
+      * @param   Object referenceItem  The item intended to move upward or downward.
+      * @param   Object itemToSwitch   The item to switch as against the reference item.
+      *
+      * @return  void
+     */
     function _switchItems(direction, referenceItem, itemToSwitch) {
         // Momentarily withdraws from the DOM the item to switch.
         _container.removeChild(itemToSwitch);
         // Set the new position of the item (ie: below or above the reference item).
         const position = (direction == 'up') ? 'afterend' : 'beforebegin';
-        // Switch the item according to the position.
+        // Switch the item to the given position as against the reference item.
         referenceItem.insertAdjacentElement(position, itemToSwitch);
 
         if (itemToSwitch.dataset.type == 'text_block') {
@@ -364,14 +390,18 @@ const C_Layout = (function() {
     }
 
     function _reverseGroupOrder(item) {
-        // Starting groups can only go upward and ending groups can only go downward.
+        // Item groups 'group_start' type can only go upward and item groups 'group_end' type can only go downward.
         let direction = item.dataset.type == 'group_start' ? 'up' : 'down';
+        // Get the item to switch.
         const adjacentItem = _getAdjacentItem(item, direction);
+        // Get the partner item of the given group item.
         const partnerItem = _getPartnerItem(item);
 
+        // A group has to be switched.
         if (adjacentItem.dataset.type.startsWith('group_')) {
             const partnerAdjacentItem = _getPartnerItem(adjacentItem);
 
+            // Get the id numbers of the 2 group items of the adjacent group.
             const startingGroupIdNb = adjacentItem.dataset.type == 'group_start' ? parseInt(adjacentItem.dataset.idNumber) : parseInt(partnerAdjacentItem.dataset.idNumber);
             const endingGroupIdNb = adjacentItem.dataset.type == 'group_end' ? parseInt(adjacentItem.dataset.idNumber) : parseInt(partnerAdjacentItem.dataset.idNumber);
 
@@ -379,36 +409,39 @@ const C_Layout = (function() {
             let referenceItem = null;
             let itemToSwitch = null;
 
+            // Loop through the id number list and switch the adjacent group item by item.
             for (let i = 0; i < _idNbList.length; i++) {
+                // Start with the group_start item type.
                 if (_idNbList[i] == startingGroupIdNb) {
-console.log('startingGroup ' + direction);
+                    // Get the starting group item and switch with the reference partner item in the given direction.
                     itemToSwitch = document.getElementById('layout-item-' + startingGroupIdNb);
                     _switchItems(direction, partnerItem, itemToSwitch);
-                    // 
+                    // The switched item now becomes the reference item. 
                     referenceItem = document.getElementById('layout-item-' + startingGroupIdNb);
+                    // Start the treatment of the next items on the list (ie: those that are part of the group to switch). 
                     intoGroup = true;
-                    //
+                    // Now all the following items have to be switch one below each other.
                     direction = 'up';
                     continue;
                 }
 
-                if (_idNbList[i] == endingGroupIdNb) {
-console.log('endingGroup' + direction);
-                    itemToSwitch = document.getElementById('layout-item-' + endingGroupIdNb);
-                    _switchItems(direction, referenceItem, itemToSwitch);
-                    break;
-                }
-
+                // Switch the items that are part of the group.
                 if (intoGroup) {
-console.log('intoGroup ' + direction);
                     itemToSwitch = document.getElementById('layout-item-' + _idNbList[i]);
                     _switchItems(direction, referenceItem, itemToSwitch);
+
+                    // Stop the process once the last group item is treated.
+                    if (_idNbList[i] == endingGroupIdNb) {
+                        break;
+                    }
+
                     referenceItem = document.getElementById('layout-item-' + _idNbList[i]);
                 }
             }
         }
         // Regular item.
         else {
+            // Just switch the regular item as against the partner group item.
             _switchItems(direction, partnerItem, adjacentItem);
         }
 
