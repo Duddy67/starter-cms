@@ -168,6 +168,11 @@ class PostController extends Controller
         $post->settings = $request->input('settings');
         $post->updated_by = auth()->user()->id;
         LayoutItem::storeItems($post);
+
+        // As the page is not reload after updating in AJAX, the newly created or updated 
+        // layout item data (if any) have to be refreshed.
+        $post->load('layoutItems');
+
         // Prioritize layout items over regular content when storing raw content.
         $post->raw_content = ($post->layoutItems()->exists()) ? $post->getLayoutRawContent() : strip_tags($request->input('content'));
 
@@ -544,6 +549,11 @@ class PostController extends Controller
 
         foreach ($post->layoutItems as $item) {
             if ($item->id_nb == $idNb) {
+                // Check first for image items. 
+                if ($item->image) {
+                    $item->image->delete();
+                }
+
                 $item->delete();
                 break;
             }

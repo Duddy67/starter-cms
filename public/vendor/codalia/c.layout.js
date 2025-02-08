@@ -207,9 +207,9 @@ const C_Layout = (function() {
         document.getElementById('layout-item-delete-label-'+idNb).innerHTML = '&nbsp;';
 
         if (itemType == 'group_end') {
-            // Create a fake button for group_end items.
+            // Create a fake button for group_end items and make it invisible.
             let label = CodaliaLang.action['remove'];
-            let attribs = {class: 'btn btn-secondary', title: label, disabled:'disabled'};
+            let attribs = {class: 'btn btn-secondary invisible', title: label, disabled:'disabled'};
             let button = _createElement('button', attribs);
             button.innerHTML = '<span class="icon-remove icon-white"></span> '+label;
             document.getElementById('layout-item-row-1-cell-3-'+idNb).appendChild(button);
@@ -389,13 +389,20 @@ const C_Layout = (function() {
         }
     }
 
-    function _reverseGroupOrder(item) {
+    /**
+     * Switches the order of 2 groups (and their content) in the DOM.
+     *
+     * @param   Object groupItem   The group item intended to switch the group upward or backward on the list. 
+     *
+     * @return  void
+    */
+    function _reverseGroupOrder(groupItem) {
         // Item groups 'group_start' type can only go upward and item groups 'group_end' type can only go downward.
-        let direction = item.dataset.type == 'group_start' ? 'up' : 'down';
+        let direction = groupItem.dataset.type == 'group_start' ? 'up' : 'down';
         // Get the item to switch.
-        const adjacentItem = _getAdjacentItem(item, direction);
+        const adjacentItem = _getAdjacentItem(groupItem, direction);
         // Get the partner item of the given group item.
-        const partnerItem = _getPartnerItem(item);
+        const partnerItem = _getPartnerItem(groupItem);
 
         // A group has to be switched.
         if (adjacentItem.dataset.type.startsWith('group_')) {
