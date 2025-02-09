@@ -5,7 +5,6 @@ var CodaliaLang = {
   "message" : { "warning_remove_dynamic_item":"You are about to remove an item.\nAre you sure ?", 
                 "alert_mandatory_field":"Mandatory field.", 
                 "alert_value_type_not_valid":"Value type is not valid.",
-                "alert_overlapping":"Group items cannot overlap each others.",
                 "empty_title":"Empty title.",
                 "empty_text_block":"Empty text block.",
                 "empty_group_class":"Empty group class.",
