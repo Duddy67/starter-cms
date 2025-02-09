@@ -165,6 +165,10 @@ class PostController extends Controller
         $post->updated_by = auth()->user()->id;
         LayoutItem::storeItems($post, $request->input('locale'));
 
+        // As the page is not reload after updating in AJAX, the newly created or updated
+        // layout item data (if any) have to be refreshed.
+        $post->load('layoutItems');
+
         if ($post->canChangeAccessLevel()) {
             $post->access_level = $request->input('access_level');
 
@@ -546,6 +550,11 @@ class PostController extends Controller
 
         foreach ($post->layoutItems as $item) {
             if ($item->id_nb == $idNb) {
+                // Check first for image items.
+                if ($item->image) {
+                    $item->image->delete();
+                }
+
                 $item->delete();
                 break;
             }

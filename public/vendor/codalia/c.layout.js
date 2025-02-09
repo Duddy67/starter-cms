@@ -65,6 +65,79 @@ const C_Layout = (function() {
     };
 
     /**
+      * Returns the type of the given item. 
+      *
+      * @return  string   The item type.
+     */
+    function _getItemType(idNb) {
+        return document.getElementById('layout-item-' + idNb).dataset.type;
+    }
+
+    /**
+      * Returns the item adjacent to the given item according to the given direction (ie: up / down).
+      *
+      * @param   Object item       The item intended to go upward or backard on the list. 
+      * @param   string direction  The item direction.
+      *
+      * @return  Object The adjacent item.
+     */
+    function _getAdjacentItem(item, direction) {
+        // Loops through the item id number order.
+        for (let i = 0; i < _idNbList.length; i++) {
+            // Get the position (index) of the reference item on the list.
+            if (_idNbList[i] == item.dataset.idNumber) {
+                // Compute the position (index) of the adjacent item on the list according to the direction.
+                const index = (direction == 'up') ? i - 1 : i + 1;
+
+                // Returns the adjacent item.
+                return document.getElementById('layout-item-' + _idNbList[index]);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+      * Returns the partner item of the given group item (group_start <=> group_end)
+      *
+      * @param   Object groupItem   A single group item (ie: group_start or group_end type).
+      *
+      * @return  Object The partner group item.
+     */
+    function _getPartnerItem(groupItem) {
+        const idNb = parseInt(groupItem.dataset.idNumber);
+        // Get the partner id number according to the given group item type.
+        // Note: Group item pairs have consecutive id numbers (eg: group_start:5 group_end:6). 
+        const partnerIdNb = groupItem.dataset.type == 'group_start' ? idNb + 1 : idNb - 1;
+
+        return document.getElementById('layout-item-' + partnerIdNb);
+    }
+
+    /**
+      * Switches two items in a given direction.
+      *
+      * @param   string direction      The direction in which the item is switched to.
+      * @param   Object referenceItem  The item intended to move upward or downward.
+      * @param   Object itemToSwitch   The item to switch as against the reference item.
+      *
+      * @return  void
+     */
+    function _switchItems(direction, referenceItem, itemToSwitch) {
+        // Momentarily withdraws from the DOM the item to switch.
+        _container.removeChild(itemToSwitch);
+        // Set the new position of the item (ie: below or above the reference item).
+        const position = (direction == 'up') ? 'afterend' : 'beforebegin';
+        // Switch the item to the given position as against the reference item.
+        referenceItem.insertAdjacentElement(position, itemToSwitch);
+
+        if (itemToSwitch.dataset.type == 'text_block') {
+            // Remove then reinstanciate a brand new TinyMce editor.
+            tinymce.get('text_block-' + itemToSwitch.dataset.idNumber).remove();
+            _initTinyMceEditor(itemToSwitch.dataset.idNumber);
+        }
+    }
+
+    /**
       * Creates a new TinyMce editor instance for the given textarea.
       *
       * @param   integer idNb   The id number of the textarea item.
@@ -112,7 +185,7 @@ const C_Layout = (function() {
         // A new group item actually starts with a group_start item.
         itemType = (itemType == 'group') ? 'group_start' : itemType;
         // Creates the item div then its inner structure.
-        let attribs = {id: 'layout-item-'+idNb, class: 'layout-item', 'data-type': itemType};
+        let attribs = {id: 'layout-item-'+idNb, class: 'layout-item', 'data-type': itemType, 'data-id-number': idNb};
         let itemContainer = _createElement('div', attribs);
 
         for (let i = 0; i < 3; i++) {
@@ -134,9 +207,9 @@ const C_Layout = (function() {
         document.getElementById('layout-item-delete-label-'+idNb).innerHTML = '&nbsp;';
 
         if (itemType == 'group_end') {
-            // Create a fake button for group_end items.
+            // Create a fake button for group_end items and make it invisible.
             let label = CodaliaLang.action['remove'];
-            let attribs = {class: 'btn btn-secondary', title: label, disabled:'disabled'};
+            let attribs = {class: 'btn btn-secondary invisible', title: label, disabled:'disabled'};
             let button = _createElement('button', attribs);
             button.innerHTML = '<span class="icon-remove icon-white"></span> '+label;
             document.getElementById('layout-item-row-1-cell-3-'+idNb).appendChild(button);
@@ -173,39 +246,45 @@ const C_Layout = (function() {
 	attribs = {type: 'hidden', name: 'layout_items[layout_item_ordering_'+idNb+']', id: 'layout-item-ordering-'+idNb};
 	document.getElementById('layout-item-ordering-div-'+idNb).appendChild(_createElement('input', attribs));
 
-	// Creates the link allowing the item to go down the item ordering.
-	attribs = {
-	    href: 'javascript:void(0);',
-	    id: 'layout-item-down-ordering-'+idNb,
-	    class: 'down-ordering'
-	};
+        // group_start item types can't go down.
+        if (_getItemType(idNb) != 'group_start') {
+            // Creates the link allowing the item to go down the item ordering.
+            attribs = {
+                href: 'javascript:void(0);',
+                id: 'layout-item-down-ordering-'+idNb,
+                class: 'down-ordering'
+            };
 
-        let link = _createElement('a', attribs);
+            let link = _createElement('a', attribs);
 
-	attribs = {class: 'fa fa-angle-double-down'};
+            attribs = {class: 'fa fa-angle-double-down'};
 
-	link.appendChild(_createElement('i', attribs));
-	document.getElementById('layout-item-ordering-div-'+idNb).appendChild(link);
+            link.appendChild(_createElement('i', attribs));
+            document.getElementById('layout-item-ordering-div-'+idNb).appendChild(link);
+        }
 
 	// Creates fake element to display the order number.
 	attribs = {type: 'text', disabled: 'disabled', id: 'layout-item-order-number-'+idNb, class: 'layout-item-order-number'};
 	document.getElementById('layout-item-ordering-div-'+idNb).appendChild(_createElement('input', attribs));
 
-	// Creates the link allowing the item to go up the item ordering.
-	attribs = {
-	     href: 'javascript:void(0);',
-	     id: 'layout-item-up-ordering-'+idNb,
-	     class: 'up-ordering'
-	};
+        // group_end item types can't go up.
+        if (_getItemType(idNb) != 'group_end') {
+            // Creates the link allowing the item to go up the item ordering.
+            attribs = {
+                 href: 'javascript:void(0);',
+                 id: 'layout-item-up-ordering-'+idNb,
+                 class: 'up-ordering'
+            };
 
-	link = _createElement('a', attribs);
+            link = _createElement('a', attribs);
 
-	attribs = {class: 'fa fa-angle-double-up'};
+            attribs = {class: 'fa fa-angle-double-up'};
 
-	link.appendChild(_createElement('i', attribs));
-	document.getElementById('layout-item-ordering-div-'+idNb).appendChild(link);
+            link.appendChild(_createElement('i', attribs));
+            document.getElementById('layout-item-ordering-div-'+idNb).appendChild(link);
+        }
 
-	_assignOrderingElements(idNb);
+        _assignOrderingElements(idNb);
 
 	_itemReordering();
     }
@@ -221,6 +300,11 @@ const C_Layout = (function() {
         let directions = ['up', 'down'];
 
         for (let i = 0; i < directions.length; ++i){
+            // _reverseOrder function is partialy needed in group item types.
+            if ((directions[i] == 'up' && _getItemType(idNb) == 'group_end') || (directions[i] == 'down' && _getItemType(idNb) == 'group_start')) {
+                continue;
+            } 
+
             // Assign the _reverseOrder function to the newly created up and down elements.
             document.getElementById('layout-item-'+directions[i]+'-ordering-'+idNb).addEventListener('click', function() {
                 _reverseOrder(directions[i], idNb);
@@ -237,40 +321,17 @@ const C_Layout = (function() {
      * @return  void
     */
     function _reverseOrder(direction, idNb) {
-        // Loops through the item id number order.
-        for (let i = 0; i < _idNbList.length; i++) {
-            // Checks for the which order has to be reversed.
-            if (_idNbList[i] == idNb) {
-              // Sets the item indexes according to the direction.
-              let index1 = i;
-              let index2 = i + 1;
+        // Get the item intended to move upward or downward.
+        const referenceItem = document.getElementById('layout-item-' + idNb);
 
-              if (direction == 'up') {
-                  index1 = i - 1;
-                  index2 = i;
-              }
-
-              if (!_checkGroupItemOverlapping(index1, index2)) {
-                  return;
-              }
-
-              // Gets the reference item before which the other item will be inserted.
-              let refItem = document.getElementById('layout-item-'+_idNbList[index1]);
-              // Momentarily withdraws the other items from the DOM.
-              let oldChild = _container.removeChild(document.getElementById('layout-item-'+_idNbList[index2]));
-
-              // Switches the 2 items.
-              _container.insertBefore(oldChild, refItem);
-
-              if (oldChild.dataset.type === 'text_block') {
-                  // Remove then reinstanciate a brand new TinyMce editor.
-                  tinymce.get('text_block-'+_idNbList[index2]).remove();
-                  _initTinyMceEditor(_idNbList[index2]);
-              }
-
-              break;
-            }
+        // Check for group items.
+        if (referenceItem.dataset.type.startsWith('group_')) {
+            _reverseGroupOrder(referenceItem);
+            return;
         }
+
+        const adjacentItem = _getAdjacentItem(referenceItem, direction);
+        _switchItems(direction, referenceItem, adjacentItem);
 
         _itemReordering();
         // The "odd" and "even" classes need to be reset.
@@ -293,52 +354,109 @@ const C_Layout = (function() {
         for (let i = 0; i < divs.length; i++) {
 	    let ordering = i + 1;
 	    // Extracts the id number of the item from the end of its id value and convert it into an integer.
-	    let idNb = parseInt(divs[i].id.replace(/.+-(\d+)$/, '$1'));
+	    const idNb = parseInt(divs[i].id.replace(/.+-(\d+)$/, '$1'));
 	    // Updates the ordering of the id number.
 	    _idNbList.push(idNb);
+            const itemType = _getItemType(idNb);
 
 	    // Updates the item ordering.
 	    document.getElementById('layout-item-ordering-'+idNb).value = ordering;
 	    document.getElementById('layout-item-order-number-'+idNb).value = ordering;
-	    // Displays the up/down links of the item.
-	    document.getElementById('layout-item-up-ordering-'+idNb).style.display = 'inline';
-	    document.getElementById('layout-item-down-ordering-'+idNb).style.display = 'inline';
+
+            if (itemType != 'group_end') {
+                // Displays the up/down links of the item.
+                document.getElementById('layout-item-up-ordering-'+idNb).style.display = 'inline';
+            }
+
+            if (itemType != 'group_start') {
+                document.getElementById('layout-item-down-ordering-'+idNb).style.display = 'inline';
+            }
+
 	    // Resets first and last item classes.
 	    document.getElementById('layout-item-order-number-'+idNb).classList.remove('first-item', 'last-item');
 
-	    if (ordering == 1) {
-	      // The first item cannot go any higher.
-	      document.getElementById('layout-item-up-ordering-'+idNb).style.display = 'none';
-	      document.getElementById('layout-item-order-number-'+idNb).classList.add('first-item');
+	    if (ordering == 1 && itemType != 'group_end') {
+                // The first item cannot go any higher.
+                document.getElementById('layout-item-up-ordering-'+idNb).style.display = 'none';
+                document.getElementById('layout-item-order-number-'+idNb).classList.add('first-item');
 	    }
 
-	    if (ordering == divs.length) {
-	      // The last item cannot go any lower.
-	      document.getElementById('layout-item-down-ordering-'+idNb).style.display = 'none';
-	      document.getElementById('layout-item-order-number-'+idNb).classList.add('last-item');
+	    if (ordering == divs.length && itemType != 'group_start') {
+                // The last item cannot go any lower.
+                document.getElementById('layout-item-down-ordering-'+idNb).style.display = 'none';
+                document.getElementById('layout-item-order-number-'+idNb).classList.add('last-item');
 	    }
         }
     }
 
     /**
-      * Make sure the couples of group items don't overlap each others when reversing the item order.
-      *
-      * @param   integer index1   The first item id number 
-      * @param   integer index2   The second item id number 
-      *
-      * @return  boolean
-     */
-    function _checkGroupItemOverlapping(index1, index2) {
-        let item1Type = document.getElementById('layout-item-'+_idNbList[index1]).dataset.type;
-        let item2Type = document.getElementById('layout-item-'+_idNbList[index2]).dataset.type;
+     * Switches the order of 2 groups (and their content) in the DOM.
+     *
+     * @param   Object groupItem   The group item intended to switch the group upward or backward on the list. 
+     *
+     * @return  void
+    */
+    function _reverseGroupOrder(groupItem) {
+        // Item groups 'group_start' type can only go upward and item groups 'group_end' type can only go downward.
+        let direction = groupItem.dataset.type == 'group_start' ? 'up' : 'down';
+        // Get the item to switch.
+        const adjacentItem = _getAdjacentItem(groupItem, direction);
+        // Get the partner item of the given group item.
+        const partnerItem = _getPartnerItem(groupItem);
 
-        if (item2Type == 'group_start' && item1Type == 'group_end' || item2Type == 'group_end' && item1Type == 'group_start') {
-            alert(CodaliaLang.message['alert_overlapping']);
-            return false;
+        // A group has to be switched.
+        if (adjacentItem.dataset.type.startsWith('group_')) {
+            const partnerAdjacentItem = _getPartnerItem(adjacentItem);
+
+            // Get the id numbers of the 2 group items of the adjacent group.
+            const startingGroupIdNb = adjacentItem.dataset.type == 'group_start' ? parseInt(adjacentItem.dataset.idNumber) : parseInt(partnerAdjacentItem.dataset.idNumber);
+            const endingGroupIdNb = adjacentItem.dataset.type == 'group_end' ? parseInt(adjacentItem.dataset.idNumber) : parseInt(partnerAdjacentItem.dataset.idNumber);
+
+            let intoGroup = false;
+            let referenceItem = null;
+            let itemToSwitch = null;
+
+            // Loop through the id number list and switch the adjacent group item by item.
+            for (let i = 0; i < _idNbList.length; i++) {
+                // Start with the group_start item type.
+                if (_idNbList[i] == startingGroupIdNb) {
+                    // Get the starting group item and switch with the reference partner item in the given direction.
+                    itemToSwitch = document.getElementById('layout-item-' + startingGroupIdNb);
+                    _switchItems(direction, partnerItem, itemToSwitch);
+                    // The switched item now becomes the reference item. 
+                    referenceItem = document.getElementById('layout-item-' + startingGroupIdNb);
+                    // Start the treatment of the next items on the list (ie: those that are part of the group to switch). 
+                    intoGroup = true;
+                    // Now all the following items have to be switch one below each other.
+                    direction = 'up';
+                    continue;
+                }
+
+                // Switch the items that are part of the group.
+                if (intoGroup) {
+                    itemToSwitch = document.getElementById('layout-item-' + _idNbList[i]);
+                    _switchItems(direction, referenceItem, itemToSwitch);
+
+                    // Stop the process once the last group item is treated.
+                    if (_idNbList[i] == endingGroupIdNb) {
+                        break;
+                    }
+
+                    referenceItem = document.getElementById('layout-item-' + _idNbList[i]);
+                }
+            }
+        }
+        // Regular item.
+        else {
+            // Just switch the regular item as against the partner group item.
+            _switchItems(direction, partnerItem, adjacentItem);
         }
 
-        return true;
+        _itemReordering();
+        // The "odd" and "even" classes need to be reset.
+        _setOddEven();
     }
+
 
     /**
       * Creates a button then binds it to a function according to the action.
