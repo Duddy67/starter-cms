@@ -8,41 +8,106 @@ use Illuminate\Database\Eloquent\Collection;
 
 class PostCollection extends Collection
 {
-    public function filterPostsByCategories(array $categories, array $except = [])
+    /*
+     * Returns posts from a category sorted by the given column.
+     *
+     * @param integer $id      The id of the category to filter from.
+     * @param string  $column  The column by which posts are sorted (Optional).
+     * @param boolean $desc    When set to true, posts are sorted in the opposite order (Optional).
+     *
+     * @return Object  The sorted posts filtered by the given category.
+     */
+    public function filterPostsByCategory(int $id, string $column = '', bool $desc = false)
     {
-        return $this->filter(function ($post) use($categories, $except) {
-            $ids = [];
+        if (!empty($column)) {
+            // Sort posts by the given column.
+            $posts = ($desc) ? $this->sortByDesc($column) : $this->sortBy($column);
+        }
+        else {
+            $posts = $this;
+        }
+
+        return $posts->filter(function ($post) use($id) {
+            // Loop through the post's categories.
+            foreach ($post->categories as $category) {
+                // Check for the given slug.
+                if ($category->id == $id) {
+                    return $post;
+                }
+            }
+        });
+    }
+
+    /*
+     * Returns posts filtered by any of the given categories (OR clause).
+     *
+     * @param array $ids      The id of the categories to filter from.
+     * @param array $except   The slug of the categories to ignore (Optional).
+     *
+     * @return Object  The posts filtered by the given categories.
+     */
+    public function filterPostsByCategories(array $ids, array $except = [])
+    {
+        return $this->filter(function ($post) use($ids, $except) {
+            $results = [];
 
             foreach ($post->categories as $category) {
-                $ids[] = $category->id;
+                // Store the id of the categories the post belongs to.
+                $results[] = $category->id;
             }
 
             // Make sure the post belongs to any of the given categories (OR).
-            if (!empty(array_intersect($categories, $ids)) && empty(array_intersect($except, $ids))) {
+            if (!empty(array_intersect($ids, $results)) && empty(array_intersect($except, $results))) {
                 return $post;
             }
         });
     }
 
-    public function filterPostsByAllCategories(array $categories, array $except = [])
+    /*
+     * Returns posts filtered by all of the given categories (AND clause).
+     *
+     * @param array $ids      The id of the categories to filter from.
+     * @param array $except   The slug of the categories to ignore (Optional).
+     *
+     * @return Object  The posts filtered by the given categories.
+     */
+    public function filterPostsByAllCategories(array $ids, array $except = [])
     {
-        return $this->filter(function ($post) use($categories, $except) {
-            $ids = [];
+        return $this->filter(function ($post) use($ids, $except) {
+            $results = [];
 
             foreach ($post->categories as $category) {
-                $ids[] = $category->id;
+                // Store the id of the categories the post belongs to.
+                $results[] = $category->id;
             }
 
             // Make sure the post belongs to all the given categories (AND).
-            if (count(array_intersect($categories, $ids)) == count($categories) && empty(array_intersect($except, $ids))) {
+            if (count(array_intersect($ids, $results)) == count($ids) && empty(array_intersect($except, $results))) {
                 return $post;
             }
         });
     }
 
-    public function filterPostsById(array $ids)
+    /*
+     * Returns posts filtered by id and sorted by the given column.
+     *
+     * @param array   $ids     The id of the posts to filter.
+     * @param string  $column  The column by which posts are sorted (Optional).
+     * @param boolean $desc    When set to true, posts are sorted in the opposite order (Optional).
+     *
+     * @return Object  The filtered posts.
+     */
+    public function filterPostsById(array $ids, string $column = '', bool $desc = false)
     {
-        return $this->filter(function ($post) use($ids) {
+        if (!empty($column)) {
+            // Sort posts by the given column.
+            $posts = ($desc) ? $this->sortByDesc($column) : $this->sortBy($column);
+        }
+        else {
+            $posts = $this;
+        }
+
+        return $posts->filter(function ($post) use($ids) {
             if (in_array($post->id, $ids)) {
                 return $post;
             }
