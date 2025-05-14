@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Cms\Category;
 use App\Models\Cms\Setting;
+use App\Models\Post;
 
 class SiteController extends Controller
 {
@@ -70,7 +71,15 @@ class SiteController extends Controller
         }
 
         // Then make sure the post exists, is published and is part of the category.
-	if (!$post = $category->posts->where('id', $request->segment(2))->where('status', 'published')->first()) {
+        $post = Post::select('posts.*', 'users.name as owner_name', 'users2.name as modifier_name')
+			->leftJoin('users', 'posts.owned_by', '=', 'users.id')
+			->leftJoin('users as users2', 'posts.updated_by', '=', 'users2.id')
+                        ->join('categorizables', function($join) use($category) {
+                              $join->on('categorizables.categorizable_id', '=', 'posts.id')
+                                   ->where('categorizables.category_id', '=', $category->id);
+                          })->where('posts.id', $request->segment(2))->where('posts.status', 'published')->first();
+
+	if (!$post) {
             $page['name'] = '404';
             return view('themes.'.$page['theme'].'.index', compact('page'));
         }
