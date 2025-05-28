@@ -7,6 +7,10 @@
         <div>@date ($post->created_at->tz($page['timezone']))</div>
     @endif
 
+    @if ($post->settings['show_updated_at'])
+        <div>@date ($post->updated_at->tz($page['timezone']))</div>
+    @endif
+
     @if ($post->settings['show_owner'])
         <div>{{ $post->owner_name }}</div>
     @endif

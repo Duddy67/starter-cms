@@ -19,6 +19,15 @@
     "options": [] 
   },
   {
+    "label": "labels.generic.show_updated_at",
+    "type": "select",
+    "name": "show_updated_at",
+    "function": "yes_no",
+    "id": "show_updated_at",
+    "group": "posts",
+    "options": [] 
+  },
+  {
     "label": "labels.post.show_excerpt",
     "type": "select",
     "name": "show_excerpt",

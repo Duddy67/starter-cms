@@ -173,6 +173,7 @@ return [
 	'show_subcategories' => 'Show sub-categories',
 	'show_owner' => 'Show owner',
 	'show_created_at' => 'Show created at',
+	'show_updated_at' => 'Show updated at',
 	'show_image' => 'Show image',
         'allow_comments' => 'Allow comments',
         'comment_alert' => 'Comment alert',

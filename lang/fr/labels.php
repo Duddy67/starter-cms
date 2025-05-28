@@ -173,6 +173,7 @@ return [
 	'show_subcategories' => 'Montrer les sous-catégories',
 	'show_owner' => 'Montrer le propriétaire',
 	'show_created_at' => 'Montrer la date de création',
+	'show_updated_at' => 'Montrer la date de mise à jour',
 	'show_image' => 'Montrer l\'image',
         'allow_comments' => 'Autoriser les commentaires',
         'comment_alert' => 'Alerte commentaire',
