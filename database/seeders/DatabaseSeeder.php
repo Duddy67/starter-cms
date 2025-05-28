@@ -143,6 +143,7 @@ class DatabaseSeeder extends Seeder
         PostSetting::insert([
             ['group' => 'posts', 'key' => 'show_owner', 'value' => 1],
             ['group' => 'posts', 'key' => 'show_created_at', 'value' => 1],
+            ['group' => 'posts', 'key' => 'show_updated_at', 'value' => 1],
             ['group' => 'posts', 'key' => 'show_excerpt', 'value' => 1],
             ['group' => 'posts', 'key' => 'show_image', 'value' => 1],
             ['group' => 'posts', 'key' => 'show_categories', 'value' => 1],
