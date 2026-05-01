@@ -15,6 +15,14 @@
         <div>{{ $post->owner_name }}</div>
     @endif
 
+    @if ($post->settings['show_share_button'])
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#shareModal">
+            @lang ('labels.generic.share') <i class="bi-share" aria-hidden="true"></i>
+        </button>
+        <!-- Modal -->
+        @include('themes.starter.partials.post.share')
+    @endif
+
     @if ($post->settings['show_excerpt'])
         <div class="excerpt">
             {!! $post->excerpt !!}

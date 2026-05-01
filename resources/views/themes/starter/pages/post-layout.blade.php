@@ -1,5 +1,13 @@
 <h1 class="h2"><a href="{{ url($post->getUrl()) }}">{{ $post->title }}</a></h1>
 
+@if ($post->settings['show_share_button'])
+    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#shareModal">
+        @lang ('labels.generic.share') <i class="bi-share" aria-hidden="true"></i>
+    </button>
+    <!-- Modal -->
+    @include('themes.starter.partials.post.share')
+@endif
+
 @php $count = $limit = 0; @endphp
 @foreach ($post->layoutItems as $key => $item)
     @if ($count == 0)

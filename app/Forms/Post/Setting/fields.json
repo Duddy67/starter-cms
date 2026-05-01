@@ -55,6 +55,15 @@
     "options": [] 
   },
   {
+    "label": "labels.generic.show_share_button",
+    "type": "select",
+    "name": "show_share_button",
+    "function": "yes_no",
+    "id": "show_share_button",
+    "group": "posts",
+    "options": []
+  },
+  {
     "label": "labels.generic.allow_comments",
     "type": "select",
     "name": "allow_comments",
